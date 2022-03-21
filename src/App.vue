@@ -1,80 +1,58 @@
 <template>
-  <div>
+  <div id="the-root">
     <guest-header></guest-header>
-    <router-view></router-view>
-    <div>
-      <p></p>
-    </div>
+    <aside class="left-side">
+      
+    </aside>
+    <main>
+      <router-view></router-view>
+    </main>
+    <aside class="right-side">
+    </aside>
+    <the-footer></the-footer>
   </div>
 </template>
 <script>
-import GuestHeader from "./components/layout/GuestHeader.vue";
+import GuestHeader from './components/layout/GuestHeader.vue';
+import TheFooter from './components/layout/TheFooter.vue';
 export default {
   components: {
     GuestHeader,
+    TheFooter,
   },
 };
 </script>
-
 <style>
-@import "./assets/styles/reset.css";
+@import './assets/styles/reset.css';
+@import './assets/styles/common.css';
+</style>
 
-:root {
-  --primary-color: #0288d1;
-  --primary-color-light: #5eb8ff;
-  --primary-color-dark: #005b9f;
-  --secondary-color: #43a047;
-  --secondary-color-light: #76d275;
-  --secondary-color-dark: #00701a;
-
-  --on-primary-color: #ffffff;
-  --on-secondary-color: #ffffff;
-  --border-color: lightgray;
-
-  --app-title-font: 900 2rem sans-serif;
-
-  font-family: sans-serif;
+<style scoped>
+#the-root {
+  display: grid;
+  grid-template: auto 1fr auto / auto 1fr auto;
+  height: 100%;
+}
+header {
+  grid-column: 1 / 4;
+  margin-bottom: 3rem;
+}
+main {
+  grid-column: 2 / 3;
+}
+.left-side {
+  grid-column: 1 / 2;
 }
 
-input:not([type="submit"]) {
-  height: 1.25rem;
+main {
+  grid-column: 2 / 3;
 }
 
-.secondary-button {
-  background: var(--secondary-color);
-  padding: 10px 20px;
-  border: 1px solid var(--on-secondary-color);
-  color: var(--on-secondary-color);
-  border-radius: 20px;
-  font-size: 1rem;
-  font-weight: bold;
+.right-side {
+  grid-column: 3 / 4;
 }
 
-.button-hollow {
-  background: transparent;
-  padding: 10px 20px;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 20px;
-  font-size: 1rem;
-  font-weight: bold;
-}
-
-a {
-  text-decoration: none;
-}
-a:hover {
-  text-decoration: underline;
-}
-
-.link {
-  text-decoration: none;
-}
-.link:hover {
-  text-decoration: underline;
-  cursor: pointer;
-}
-.unselectable {
-  user-select: none;
+footer {
+  grid-column: 1 / 4;
 }
 </style>

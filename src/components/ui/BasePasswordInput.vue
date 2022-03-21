@@ -1,14 +1,26 @@
 <template>
-  <input :id="id" type="password" :autocomplete="autocomplete" ref="password" />
-  <button type="button" @click="toggleShowPassword">
-    <font-awesome-icon
-      icon="eye"
-      ref="toggleShowIcon"
+  <div class="base-password-input">
+    <input
+      :id="id"
+      type="password"
+      :autocomplete="autocomplete"
+      ref="password"
     />
-  </button>
+    <button type="button" @click="toggleShowPassword">
+      <font-awesome-icon
+        :icon="shown ? 'eye-slash' : 'eye'"
+        ref="toggleShowIcon"
+      />
+    </button>
+  </div>
 </template>
 <script>
 export default {
+  data() {
+    return {
+      shown: false,
+    };
+  },
   props: {
     id: {
       type: String,
@@ -24,22 +36,34 @@ export default {
       const input = this.$refs.password;
       if (input.type === 'password') {
         input.type = 'text';
-        this.$refs.toggleShowIcon.icon.splice(1, 1, 'eye-slash');
-        console.log(this.$refs.toggleShowIcon);
       } else {
         input.type = 'password';
-        this.$refs.toggleShowIcon.icon.splice(1, 1, 'eye');
       }
+      this.shown = !this.shown;
     },
   },
 };
 </script>
 <style scoped>
+div{
+  position: relative;
+}
 input {
-  display: inline-block;
+  width: 100%;
+  outline: none;
+  margin: 0;
+  padding: 0;
+  
 }
 button {
   background: none;
   border: none;
+  position: absolute;
+  top: 3px;
+  right: 7px;
+  bottom: 3px;
+  z-index: 2;
+  padding: 0;
 }
+
 </style>
