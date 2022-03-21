@@ -5,6 +5,9 @@
       type="password"
       :autocomplete="autocomplete"
       ref="password"
+      :required="required"
+      :value="modelValue"
+      @input="onInput"
     />
     <button type="button" @click="toggleShowPassword">
       <font-awesome-icon
@@ -30,7 +33,14 @@ export default {
       type: String,
       required: true,
     },
+    required: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    modelValue: String,
   },
+  emits: ['update:modelValue'],
   methods: {
     toggleShowPassword() {
       const input = this.$refs.password;
@@ -41,11 +51,14 @@ export default {
       }
       this.shown = !this.shown;
     },
+    onInput(event) {
+      this.$emit('update:modelValue', event.target.value);
+    },
   },
 };
 </script>
 <style scoped>
-div{
+div {
   position: relative;
 }
 input {
@@ -53,7 +66,6 @@ input {
   outline: none;
   margin: 0;
   padding: 0;
-  
 }
 button {
   background: none;
@@ -65,5 +77,4 @@ button {
   z-index: 2;
   padding: 0;
 }
-
 </style>

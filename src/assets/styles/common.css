@@ -34,6 +34,7 @@ input:not([type='submit']) {
     border-radius: 20px;
     font-size: 1rem;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .secondary-button {
@@ -44,6 +45,7 @@ input:not([type='submit']) {
     border-radius: 20px;
     font-size: 1rem;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .button-hollow {
@@ -54,6 +56,7 @@ input:not([type='submit']) {
     border-radius: 20px;
     font-size: 1rem;
     font-weight: bold;
+    cursor: pointer;
 }
 
 a {
