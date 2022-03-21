@@ -29,8 +29,15 @@ export default {
 
   --on-primary-color: #ffffff;
   --on-secondary-color: #ffffff;
+  --border-color: lightgray;
 
   --app-title-font: 900 2rem sans-serif;
+
+  font-family: sans-serif;
+}
+
+input:not([type="submit"]) {
+  height: 1.25rem;
 }
 
 .secondary-button {
@@ -52,6 +59,7 @@ export default {
   font-size: 1rem;
   font-weight: bold;
 }
+
 a {
   text-decoration: none;
 }
