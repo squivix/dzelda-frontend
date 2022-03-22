@@ -12,7 +12,7 @@ export default {
                 const responseData = await response.json();
                 console.log(responseData)
             } else {
-                console.log("Something went wrong")
+                console.log("vuexstore:auth/signUp:Something went wrong")
                 throw new Error(await response.text())
             }
         } catch (error) {
@@ -29,9 +29,11 @@ export default {
         });
         if (response.ok) {
             const responseData = await response.json();
-            context.commit("setUser", { token: responseData.auth_token });
-        } else
+            context.dispatch("saveUser", { token: responseData.auth_token });
+        } else {
+            console.log("vuexstore:auth/login:Something went wrong")
             throw new Error(await response.text())
+        }
     },
 
     saveUser(context, payload) {

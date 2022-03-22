@@ -3,16 +3,18 @@ export default {
         return state.baseUrl;
     },
     getUser(state) {
+        console.log(state.token)
         if (state.token)
             return state.token;
         else if (localStorage.auth_token) {
+            //TODO: verify token somehow
             state.token = localStorage.auth_token;
             return state.token
         }
         else
             return null
     },
-    isAuthenticated(state) {
-        return !!state.token;
+    isAuthenticated(state, getters) {
+        return !!getters.getUser;
     }
 }

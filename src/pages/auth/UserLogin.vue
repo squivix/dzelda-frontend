@@ -35,6 +35,8 @@
   </base-card>
 </template>
 <script>
+import * as utils from '../../utils.js';
+
 export default {
   data() {
     return {
@@ -46,8 +48,12 @@ export default {
   computed: {
     errorMessage() {
       if (!this.error) return null;
+      if (this.error === 'Failed to fetch')
+        return 'Connection issue: failed to fetch from server';
+      const JSONMessage = utils.isJsonString(this.error);
       if (
-        this.error.non_field_errors.includes(
+        JSONMessage &&
+        JSONMessage.non_field_errors.includes(
           'Unable to log in with provided credentials.'
         )
       )
@@ -65,8 +71,10 @@ export default {
           password: this.password,
         });
       } catch (error) {
-        this.error = JSON.parse(error.message);
+        this.error = error.message;
+        return;
       }
+      // this.$router.push({name:"explore", params:{learningLanguage:await this.$state.dispatch('getDefaultLanguage')}})
     },
   },
 };

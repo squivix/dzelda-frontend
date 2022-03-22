@@ -28,9 +28,9 @@ router.beforeResolve(to => {
     const isAuthenticated = store.getters.isAuthenticated;
     //prevent visiting sites that require authentication while unauthenticated
     if (to.meta.requiresAuth && !isAuthenticated)
-        return { path: 'login' }
+        return { name: 'login' }
     if ((to.name === "login" || to.name === "home") && isAuthenticated)
-        return { path: 'explore' }
+        return { name: 'explore' }
 })
 
 
