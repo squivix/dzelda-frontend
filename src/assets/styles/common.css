@@ -22,7 +22,7 @@
     height: 100vh;
 }
 
-input:not([type='submit']) {
+input:not([type='submit']), select {
     height: 2rem;
 }
 

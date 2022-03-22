@@ -1,9 +1,5 @@
 export default {
-    baseUrl(state) {
-        return state.baseUrl;
-    },
     getUser(state) {
-        console.log(state.token)
         if (state.token)
             return state.token;
         else if (localStorage.auth_token) {

@@ -5,7 +5,6 @@ import getters from './getters.js';
 export default {
     state() {
         return {
-            baseUrl: `http://localhost:8000`,
             token: null,
         };
     },

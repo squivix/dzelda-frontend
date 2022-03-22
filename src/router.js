@@ -16,7 +16,20 @@ const router = createRouter({
         { path: '/sign-up', component: UserSignUp, name: 'sign-up', meta: { requiresAuth: false } },
         { path: '/forgot-password', component: ForgotPassword, name: 'forgot-password', meta: { requiresAuth: false } },
 
-        { path: '/learn/:learningLanguage/explore', component: ExplorePage, name: 'explore', meta: { requiresAuth: true } },
+        {
+            path: '/explore', meta: { requiresAuth: true }, beforeEnter: async to => {
+                const response = await fetch(`${store.getters.baseUrl}/users/me/languages`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Token 9d4e54cd239c4ae149f140983ef54b1c06e5e0b5"
+                    }
+                });
+                const languages = (await response.json()).languages;
+                console.log({ path: `/learn/${languages[0].code}/explore` })
+                return { path: `/learn/${languages[0].code}/explore` }
+            }
+        },
+        { path: '/learn/:learningLanguage/explore', component: ExplorePage, meta: { requiresAuth: true } },
         { path: '/learn/:learningLanguage/lesson/:lessonId', component: LessonReader, name: 'lesson', meta: { requiresAuth: true } },
 
     ],
@@ -33,6 +46,8 @@ router.beforeResolve(to => {
         return { name: 'explore' }
 })
 
+
+router.beforeEnter()
 
 export default router;
 

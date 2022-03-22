@@ -2,6 +2,17 @@
   <base-card title="Sign Up" id="signup-card">
     <template v-slot:content>
       <form @submit.prevent="submitForm">
+        <label for="language">I want to learn</label>
+        <select id="language" v-model="selectedLanguage" required>
+          <option value="" selected disabled>Select a Language</option>
+          <option
+            v-for="language in allLanguages"
+            :key="language.code"
+            :value="language.code"
+          >
+            {{ language.name }}
+          </option>
+        </select>
         <label for="email">Email</label>
         <input id="email" type="email" required v-model="email" />
         <label for="username">Username</label>
@@ -24,19 +35,34 @@
 export default {
   data() {
     return {
+      allLanguages: [],
+      selectedLanguage: '',
       email: '',
       username: '',
       password: '',
     };
   },
+
   methods: {
     submitForm() {
       this.$store.dispatch('signUp', {
         email: this.email,
         username: this.username,
         password: this.password,
+        initalLanguage: this.selectedLanguage,
       });
     },
+
+    async fetchLanguages() {
+      const response = await fetch(`${this.$store.getters.baseUrl}/languages`);
+      if (response.ok) {
+        const responseData = await response.json();
+        this.allLanguages = responseData;
+      }
+    },
+  },
+  mounted() {
+    this.fetchLanguages();
   },
 };
 </script>
@@ -58,7 +84,8 @@ label {
   font-size: 1.2rem;
 }
 input,
-.base-password-input {
+.base-password-input,
+select {
   margin-bottom: 1.5rem;
 }
 #signup-button {

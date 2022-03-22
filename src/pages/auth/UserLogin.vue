@@ -74,7 +74,7 @@ export default {
         this.error = error.message;
         return;
       }
-      // this.$router.push({name:"explore", params:{learningLanguage:await this.$state.dispatch('getDefaultLanguage')}})
+      this.$router.push({ name: 'explore' });
     },
   },
 };
