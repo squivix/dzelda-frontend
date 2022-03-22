@@ -1,14 +1,11 @@
 <template>
   <div class="base-password-div">
     <input
-      :id="id"
       type="password"
-      :autocomplete="autocomplete"
       ref="password"
-      :required="required"
+      v-bind="$attrs"
       :value="modelValue"
       @input="onInput"
-      class="base-password-input"
     />
     <button type="button" @click="toggleShowPassword">
       <font-awesome-icon
@@ -20,27 +17,16 @@
 </template>
 <script>
 export default {
+  inheritAttrs: false,
+  props: {
+    modelValue: String,
+  },
   data() {
     return {
       shown: false,
     };
   },
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
-    autocomplete: {
-      type: String,
-      required: true,
-    },
-    required: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    modelValue: String,
-  },
+
   emits: ['update:modelValue'],
   methods: {
     toggleShowPassword() {
