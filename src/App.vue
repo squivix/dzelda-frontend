@@ -1,23 +1,29 @@
 <template>
   <div id="the-root">
-    <guest-header></guest-header>
-    <aside class="left-side">
-      
-    </aside>
+    <component
+      :is="isAuthenticated ? 'auth-header' : 'guest-header'"
+    ></component>
+    <aside class="left-side"></aside>
     <main>
       <router-view></router-view>
     </main>
-    <aside class="right-side">
-    </aside>
+    <aside class="right-side"></aside>
     <the-footer></the-footer>
   </div>
 </template>
 <script>
 import GuestHeader from './components/layout/GuestHeader.vue';
 import TheFooter from './components/layout/TheFooter.vue';
+import AuthHeader from './components/layout/AuthHeader.vue';
 export default {
+  computed: {
+    isAuthenticated() {
+      return this.$store.getters.isAuthenticated;
+    },
+  },
   components: {
     GuestHeader,
+    AuthHeader,
     TheFooter,
   },
 };

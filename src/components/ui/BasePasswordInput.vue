@@ -1,5 +1,5 @@
 <template>
-  <div class="base-password-input">
+  <div class="base-password-div">
     <input
       :id="id"
       type="password"
@@ -8,6 +8,7 @@
       :required="required"
       :value="modelValue"
       @input="onInput"
+      class="base-password-input"
     />
     <button type="button" @click="toggleShowPassword">
       <font-awesome-icon

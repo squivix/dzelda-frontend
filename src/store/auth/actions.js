@@ -20,24 +20,24 @@ export default {
         }
     },
     async login(context, payload) {
-        try {
-            const response = await fetch(`${context.getters.baseUrl}/api/v1/auth/token/login/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(payload)
-            });
-            if (response.ok) {
-                const responseData = await response.json();
-                context.commit("setUser", { token: responseData.auth_token });
-            } else {
-                console.log("Something went wrong")
-                return new Error(await response.text())
-            }
-        } catch (error) {
-            return error;
-        }
+        const response = await fetch(`${context.getters.baseUrl}/api/v1/auth/token/login/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            context.commit("setUser", { token: responseData.auth_token });
+        } else
+            throw new Error(await response.text())
+    },
 
+    saveUser(context, payload) {
+        if (!payload.token)
+            return;
+        localStorage.auth_token = payload.token;
+        context.commit("setUser", { token: payload.auth_token });
     }
 }
