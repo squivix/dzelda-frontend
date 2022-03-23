@@ -17,8 +17,10 @@ export default {
           },
         }
       );
-      const languages = (await response.json()).languages;
-      return { path: `/learn/${languages[0].code}/explore` };
+      if (response.ok) {
+        const languages = (await response.json());
+        return { path: `/learn/${languages[0].code}/explore` };
+      }
     }
   },
 };

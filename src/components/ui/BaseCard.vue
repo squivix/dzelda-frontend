@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="base-card">
     <slot name="all">
       <slot name="header">
         <header>
