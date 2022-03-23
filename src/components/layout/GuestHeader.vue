@@ -5,11 +5,11 @@
     </router-link>
 
     <div id="auth-buttons">
-      <router-link to="sign-up">
+      <router-link :to="{ name: 'sign-up' }">
         <button class="button-hollow link">Sign Up</button>
       </router-link>
 
-      <router-link to="login">
+      <router-link :to="{ name: 'login' }">
         <button class="secondary-button link">Login</button>
       </router-link>
     </div>

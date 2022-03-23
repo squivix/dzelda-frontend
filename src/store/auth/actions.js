@@ -27,7 +27,7 @@ export default {
         });
         if (response.ok) {
             const responseData = await response.json();
-            context.dispatch("saveUser", { token: responseData.auth_token });
+            context.dispatch("saveToken", { token: responseData.auth_token });
         } else {
             const responseData = await response.text();
             console.log(`vuexstore:auth/login:Response code ${response.status}: ${responseData}`)
@@ -35,10 +35,33 @@ export default {
         }
     },
 
-    saveUser(context, payload) {
+
+    async signOut(context) {
+        const response = await fetch(`${context.getters.baseUrl}/auth/token/logout/`, {
+            method: "POST",
+            headers: {
+                Authorization: `Token ${context.getters.user}`,
+            },
+        });
+        if (response.ok) {
+            context.dispatch("deleteToken");
+        } else {
+            const responseData = await response.text();
+            console.log(`vuexstore:auth/login:Response code ${response.status}: ${responseData}`)
+            throw new Error(responseData)
+        }
+    },
+
+    saveToken(context, payload) {
         if (!payload.token)
             return;
         localStorage.auth_token = payload.token;
-        context.commit("setUser", { token: payload.auth_token });
+        context.commit("setToken", { token: payload.auth_token });
+    },
+
+
+    deleteToken(context) {
+        delete localStorage.auth_token;
+        context.commit("setToken", { token: null });
     }
 }

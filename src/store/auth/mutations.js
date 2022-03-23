@@ -1,5 +1,5 @@
 export default {
-    setUser(state, payload) {
+    setToken(state, payload) {
         state.token = payload.token;
     },
 }

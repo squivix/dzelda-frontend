@@ -5,7 +5,7 @@
     </router-link>
 
     <div id="auth-button">
-      <router-link to="sign-out">
+      <router-link :to="{ name: 'sign-out' }">
         <button class="button-hollow link">Sign Out</button>
       </router-link>
     </div>
