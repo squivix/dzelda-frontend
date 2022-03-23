@@ -7,6 +7,7 @@ import UserSignUp from './pages/auth/UserSignUp.vue'
 import ForgotPassword from './pages/auth/ForgotPassword.vue'
 import LessonReader from './pages/LessonReader.vue'
 import ExplorePage from './pages/ExplorePage.vue'
+import MyLessonsPage from './pages/MyLessonsPage.vue'
 
 import store from './store/index.js'
 
@@ -23,6 +24,7 @@ const router = createRouter({
 
         { path: '/explore', meta: { requiresAuth: true }, component: ExplorePage, name: "explore", },
         { path: '/learn/:learningLanguage/explore', component: ExplorePage, meta: { requiresAuth: true } },
+        { path: '/learn/:learningLanguage/my-lessons', component: MyLessonsPage, meta: { requiresAuth: true } },
         { path: '/learn/:learningLanguage/lesson/:lessonId', component: LessonReader, name: 'lesson', meta: { requiresAuth: true } },
 
     ],
