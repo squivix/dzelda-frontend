@@ -97,7 +97,7 @@ label {
   font-size: 1.2rem;
 }
 input,
-.base-password-div >>> input {
+.base-password-div:deep(input) {
   border: none;
   outline: 1px solid black;
 }
