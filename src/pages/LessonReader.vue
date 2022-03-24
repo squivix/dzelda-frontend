@@ -14,8 +14,10 @@
             <span
               v-for="(word, index) in paragraphWords(paragraph)"
               :key="index"
-              >{{ word }}</span
             >
+              <span v-if="isWord(word)" class="word">{{ word }}</span>
+              <template v-else>{{word}}</template>
+            </span>
           </p>
         </div>
       </div>
@@ -56,15 +58,18 @@ export default {
       let text = this.lesson.text;
       text = text.replace(/[\r\n]{3,}/g, '\n\n');
       this.words = text.split(/\s+/g);
-      console.log(this.words);
       // text = text.replace(/[^a-z\s]/gi, '');
       // text = text.replace(/\s\s+/g, ' ');
       this.lesson.text = text;
       return text;
     },
     paragraphWords(paragraph) {
-      return paragraph.replace(/\s+/g, ' ').split(/\s+|([^\p{L}\d]+)/gu);
+      //[^\p{L}\d]
+      return paragraph.split(/([^\p{L}\d])/gu);
       // return paragraph.split(/(\s|[^a-zA-Z\d\s:])+/g);
+    },
+    isWord(text) {
+      return !!text.match(/[\p{L}\d]+/gu);
     },
   },
 };
@@ -78,5 +83,8 @@ export default {
   justify-content: space-between;
   margin: auto;
   border-radius: 20px;
+}
+.word{
+  background-color: lightblue;
 }
 </style>
