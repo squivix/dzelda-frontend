@@ -8,7 +8,7 @@
       <router-view></router-view>
     </main>
     <aside class="right-side"></aside>
-    <the-footer></the-footer>
+    <the-footer v-if="$route.meta.showFooter"></the-footer>
   </div>
 </template>
 <script>

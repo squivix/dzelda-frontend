@@ -13,19 +13,19 @@ import store from './store/index.js'
 
 const router = createRouter({
     routes: [
-        { path: '/', redirect: 'home', meta: { requiresAuth: false } },
-        { path: '/home', component: HomePage, name: 'home', meta: { requiresAuth: false } },
-        { path: '/login', component: UserLogin, name: 'login', meta: { requiresAuth: false } },
+        { path: '/', redirect: 'home', meta: { requiresAuth: false, showFooter: true } },
+        { path: '/home', component: HomePage, name: 'home', meta: { requiresAuth: false, showFooter: true } },
+        { path: '/login', component: UserLogin, name: 'login', meta: { requiresAuth: false, showFooter: true } },
         {
-            path: '/sign-out', component: UserSignOut, name: 'sign-out', meta: { requiresAuth: true }
+            path: '/sign-out', component: UserSignOut, name: 'sign-out', meta: { requiresAuth: true, showFooter: true }
         },
-        { path: '/sign-up', component: UserSignUp, name: 'sign-up', meta: { requiresAuth: false } },
-        { path: '/forgot-password', component: ForgotPassword, name: 'forgot-password', meta: { requiresAuth: false } },
+        { path: '/sign-up', component: UserSignUp, name: 'sign-up', meta: { requiresAuth: false, showFooter: true } },
+        { path: '/forgot-password', component: ForgotPassword, name: 'forgot-password', meta: { requiresAuth: false, showFooter: true } },
 
-        { path: '/explore', meta: { requiresAuth: true }, component: ExplorePage, name: "explore", },
-        { path: '/learn/:learningLanguage/explore', component: ExplorePage, meta: { requiresAuth: true } },
-        { path: '/learn/:learningLanguage/my-lessons', component: MyLessonsPage, meta: { requiresAuth: true } },
-        { path: '/learn/:learningLanguage/lesson/:lessonId', component: LessonReader, name: 'lesson', meta: { requiresAuth: true } },
+        { path: '/explore', component: ExplorePage, name: "explore", meta: { requiresAuth: true, showFooter: false } },
+        { path: '/learn/:learningLanguage/explore', component: ExplorePage, meta: { requiresAuth: true, showFooter: false } },
+        { path: '/learn/:learningLanguage/my-lessons', component: MyLessonsPage, meta: { requiresAuth: true, showFooter: false } },
+        { path: '/learn/:learningLanguage/lesson/:lessonId', component: LessonReader, name: 'lesson', meta: { requiresAuth: true, showFooter: false } },
 
     ],
     history: createWebHistory(),
