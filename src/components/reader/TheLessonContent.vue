@@ -2,14 +2,23 @@
   <div>
     <h2 class="title">
       <span v-for="(word, index) in paragraphWords(title)" :key="index">
-        <span v-if="isWord(word)" :class="getWordClass(word)">{{ word }}</span>
+        <span
+          v-if="isWord(word)"
+          :class="getWordClass(word)"
+          @click="onWordClicked(word)"
+          >{{ word }}</span
+        >
         <template v-else>{{ word }}</template>
       </span>
     </h2>
 
     <div class="lesson-text">
       <p v-for="(paragraph, index) in lessonParagraphs" :key="index">
-        <span v-for="(word, index) in paragraphWords(paragraph)" :key="index">
+        <span
+          v-for="(word, index) in paragraphWords(paragraph)"
+          :key="index"
+          @click="onWordClicked(word)"
+        >
           <span v-if="isWord(word)" :class="getWordClass(word)">{{
             word
           }}</span>
@@ -36,6 +45,7 @@ export default {
       required: true,
     },
   },
+  emits: ['onWordClicked'],
   computed: {
     lessonParagraphs() {
       return this.text.split(/\s\s+/g);
@@ -48,7 +58,7 @@ export default {
       // return paragraph.split(/(\s|[^a-zA-Z\d\s:])+/g);
     },
     getWordClass(word) {
-      switch (this.words[word.toLowerCase()]) {
+      switch (this.words[word.toLowerCase()].level) {
         case -1:
           return 'word word-ignored';
         case 0:
@@ -68,6 +78,9 @@ export default {
         default:
           return 'word';
       }
+    },
+    onWordClicked(word) {
+      this.$emit('onWordClicked', word);
     },
     isWord(text) {
       return !!text.match(/[\p{L}]+/gu);

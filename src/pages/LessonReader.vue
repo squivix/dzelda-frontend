@@ -2,13 +2,15 @@
   <base-card v-if="!loading">
     <template v-slot:all>
       <the-lesson-content
+        @onWordClicked="onWordClicked"
         :title="lesson.title"
         :text="lesson.text"
         :words="words"
         class="lesson-content"
       >
       </the-lesson-content>
-      <the-meaning-panel class="meaning-panel"> </the-meaning-panel>
+      <the-meaning-panel class="meaning-panel" :word="selectedWord">
+      </the-meaning-panel>
     </template>
   </base-card>
 </template>
@@ -21,7 +23,13 @@ export default {
     TheMeaningPanel,
   },
   data() {
-    return { loadingLesson: true, loadingWords: true, lesson: null, words: {} };
+    return {
+      loadingLesson: true,
+      loadingWords: true,
+      lesson: null,
+      words: {},
+      selectedWord: null,
+    };
   },
   async created() {
     this.fetchLesson();
@@ -67,6 +75,10 @@ export default {
         this.words = responseData;
         this.loadingWords = false;
       }
+    },
+
+    onWordClicked(word) {
+      this.selectedWord = { text: word, data: this.words[word] };
     },
   },
 };
