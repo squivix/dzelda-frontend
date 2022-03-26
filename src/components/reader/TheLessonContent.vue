@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div @click="onBackgroundClicked">
     <h2 class="title">
       <span v-for="(word, index) in paragraphWords(title)" :key="index">
         <span
           v-if="isWord(word)"
           :class="getWordClass(word)"
-          @click="onWordClicked(word)"
+          @click.stop="onWordClicked(word)"
           >{{ word }}</span
         >
         <template v-else>{{ word }}</template>
@@ -17,7 +17,7 @@
         <span
           v-for="(word, index) in paragraphWords(paragraph)"
           :key="index"
-          @click="onWordClicked(word)"
+          @click.stop="onWordClicked(word)"
         >
           <span v-if="isWord(word)" :class="getWordClass(word)">{{
             word
@@ -45,7 +45,7 @@ export default {
       required: true,
     },
   },
-  emits: ['onWordClicked'],
+  emits: ['onWordClicked', 'onBackgroundClicked'],
   computed: {
     lessonParagraphs() {
       return this.text.split(/\s\s+/g);
@@ -80,7 +80,10 @@ export default {
       }
     },
     onWordClicked(word) {
-      this.$emit('onWordClicked', word);
+      if (this.isWord(word)) this.$emit('onWordClicked', word);
+    },
+    onBackgroundClicked() {
+      this.$emit('onBackgroundClicked');
     },
     isWord(text) {
       return !!text.match(/[\p{L}]+/gu);
@@ -105,7 +108,7 @@ export default {
 }
 p {
   font-size: 1.15rem;
-  line-height: 2rem;
+  line-height: 2.25rem;
 }
 span {
   user-select: none;

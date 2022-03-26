@@ -2,7 +2,8 @@
   <base-card v-if="!loading">
     <template v-slot:all>
       <the-lesson-content
-        @onWordClicked="onWordClicked"
+        @onWordClicked="setSelectedWord"
+        @onBackgroundClicked="clearSelectedWord"
         :title="lesson.title"
         :text="lesson.text"
         :words="words"
@@ -77,8 +78,11 @@ export default {
       }
     },
 
-    onWordClicked(word) {
-      this.selectedWord = { text: word, data: this.words[word] };
+    setSelectedWord(word) {
+      this.selectedWord = { text: word, ...this.words[word.toLowerCase()] };
+    },
+    clearSelectedWord() {
+      this.selectedWord = null;
     },
   },
 };
@@ -88,12 +92,15 @@ export default {
 .base-card {
   width: 80vw;
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 2fr 1.3fr;
   grid-template-rows: 75vh;
   margin: auto;
+  column-gap: 2rem;
   border-radius: 20px;
-  max-width: 2000px;
+  max-width: 1300px;
+  padding: 40px min(5vw, 20px);
 }
+
 .lesson-content {
 }
 .meaning-panel {
