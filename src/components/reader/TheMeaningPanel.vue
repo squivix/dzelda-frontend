@@ -9,7 +9,11 @@
       </ol>
 
       <ul class="new-meanings">
-        <li v-for="meaning in newMeaningsPreview" :key="meaning">
+        <li
+          v-for="meaning in newMeaningsPreview"
+          :key="meaning"
+          @click="saveMeaning(meaning)"
+        >
           {{ meaning.text }}
         </li>
       </ul>
@@ -62,6 +66,45 @@ export default {
   },
   methods: {
     fetchMeanings() {},
+    saveMeaning(meaning) {
+      this.postNewWord().then((new_word) =>
+        this.postMeaning(new_word.id, meaning)
+      );
+    },
+
+    async postMeaning(word_id, meaning) {
+      const response = await fetch(
+        `${this.$store.getters.baseUrl}/words/${word_id}/meanings`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Token ${this.$store.getters.user}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            language: this.$route.params.learningLanguage,
+            text: meaning.text,
+          }),
+        }
+      );
+    },
+    async postNewWord() {
+      const response = await fetch(`${this.$store.getters.baseUrl}/words`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Token ${this.$store.getters.user}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          language: this.$route.params.learningLanguage,
+          text: this.word.text,
+        }),
+      });
+      if (response.ok) {
+        const responseData = response.json();
+        return responseData;
+      }
+    },
   },
 };
 </script>
@@ -126,7 +169,7 @@ export default {
   border-end-end-radius: 20px;
   border-start-end-radius: 20px;
 }
-.levels .highlighted{
+.levels .highlighted {
   background-color: var(--primary-color);
   color: var(--on-primary-color);
 }
