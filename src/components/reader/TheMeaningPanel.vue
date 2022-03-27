@@ -19,14 +19,14 @@
       </ul>
 
       <ol class="levels" v-if="level !== 0">
-        <li :class="{ highlighted: level === 1 }">1</li>
-        <li :class="{ highlighted: level === 2 }">2</li>
-        <li :class="{ highlighted: level === 3 }">3</li>
-        <li :class="{ highlighted: level === 4 }">4</li>
-        <li :class="{ highlighted: level === 5 }">
+        <li :class="{ highlighted: level === 1 }" @click="setLevel(1)">1</li>
+        <li :class="{ highlighted: level === 2 }" @click="setLevel(2)">2</li>
+        <li :class="{ highlighted: level === 3 }" @click="setLevel(3)">3</li>
+        <li :class="{ highlighted: level === 4 }" @click="setLevel(4)">4</li>
+        <li :class="{ highlighted: level === 5 }" @click="setLevel(5)">
           <font-awesome-icon icon="check" ref="toggleShowIcon" />
         </li>
-        <li :class="{ highlighted: level === -1 }">
+        <li :class="{ highlighted: level === -1 }" @click="setLevel(-1)">
           <font-awesome-icon icon="ban" ref="toggleShowIcon" />
         </li>
       </ol>
@@ -36,6 +36,7 @@
 
 <script>
 export default {
+  emits: ['onNewMeaningSelected', 'onWordLevelSet'],
   watch: {
     word(new_value) {
       if (new_value) {
@@ -70,6 +71,7 @@ export default {
       this.postNewWord().then((new_word) =>
         this.postMeaning(new_word.id, meaning)
       );
+      this.$emit('onNewMeaningSelected', this.word, meaning);
     },
 
     async postMeaning(word_id, meaning) {
@@ -103,7 +105,21 @@ export default {
       if (response.ok) {
         const responseData = response.json();
         return responseData;
-      }
+      } else console.error(response.text);
+    },
+    async setLevel(level) {
+      fetch(`${this.$store.getters.baseUrl}/words/${this.word.id}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Token ${this.$store.getters.user}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          language: this.$route.params.learningLanguage,
+          level: level,
+        }),
+      });
+      this.$emit('onWordLevelSet', this.word, level);
     },
   },
 };

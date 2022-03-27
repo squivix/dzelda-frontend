@@ -10,7 +10,13 @@
         class="lesson-content"
       >
       </the-lesson-content>
-      <the-meaning-panel class="meaning-panel" :word="selectedWord">
+      <the-meaning-panel
+        class="meaning-panel"
+        :word="selectedWord"
+        @onNewMeaningSelected="onNewMeaningSelected"
+        @onCancelNewMeaning="onCancelNewMeaning"
+        @onWordLevelSet="onWordLevelSet"
+      >
       </the-meaning-panel>
     </template>
   </base-card>
@@ -83,6 +89,19 @@ export default {
     },
     clearSelectedWord() {
       this.selectedWord = null;
+    },
+    onNewMeaningSelected(word, meaning) {
+      word = this.words[word.text];
+      if (word.level == 0) word.level = 1;
+      word.user_meanings.push(meaning);
+      this.clearSelectedWord();
+    },
+    onCancelNewMeaning(word) {
+      this.words[word.text] = word;
+    },
+    onWordLevelSet(word, level) {
+      this.words[word.text].level = word.level = level;  
+      if (level == -1) this.clearSelectedWord();
     },
   },
 };
