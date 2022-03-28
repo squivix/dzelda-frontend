@@ -8,7 +8,7 @@
         </li>
       </ol>
 
-      <ul class="new-meanings">
+      <ol class="new-meanings">
         <li
           v-for="meaning in newMeaningsPreview"
           :key="meaning"
@@ -16,7 +16,9 @@
         >
           {{ meaning.text }}
         </li>
-      </ul>
+      </ol>
+
+      <input placeholder="Manually add meaning here"/>
 
       <ol class="levels" v-if="level !== 0">
         <li :class="{ highlighted: level === 1 }" @click="setLevel(1)">1</li>
@@ -30,6 +32,10 @@
           <font-awesome-icon icon="ban" ref="toggleShowIcon" />
         </li>
       </ol>
+
+      <ul>
+        <li>Dictionary 1</li>
+      </ul>
     </div>
   </div>
 </template>
