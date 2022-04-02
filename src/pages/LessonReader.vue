@@ -100,8 +100,10 @@ export default {
       this.words[word.text] = word;
     },
     onWordLevelSet(word, level) {
-      this.words[word.text].level = word.level = level;  
-      if (level == -1) this.clearSelectedWord();
+      this.words[word.text.toLowerCase()].level = word.level = level;
+      if (level == -1) {
+        this.words[word.text.toLowerCase()].user_meanings=[];
+        this.clearSelectedWord();}
     },
   },
 };

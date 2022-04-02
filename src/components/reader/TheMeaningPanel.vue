@@ -18,9 +18,9 @@
         </li>
       </ol>
 
-      <input placeholder="Manually add meaning here"/>
+      <input placeholder="Manually add meaning here" />
 
-      <ol class="levels" v-if="level !== 0">
+      <ol class="levels" v-if="level !== 0 && level !== -1">
         <li :class="{ highlighted: level === 1 }" @click="setLevel(1)">1</li>
         <li :class="{ highlighted: level === 2 }" @click="setLevel(2)">2</li>
         <li :class="{ highlighted: level === 3 }" @click="setLevel(3)">3</li>
