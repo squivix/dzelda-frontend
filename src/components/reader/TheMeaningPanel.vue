@@ -86,7 +86,7 @@ export default {
         {
           method: 'POST',
           headers: {
-            Authorization: `Token ${this.$store.getters.user}`,
+            Authorization: `Token ${this.$store.getters.getUserToken}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
@@ -100,7 +100,7 @@ export default {
       const response = await fetch(`${this.$store.getters.baseUrl}/words`, {
         method: 'POST',
         headers: {
-          Authorization: `Token ${this.$store.getters.user}`,
+          Authorization: `Token ${this.$store.getters.getUserToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -117,7 +117,7 @@ export default {
       fetch(`${this.$store.getters.baseUrl}/words/${this.word.id}`, {
         method: 'PATCH',
         headers: {
-          Authorization: `Token ${this.$store.getters.user}`,
+          Authorization: `Token ${this.$store.getters.getUserToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({

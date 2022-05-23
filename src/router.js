@@ -25,7 +25,7 @@ const router = createRouter({
         { path: '/explore', component: ExplorePage, name: "explore", meta: { requiresAuth: true, showFooter: false } },
         { path: '/learn/:learningLanguage/explore', component: ExplorePage, meta: { requiresAuth: true, showFooter: false } },
         { path: '/learn/:learningLanguage/my-lessons', component: MyLessonsPage, meta: { requiresAuth: true, showFooter: false } },
-        { path: '/learn/:learningLanguage/lesson/:lessonId', component: LessonReader, name: 'lesson', meta: { requiresAuth: true, showFooter: false } },
+        { path: '/learn/:learningLanguage/lessons/:lessonId', component: LessonReader, name: 'lesson', meta: { requiresAuth: true, showFooter: false } },
 
     ],
     history: createWebHistory(),

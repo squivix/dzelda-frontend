@@ -2,6 +2,7 @@ import { createStore } from "vuex";
 import authModule from './auth/index.js'
 import contentModule from './content/index.js'
 const store = createStore({
+    strict: true,
     state: {
         baseUrl: `http://localhost:8000/api/v1`,
     },
@@ -13,7 +14,7 @@ const store = createStore({
         baseUrl(state) {
             return state.baseUrl;
         },
-    }
+    },
 });
 
 

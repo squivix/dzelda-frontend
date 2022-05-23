@@ -1,17 +1,8 @@
 export default {
-    user(state) {
-        if (state.token)
-            return state.token;
-        else if (localStorage.auth_token) {
-
-            //TODO: verify token somehow
-            state.token = localStorage.auth_token;
-            return state.token
-        }
-        else
-            return null
+    getUserToken(state) {
+        return state.token ?? localStorage.auth_token;
     },
     isAuthenticated(state, getters) {
-        return !!getters.user;
+        return !!getters.getUserToken;
     }
 }
