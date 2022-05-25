@@ -30,7 +30,7 @@ export default {
         });
         if (response.ok) {
             const responseData = await response.json();
-            context.dispatch("saveToken", { token: responseData.auth_token });
+            context.dispatch("saveToken", {token: responseData.auth_token});
         } else {
             const responseData = await response.text();
             console.log(`vuexstore:auth/login:Response code ${response.status}: ${responseData}`)
@@ -40,7 +40,10 @@ export default {
 
 
     async signOut(context) {
-        const response = await context.dispatch('fetchProtected', { url: `${context.getters.baseUrl}/auth/token/logout/`, options: { method: "POST" } });
+        const response = await context.dispatch('fetchProtected', {
+            url: `${context.getters.baseUrl}/auth/token/logout/`,
+            options: {method: "POST"}
+        });
         if (response.ok) {
             context.dispatch("deleteToken");
             router.push('login');
@@ -55,7 +58,7 @@ export default {
         if (!payload.token)
             return;
         localStorage.auth_token = payload.token;
-        context.commit("setToken", { token: payload.auth_token });
+        context.commit("setToken", {token: payload.auth_token});
     },
 
 
@@ -65,6 +68,7 @@ export default {
             headers: payload.options?.headers ?? {
                 'Content-Type': 'application/json'
             },
+            ...payload.options
         };
 
         const response = await fetch(payload.url, {
@@ -84,6 +88,6 @@ export default {
 
     deleteToken(context) {
         delete localStorage.auth_token;
-        context.commit("setToken", { token: null });
+        context.commit("setToken", {token: null});
     }
 }

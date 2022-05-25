@@ -51,38 +51,17 @@
         methods: {
             async fetchLesson() {
                 this.loadingLesson = true;
-                const response = await fetch(
-                    `${this.$store.getters.baseUrl}/lessons/${this.$route.params.lessonId}`,
-                    {
-                        method: 'GET',
-                        headers: {
-                            Authorization: `Token ${this.$store.getters.getUserToken}`,
-                        },
-                    }
-                );
-                if (response.ok) {
-                    const responseData = await response.json();
-                    this.lesson = responseData;
-                    this.lesson.text = this.lesson.text.replace(/[\r\n]{3,}/g, '\n\n');
-                    this.loadingLesson = false;
-                }
+                this.lesson = await this.$store.dispatch("fetchLesson", {
+                    lessonId: this.$route.params.lessonId,
+                    languageCode: this.$route.params.learningLanguage
+                });
+                this.lesson.text = this.lesson.text.replace(/[\r\n]{3,}/g, '\n\n');
+                this.loadingLesson = false;
             },
             async fetchWordsLevels() {
                 this.loadingWords = true;
-                const response = await fetch(
-                    `${this.$store.getters.baseUrl}/lessons/${this.$route.params.lessonId}/words`,
-                    {
-                        method: 'GET',
-                        headers: {
-                            Authorization: `Token ${this.$store.getters.getUserToken}`,
-                        },
-                    }
-                );
-                if (response.ok) {
-                    const responseData = await response.json();
-                    this.words = responseData;
-                    this.loadingWords = false;
-                }
+                this.words = await this.$store.dispatch("fetchLessonWords", {lessonId: this.$route.params.lessonId});
+                this.loadingWords = false;
             },
 
             setSelectedWord(word) {

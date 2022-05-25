@@ -1,6 +1,8 @@
-import { createStore } from "vuex";
+import {createStore} from "vuex";
 import authModule from './auth/index.js'
 import contentModule from './content/index.js'
+import readerModule from './reader/index.js';
+
 const store = createStore({
     strict: true,
     state: {
@@ -9,6 +11,7 @@ const store = createStore({
     modules: {
         authModule,
         contentModule,
+        readerModule,
     },
     getters: {
         baseUrl(state) {
@@ -16,7 +19,6 @@ const store = createStore({
         },
     },
 });
-
 
 
 export default store;

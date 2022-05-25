@@ -82,7 +82,7 @@ export default {
 
     async postMeaning(word_id, meaning) {
       const response = await fetch(
-        `${this.$store.getters.baseUrl}/words/${word_id}/meanings`,
+        `${this.$store.getters.baseUrl}/users/me/words/${word_id}/meanings`,
         {
           method: 'POST',
           headers: {
@@ -97,7 +97,7 @@ export default {
       );
     },
     async postNewWord() {
-      const response = await fetch(`${this.$store.getters.baseUrl}/words`, {
+      const response = await fetch(`${this.$store.getters.baseUrl}/users/me/words`, {
         method: 'POST',
         headers: {
           Authorization: `Token ${this.$store.getters.getUserToken}`,
@@ -114,7 +114,7 @@ export default {
       } else console.error(response.text);
     },
     async setLevel(level) {
-      fetch(`${this.$store.getters.baseUrl}/words/${this.word.id}`, {
+      fetch(`${this.$store.getters.baseUrl}/users/me/words/${this.word.id}`, {
         method: 'PATCH',
         headers: {
           Authorization: `Token ${this.$store.getters.getUserToken}`,
