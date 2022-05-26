@@ -13,7 +13,7 @@ export default {
 
     async postNewMeaning(context, payload) {
         const response = await context.dispatch("fetchProtected", {
-            url: `${this.$store.getters.baseUrl}/users/me/words/${payload.word_id}/meanings`,
+            url: `${context.getters.baseUrl}/users/me/words/${payload.word_id}/meanings`,
             options: {
                 method: 'POST',
                 body: JSON.stringify({
@@ -22,5 +22,48 @@ export default {
                 }),
             }
         });
+        if (!response.ok) {
+            const responseData = await response.text();
+            console.log(`vuexstore:reader/postNewMeaning:Response code ${response.status}: ${responseData}`)
+            throw new Error(responseData);
+        } else
+            return response;
+    },
+    async postNewWord(context, payload) {
+        const response = await context.dispatch("fetchProtected", {
+            url: `${context.getters.baseUrl}/users/me/words`,
+            options: {
+                method: 'POST',
+                body: JSON.stringify({
+                    language: payload.language,
+                    text: payload.text,
+                    level: payload.level,
+                }),
+            }
+        });
+        if (!response.ok) {
+            const responseData = await response.text();
+            console.log(`vuexstore:reader/postNewWord:Response code ${response.status}: ${responseData}`)
+            throw new Error(responseData);
+        } else
+            return await response.json();
+    },
+    async updateWordLevel(context, payload) {
+        const response = await context.dispatch("fetchProtected", {
+            url: `${context.getters.baseUrl}/users/me/words/${payload.word_id}`,
+            options: {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    language: payload.language,
+                    level: payload.level,
+                }),
+            }
+        })
+        if (!response.ok) {
+            const responseData = await response.text();
+            console.log(`vuexstore:reader/updateWordLevel:Response code ${response.status}: ${responseData}`)
+            throw new Error(responseData);
+        } else
+            return await response.json();
     }
 }
