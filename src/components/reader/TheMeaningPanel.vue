@@ -12,14 +12,20 @@
                 <li
                         v-for="meaning in newMeaningsPreview"
                         :key="meaning"
-                        @click="saveMeaning(meaning)"
+                        @click="onMeaningClicked(meaning)"
                 >
                     {{ meaning.text }}
                 </li>
             </ol>
 
-            <input placeholder="Manually add meaning here"/>
-
+            <form class="manual-meaning-form" action="javascript:void(0);">
+                <input placeholder="Manually add meaning here" v-model="manualMeaning"/>
+                <button class="add-meaning-button"
+                        @click="addManualMeaning"
+                        type="submit">
+                    <font-awesome-icon icon="plus"/>
+                </button>
+            </form>
             <ol class="levels" v-if="level !== wordLevels.NEW && level !== wordLevels.IGNORED">
                 <li :class="{ highlighted: level === wordLevels.LEVEL_1 }" @click="setLevel(wordLevels.LEVEL_1)">
                     {{wordLevels.LEVEL_1}}
@@ -56,12 +62,11 @@
 
     export default {
         emits: ['onNewMeaningSelected', 'onWordLevelSet'],
-        watch: {
-            word(new_value) {
-                if (new_value) {
-                    this.fetchMeanings();
-                }
-            },
+
+        data() {
+            return {
+                manualMeaning: "",
+            };
         },
         computed: {
             level() {
@@ -88,27 +93,18 @@
             },
         },
         methods: {
-            fetchMeanings() {
-            },
-            saveMeaning(meaning) {
+            onMeaningClicked(meaning) {
                 this.postNewWord().then((new_word) =>
-                    this.postMeaning(new_word.id, meaning)
+                    this.saveMeaning(new_word.id, meaning)
                 );
-                this.$emit('onNewMeaningSelected', this.word, meaning);
+                this.$emit('onNewMeaningSelected', this.word, meaning, true);
             },
 
-            async postMeaning(word_id, meaning) {
-                return await this.$store.dispatch("postNewMeaning", {
+            async saveMeaning(word_id, meaning) {
+                return await this.$store.dispatch("saveMeaningToUser", {
                     word_id: word_id,
                     meaningLanguage: this.$route.params.learningLanguage,
                     meaningText: meaning.text
-                });
-            },
-            async postNewWord(level) {
-                return await this.$store.dispatch("postNewWord", {
-                    language: this.$route.params.learningLanguage,
-                    text: this.word.text,
-                    level: level
                 });
             },
             async setLevel(level) {
@@ -122,7 +118,29 @@
             ignoreWord() {
                 this.postNewWord(WORD_LEVELS.IGNORED);
                 this.$emit('onWordLevelSet', this.word, WORD_LEVELS.IGNORED);
-            }
+            },
+            addManualMeaning() {
+                if (this.manualMeaning === undefined || this.manualMeaning === "")
+                    return;
+                this.postNewWord().then(async (new_word) => {
+                    const meaning = await this.$store.dispatch("addNewMeaning", {
+                        word_id: new_word.id,
+                        meaningLanguage: "en",
+                        meaningText: this.manualMeaning,
+                    });
+                    console.log(meaning)
+                    this.$emit('onNewMeaningSelected', this.word, meaning, false);
+                    this.manualMeaning = "";
+
+                });
+            },
+            async postNewWord(level) {
+                return await this.$store.dispatch("postNewWord", {
+                    language: this.$route.params.learningLanguage,
+                    text: this.word.text,
+                    level: level
+                });
+            },
         },
     };
 </script>
@@ -205,5 +223,32 @@
 
     .ignore-button {
         color: gray;
+        border: none;
+    }
+
+    .manual-meaning-form {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: stretch;
+        align-items: center;
+        column-gap: 5px;
+    }
+
+    .manual-meaning-form > input {
+        flex-grow: 1;
+    }
+
+    .add-meaning-button {
+        width: 40px;
+        height: 40px;
+        background-color: #FFD263;
+        border: 1px solid #FFD263;
+        color: black;
+        border-radius: 50%;
+    }
+
+    .add-meaning-button:hover {
+        cursor: pointer;
     }
 </style>

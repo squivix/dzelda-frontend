@@ -45,8 +45,7 @@ export default {
             options: {method: "POST"}
         });
         if (response.ok) {
-            context.dispatch("deleteToken");
-            router.push('login');
+            await context.dispatch("deleteToken");
         } else {
             const responseData = await response.text();
             console.log(`vuexstore:auth/signOut:Response code ${response.status}: ${responseData}`)
@@ -86,8 +85,8 @@ export default {
             return response;
     },
 
-    deleteToken(context) {
+    async deleteToken(context) {
         delete localStorage.auth_token;
-        context.commit("setToken", {token: null});
+        await context.commit("setToken", {token: null});
     }
 }

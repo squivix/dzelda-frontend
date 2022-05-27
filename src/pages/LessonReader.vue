@@ -70,11 +70,12 @@
             clearSelectedWord() {
                 this.selectedWord = null;
             },
-            onNewMeaningSelected(word, meaning) {
+            onNewMeaningSelected(word, meaning, clearSelected) {
                 word = this.words[word.text];
                 if (word.level === 0) word.level = 1;
                 word.user_meanings.push(meaning);
-                this.clearSelectedWord();
+                if (clearSelected)
+                    this.clearSelectedWord();
             },
             onCancelNewMeaning(word) {
                 this.words[word.text] = word;

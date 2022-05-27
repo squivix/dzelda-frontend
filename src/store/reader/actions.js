@@ -11,7 +11,7 @@ export default {
         }
     },
 
-    async postNewMeaning(context, payload) {
+    async saveMeaningToUser(context, payload) {
         const response = await context.dispatch("fetchProtected", {
             url: `${context.getters.baseUrl}/users/me/words/${payload.word_id}/meanings`,
             options: {
@@ -24,10 +24,28 @@ export default {
         });
         if (!response.ok) {
             const responseData = await response.text();
-            console.log(`vuexstore:reader/postNewMeaning:Response code ${response.status}: ${responseData}`)
+            console.log(`vuexstore:reader/saveMeaningToUser:Response code ${response.status}: ${responseData}`)
             throw new Error(responseData);
         } else
             return response;
+    },
+    async addNewMeaning(context, payload) {
+        const response = await context.dispatch("fetchProtected", {
+            url: `${context.getters.baseUrl}/words/${payload.word_id}/meanings`,
+            options: {
+                method: 'POST',
+                body: JSON.stringify({
+                    language: payload.meaningLanguage,
+                    text: payload.meaningText,
+                }),
+            }
+        });
+        if (!response.ok) {
+            const responseData = await response.text();
+            console.log(`vuexstore:reader/addNewMeaning:Response code ${response.status}: ${responseData}`)
+            throw new Error(responseData);
+        } else
+            return await response.json();
     },
     async postNewWord(context, payload) {
         const response = await context.dispatch("fetchProtected", {
