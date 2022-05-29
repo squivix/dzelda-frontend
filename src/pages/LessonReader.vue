@@ -14,8 +14,8 @@
                     class="meaning-panel"
                     :word="selectedWord"
                     @onNewMeaningSelected="onNewMeaningSelected"
-                    @onCancelNewMeaning="onCancelNewMeaning"
                     @onWordLevelSet="onWordLevelSet"
+                    @onUserMeaningDeleted="onUserMeaningDeleted"
             >
             </the-meaning-panel>
         </template>
@@ -24,6 +24,7 @@
 <script>
     import TheLessonContent from '../components/reader/TheLessonContent.vue';
     import TheMeaningPanel from '../components/reader/TheMeaningPanel.vue';
+    import {WORD_LEVELS} from "@/constants";
 
     export default {
         components: {
@@ -70,23 +71,30 @@
             clearSelectedWord() {
                 this.selectedWord = null;
             },
-            onNewMeaningSelected(word, meaning, clearSelected) {
-                word = this.words[word.text];
-                if (word.level === 0) word.level = 1;
-                word.user_meanings.push(meaning);
+            onNewMeaningSelected(word, new_meaning, clearSelected) {
+                const word_level = this.words[word.text.toLowerCase()].level;
+
+                if (word_level === WORD_LEVELS.NEW || word_level === WORD_LEVELS.IGNORED || word_level === WORD_LEVELS.KNOWN)
+                    this.onWordLevelSet(word, WORD_LEVELS.LEVEL_1);
+
+                if (word.user_meanings.find(meaning => meaning.id === new_meaning.id) === undefined)
+                    word.user_meanings.push(new_meaning);
                 if (clearSelected)
                     this.clearSelectedWord();
             },
-            onCancelNewMeaning(word) {
-                this.words[word.text] = word;
-            },
             onWordLevelSet(word, level) {
                 this.words[word.text.toLowerCase()].level = word.level = level;
-                if (level === -1) {
+                if (level === WORD_LEVELS.IGNORED || level === WORD_LEVELS.KNOWN) {
                     this.words[word.text.toLowerCase()].user_meanings = [];
                     this.clearSelectedWord();
                 }
             },
+            onUserMeaningDeleted(word, deleted_meaning) {
+                const index = word.user_meanings.findIndex((meaning) => meaning.id === deleted_meaning.id)
+                word.user_meanings.splice(index, 1);
+                if (word.user_meanings.length === 0)
+                    this.onWordLevelSet(word, WORD_LEVELS.NEW);
+            }
         },
     };
 </script>

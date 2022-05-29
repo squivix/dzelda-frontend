@@ -83,5 +83,14 @@ export default {
             throw new Error(responseData);
         } else
             return await response.json();
+    },
+
+    async deleteUserMeaning(context, payload) {
+        await context.dispatch("fetchProtected", {
+            url: `${context.getters.baseUrl}/users/me/words/${payload.word_id}/meanings/${payload.meaning_id}`,
+            options: {
+                method: "DELETE",
+            }
+        })
     }
 }

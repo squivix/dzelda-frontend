@@ -4,7 +4,15 @@
         <div class="meanings">
             <ol class="user-meanings">
                 <li v-for="meaning in userMeanings" :key="meaning.id">
-                    <input :value="meaning.text"/>
+                    <form action="javascript:void(0);">
+                        <button class="delete-user-meaning-button" @click="deleteUserMeaning(meaning)" type="button">
+                            <font-awesome-icon icon="x" ref="toggleShowIcon" class="fa-xs"/>
+                        </button>
+                        <input :value="meaning.text" :ref="`user-meaning-input-${meaning.id}`"/>
+                        <button class="edit-user-meaning-button" @click="editUserMeaning(meaning)" type="submit">
+                            <font-awesome-icon icon="check" ref="toggleShowIcon" class="fa-xs"/>
+                        </button>
+                    </form>
                 </li>
             </ol>
 
@@ -26,7 +34,8 @@
                     <font-awesome-icon icon="plus"/>
                 </button>
             </form>
-            <ol class="levels" v-if="level !== wordLevels.NEW && level !== wordLevels.IGNORED">
+            <ol class="levels"
+                v-if="level !== wordLevels.NEW && level !== wordLevels.IGNORED&& level !== wordLevels.KNOWN">
                 <li :class="{ highlighted: level === wordLevels.LEVEL_1 }" @click="setLevel(wordLevels.LEVEL_1)">
                     {{wordLevels.LEVEL_1}}
                 </li>
@@ -50,9 +59,14 @@
             <ul>
                 <li>Dictionary 1</li>
             </ul>
+            <div class="mark-buttons-div">
+                <button v-if="level===wordLevels.NEW" class="button-hollow know-button" @click="markWordAsKnown">Mark as
+                    known
+                </button>
+                <button v-if="level===wordLevels.NEW" class="button-hollow ignore-button" @click="ignoreWord">Ignore
+                </button>
+            </div>
 
-            <button v-if="level===wordLevels.NEW" class="button-hollow ignore-button" @click="ignoreWord">Ignore
-            </button>
         </div>
     </div>
 </template>
@@ -61,7 +75,7 @@
     import {WORD_LEVELS} from "@/constants.js";
 
     export default {
-        emits: ['onNewMeaningSelected', 'onWordLevelSet'],
+        emits: ['onNewMeaningSelected', 'onWordLevelSet', 'onUserMeaningDeleted'],
 
         data() {
             return {
@@ -119,6 +133,11 @@
                 this.postNewWord(WORD_LEVELS.IGNORED);
                 this.$emit('onWordLevelSet', this.word, WORD_LEVELS.IGNORED);
             },
+            markWordAsKnown() {
+                this.postNewWord(WORD_LEVELS.KNOWN);
+                this.$emit('onWordLevelSet', this.word, WORD_LEVELS.KNOWN);
+            },
+
             addManualMeaning() {
                 if (this.manualMeaning === undefined || this.manualMeaning === "")
                     return;
@@ -128,7 +147,6 @@
                         meaningLanguage: "en",
                         meaningText: this.manualMeaning,
                     });
-                    console.log(meaning)
                     this.$emit('onNewMeaningSelected', this.word, meaning, false);
                     this.manualMeaning = "";
 
@@ -141,6 +159,31 @@
                     level: level
                 });
             },
+            async deleteUserMeaning(meaning) {
+                await this.$store.dispatch("deleteUserMeaning", {
+                    word_id: this.word.id,
+                    meaning_id: meaning.id
+                });
+                this.$emit('onUserMeaningDeleted', this.word, meaning);
+            },
+            async editUserMeaning(meaning) {
+                const edited_meaning = this.$refs[`user-meaning-input-${meaning.id}`][0].value.trim();
+                if (edited_meaning === undefined || edited_meaning === "")
+                    await this.deleteUserMeaning(meaning)
+                else if (edited_meaning === meaning.text)
+                    return;
+                this.$store.dispatch("deleteUserMeaning", {
+                    word_id: this.word.id,
+                    meaning_id: meaning.id
+                }).then(() => {
+                    this.$store.dispatch("addNewMeaning", {
+                        word_id: this.word.id,
+                        meaningLanguage: "en",
+                        meaningText: edited_meaning,
+                    });
+                });
+
+            }
         },
     };
 </script>
@@ -169,8 +212,45 @@
         row-gap: 0.5rem;
     }
 
+    .user-meanings > li > form {
+        display: flex;
+        flex-direction: row;
+        column-gap: 5px;
+        justify-content: stretch;
+        align-items: center;
+    }
+
     .user-meanings input {
         width: 100%;
+        flex-grow: 1;
+    }
+
+    .delete-user-meaning-button {
+        min-width: 20px;
+        height: 20px;
+        padding: 0;
+        background-color: white;
+        color: black;
+        border: 1px solid gray;
+        border-radius: 50%;
+    }
+
+    .delete-user-meaning-button:hover {
+        cursor: pointer;
+    }
+
+    .edit-user-meaning-button {
+        min-width: 30px;
+        height: 30px;
+        padding: 0;
+        background-color: #FFD263;
+        color: black;
+        border: 1px solid #FFD263;
+        border-radius: 50%;
+    }
+
+    .edit-user-meaning-button:hover {
+        cursor: pointer;
     }
 
     .new-meanings {
@@ -221,9 +301,22 @@
         color: var(--on-primary-color);
     }
 
+    .mark-buttons-div {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
     .ignore-button {
         color: gray;
         border: none;
+        flex-grow: 1;
+    }
+
+    .know-button {
+        color: var(--primary-color);
+        border: none;
+        flex-grow: 1;
     }
 
     .manual-meaning-form {
