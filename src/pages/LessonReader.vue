@@ -13,9 +13,9 @@
             <the-meaning-panel
                     class="meaning-panel"
                     :word="selectedWord"
-                    @onNewMeaningSelected="onNewMeaningSelected"
+                    @onMeaningAdded="onMeaningAdded"
                     @onWordLevelSet="onWordLevelSet"
-                    @onUserMeaningDeleted="onUserMeaningDeleted"
+                    @onMeaningDeleted="onMeaningDeleted"
             >
             </the-meaning-panel>
         </template>
@@ -71,7 +71,9 @@
             clearSelectedWord() {
                 this.selectedWord = null;
             },
-            onNewMeaningSelected(word, new_meaning, clearSelected) {
+
+
+            onMeaningAdded(word, new_meaning) {
                 const word_level = this.words[word.text.toLowerCase()].level;
 
                 if (word_level === WORD_LEVELS.NEW || word_level === WORD_LEVELS.IGNORED || word_level === WORD_LEVELS.KNOWN)
@@ -79,8 +81,6 @@
 
                 if (word.user_meanings.find(meaning => meaning.id === new_meaning.id) === undefined)
                     word.user_meanings.push(new_meaning);
-                if (clearSelected)
-                    this.clearSelectedWord();
             },
             onWordLevelSet(word, level) {
                 this.words[word.text.toLowerCase()].level = word.level = level;
@@ -89,7 +89,7 @@
                     this.clearSelectedWord();
                 }
             },
-            onUserMeaningDeleted(word, deleted_meaning) {
+            onMeaningDeleted(word, deleted_meaning) {
                 const index = word.user_meanings.findIndex((meaning) => meaning.id === deleted_meaning.id)
                 word.user_meanings.splice(index, 1);
                 if (word.user_meanings.length === 0)
