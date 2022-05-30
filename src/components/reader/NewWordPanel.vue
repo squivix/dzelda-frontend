@@ -7,7 +7,8 @@
 
         </meaning-adding-controls>
 
-        <dictionaries-list>
+        <dictionaries-list
+                :word-text="word.text">
 
         </dictionaries-list>
         <div class="mark-buttons-div" v-if="isLevelNew || isLevelIgnored">

@@ -92,5 +92,10 @@ export default {
                 method: "DELETE",
             }
         })
+    },
+
+    async fetchDictionaries(context, payload) {
+        const response = await context.dispatch("fetchProtected", {url: `${context.getters.baseUrl}/users/me/dictionaries?language=${payload.language}`})
+        return await response.json();
     }
 }

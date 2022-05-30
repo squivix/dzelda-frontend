@@ -11,7 +11,7 @@
         </button>
         <h5>Set Word Level</h5>
         <word-level-picker
-                :word_id="word.id"
+                :wordId="word.id"
                 :level="word.level"
                 @onWordLevelSet="onWordLevelSet">
         </word-level-picker>

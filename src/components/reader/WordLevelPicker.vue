@@ -29,7 +29,7 @@
     export default {
         emits: ["onWordLevelSet"],
         props: {
-            word_id: {
+            wordId: {
                 type: Number,
                 required: true
             },
