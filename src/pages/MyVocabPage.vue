@@ -1,8 +1,13 @@
 <template>
-    <h1>My Lessons</h1>
+    <h2>My vocab</h2>
 </template>
+
 <script>
     export default {
 
     }
 </script>
+
+<style scoped>
+
+</style>

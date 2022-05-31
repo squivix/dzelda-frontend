@@ -49,7 +49,8 @@
                     email: this.email,
                     username: this.username,
                     password: this.password,
-                    initalLanguage: this.selectedLanguage,
+                    //TODO make this functional on the back end
+                    initialLanguage: this.selectedLanguage,
                 });
             },
 

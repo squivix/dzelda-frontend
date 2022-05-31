@@ -30,7 +30,7 @@ export default {
         });
         if (response.ok) {
             const responseData = await response.json();
-            context.dispatch("saveToken", {token: responseData.auth_token});
+            await context.dispatch("saveToken", {token: responseData.auth_token});
         } else {
             const responseData = await response.text();
             console.log(`vuexstore:auth/login:Response code ${response.status}: ${responseData}`)
@@ -89,4 +89,5 @@ export default {
         delete localStorage.auth_token;
         await context.commit("setToken", {token: null});
     }
+
 }

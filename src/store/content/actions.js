@@ -9,11 +9,18 @@ export default {
             throw new Error(responseData);
         }
     },
-
+    async getOrFetchDefaultLanguage(context) {
+        return (await context.dispatch("getOrFetchUserLanguages"))[0];
+    },
+    async getOrFetchUserLanguages(context) {
+        return context.getters.getUserLanguages ?? await context.dispatch("fetchUserLanguages");
+    },
     async fetchUserLanguages(context) {
         const response = await context.dispatch('fetchProtected', {url: `${context.getters.baseUrl}/users/me/languages`});
         if (response.ok) {
-            return (await response.json());
+            const languages = await response.json();
+            context.commit("setUserLanguages", {languages});
+            return languages;
         } else {
             const responseData = await response.text();
             console.log(`vuexstore:content/fetchUserLanguages:Response code ${response.status}: ${responseData}`)

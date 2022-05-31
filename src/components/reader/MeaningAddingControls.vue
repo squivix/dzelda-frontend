@@ -21,6 +21,8 @@
 </template>
 
 <script>
+    import {postWord} from "@/components/reader/shared";
+
     export default {
         emits: ["onMeaningAdded"],
         props: {
@@ -63,13 +65,7 @@
                     this.newMeaning = "";
                 });
             },
-            async postWord(level) {
-                return await this.$store.dispatch("postNewWord", {
-                    language: this.$route.params.learningLanguage,
-                    text: this.wordText,
-                    level: level
-                });
-            },
+            postWord
         }
     }
 </script>

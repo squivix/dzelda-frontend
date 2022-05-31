@@ -25,6 +25,7 @@
     import {WORD_LEVELS} from "@/constants.js";
     import MeaningAddingControls from "@/components/reader/MeaningAddingControls";
     import DictionariesList from "@/components/reader/DictionaryList";
+    import {postWord} from "@/components/reader/shared";
 
     export default {
         components: {DictionariesList, MeaningAddingControls},
@@ -62,14 +63,7 @@
             onMeaningAdded(meaning) {
                 this.$emit('onMeaningAdded', meaning);
             },
-            async postWord(level) {
-                return await this.$store.dispatch("postNewWord", {
-                    language: this.$route.params.learningLanguage,
-                    text: this.word.text,
-                    level: level
-                });
-            },
-
+            postWord
         }
     }
 </script>

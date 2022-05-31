@@ -8,6 +8,7 @@ import ForgotPassword from './pages/auth/ForgotPassword.vue'
 import LessonReader from './pages/LessonReader.vue'
 import ExplorePage from './pages/ExplorePage.vue'
 import MyLessonsPage from './pages/MyLessonsPage.vue'
+import MyVocabPage from './pages/MyVocabPage.vue'
 
 import store from './store/index.js'
 
@@ -27,15 +28,38 @@ const router = createRouter({
             meta: {requiresAuth: false, showFooter: true}
         },
 
-        {path: '/explore', component: ExplorePage, name: "explore", meta: {requiresAuth: true, showFooter: false}},
+        {
+            path: '/explore',
+            component: ExplorePage,
+            name: "explore",
+            meta: {requiresAuth: true, showFooter: false, redirToLanguageSpecific: true}
+        },
         {
             path: '/learn/:learningLanguage/explore',
             component: ExplorePage,
             meta: {requiresAuth: true, showFooter: false}
         },
         {
+            path: '/my-lessons',
+            component: MyLessonsPage,
+            name: "my-lessons",
+            meta: {requiresAuth: true, showFooter: false, redirToLanguageSpecific: true}
+        },
+        {
             path: '/learn/:learningLanguage/my-lessons',
             component: MyLessonsPage,
+            meta: {requiresAuth: true, showFooter: false}
+        },
+
+        {
+            path: '/my-vocab',
+            component: MyVocabPage,
+            name: "my-vocab",
+            meta: {requiresAuth: true, showFooter: false, redirToLanguageSpecific: true}
+        },
+        {
+            path: '/learn/:learningLanguage/my-vocab',
+            component: MyVocabPage,
             meta: {requiresAuth: true, showFooter: false}
         },
         {
@@ -50,7 +74,7 @@ const router = createRouter({
 });
 
 
-router.beforeResolve(to => {
+router.beforeResolve(async to => {
     const isAuthenticated = store.getters.isAuthenticated;
     //prevent visiting sites that require authentication while unauthenticated
     if (to.meta.requiresAuth && !isAuthenticated)
@@ -61,6 +85,11 @@ router.beforeResolve(to => {
 
     if ((to.name === "login" || to.name === "home") && isAuthenticated)
         return {name: 'explore'}
+
+    if (to.meta.redirToLanguageSpecific) {
+        const defaultLanguage = await store.dispatch("getOrFetchDefaultLanguage");
+        return {path: `/learn/${defaultLanguage.code}/${to.name}`};
+    }
 })
 
 
