@@ -28,6 +28,7 @@
     import {postWord} from "@/components/reader/shared";
 
     export default {
+        name: "NewWordPanel",
         components: {DictionariesList, MeaningAddingControls},
         emits: ["onMeaningAdded", "onWordLevelSet"],
         props: {
@@ -53,15 +54,15 @@
         },
         methods: {
             markWordAsKnown() {
-                this.postWord(WORD_LEVELS.KNOWN);
+                this.postWord(this.word.text, WORD_LEVELS.KNOWN);
                 this.$emit('onWordLevelSet', WORD_LEVELS.KNOWN);
             },
             markWordAsIgnored() {
-                this.postWord(WORD_LEVELS.IGNORED);
+                this.postWord(this.word.text, WORD_LEVELS.IGNORED);
                 this.$emit('onWordLevelSet', WORD_LEVELS.IGNORED);
             },
-            onMeaningAdded(meaning) {
-                this.$emit('onMeaningAdded', meaning);
+            onMeaningAdded(word, meaning) {
+                this.$emit('onMeaningAdded', word, meaning);
             },
             postWord
         }

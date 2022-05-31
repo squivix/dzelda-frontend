@@ -15,7 +15,11 @@
     </div>
   </header>
 </template>
-
+<script>
+  export default {
+    name: "GuestHeader",
+  }
+</script>
 <style scoped>
 header {
   position: sticky;

@@ -7,7 +7,7 @@ import UserSignUp from './pages/auth/UserSignUp.vue'
 import ForgotPassword from './pages/auth/ForgotPassword.vue'
 import LessonReader from './pages/LessonReader.vue'
 import ExplorePage from './pages/ExplorePage.vue'
-import MyLessonsPage from './pages/MyLessonsPage.vue'
+import MyLibraryPage from './pages/MyLibraryPage.vue'
 import MyVocabPage from './pages/MyVocabPage.vue'
 
 import store from './store/index.js'
@@ -27,7 +27,6 @@ const router = createRouter({
             name: 'forgot-password',
             meta: {requiresAuth: false, showFooter: true}
         },
-
         {
             path: '/explore',
             component: ExplorePage,
@@ -40,17 +39,16 @@ const router = createRouter({
             meta: {requiresAuth: true, showFooter: false}
         },
         {
-            path: '/my-lessons',
-            component: MyLessonsPage,
-            name: "my-lessons",
+            path: '/my-library',
+            component: MyLibraryPage,
+            name: "my-library",
             meta: {requiresAuth: true, showFooter: false, redirToLanguageSpecific: true}
         },
         {
-            path: '/learn/:learningLanguage/my-lessons',
-            component: MyLessonsPage,
+            path: '/learn/:learningLanguage/my-library',
+            component: MyLibraryPage,
             meta: {requiresAuth: true, showFooter: false}
         },
-
         {
             path: '/my-vocab',
             component: MyVocabPage,

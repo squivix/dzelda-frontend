@@ -28,6 +28,7 @@
     import MeaningEditingControls from "@/components/reader/MeaningEditingControls";
 
     export default {
+        name: "ExistingWordPanel",
         components: {MeaningEditingControls, WordLevelPicker},
         emits: ["onAddMoreMeaningsClicked", "onMeaningDeleted", "onWordLevelSet"],
         props: {

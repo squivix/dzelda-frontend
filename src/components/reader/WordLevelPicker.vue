@@ -27,6 +27,7 @@
     import {WORD_LEVELS} from "@/constants";
 
     export default {
+        name: "WordLevelPicker",
         emits: ["onWordLevelSet"],
         props: {
             wordId: {
@@ -46,7 +47,7 @@
         methods: {
             async setWordLevel(level) {
                 await this.$store.dispatch("updateWordLevel", {
-                    word_id: this.word_id,
+                    word_id: this.wordId,
                     language: this.$route.params.learningLanguage,
                     level: level
                 });

@@ -7,7 +7,7 @@
 
 <script>
     export default {
-        name: "DictionariesList",
+        name: "DictionaryList",
         props: {
             wordText: {
                 type: String,

@@ -10,8 +10,8 @@
                         <li>Explore</li>
                     </router-link>
 
-                    <router-link :to="{ name: 'my-lessons' }" style="text-decoration: none; color: inherit">
-                        <li>My Lessons</li>
+                    <router-link :to="{ name: 'my-library' }" style="text-decoration: none; color: inherit">
+                        <li>My Library</li>
                     </router-link>
 
                     <router-link :to="{ name: 'my-vocab' }" style="text-decoration: none; color: inherit">
@@ -35,6 +35,7 @@
     import store from "@/store";
 
     export default {
+        name: "AuthHeader",
         data() {
             return {
                 learningLanguage: null

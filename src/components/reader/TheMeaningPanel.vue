@@ -29,6 +29,7 @@
     import ExistingWordPanel from "@/components/reader/ExistingWordPanel";
 
     export default {
+        name: "TheMeaningPanel",
         components: {NewWordPanel, ExistingWordPanel},
         emits: ['onMeaningAdded', 'onWordLevelSet', 'onMeaningDeleted'],
         props: {
@@ -63,8 +64,8 @@
             onAddMoreMeaningsClicked() {
                 this.addingMoreMeanings = true;
             },
-            onMeaningAdded(meaning) {
-                this.$emit('onMeaningAdded', this.word, meaning);
+            onMeaningAdded(word, meaning) {
+                this.$emit('onMeaningAdded', word, meaning);
                 this.addingMoreMeanings = false;
             },
             onMeaningDeleted(meaning) {

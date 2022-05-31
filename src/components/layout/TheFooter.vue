@@ -8,7 +8,11 @@
     </nav>
   </footer>
 </template>
-
+<script>
+  export default {
+    name: "TheFooter",
+  }
+</script>
 <style scoped>
 footer {
   background-color: lightgray;

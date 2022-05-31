@@ -24,6 +24,7 @@
     import {postWord} from "@/components/reader/shared";
 
     export default {
+        name: "MeaningAddingControls",
         emits: ["onMeaningAdded"],
         props: {
             wordText: {
@@ -42,26 +43,26 @@
         },
         methods: {
             addSuggestedMeaning(meaning) {
-                this.postWord().then((new_word) => {
+                this.postWord(this.wordText).then((new_word) => {
                         this.$store.dispatch("saveMeaningToUser", {
                             word_id: new_word.id,
                             meaningLanguage: this.$route.params.learningLanguage,
                             meaningText: meaning.text
                         });
-                        this.$emit('onMeaningAdded', meaning);
+                        this.$emit('onMeaningAdded', new_word, meaning);
                     }
                 );
             },
             addNewMeaning() {
                 if (this.newMeaning === undefined || this.newMeaning === "")
                     return;
-                this.postWord().then(async (new_word) => {
+                this.postWord(this.wordText).then(async (new_word) => {
                     const meaning = await this.$store.dispatch("addNewMeaning", {
                         word_id: new_word.id,
                         meaningLanguage: "en",
                         meaningText: this.newMeaning,
                     });
-                    this.$emit('onMeaningAdded', meaning);
+                    this.$emit('onMeaningAdded', new_word, meaning);
                     this.newMeaning = "";
                 });
             },

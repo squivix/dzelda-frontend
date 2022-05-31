@@ -1,3 +1,12 @@
 <template>
     <h1>Forgot your password huh?</h1>
 </template>
+<script>
+    export default {
+        name: "ForgotPassword",
+    }
+</script>
+
+<style scoped>
+
+</style>

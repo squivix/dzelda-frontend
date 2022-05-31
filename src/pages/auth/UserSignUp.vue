@@ -33,6 +33,7 @@
 </template>
 <script>
     export default {
+        name: "UserSignUp",
         data() {
             return {
                 allLanguages: [],

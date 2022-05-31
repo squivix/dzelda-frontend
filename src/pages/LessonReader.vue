@@ -27,6 +27,7 @@
     import {WORD_LEVELS} from "@/constants";
 
     export default {
+        name: "LessonReader.vue",
         components: {
             TheLessonContent,
             TheMeaningPanel,
@@ -74,20 +75,19 @@
 
 
             onMeaningAdded(word, new_meaning) {
-                const word_level = this.words[word.text.toLowerCase()].level;
-
-                if (word_level === WORD_LEVELS.NEW || word_level === WORD_LEVELS.IGNORED || word_level === WORD_LEVELS.KNOWN)
-                    this.onWordLevelSet(word, WORD_LEVELS.LEVEL_1);
-
-                if (word.user_meanings.find(meaning => meaning.id === new_meaning.id) === undefined)
-                    word.user_meanings.push(new_meaning);
+                const key = word.text.toLowerCase();
+                this.onWordLevelSet(word, word.level);
+                this.words[key].user_meanings.push(new_meaning);
+                this.words[key].id = word.id;
+                this.setSelectedWord(word.text);
             },
             onWordLevelSet(word, level) {
-                this.words[word.text.toLowerCase()].level = word.level = level;
+                this.words[word.text.toLowerCase()].level = level;
                 if (level === WORD_LEVELS.IGNORED || level === WORD_LEVELS.KNOWN) {
                     this.words[word.text.toLowerCase()].user_meanings = [];
                     this.clearSelectedWord();
-                }
+                } else
+                    this.setSelectedWord(word.text);
             },
             onMeaningDeleted(word, deleted_meaning) {
                 const index = word.user_meanings.findIndex((meaning) => meaning.id === deleted_meaning.id)

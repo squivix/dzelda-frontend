@@ -1,7 +1,7 @@
-export async function postWord(level) {
+export async function postWord(wordText, level) {
     return await this.$store.dispatch("postNewWord", {
         language: this.$route.params.learningLanguage,
-        text: this.wordText,
+        text: wordText,
         level: level
     });
 }

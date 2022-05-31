@@ -4,5 +4,7 @@
 
 <script>
 
-    export default {};
+    export default {
+        name: "ExplorePage",
+    };
 </script>

@@ -34,6 +34,7 @@
     import * as utils from '../../utils.js';
 
     export default {
+        name: "UserLogin",
         data() {
             return {
                 username: '',
