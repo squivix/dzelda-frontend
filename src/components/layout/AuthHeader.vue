@@ -36,6 +36,7 @@
 
     export default {
         name: "AuthHeader",
+        components: {},
         data() {
             return {
                 learningLanguage: null

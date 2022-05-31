@@ -28,6 +28,7 @@
 
     export default {
         name: "WordLevelPicker",
+        components: {},
         emits: ["onWordLevelSet"],
         props: {
             wordId: {

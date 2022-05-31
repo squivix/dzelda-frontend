@@ -27,7 +27,16 @@ export default {
             throw new Error(responseData);
         }
     },
-
+    async fetchUserLessons(context, payload) {
+        const response = await context.dispatch('fetchProtected', {url: `${context.getters.baseUrl}/users/me/lessons`});
+        if (response.ok)
+            return await response.json();
+        else {
+            const responseData = await response.text();
+            console.log(`vuexstore:content/fetchUserLessons:Response code ${response.status}: ${responseData}`)
+            throw new Error(responseData);
+        }
+    },
     async fetchLesson(context, payload) {
         const lessonId = payload.lessonId;
         const languageCode = payload.languageCode;

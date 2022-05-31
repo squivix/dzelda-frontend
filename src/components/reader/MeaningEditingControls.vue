@@ -18,6 +18,7 @@
 <script>
     export default {
         name: "MeaningEditingControls",
+        components: {},
         emits: ["onMeaningDeleted"],
         props: {
             wordId: {

@@ -18,6 +18,7 @@
 <script>
     export default {
         name: "BasePasswordInput",
+        components: {},
         inheritAttrs: false,
         props: {
             modelValue: String,

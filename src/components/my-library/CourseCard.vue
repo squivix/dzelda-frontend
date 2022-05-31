@@ -1,13 +1,13 @@
 <template>
-    <h1>HOME!</h1>
+    
 </template>
 
 <script>
     export default {
-        name: "HomePage",
-        components: {},
+        name: "CourseCard"
     }
 </script>
+
 <style scoped>
 
 </style>

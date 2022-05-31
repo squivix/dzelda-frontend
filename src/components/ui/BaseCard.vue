@@ -13,6 +13,7 @@
 <script>
     export default {
         name: "BaseCard",
+        components: {},
         props: {
             title: {
                 type: String,

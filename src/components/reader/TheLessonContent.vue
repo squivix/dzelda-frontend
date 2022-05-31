@@ -2,26 +2,22 @@
     <div @click="onBackgroundClicked">
         <h2 class="title">
       <span v-for="(word, index) in paragraphWords(title)" :key="index">
-        <span
-                v-if="isWord(word)"
-                :class="getWordClass(word)"
-                @click.stop="onWordClicked(word)"
-        >{{ word }}</span
-        >
+        <span v-if="isWord(word)"
+              :class="getWordClass(word)"
+              @click.stop="onWordClicked(word)">
+            {{ word }}</span>
         <template v-else>{{ word }}</template>
       </span>
         </h2>
 
         <div class="lesson-text">
             <p v-for="(paragraph, index) in lessonParagraphs" :key="index">
-        <span
-                v-for="(word, index) in paragraphWords(paragraph)"
-                :key="index"
-                @click.stop="onWordClicked(word)"
-        >
-          <span v-if="isWord(word)" :class="getWordClass(word)">{{word}}</span>
-          <template v-else>{{ word }}</template>
-        </span>
+                <span v-for="(word, index) in paragraphWords(paragraph)"
+                      :key="index"
+                      @click.stop="onWordClicked(word)">
+                  <span v-if="isWord(word)" :class="getWordClass(word)">{{word}}</span>
+                  <template v-else>{{ word }}</template>
+                </span>
             </p>
         </div>
     </div>
@@ -29,7 +25,8 @@
 
 <script>
     export default {
-        name:"TheLessonContent",
+        name: "TheLessonContent",
+        components: {},
         props: {
             title: {
                 type: String,

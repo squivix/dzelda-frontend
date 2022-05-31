@@ -6,9 +6,11 @@
                 :saved-meanings="word.user_meanings"
         >
         </meaning-editing-controls>
+
         <button class="button-hollow add-meaning-button" @click="addMeaning">
             <font-awesome-icon icon="plus"></font-awesome-icon>
         </button>
+
         <h5>Set Word Level</h5>
         <word-level-picker
                 :wordId="word.id"

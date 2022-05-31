@@ -25,6 +25,7 @@
 
     export default {
         name: "MeaningAddingControls",
+        components:{},
         emits: ["onMeaningAdded"],
         props: {
             wordText: {

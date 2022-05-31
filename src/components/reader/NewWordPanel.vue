@@ -29,7 +29,7 @@
 
     export default {
         name: "NewWordPanel",
-        components: {DictionariesList, MeaningAddingControls},
+        components: {MeaningAddingControls, DictionariesList},
         emits: ["onMeaningAdded", "onWordLevelSet"],
         props: {
             word: {

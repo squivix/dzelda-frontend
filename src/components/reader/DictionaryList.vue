@@ -8,6 +8,7 @@
 <script>
     export default {
         name: "DictionaryList",
+        components: {},
         props: {
             wordText: {
                 type: String,

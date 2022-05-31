@@ -6,5 +6,6 @@
 
     export default {
         name: "ExplorePage",
+        components: {},
     };
 </script>

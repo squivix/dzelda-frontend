@@ -7,16 +7,14 @@
                     :title="lesson.title"
                     :text="lesson.text"
                     :words="words"
-                    class="lesson-content"
-            >
+                    class="lesson-content">
             </the-lesson-content>
             <the-meaning-panel
                     class="meaning-panel"
                     :word="selectedWord"
                     @onMeaningAdded="onMeaningAdded"
                     @onWordLevelSet="onWordLevelSet"
-                    @onMeaningDeleted="onMeaningDeleted"
-            >
+                    @onMeaningDeleted="onMeaningDeleted">
             </the-meaning-panel>
         </template>
     </base-card>
@@ -28,10 +26,7 @@
 
     export default {
         name: "LessonReader.vue",
-        components: {
-            TheLessonContent,
-            TheMeaningPanel,
-        },
+        components: {TheLessonContent, TheMeaningPanel},
         data() {
             return {
                 loadingLesson: true,
