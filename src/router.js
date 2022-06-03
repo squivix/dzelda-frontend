@@ -5,6 +5,7 @@ import UserLogin from './pages/auth/UserLogin.vue'
 import UserSignOut from './pages/auth/UserSignOut.vue'
 import UserSignUp from './pages/auth/UserSignUp.vue'
 import ForgotPassword from './pages/auth/ForgotPassword.vue'
+import CourseViewer from './pages/CourseViewer.vue'
 import LessonReader from './pages/LessonReader.vue'
 import ExplorePage from './pages/ExplorePage.vue'
 import MyLibraryPage from './pages/MyLibraryPage.vue'
@@ -64,6 +65,12 @@ const router = createRouter({
             path: '/learn/:learningLanguage/lessons/:lessonId',
             component: LessonReader,
             name: 'lesson',
+            meta: {requiresAuth: true, showFooter: false}
+        },
+        {
+            path: '/learn/:learningLanguage/courses/:courseId',
+            component: CourseViewer,
+            name: 'course',
             meta: {requiresAuth: true, showFooter: false}
         },
 

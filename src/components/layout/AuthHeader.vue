@@ -1,7 +1,7 @@
 <template>
     <header>
         <div class="title-nav-div">
-            <router-link :to="{ name: 'home' }" style="text-decoration: none; color: inherit">
+            <router-link :to="{ name: 'home'}" style="text-decoration: none; color: inherit">
                 <h1 class="unselectable">FLA</h1>
             </router-link>
             <nav>

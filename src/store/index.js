@@ -6,7 +6,7 @@ import readerModule from './reader/index.js';
 const store = createStore({
     strict: true,
     state: {
-        baseUrl: `http://localhost:8000/api/v1`,
+        baseUrl: `http://localhost:8000`,
     },
     modules: {
         authModule,
@@ -16,6 +16,9 @@ const store = createStore({
     getters: {
         baseUrl(state) {
             return state.baseUrl;
+        },
+        apiUrl(state) {
+            return `${state.baseUrl}/api/v1`;
         },
     },
 });

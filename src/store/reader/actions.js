@@ -1,7 +1,7 @@
 export default {
     async fetchLessonWords(context, payload) {
         const lessonId = payload.lessonId;
-        const response = await context.dispatch("fetchProtected", {url: `${context.getters.baseUrl}/users/me/lessons/${lessonId}/words`});
+        const response = await context.dispatch("fetchProtected", {url: `${context.getters.apiUrl}/users/me/lessons/${lessonId}/words`});
         if (response.ok)
             return await response.json();
         else {
@@ -13,7 +13,7 @@ export default {
 
     async saveMeaningToUser(context, payload) {
         const response = await context.dispatch("fetchProtected", {
-            url: `${context.getters.baseUrl}/users/me/words/${payload.word_id}/meanings`,
+            url: `${context.getters.apiUrl}/users/me/words/${payload.word_id}/meanings`,
             options: {
                 method: 'POST',
                 body: JSON.stringify({
@@ -31,7 +31,7 @@ export default {
     },
     async addNewMeaning(context, payload) {
         const response = await context.dispatch("fetchProtected", {
-            url: `${context.getters.baseUrl}/words/${payload.word_id}/meanings`,
+            url: `${context.getters.apiUrl}/words/${payload.word_id}/meanings`,
             options: {
                 method: 'POST',
                 body: JSON.stringify({
@@ -49,7 +49,7 @@ export default {
     },
     async postNewWord(context, payload) {
         const response = await context.dispatch("fetchProtected", {
-            url: `${context.getters.baseUrl}/users/me/words`,
+            url: `${context.getters.apiUrl}/users/me/words`,
             options: {
                 method: 'POST',
                 body: JSON.stringify({
@@ -68,7 +68,7 @@ export default {
     },
     async updateWordLevel(context, payload) {
         const response = await context.dispatch("fetchProtected", {
-            url: `${context.getters.baseUrl}/users/me/words/${payload.word_id}`,
+            url: `${context.getters.apiUrl}/users/me/words/${payload.word_id}`,
             options: {
                 method: 'PATCH',
                 body: JSON.stringify({
@@ -87,7 +87,7 @@ export default {
 
     async deleteUserMeaning(context, payload) {
         await context.dispatch("fetchProtected", {
-            url: `${context.getters.baseUrl}/users/me/words/${payload.word_id}/meanings/${payload.meaning_id}`,
+            url: `${context.getters.apiUrl}/users/me/words/${payload.word_id}/meanings/${payload.meaning_id}`,
             options: {
                 method: "DELETE",
             }
@@ -95,7 +95,7 @@ export default {
     },
 
     async fetchDictionaries(context, payload) {
-        const response = await context.dispatch("fetchProtected", {url: `${context.getters.baseUrl}/users/me/dictionaries?language=${payload.language}`})
+        const response = await context.dispatch("fetchProtected", {url: `${context.getters.apiUrl}/users/me/dictionaries?language=${payload.language}`})
         return await response.json();
     }
 }

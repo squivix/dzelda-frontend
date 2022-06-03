@@ -5,6 +5,9 @@ import {faCheck} from "@fortawesome/free-solid-svg-icons";
 import {faBan} from "@fortawesome/free-solid-svg-icons";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import {faX} from "@fortawesome/free-solid-svg-icons";
+import {faFilter} from "@fortawesome/free-solid-svg-icons";
+import {faFilterCircleXmark} from "@fortawesome/free-solid-svg-icons";
+import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
 
 library.add(faEye);
 library.add(faEyeSlash);
@@ -12,3 +15,6 @@ library.add(faCheck);
 library.add(faBan);
 library.add(faPlus);
 library.add(faX);
+library.add(faFilter);
+library.add(faFilterCircleXmark);
+library.add(faMagnifyingGlass);
