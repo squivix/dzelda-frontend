@@ -4,7 +4,23 @@
 
 <script>
     export default {
-        name: "CourseViewer"
+        name: "CourseViewer",
+        data() {
+            return {
+                course: null
+            };
+        },
+        mounted() {
+            this.fetchCourse();
+        },
+        methods: {
+            fetchCourse() {
+                this.$store.dispatch("fetchCourse", {
+                    courseId: this.$route.params.courseId,
+                    languageCode: this.$route.params.learningLanguage,
+                });
+            }
+        }
     }
 </script>
 
