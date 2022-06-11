@@ -74,6 +74,20 @@ export default {
             console.log(`vuexstore:content/fetchCourse:Response code ${response.status}: ${responseData}`)
             throw new Error(responseData);
         }
+    },
+    async fetchCourseLessons(context, payload) {
+        const courseId = payload.courseId;
+        // const languageCode = payload.languageCode;
+        const response = await context.dispatch('fetchProtected', {
+            url: `${context.getters.apiUrl}/courses/${courseId}/lessons`
+        });
+        if (response.ok)
+            return await response.json();
+        else {
+            const responseData = await response.text();
+            console.log(`vuexstore:content/fetchCourseLessons:Response code ${response.status}: ${responseData}`)
+            throw new Error(responseData);
+        }
     }
 
 }

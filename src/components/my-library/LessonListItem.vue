@@ -4,11 +4,13 @@
             <article class="lesson-article">
                 <img :src="imageUrl" alt="lesson image" class="lesson-image">
                 <div>
-                    <router-link :to="`lessons/${lesson.id}`">
+                    <router-link
+                            :to="{name:'lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}">
                         <h4>{{lesson.title}}</h4>
                     </router-link>
 
-                    <router-link :to="`courses/${lesson.course.id}`">
+                    <router-link v-if="showCourse"
+                                 :to="{name:'course', params:{learningLanguage:$route.params.learningLanguage, courseId:lesson.course.id}}">
                         <p>{{lesson.course.title}}</p>
                     </router-link>
                 </div>
@@ -27,6 +29,11 @@
             lesson: {
                 type: Object,
                 required: true
+            },
+            showCourse: {
+                type: Boolean,
+                required: false,
+                default: true,
             }
         },
         computed: {

@@ -37,8 +37,8 @@
             };
         },
         async created() {
-            this.fetchLesson();
-            this.fetchWordsLevels();
+            await this.fetchLesson();
+            await this.fetchWordsLevels();
         },
         computed: {
             loading() {

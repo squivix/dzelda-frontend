@@ -3,7 +3,8 @@
         <template v-slot:all>
             <article class="course-article">
                 <img :src="imageUrl" alt="course image" class="course-image">
-                <router-link :to="`courses/${course.id}`">
+                <router-link
+                        :to="{name:'course', params:{learningLanguage:$route.params.learningLanguage, courseId:course.id}}">
                     <h4>{{course.title}}</h4>
                 </router-link>
 
@@ -23,7 +24,10 @@
         },
         computed: {
             imageUrl() {
-                return `${this.$store.getters.baseUrl}${this.course.image}`;
+                if (this.course.image !== null)
+                    return `${this.$store.getters.baseUrl}${this.course.image}`;
+                else
+                    return `${this.$store.getters.baseUrl}/media/default-course-image.png`
             }
         }
     }
@@ -46,5 +50,8 @@
         font-size: 1.35rem;
         margin-top: 20px;
         margin-bottom: 5px;
+        /*white-space:nowrap;*/
+        /*text-overflow: ellipsis;*/
+        /*overflow:hidden;*/
     }
 </style>
