@@ -8,6 +8,6 @@ module.exports = defineConfig({
 module.exports = {
   configureWebpack: {
     // plugins: [new BundleAnalyzerPlugin()]
-    // devtool: "source-map"
+     devtool: "source-map"
   }
 };

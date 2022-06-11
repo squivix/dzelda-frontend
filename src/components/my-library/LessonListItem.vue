@@ -33,8 +33,10 @@
             imageUrl() {
                 if (this.lesson.image !== null)
                     return `${this.$store.getters.baseUrl}${this.lesson.image}`;
-                else
+                else if (this.lesson.course_image !== null)
                     return `${this.$store.getters.baseUrl}${this.lesson.course_image}`;
+                else
+                    return `${this.$store.getters.baseUrl}/media/default-course-image.png`
             }
         }
     }
