@@ -36,8 +36,8 @@
 </template>
 <script>
     import BaseCard from "@/components/ui/BaseCard";
-    import LessonListItem from "@/components/my-library/LessonListItem";
-    import CourseCard from "@/components/my-library/CourseCard";
+    import LessonListItem from "@/components/content/LessonListItem";
+    import CourseCard from "@/components/content/CourseCard";
 
     export default {
         name: "MyLibraryPage",

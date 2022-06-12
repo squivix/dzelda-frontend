@@ -13,7 +13,7 @@
 
 <script>
     import BaseCard from "@/components/ui/BaseCard";
-    import LessonListItem from "@/components/my-library/LessonListItem";
+    import LessonListItem from "@/components/content/LessonListItem";
 
     export default {
         name: "CourseViewer",

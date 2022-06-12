@@ -79,8 +79,8 @@ export default {
             body: options.body
         });
         if (response.status === 401) {
-            context.dispatch("deleteToken");
-            router.push('login');
+            await context.dispatch("deleteToken");
+            await router.push({name: 'login'});
         } else
             return response;
     },

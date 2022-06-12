@@ -1,8 +1,7 @@
 <template>
-    <base-card title="Add Lesson" class="add-lesson-base-card">
+    <base-card :title="pageTitle" class="add-edit-lesson-base-card">
         <template v-slot:content>
-            <form class="add-lesson-form" @submit.prevent="addLesson">
-
+            <form class="add-edit-lesson-form" @submit.prevent="addLesson">
                 <label for="lesson-course">Course</label>
                 <select required id="lesson-course" v-model="selectedCourse">
                     <option value="" disabled selected>Select course</option>
@@ -33,10 +32,16 @@
     import BaseCard from "@/components/ui/BaseCard";
 
     export default {
-        name: "LessonAddPage",
+        name: "LessonAddEditPage",
         components: {BaseCard},
+        computed: {
+            pageTitle() {
+                return this.lesson === null ? "Add Lesson" : "Edit Lesson";
+            }
+        },
         data() {
             return {
+                lesson: null,
                 editableCourses: null,
                 selectedCourse: "",
                 title: "",
@@ -50,7 +55,7 @@
 
             async addLesson(event) {
                 this.$store.dispatch("postLesson", {
-                    course: this.selectedCourse,
+                    courseId: this.selectedCourse,
                     title: this.title,
                     text: this.text,
                 }).then(async (newLesson) => {
@@ -67,10 +72,27 @@
                         })
                     }
                 });
+            },
+
+            async editLesson() {
+                this.$store.dispatch("editLesson", {
+                    course: this.selectedCourse,
+                    title: this.title,
+                    text: this.text,
+                });
             }
         },
         async mounted() {
             await this.fetchEditableCourses();
+            if (this.$route.name === "edit-lesson") {
+                this.lesson = await this.$store.dispatch("fetchLesson", {
+                    lessonId: this.$route.params.lessonId,
+                    languageCode: this.$route.params.learningLanguage
+                });
+                this.selectedCourse = this.lesson.course;
+                this.title = this.lesson.title;
+                this.text = this.lesson.text;
+            }
         }
     }
 
@@ -78,7 +100,7 @@
 </script>
 
 <style scoped>
-    .add-lesson-base-card {
+    .add-edit-lesson-base-card {
         margin-left: 2vw;
         margin-right: 2vw;
         margin-bottom: 5vh;
@@ -90,21 +112,21 @@
         align-items: stretch;
     }
 
-    .add-lesson-base-card:deep(header) {
+    .add-edit-lesson-base-card:deep(header) {
         margin-bottom: 1rem;
     }
 
-    .add-lesson-form {
+    .add-edit-lesson-form {
         display: flex;
         flex-direction: column;
     }
 
-    .add-lesson-form label {
+    .add-edit-lesson-form label {
         margin-bottom: 0.5rem;
         font-size: 1.25rem;
     }
 
-    .add-lesson-form input, .add-lesson-form select, .add-lesson-form textarea {
+    .add-edit-lesson-form input, .add-edit-lesson-form select, .add-edit-lesson-form textarea {
         margin-bottom: 1rem;
         font-size: 1rem;
     }

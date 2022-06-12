@@ -82,6 +82,7 @@
                 this.$emit('onBackgroundClicked');
             },
             isWord(text) {
+                //TODO fix string with numnbers being counted as word ex: '123abc' returns true
                 return !!text.match(/[\p{L}]+/gu);
             },
         },

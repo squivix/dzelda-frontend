@@ -13,6 +13,11 @@
                                  :to="{name:'course', params:{learningLanguage:$route.params.learningLanguage, courseId:lesson.course.id}}">
                         <p>{{lesson.course.title}}</p>
                     </router-link>
+
+                    <router-link
+                            :to="{name:'edit-lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}">
+                        <p>Edit</p>
+                    </router-link>
                 </div>
             </article>
         </template>

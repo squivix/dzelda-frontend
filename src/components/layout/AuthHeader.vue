@@ -133,5 +133,9 @@
         width: 25px;
     }
 
+    .add-lesson-button svg {
+        color: black;
+        font-size: 1rem;
+    }
 
 </style>

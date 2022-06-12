@@ -1,18 +1,16 @@
 export default {
     async fetchLessonWords(context, payload) {
         const lessonId = payload.lessonId;
-        const response = await context.dispatch("fetchProtected", {url: `${context.getters.apiUrl}/users/me/lessons/${lessonId}/words`});
-        if (response.ok)
-            return await response.json();
-        else {
-            const responseData = await response.text();
-            console.log(`vuexstore:reader/fetchLessonWords:Response code ${response.status}: ${responseData}`)
-            throw new Error(responseData);
-        }
+        return await context.dispatch('fetchCustom', {
+            url: `${context.getters.apiUrl}/users/me/lessons/${lessonId}/words`,
+            protected: true,
+            caller: "fetchLessonWords",
+            module: "reader",
+        });
     },
 
     async saveMeaningToUser(context, payload) {
-        const response = await context.dispatch("fetchProtected", {
+        return await context.dispatch('fetchCustom', {
             url: `${context.getters.apiUrl}/users/me/words/${payload.word_id}/meanings`,
             options: {
                 method: 'POST',
@@ -20,17 +18,14 @@ export default {
                     language: payload.meaningLanguage,
                     text: payload.meaningText,
                 }),
-            }
+            },
+            protected: true,
+            caller: "saveMeaningToUser",
+            module: "reader",
         });
-        if (!response.ok) {
-            const responseData = await response.text();
-            console.log(`vuexstore:reader/saveMeaningToUser:Response code ${response.status}: ${responseData}`)
-            throw new Error(responseData);
-        } else
-            return response;
     },
     async addNewMeaning(context, payload) {
-        const response = await context.dispatch("fetchProtected", {
+        return await context.dispatch('fetchCustom', {
             url: `${context.getters.apiUrl}/words/${payload.word_id}/meanings`,
             options: {
                 method: 'POST',
@@ -38,17 +33,14 @@ export default {
                     language: payload.meaningLanguage,
                     text: payload.meaningText,
                 }),
-            }
+            },
+            protected: true,
+            caller: "addNewMeaning",
+            module: "reader",
         });
-        if (!response.ok) {
-            const responseData = await response.text();
-            console.log(`vuexstore:reader/addNewMeaning:Response code ${response.status}: ${responseData}`)
-            throw new Error(responseData);
-        } else
-            return await response.json();
     },
     async postNewWord(context, payload) {
-        const response = await context.dispatch("fetchProtected", {
+        return await context.dispatch('fetchCustom', {
             url: `${context.getters.apiUrl}/users/me/words`,
             options: {
                 method: 'POST',
@@ -57,17 +49,14 @@ export default {
                     text: payload.text,
                     level: payload.level,
                 }),
-            }
+            },
+            protected: true,
+            caller: "postNewWord",
+            module: "reader",
         });
-        if (!response.ok) {
-            const responseData = await response.text();
-            console.log(`vuexstore:reader/postNewWord:Response code ${response.status}: ${responseData}`)
-            throw new Error(responseData);
-        } else
-            return await response.json();
     },
     async updateWordLevel(context, payload) {
-        const response = await context.dispatch("fetchProtected", {
+        return await context.dispatch('fetchCustom', {
             url: `${context.getters.apiUrl}/users/me/words/${payload.word_id}`,
             options: {
                 method: 'PATCH',
@@ -75,27 +64,32 @@ export default {
                     language: payload.language,
                     level: payload.level,
                 }),
-            }
-        })
-        if (!response.ok) {
-            const responseData = await response.text();
-            console.log(`vuexstore:reader/updateWordLevel:Response code ${response.status}: ${responseData}`)
-            throw new Error(responseData);
-        } else
-            return await response.json();
+            },
+            protected: true,
+            caller: "updateWordLevel",
+            module: "reader",
+        });
     },
 
     async deleteUserMeaning(context, payload) {
-        await context.dispatch("fetchProtected", {
+        await context.dispatch('fetchCustom', {
             url: `${context.getters.apiUrl}/users/me/words/${payload.word_id}/meanings/${payload.meaning_id}`,
             options: {
                 method: "DELETE",
-            }
-        })
+            },
+            protected: true,
+            caller: "deleteUserMeaning",
+            module: "reader",
+        });
     },
 
     async fetchDictionaries(context, payload) {
-        const response = await context.dispatch("fetchProtected", {url: `${context.getters.apiUrl}/users/me/dictionaries?language=${payload.language}`})
-        return await response.json();
+        const languageCode = payload.language;
+        return await context.dispatch('fetchCustom', {
+            url: `${context.getters.apiUrl}/users/me/dictionaries?language=${languageCode}`,
+            protected: true,
+            caller: "fetchDictionaries",
+            module: "reader",
+        });
     }
 }
