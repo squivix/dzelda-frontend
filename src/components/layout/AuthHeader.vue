@@ -21,11 +21,16 @@
             </nav>
         </div>
 
-
-        <div id="auth-button">
-            <router-link :to="{ name: 'sign-out' }">
-                <button class="button-hollow link">Sign Out</button>
+        <div class="right-side-div">
+            <router-link :to="{ name: 'add-lesson' }">
+                <button class="add-lesson-button link">
+                    <font-awesome-icon icon="plus"></font-awesome-icon>
+                </button>
             </router-link>
+            <router-link :to="{ name: 'sign-out' }">
+                <button class="sign-out-button button-hollow link">Sign Out</button>
+            </router-link>
+
         </div>
 
 
@@ -100,7 +105,7 @@
         cursor: pointer;
     }
 
-    #auth-buttons {
+    .right-side-div {
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -108,22 +113,25 @@
         column-gap: min(2vw, 15px);
     }
 
-    button a {
-        color: inherit;
+    @media screen and (max-width: 400px) {
+        .right-side-div {
+            display: none;
+        }
     }
 
-    button {
+
+    .sign-out-button {
         min-width: 105px;
-    }
-
-    .button-hollow {
         color: var(--on-primary-color);
         border-color: var(--on-secondary-color);
     }
 
-    @media screen and (max-width: 400px) {
-        #auth-buttons {
-            display: none;
-        }
+    .add-lesson-button {
+        background-color: var(--on-primary-color);
+        border: none;
+        height: 25px;
+        width: 25px;
     }
+
+
 </style>

@@ -10,6 +10,7 @@ import LessonReader from './pages/LessonReader.vue'
 import ExplorePage from './pages/ExplorePage.vue'
 import MyLibraryPage from './pages/MyLibraryPage.vue'
 import MyVocabPage from './pages/MyVocabPage.vue'
+import LessonAddPage from './pages/LessonAddPage.vue'
 
 import store from './store/index.js'
 
@@ -68,6 +69,17 @@ const router = createRouter({
             meta: {requiresAuth: true, showFooter: false}
         },
         {
+            path: '/lessons/add',
+            component: LessonAddPage,
+            name: 'add-lesson',
+            meta: {requiresAuth: true, showFooter: false, redirToLanguageSpecific: true}
+        },
+        {
+            path: '/learn/:learningLanguage/lessons/add',
+            component: LessonAddPage,
+            meta: {requiresAuth: true, showFooter: false}
+        },
+        {
             path: '/learn/:learningLanguage/courses/:courseId',
             component: CourseViewer,
             name: 'course',
@@ -93,7 +105,7 @@ router.beforeResolve(async to => {
 
     if (to.meta.redirToLanguageSpecific) {
         const defaultLanguage = await store.dispatch("getOrFetchDefaultLanguage");
-        return {path: `/learn/${defaultLanguage.code}/${to.name}`};
+        return {path: `/learn/${defaultLanguage.code}${to.path}`};
     }
 })
 
