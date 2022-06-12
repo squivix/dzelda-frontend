@@ -15,9 +15,6 @@
                 <label for="lesson-text">Text</label>
                 <textarea placeholder="Lesson Text" id="lesson-text" v-model="text" required></textarea>
 
-                <!--                <label for="is-public-checkbox" class="checkbox-label">-->
-                <!--                    <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>-->
-                <!--                    Public</label>-->
                 <div class="buttons-div">
                     <button id="save-button" type="submit" class="button-hollow">Save</button>
                     <button id="save-and-open-button" type="submit" class="primary-button">Save & open</button>
@@ -142,9 +139,6 @@
         height: 35vh;
     }
 
-    .checkbox-label {
-        margin-bottom: 1rem;
-    }
 
     .buttons-div {
         display: flex;

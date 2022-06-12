@@ -11,6 +11,7 @@ import ExplorePage from './pages/ExplorePage.vue'
 import MyLibraryPage from './pages/MyLibraryPage.vue'
 import MyVocabPage from './pages/MyVocabPage.vue'
 import LessonAddEditPage from './pages/LessonAddEditPage.vue'
+import CourseAddPage from './pages/CourseAddPage.vue'
 
 import store from './store/index.js'
 
@@ -83,6 +84,17 @@ const router = createRouter({
             path: '/learn/:learningLanguage/lessons/:lessonId/edit',
             component: LessonAddEditPage,
             name: 'edit-lesson',
+            meta: {requiresAuth: true, showFooter: false}
+        },
+        {
+            path: '/courses/add',
+            component: CourseAddPage,
+            name: "add-course",
+            meta: {requiresAuth: true, showFooter: false, redirToLanguageSpecific: true}
+        },
+        {
+            path: '/learn/:learningLanguage/courses/add',
+            component: CourseAddPage,
             meta: {requiresAuth: true, showFooter: false}
         },
         {

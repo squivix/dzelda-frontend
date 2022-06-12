@@ -125,4 +125,22 @@ export default {
             module: "content",
         });
     },
+
+    async postCourse(context, payload) {
+        return await context.dispatch('fetchCustom', {
+            url: `${context.getters.apiUrl}/courses/`,
+            options: {
+                method: "POST",
+                body: JSON.stringify({
+                    language: payload.languageCode,
+                    title: payload.title,
+                    description: payload.description,
+                    isPublic: payload.isPublic,
+                })
+            },
+            protected: true,
+            caller: "postCourse",
+            module: "content",
+        });
+    },
 }

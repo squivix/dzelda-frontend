@@ -22,18 +22,42 @@
         </div>
 
         <div class="right-side-div">
-            <router-link :to="{ name: 'add-lesson' }">
-                <button class="add-lesson-button link">
-                    <font-awesome-icon icon="plus"></font-awesome-icon>
-                </button>
-            </router-link>
+            <div class="drop-down">
+                <label for="dropdown-checkbox" class="link">
+                    <span class="add-button">
+                        <font-awesome-icon icon="plus"></font-awesome-icon>
+                    </span>
+                </label>
+
+                <input type="checkbox" id="dropdown-checkbox" ref="dropdown-checkbox">
+                <ul class="add-menu">
+                    <li>
+                        <router-link :to="{ name: 'add-lesson' }">
+                            Add Lesson
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link :to="{ name: 'add-course' }">
+                            Add Course
+                        </router-link>
+                    </li>
+<!--                    <li>-->
+<!--                        <router-link :to="{ name: '' }">-->
+<!--                            Import Website-->
+<!--                        </router-link>-->
+<!--                    </li>-->
+<!--                    <li>-->
+<!--                        <router-link :to="{ name: '' }">-->
+<!--                            Import E-book-->
+<!--                        </router-link>-->
+<!--                    </li>-->
+                </ul>
+            </div>
+
             <router-link :to="{ name: 'sign-out' }">
                 <button class="sign-out-button button-hollow link">Sign Out</button>
             </router-link>
-
         </div>
-
-
     </header>
 </template>
 <script>
@@ -42,6 +66,11 @@
     export default {
         name: "AuthHeader",
         components: {},
+        watch: {
+            $route() {
+                this.$refs["dropdown-checkbox"].checked = false;
+            }
+        },
         data() {
             return {
                 learningLanguage: null
@@ -126,16 +155,67 @@
         border-color: var(--on-secondary-color);
     }
 
-    .add-lesson-button {
-        background-color: var(--on-primary-color);
-        border: none;
-        height: 25px;
-        width: 25px;
+    .add-button {
+        background-color: var(--secondary-color);
+        height: 30px;
+        width: 30px;
+        padding: 5px;
+        border: 1px solid var(--on-secondary-color);
+        border-radius: 8px;
     }
 
-    .add-lesson-button svg {
-        color: black;
+    .add-button svg {
+        color: var(--on-secondary-color);
         font-size: 1rem;
     }
 
+
+    .drop-down {
+        margin: 0 auto;
+        display: inline-block;
+        padding: 0 30px;
+        position: relative;
+        text-align: center;
+    }
+
+    .add-menu {
+        position: absolute;
+        top: 50px;
+        left: -20px;
+        clear: both;
+        opacity: 0;
+        overflow: hidden;
+        text-align: center;
+        transition: opacity .4s ease;
+        width: 150px;
+        border: 1px solid gray;
+        border-radius: 8px;
+    }
+
+    .add-menu li {
+        background-color: white;
+    }
+
+
+    .add-menu li a {
+        display: block;
+        padding: 10px 5px;
+        text-decoration: none;
+        color: black;
+    }
+
+    .add-menu li:hover {
+        background-color: lightgray;
+        cursor: pointer;
+    }
+
+    #dropdown-checkbox {
+        position: absolute;
+        opacity: 0;
+        height: 0;
+    }
+
+    #dropdown-checkbox:checked + .add-menu {
+        opacity: 1;
+    }
 </style>
