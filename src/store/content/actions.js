@@ -108,4 +108,21 @@ export default {
             module: "content",
         });
     },
+    async editLesson(context, payload) {
+        const lessonId = payload.lessonId;
+        return await context.dispatch('fetchCustom', {
+            url: `${context.getters.apiUrl}/lessons/${lessonId}`,
+            options: {
+                method: "PUT",
+                body: JSON.stringify({
+                    course: payload.courseId,
+                    title: payload.title,
+                    text: payload.text,
+                })
+            },
+            protected: true,
+            caller: "editLesson",
+            module: "content",
+        });
+    },
 }

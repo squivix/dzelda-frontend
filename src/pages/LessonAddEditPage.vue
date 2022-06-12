@@ -1,7 +1,7 @@
 <template>
     <base-card :title="pageTitle" class="add-edit-lesson-base-card">
         <template v-slot:content>
-            <form class="add-edit-lesson-form" @submit.prevent="addLesson">
+            <form class="add-edit-lesson-form" @submit.prevent="onSubmit">
                 <label for="lesson-course">Course</label>
                 <select required id="lesson-course" v-model="selectedCourse">
                     <option value="" disabled selected>Select course</option>
@@ -52,31 +52,37 @@
             async fetchEditableCourses() {
                 this.editableCourses = await this.$store.dispatch("fetchEditableCourses");
             },
+            async onSubmit(event) {
+                if (this.lesson == null)
+                    await this.addLesson();
+                else
+                    await this.editLesson();
 
-            async addLesson(event) {
-                this.$store.dispatch("postLesson", {
+                if (event.submitter.id === "save-button") {
+                    await this.$router.push({
+                        name: 'edit-lesson',
+                        params: {learningLanguage: this.$route.params.learningLanguage, lessonId: this.lesson.id}
+                    });
+                } else if (event.submitter.id === "save-and-open-button") {
+                    await this.$router.push({
+                        name: 'lesson',
+                        params: {learningLanguage: this.$route.params.learningLanguage, lessonId: this.lesson.id}
+                    });
+                }
+            },
+            async addLesson() {
+                this.lesson = await this.$store.dispatch("postLesson", {
                     courseId: this.selectedCourse,
                     title: this.title,
                     text: this.text,
-                }).then(async (newLesson) => {
-                    await this.$store.dispatch("postUserLesson", {lessonId: newLesson.id})
-                    if (event.submitter.id === "save-button") {
-                        this.$router.push({
-                            name: 'edit-lesson',
-                            params: {learningLanguage: this.$route.params.learningLanguage, lessonId: newLesson.id}
-                        })
-                    } else if (event.submitter.id === "save-and-open-button") {
-                        this.$router.push({
-                            name: 'lesson',
-                            params: {learningLanguage: this.$route.params.learningLanguage, lessonId: newLesson.id}
-                        })
-                    }
                 });
+                await this.$store.dispatch("postUserLesson", {lessonId: this.lesson.id})
             },
 
             async editLesson() {
                 this.$store.dispatch("editLesson", {
-                    course: this.selectedCourse,
+                    lessonId: this.$route.params.lessonId,
+                    courseId: this.selectedCourse,
                     title: this.title,
                     text: this.text,
                 });

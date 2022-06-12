@@ -30,7 +30,7 @@ const store = createStore({
                 response = await fetch(payload.url, payload.options);
             if (response.ok && response.status !== 204)
                 return await response.json();
-            else if (response.error) {
+            else if (response.status >= 400 && response.status < 500) {
                 const responseData = await response.text();
                 console.log(`vuexstore:${payload.module}/${payload.caller}:Response code ${response.status}: ${responseData}`)
                 throw new Error(responseData);
