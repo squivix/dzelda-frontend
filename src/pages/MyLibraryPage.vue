@@ -50,7 +50,7 @@
             };
         },
         async mounted() {
-            await this.fetchCourses();
+            await this.fetchSavedCourses();
             await this.fetchLessons();
         },
         methods: {
@@ -63,8 +63,8 @@
                     user_lessons[i].course = course_map[user_lessons[i].course]
                 this.lessons = user_lessons;
             },
-            async fetchCourses() {
-                const user_courses = await this.$store.dispatch("fetchUserCourses");
+            async fetchSavedCourses() {
+                const user_courses = await this.$store.dispatch("fetchSavedCourses");
                 this.courses = user_courses;
             }
         }

@@ -16,7 +16,7 @@ import store from './store/index.js'
 
 const router = createRouter({
     routes: [
-        {path: '/', redirect: 'home', meta: {requiresAuth: false, showFooter: true}},
+        {path: '/', redirect: {name: 'home'}, name: 'root', meta: {requiresAuth: false, showFooter: true}},
         {path: '/home', component: HomePage, name: 'home', meta: {requiresAuth: false, showFooter: true}},
         {path: '/login', component: UserLogin, name: 'login', meta: {requiresAuth: false, showFooter: true}},
         {

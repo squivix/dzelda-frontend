@@ -79,3 +79,15 @@ a:hover {
 .unselectable {
     user-select: none;
 }
+
+.checkbox-label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 3px;
+}
+
+.checkbox-label input[type=checkbox] {
+    flex: none;
+    margin: 0;
+}

@@ -27,13 +27,13 @@ export default {
             throw new Error(responseData);
         }
     },
-    async fetchUserCourses(context, payload) {
-        const response = await context.dispatch('fetchProtected', {url: `${context.getters.apiUrl}/users/me/courses`});
+    async fetchSavedCourses(context, payload) {
+        const response = await context.dispatch('fetchProtected', {url: `${context.getters.apiUrl}/users/me/saved-courses`});
         if (response.ok)
             return await response.json();
         else {
             const responseData = await response.text();
-            console.log(`vuexstore:content/fetchUserCourses:Response code ${response.status}: ${responseData}`)
+            console.log(`vuexstore:content/fetchSavedCourses:Response code ${response.status}: ${responseData}`)
             throw new Error(responseData);
         }
     },
@@ -88,6 +88,55 @@ export default {
             console.log(`vuexstore:content/fetchCourseLessons:Response code ${response.status}: ${responseData}`)
             throw new Error(responseData);
         }
-    }
+    },
+    async fetchEditableCourses(context) {
+        const response = await context.dispatch('fetchProtected', {
+            url: `${context.getters.apiUrl}/users/me/editable-courses`
+        });
+        if (response.ok)
+            return await response.json();
+        else {
+            const responseData = await response.text();
+            console.log(`vuexstore:content/fetchEditableCourses:Response code ${response.status}: ${responseData}`)
+            throw new Error(responseData);
+        }
+    },
 
+    async postLesson(context, payload) {
+        const response = await context.dispatch('fetchProtected', {
+            url: `${context.getters.apiUrl}/courses/${payload.course}/lessons`,
+            options: {
+                method: "POST",
+                body: JSON.stringify({
+                    title: payload.title,
+                    text: payload.text,
+                })
+            }
+        });
+        if (response.ok)
+            return await response.json();
+        else {
+            const responseData = await response.text();
+            console.log(`vuexstore:content/postLesson:Response code ${response.status}: ${responseData}`)
+            throw new Error(responseData);
+        }
+    },
+    async postUserLesson(context, payload) {
+        const response = await context.dispatch('fetchProtected', {
+            url: `${context.getters.apiUrl}/users/me/lessons`,
+            options: {
+                method: "POST",
+                body: JSON.stringify({
+                    lessonId: payload.lessonId
+                })
+            }
+        });
+        if (response.ok)
+            return await response.json();
+        else {
+            const responseData = await response.text();
+            console.log(`vuexstore:content/postUserLesson:Response code ${response.status}: ${responseData}`)
+            throw new Error(responseData);
+        }
+    },
 }
