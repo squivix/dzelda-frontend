@@ -12,6 +12,7 @@ import MyLibraryPage from './pages/MyLibraryPage.vue'
 import MyVocabPage from './pages/MyVocabPage.vue'
 import LessonAddEditPage from './pages/LessonAddEditPage.vue'
 import CourseAddPage from './pages/CourseAddPage.vue'
+import CourseEditPage from './pages/CourseEditPage.vue'
 
 import store from './store/index.js'
 
@@ -101,6 +102,12 @@ const router = createRouter({
             path: '/learn/:learningLanguage/courses/:courseId',
             component: CourseViewer,
             name: 'course',
+            meta: {requiresAuth: true, showFooter: false}
+        },
+        {
+            path: '/learn/:learningLanguage/courses/:courseId/edit',
+            component: CourseEditPage,
+            name: "edit-course",
             meta: {requiresAuth: true, showFooter: false}
         },
 

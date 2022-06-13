@@ -8,6 +8,13 @@
                     <option v-for="course in editableCourses" :key="course.id" :value="course.id">
                         {{course.title}}
                     </option>
+<!--                    TODO make this link work-->
+<!--                    <option>-->
+<!--                        New Course-->
+<!--                        <router-link-->
+<!--                                :to="{name:'add-course', params:{learningLanguage:$route.params.learningLanguage}}">-->
+<!--                        </router-link>-->
+<!--                    </option>-->
                 </select>
                 <label for="lesson-title">Title</label>
                 <input id="lesson-title" type="text" placeholder="Lesson Title" v-model="title" required>

@@ -8,6 +8,11 @@
                     <h4>{{course.title}}</h4>
                 </router-link>
 
+                <router-link
+                        :to="{name:'edit-course', params:{learningLanguage:$route.params.learningLanguage, courseId:course.id}}">
+                    <h4>Edit</h4>
+                </router-link>
+
             </article>
         </template>
     </base-card>
