@@ -1,23 +1,28 @@
 <template>
     <div @click="onBackgroundClicked">
         <h2 class="title">
-      <span v-for="(word, index) in paragraphWords(title)" :key="index">
-        <span v-if="isWord(word)"
-              :class="getWordClass(word)"
-              @click.stop="onWordClicked(word)">
-            {{ word }}</span>
-        <template v-else>{{ word }}</template>
-      </span>
+      <span v-for="(word, index) in paragraphWords(title)"
+            :key="index"
+            :class="isWord(word)?getWordClass(word):null"
+            :id="isWord(word)?`title-word-${index}`:null"
+            @click.stop="isWord(word)?onWordClicked(word):null"
+            :draggable="isWord(word)?true:null"
+            @dragstart="isWord(word)?wordDragStart($event):null"
+            @dragenter="isWord(word)?wordDragEnter($event):null">
+          {{ word }}</span>
         </h2>
 
         <div class="lesson-text">
-            <p v-for="(paragraph, index) in lessonParagraphs" :key="index">
-                <span v-for="(word, index) in paragraphWords(paragraph)"
-                      :key="index"
-                      @click.stop="onWordClicked(word)">
-                  <span v-if="isWord(word)" :class="getWordClass(word)">{{word}}</span>
-                  <template v-else>{{ word }}</template>
-                </span>
+            <p v-for="(paragraph, paragraphIndex) in lessonParagraphs" :key="paragraphIndex">
+                <span v-for="(word, wordIndex) in paragraphWords(paragraph)"
+                      :key="wordIndex"
+                      :class="isWord(word)?getWordClass(word):null"
+                      :id="isWord(word)?`paragraph-${paragraphIndex}-word-${wordIndex}`:null"
+                      @click.stop="isWord(word)?onWordClicked(word):null"
+                      :draggable="isWord(word)?true:null"
+                      @dragstart="isWord(word)?wordDragStart($event):null"
+                      @dragenter="isWord(word)?wordDragEnter($event):null">
+                  {{ word }}</span>
             </p>
         </div>
     </div>
@@ -42,6 +47,11 @@
             },
         },
         emits: ['onWordClicked', 'onBackgroundClicked'],
+        data() {
+            return {
+                draggStartWord: null,
+            };
+        },
         computed: {
             lessonParagraphs() {
                 return this.text.split(/\s\s+/g);
@@ -76,17 +86,59 @@
                 }
             },
             onWordClicked(word) {
-                if (this.isWord(word)) this.$emit('onWordClicked', word);
+                if (this.isWord(word))
+                    this.$emit('onWordClicked', word);
+            },
+            wordDragStart(event) {
+                // console.log(`start: ${event.target.innerText}`);
+                this.draggStartWord = event.target;
+            },
+            wordDragEnter(event) {
+                console.log(this.draggStartWord.id)
+                let endWord = event.target
+                let startWord = this.draggStartWord;
+                if (!endWord.classList.contains('word') || !startWord.classList.contains('word'))
+                    return;
+
+                let selectedWords;
+                if (endWord === startWord) {
+                    selectedWords = [startWord];
+                } else {
+                    let tokens = startWord.id.split('-');
+                    const startWordNum = Number(tokens[tokens.length - 1]);
+                    tokens = endWord.id.split('-');
+                    const endWordNum = Number(tokens[tokens.length - 1]);
+
+                    if (startWordNum > endWordNum)
+                        [startWord, endWord] = [endWord, startWord];
+
+                    selectedWords = [startWord];
+                    const wordsAfterStart = document.querySelectorAll(`#${startWord.id} ~ .word`)
+                    // console.log(wordsAfterStart)
+                    for (const w of wordsAfterStart) {
+                        if (w === endWord)
+                            break;
+                        selectedWords.push(w);
+                    }
+                    selectedWords.push(endWord);
+                    document.querySelectorAll('.word').forEach((w)=>w.classList.remove('phrase-word'))
+                    selectedWords.forEach((w) => w.classList.add("phrase-word"));
+                }
             },
             onBackgroundClicked() {
                 this.$emit('onBackgroundClicked');
             },
             isWord(text) {
-                //TODO fix string with numnbers being counted as word ex: '123abc' returns true
+                //TODO fix string with numbers being counted as word ex: '123abc' returns true
                 return !!text.match(/[\p{L}]+/gu);
             },
-        },
-    };
+        }
+        ,
+        mounted() {
+
+        }
+    }
+    ;
 </script>
 
 <style scoped>
@@ -94,6 +146,7 @@
         display: flex;
         flex-direction: column;
         row-gap: 1rem;
+        user-select: none;
     }
 
     .title {
@@ -111,7 +164,13 @@
     }
 
     span {
-        user-select: none;
+        /*user-select: none;*/
+    }
+
+    span::selection {
+        /*background: transparent;*/
+        color: red;
+        background: yellow;
     }
 
     .word {
@@ -150,5 +209,9 @@
     .word-learned,
     .word-ignored {
         background-color: transparent;
+    }
+
+    .phrase-word {
+        background-color: red;
     }
 </style>

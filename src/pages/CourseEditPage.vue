@@ -11,12 +11,38 @@
                 <!--<label for="course-tags">Tags</label>-->
                 <!--<input id="course-tags" placeholder="Course Tags">-->
 
-                <label for="course-lessons">Lessons</label>
-                <ol id="course-lessons">
-                    <li v-for="lesson in lessons" :key="lesson">
-                        {{lesson.title}}
-                    </li>
-                </ol>
+
+                <label for="lesson-table">Lessons</label>
+                <table id="lesson-table" class="">
+                    <thead class="lesson-thead">
+                    <th class="centered-table-col"><input type="checkbox" @change="selectAllLessons"></th>
+                    <th class="centered-table-col"></th>
+                    <th>Title</th>
+                    </thead>
+
+                    <draggable
+                            tag="tbody"
+                            class="lesson-rows"
+                            handle=".handle"
+                            v-model="lessons">
+                        <tr v-for="lesson in lessons" :key="lesson.id">
+                            <td class="centered-table-col">
+                                <input type="checkbox" :value="lesson.id" v-model="selectedLessons">
+                            </td>
+                            <td class="handle centered-table-col">
+                                <font-awesome-icon icon="grip-lines"></font-awesome-icon>
+                            </td>
+                            <td>
+                                <router-link
+                                        :to="{name:'edit-lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}">
+                                    {{lesson.title}}
+                                </router-link>
+                            </td>
+                        </tr>
+                    </draggable>
+                </table>
+
+
                 <label for="is-public-checkbox" class="checkbox-label">
                     <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
                     Public
@@ -30,24 +56,43 @@
 
 <script>
     import BaseCard from "@/components/ui/BaseCard";
+    import {VueDraggableNext} from 'vue-draggable-next'
 
     export default {
         name: "CourseEditPage",
-        components: BaseCard,
+        components: {
+            BaseCard,
+            draggable: VueDraggableNext,
+        },
         data() {
             return {
                 title: null,
                 description: null,
                 isPublic: true,
-                lessons: null
+                lessons: null,
+                selectedLessons: []
             };
         },
         methods: {
             onSubmit() {
                 this.editCourse();
+                this.$router.push({ name:'course', ...this.$route.params})
             },
             async editCourse() {
+                await this.$store.dispatch("updateCourse", {
+                    id: this.$route.params.courseId,
+                    title: this.title,
+                    description: this.description,
+                    is_public: this.isPublic,
+                    lessons: this.lessons.map(lesson => lesson.id)
+                })
+            },
 
+            selectAllLessons(event) {
+                if (event.target.checked)
+                    this.selectedLessons = this.lessons.map((lesson) => lesson.id);
+                else
+                    this.selectedLessons = [];
             },
             async fetchCourse() {
                 return await this.$store.dispatch("fetchCourse", {
@@ -68,7 +113,6 @@
             this.description = course.description;
             this.isPublic = course.is_public;
             this.lessons = await this.fetchCourseLessons();
-            console.log(this.lessons)
         }
     }
 </script>
@@ -101,7 +145,7 @@
         font-size: 1.25rem;
     }
 
-    .edit-course-form input, .edit-course-form select, .edit-course-form textarea {
+    .edit-course-form input:not([type='checkbox']), .edit-course-form select, .edit-course-form textarea, #lesson-table {
         margin-bottom: 1rem;
         font-size: 1rem;
     }
@@ -118,4 +162,24 @@
         resize: none;
         height: 15vh;
     }
+
+    .lesson-thead th:not(.centered-table-col) {
+        text-align: start;
+        vertical-align: middle;
+        font-weight: bold;
+    }
+
+    .lesson-rows tr:nth-child(odd) {
+        background-color: whitesmoke;
+    }
+
+    .lesson-rows td {
+        vertical-align: middle;
+        padding: 0.5rem 0.1rem;
+    }
+
+    .centered-table-col {
+        text-align: center;
+    }
+
 </style>

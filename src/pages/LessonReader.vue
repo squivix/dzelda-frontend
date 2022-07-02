@@ -93,7 +93,11 @@
         },
     };
 </script>
-
+<style>
+    body {
+        user-select: none;
+    }
+</style>
 <style scoped>
     .base-card {
         width: 80vw;

@@ -143,4 +143,20 @@ export default {
             module: "content",
         });
     },
+
+    async updateCourse(context, payload) {
+        return await context.dispatch('fetchCustom', {
+            url: `${context.getters.apiUrl}/courses/${payload.id}`,
+            options: {
+                method: "PUT",
+                body: JSON.stringify({
+                    ...payload,
+                    id: undefined
+                })
+            },
+            protected: true,
+            caller: "postCourse",
+            module: "content",
+        });
+    }
 }
