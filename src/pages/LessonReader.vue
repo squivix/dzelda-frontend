@@ -2,12 +2,15 @@
     <base-card v-if="!loading">
         <template v-slot:all>
             <the-lesson-content
-                    @onWordClicked="setSelectedWord"
-                    @onBackgroundClicked="clearSelectedWord"
                     :title="lesson.title"
                     :text="lesson.text"
+                    :lessonElements="lessonElements"
                     :words="words"
-                    class="lesson-content">
+                    :phrases="phrases"
+                    class="lesson-content"
+                    @onWordClicked="setSelectedWord"
+                    @onPhraseClicked="setSelectedPhrase"
+                    @onBackgroundClicked="clearSelectedWord">
             </the-lesson-content>
             <the-meaning-panel
                     class="meaning-panel"
@@ -31,19 +34,26 @@
             return {
                 loadingLesson: true,
                 loadingWords: true,
+                parsingLesson: true,
                 lesson: null,
                 words: {},
+                phrases: {},
                 selectedWord: null,
+                lessonElements: null,
             };
         },
         async created() {
             await this.fetchLesson();
             await this.fetchWordsLevels();
+            this.parseLesson();
         },
         computed: {
             loading() {
-                return this.loadingLesson || this.loadingWords;
+                return this.loadingLesson || this.loadingWords || this.parsingLesson;
             },
+            vocab() {
+                return {...this.words, ...this.phrases}
+            }
         },
         methods: {
             async fetchLesson() {
@@ -58,11 +68,15 @@
             async fetchWordsLevels() {
                 this.loadingWords = true;
                 this.words = await this.$store.dispatch("fetchLessonWords", {lessonId: this.$route.params.lessonId});
+                this.phrases = await this.$store.dispatch("fetchLessonPhrases", {lessonId: this.$route.params.lessonId});
                 this.loadingWords = false;
             },
 
             setSelectedWord(word) {
-                this.selectedWord = {text: word, ...this.words[word.toLowerCase()]};
+                this.selectedWord = {text: word, ...this.vocab[word.toLowerCase()]};
+            },
+            setSelectedPhrase(phrase) {
+                this.selectedWord = {text: phrase, ...this.phrases[phrase.toLowerCase()]};
             },
             clearSelectedWord() {
                 this.selectedWord = null;
@@ -72,14 +86,14 @@
             onMeaningAdded(word, new_meaning) {
                 const key = word.text.toLowerCase();
                 this.onWordLevelSet(word, word.level);
-                this.words[key].user_meanings.push(new_meaning);
-                this.words[key].id = word.id;
+                this.vocab[key].user_meanings.push(new_meaning);
+                this.vocab[key].id = word.id;
                 this.setSelectedWord(word.text);
             },
             onWordLevelSet(word, level) {
-                this.words[word.text.toLowerCase()].level = level;
+                this.vocab[word.text.toLowerCase()].level = level;
                 if (level === WORD_LEVELS.IGNORED || level === WORD_LEVELS.KNOWN) {
-                    this.words[word.text.toLowerCase()].user_meanings = [];
+                    this.vocab[word.text.toLowerCase()].user_meanings = [];
                     this.clearSelectedWord();
                 } else
                     this.setSelectedWord(word.text);
@@ -89,9 +103,63 @@
                 word.user_meanings.splice(index, 1);
                 if (word.user_meanings.length === 0)
                     this.onWordLevelSet(word, WORD_LEVELS.NEW);
-            }
-        },
-    };
+            },
+            parseLesson() {
+                this.parsingLesson = true;
+                this.lessonElements = {
+                    title: this.parseStringToElements([this.lesson.title])[0],
+                    text: this.parseStringToElements(this.lessonParagraphs(this.lesson.text))
+                };
+                this.parsingLesson = false;
+            },
+            parseStringToElements(texts) {
+                let paragraphList = [];
+
+                const phrases = Object.keys(this.phrases);
+                for (let paragraph of texts) {
+                    let words = this.paragraphWords(paragraph);
+                    let paragraphElements = [];
+                    for (let word of words) {
+                        if (this.isWord(word))
+                            paragraphElements.push({text: word, isWord: true, phrases: {}});
+                        else
+                            paragraphElements.push({text: word, isWord: false, phrases: {}});
+                    }
+                    for (let phrase of phrases) {
+                        let regex = new RegExp(`${this.escapeRegExp(phrase)}`, 'ig');
+                        let matches = paragraph.matchAll(regex);
+
+                        for (let match of matches) {
+                            let beforePhraseIndex = this.paragraphWords(paragraph.substring(0, match.index)).length;
+                            let phraseSlice = this.paragraphWords(match[0]);
+                            const phraseElements = paragraphElements.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length)
+                            phraseElements.forEach((pe, index) => pe.phrases[phrase] = index);
+                            // console.log(phraseElements)
+                        }
+                    }
+                    paragraphList.push(paragraphElements);
+                }
+                return paragraphList;
+            },
+            paragraphWords(paragraph, regex) {
+                //[^\p{L}\d]
+                return paragraph.split(regex ?? /([^\p{L}\d])/gu).filter((word) => word !== '');
+                // return paragraph.split(/(\s|[^a-zA-Z\d\s:])+/g);
+            },
+            lessonParagraphs(text) {
+                return text.split(/\s\s+/g);
+            },
+            isWord(text) {
+                //TODO fix string with numbers being counted as word ex: '123abc' returns true
+                return !!text.match(/[\p{L}]+/gu);
+            },
+            escapeRegExp(text) {
+                return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+            },
+        }
+        ,
+    }
+    ;
 </script>
 <style>
     body {

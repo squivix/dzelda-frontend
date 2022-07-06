@@ -1,5 +1,5 @@
 <template>
-    <h5>Saved Meanings</h5>
+    <h5 v-if="savedMeanings.length>0">Saved Meanings</h5>
     <ol class="user-meanings">
         <li v-for="meaning in savedMeanings" :key="meaning.id">
             <form action="javascript:void(0);">

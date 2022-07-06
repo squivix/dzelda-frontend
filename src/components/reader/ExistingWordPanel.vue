@@ -11,7 +11,7 @@
             <font-awesome-icon icon="plus"></font-awesome-icon>
         </button>
 
-        <h5>Set Word Level</h5>
+        <h5>Set Level</h5>
         <word-level-picker
                 :wordId="word.id"
                 :level="word.level"

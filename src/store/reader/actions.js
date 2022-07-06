@@ -8,6 +8,15 @@ export default {
             module: "reader",
         });
     },
+    async fetchLessonPhrases(context, payload) {
+        const lessonId = payload.lessonId;
+        return await context.dispatch('fetchCustom', {
+            url: `${context.getters.apiUrl}/users/me/lessons/${lessonId}/phrases`,
+            protected: true,
+            caller: "fetchLessonPhrases",
+            module: "reader",
+        });
+    },
 
     async saveMeaningToUser(context, payload) {
         return await context.dispatch('fetchCustom', {

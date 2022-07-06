@@ -11,7 +11,7 @@
     </div>
 
     <form class="new-meaning-form" action="javascript:void(0);">
-        <input placeholder="Manually add meaning here" v-model="newMeaning"/>
+        <input placeholder="Add new meaning here" v-model="newMeaning"/>
         <button class="new-meaning-button"
                 @click="addNewMeaning"
                 type="submit">
@@ -25,7 +25,7 @@
 
     export default {
         name: "MeaningAddingControls",
-        components:{},
+        components: {},
         emits: ["onMeaningAdded"],
         props: {
             wordText: {
