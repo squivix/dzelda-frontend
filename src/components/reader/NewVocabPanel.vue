@@ -1,14 +1,14 @@
 <template>
-    <div class="new-word-panel">
+    <div class="new-vocab-panel">
         <meaning-adding-controls
-                :word-text="word.text"
+                :vocab-text="vocab.text"
                 :suggested-meanings="suggestedMeanings"
                 @onMeaningAdded="onMeaningAdded">
 
         </meaning-adding-controls>
 
         <dictionaries-list
-                :word-text="word.text">
+                :vocab-text="vocab.text">
 
         </dictionaries-list>
         <div class="mark-buttons-div" v-if="isLevelNew || isLevelIgnored">
@@ -22,17 +22,17 @@
 </template>
 
 <script>
-    import {WORD_LEVELS} from "@/constants.js";
+    import {VOCAB_LEVELS} from "@/constants.js";
     import MeaningAddingControls from "@/components/reader/MeaningAddingControls";
     import DictionariesList from "@/components/reader/DictionaryList";
-    import {postWord} from "@/components/reader/shared";
+    import {postVocab} from "@/components/reader/shared";
 
     export default {
-        name: "NewWordPanel",
+        name: "NewVocabPanel",
         components: {MeaningAddingControls, DictionariesList},
         emits: ["onMeaningAdded", "onVocabLevelSet"],
         props: {
-            word: {
+            vocab: {
                 type: Object,
                 required: true,
             },
@@ -43,34 +43,34 @@
         computed: {
             suggestedMeanings() {
                 //TODO add button to show all meanings
-                return this.word.all_meanings.filter((meaning) => !this.word.user_meanings.some((m) => m.id === meaning.id)).slice(0, 3);
+                return this.vocab.all_meanings.filter((meaning) => !this.vocab.user_meanings.some((m) => m.id === meaning.id)).slice(0, 3);
             },
             isLevelNew() {
-                return this.word.level === WORD_LEVELS.NEW;
+                return this.vocab.level === VOCAB_LEVELS.NEW;
             },
             isLevelIgnored() {
-                return this.word.level === WORD_LEVELS.IGNORED;
+                return this.vocab.level === VOCAB_LEVELS.IGNORED;
             }
         },
         methods: {
             markWordAsKnown() {
-                this.postWord(this.word.text, WORD_LEVELS.KNOWN);
-                this.$emit('onVocabLevelSet', WORD_LEVELS.KNOWN);
+                this.postVocab(this.vocab.text, VOCAB_LEVELS.KNOWN);
+                this.$emit('onVocabLevelSet', VOCAB_LEVELS.KNOWN);
             },
             markWordAsIgnored() {
-                this.postWord(this.word.text, WORD_LEVELS.IGNORED);
-                this.$emit('onVocabLevelSet', WORD_LEVELS.IGNORED);
+                this.postVocab(this.vocab.text, VOCAB_LEVELS.IGNORED);
+                this.$emit('onVocabLevelSet', VOCAB_LEVELS.IGNORED);
             },
-            onMeaningAdded(word, meaning) {
-                this.$emit('onMeaningAdded', word, meaning);
+            onMeaningAdded(vocab, meaning) {
+                this.$emit('onMeaningAdded', vocab, meaning);
             },
-            postWord
+            postVocab
         }
     }
 </script>
 
 <style scoped>
-    .new-word-panel {
+    .new-vocab-panel {
         display: flex;
         flex-direction: column;
         row-gap: 1rem;

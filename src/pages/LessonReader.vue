@@ -26,7 +26,7 @@
 <script>
     import TheLessonContent from '../components/reader/TheLessonContent.vue';
     import TheMeaningPanel from '../components/reader/TheMeaningPanel.vue';
-    import {WORD_LEVELS} from "@/constants";
+    import {VOCAB_LEVELS} from "@/constants";
     import {escapeRegExp} from "@/utils";
 
     export default {
@@ -77,7 +77,7 @@
                 this.selectedVocab = {text: vocabText, ...this.vocab[vocabText.toLowerCase()]};
             },
             selectNewPhrase(phraseText) {
-                this.selectedVocab = {text: phraseText, level: WORD_LEVELS.NEW, all_meanings: [], user_meanings: []};
+                this.selectedVocab = {text: phraseText, level: VOCAB_LEVELS.NEW, all_meanings: [], user_meanings: []};
             },
             clearSelectedVocab() {
                 this.selectedVocab = null;
@@ -100,7 +100,7 @@
             onVocabLevelSet(vocab, level) {
                 const key = vocab.text.toLowerCase();
                 this.vocab[key].level = level;
-                if (level === WORD_LEVELS.IGNORED || level === WORD_LEVELS.KNOWN) {
+                if (level === VOCAB_LEVELS.IGNORED || level === VOCAB_LEVELS.KNOWN) {
                     this.vocab[key].user_meanings = [];
                     this.clearSelectedVocab();
                 } else
@@ -110,7 +110,7 @@
                 const index = word.user_meanings.findIndex((meaning) => meaning.id === deleted_meaning.id)
                 word.user_meanings.splice(index, 1);
                 if (word.user_meanings.length === 0)
-                    this.onVocabLevelSet(word, WORD_LEVELS.NEW);
+                    this.onVocabLevelSet(word, VOCAB_LEVELS.NEW);
             },
             parseLesson() {
                 this.parsingLesson = true;

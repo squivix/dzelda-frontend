@@ -84,8 +84,6 @@
                         phraseText += wordNode.innerText.toLowerCase() + " ";
                 });
                 phraseText = phraseText.trim();
-                console.log(phraseText);
-
                 //new phrase
                 if (!this.phrases[phraseText]) {
                     this.onNewPhraseSelected(phraseText);

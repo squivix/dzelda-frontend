@@ -21,7 +21,7 @@
         components: {},
         emits: ["onMeaningDeleted"],
         props: {
-            wordId: {
+            vocabId: {
                 type: Number,
                 required: true
             },
@@ -33,25 +33,25 @@
         methods: {
             async deleteMeaning(meaning) {
                 await this.$store.dispatch("deleteUserMeaning", {
-                    word_id: this.wordId,
-                    meaning_id: meaning.id
+                    vocabId: this.vocabId,
+                    meaningId: meaning.id
                 });
                 this.$emit('onMeaningDeleted', meaning);
             },
             async editMeaning(meaning) {
-                const edited_meaning = this.$refs[`user-meaning-input-${meaning.id}`][0].value.trim();
-                if (edited_meaning === undefined || edited_meaning === "")
+                const editedMeaning = this.$refs[`user-meaning-input-${meaning.id}`][0].value.trim();
+                if (editedMeaning === undefined || editedMeaning === "")
                     await this.deleteMeaning(meaning)
-                else if (edited_meaning === meaning.text)
+                else if (editedMeaning === meaning.text)
                     return;
                 this.$store.dispatch("deleteUserMeaning", {
-                    word_id: this.wordId,
-                    meaning_id: meaning.id
+                    vocabId: this.vocabId,
+                    meaningId: meaning.id
                 }).then(() => {
                     this.$store.dispatch("addNewMeaning", {
-                        word_id: this.wordId,
+                        vocabId: this.vocabId,
                         meaningLanguage: "en",
-                        meaningText: edited_meaning,
+                        meaningText: editedMeaning,
                     });
                 });
             },

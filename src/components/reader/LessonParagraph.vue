@@ -114,17 +114,17 @@
                     case 0:
                         return 'phrase-new';
                     case 1:
-                        return 'phrase-level-1 ';
+                        return 'phrase phrase-level-1 ';
                     case 2:
-                        return 'phrase-level-2 ';
+                        return 'phrase phrase-level-2 ';
                     case 3:
-                        return 'phrase-level-3';
+                        return 'phrase phrase-level-3';
                     case 4:
-                        return 'phrase-level-4';
+                        return 'phrase phrase-level-4';
                     case 5:
-                        return 'phrase-learned';
+                        return 'phrase phrase-learned';
                     case 6:
-                        return 'phrase-known';
+                        return 'phrase phrase-known';
                     default:
                         return '';
                 }
@@ -279,6 +279,6 @@
     }
 
     .phrase-selected {
-        background-color: red;
+        background-color: #268AFA;
     }
 </style>

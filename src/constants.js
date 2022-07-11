@@ -1,4 +1,4 @@
-export const WORD_LEVELS = {
+export const VOCAB_LEVELS = {
     IGNORED: -1,
     NEW: 0,
     LEVEL_1: 1,

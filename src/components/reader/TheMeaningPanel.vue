@@ -1,35 +1,35 @@
 <template>
     <div v-if="vocab">
-        <h4 class="word-text">{{ vocab.text }}</h4>
-        <div :class="{'new-word-panel':showAddPanel, 'existing-word-panel':!showAddPanel}">
+        <h4 class="vocab-text">{{ vocab.text }}</h4>
+        <div :class="{'new-vocab-panel':showAddPanel, 'existing-vocab-panel':!showAddPanel}">
             <div v-if="vocab">
-                <new-word-panel
+                <new-vocab-panel
                         v-if="showAddPanel"
-                        :word="vocab"
+                        :vocab="vocab"
                         @onMeaningAdded="onMeaningAdded"
                         @onVocabLevelSet="onVocabLevelSet">
 
-                </new-word-panel>
-                <existing-word-panel
+                </new-vocab-panel>
+                <existing-vocab-panel
                         v-else
-                        :word="vocab"
+                        :vocab="vocab"
                         @onAddMoreMeaningsClicked="onAddMoreMeaningsClicked"
                         @onMeaningDeleted="onMeaningDeleted"
                         @onVocabLevelSet="onVocabLevelSet">
-                </existing-word-panel>
+                </existing-vocab-panel>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-    import {WORD_LEVELS} from "@/constants.js";
-    import NewWordPanel from "@/components/reader/NewWordPanel";
-    import ExistingWordPanel from "@/components/reader/ExistingWordPanel";
+    import {VOCAB_LEVELS} from "@/constants.js";
+    import NewVocabPanel from "@/components/reader/NewVocabPanel";
+    import ExistingVocabPanel from "@/components/reader/ExistingVocabPanel";
 
     export default {
         name: "TheMeaningPanel",
-        components: {NewWordPanel, ExistingWordPanel},
+        components: {NewVocabPanel, ExistingVocabPanel},
         emits: ['onMeaningAdded', 'onVocabLevelSet', 'onMeaningDeleted'],
         props: {
             vocab: {
@@ -38,7 +38,7 @@
             }
         },
         watch: {
-            word() {
+            vocab() {
                 if (this.vocab === null)
                     this.addingMoreMeanings = false;
             }
@@ -49,22 +49,22 @@
             };
         },
         computed: {
-            wordLevels() {
-                return WORD_LEVELS;
+            vocabLevels() {
+                return VOCAB_LEVELS;
             },
-            isWordNotSaved() {
-                return this.vocab.level === WORD_LEVELS.NEW || this.vocab.level === WORD_LEVELS.IGNORED || this.vocab.level === WORD_LEVELS.KNOWN;
+            isVocabNotSaved() {
+                return this.vocab.level === VOCAB_LEVELS.NEW || this.vocab.level === VOCAB_LEVELS.IGNORED || this.vocab.level === VOCAB_LEVELS.KNOWN;
             },
             showAddPanel() {
-                return this.isWordNotSaved || this.addingMoreMeanings;
+                return this.isVocabNotSaved || this.addingMoreMeanings;
             }
         },
         methods: {
             onAddMoreMeaningsClicked() {
                 this.addingMoreMeanings = true;
             },
-            onMeaningAdded(word, meaning) {
-                this.$emit('onMeaningAdded', word, meaning);
+            onMeaningAdded(vocab, meaning) {
+                this.$emit('onMeaningAdded', vocab, meaning);
                 this.addingMoreMeanings = false;
             },
             onMeaningDeleted(meaning) {
@@ -82,19 +82,19 @@
     .meaning-panel {
     }
 
-    .word-text {
+    .vocab-text {
         font-size: 1.5rem;
         margin-bottom: 1rem;
     }
 
-    .new-word-panel {
+    .new-vocab-panel {
         background-color: #f0f9fe;
         height: 100%;
         padding: 1vw;
         border-radius: 10px;
     }
 
-    .existing-word-panel {
+    .existing-vocab-panel {
         background-color: #FFFCE9;
         height: 100%;
         padding: 1vw;

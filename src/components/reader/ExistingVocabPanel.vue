@@ -1,9 +1,9 @@
 <template>
-    <div class="existing-word-panel">
+    <div class="existing-vocab-panel">
         <meaning-editing-controls
                 @onMeaningDeleted="onMeaningDeleted"
-                :wordId="word.id"
-                :saved-meanings="word.user_meanings"
+                :vocab-id="vocab.id"
+                :saved-meanings="vocab.user_meanings"
         >
         </meaning-editing-controls>
 
@@ -12,29 +12,29 @@
         </button>
 
         <h5>Set Level</h5>
-        <word-level-picker
-                :wordId="word.id"
-                :level="word.level"
+        <vocab-level-picker
+                :vocab-id="vocab.id"
+                :level="vocab.level"
                 @onVocabLevelSet="onVocabLevelSet">
-        </word-level-picker>
+        </vocab-level-picker>
 
         <textarea class="notes"
                   placeholder="Notes"></textarea>
-        <!--        TODO: Encounters with word button-->
-        <!--        <button>View Encounters with this word</button>-->
+        <!--        TODO: Encounters with vocab button-->
+        <!--        <button>View Encounters with this vocab</button>-->
     </div>
 </template>
 
 <script>
-    import WordLevelPicker from "@/components/reader/WordLevelPicker";
+    import VocabLevelPicker from "@/components/reader/VocabLevelPicker";
     import MeaningEditingControls from "@/components/reader/MeaningEditingControls";
 
     export default {
-        name: "ExistingWordPanel",
-        components: {MeaningEditingControls, WordLevelPicker},
+        name: "ExistingVocabPanel",
+        components: {MeaningEditingControls, VocabLevelPicker},
         emits: ["onAddMoreMeaningsClicked", "onMeaningDeleted", "onVocabLevelSet"],
         props: {
-            word: {
+            vocab: {
                 type: Object,
                 required: true,
             },
@@ -60,7 +60,7 @@
 </script>
 
 <style scoped>
-    .existing-word-panel {
+    .existing-vocab-panel {
         display: flex;
         flex-direction: column;
         row-gap: 1rem;

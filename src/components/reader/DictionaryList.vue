@@ -10,7 +10,7 @@
         name: "DictionaryList",
         components: {},
         props: {
-            wordText: {
+            vocabText: {
                 type: String,
                 required: true
             }
@@ -23,7 +23,8 @@
         methods: {
             openDictionaryLink(dictionary) {
                 const link_template = dictionary.link;
-                const link = link_template.replace("<text>", this.wordText)
+                const link = link_template.replace("<text>", this.vocabText)
+                //TODO save paramaters of opened window locally
                 const ref = window.open(link, "Dictionary", 'left=20,top=20,width=800,height=500,toolbar=1,resizable=0');
                 ref.focus();
             }

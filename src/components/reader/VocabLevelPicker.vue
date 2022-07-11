@@ -1,22 +1,22 @@
 <template>
     <ol class="levels"
-        v-if="level !== wordLevels.NEW && level !== wordLevels.IGNORED&& level !== wordLevels.KNOWN">
-        <li :class="{ highlighted: level === wordLevels.LEVEL_1 }" @click="setWordLevel(wordLevels.LEVEL_1)">
-            {{wordLevels.LEVEL_1}}
+        v-if="level !== vocabLevels.NEW && level !== vocabLevels.IGNORED&& level !== vocabLevels.KNOWN">
+        <li :class="{ highlighted: level === vocabLevels.LEVEL_1 }" @click="setVocabLevel(vocabLevels.LEVEL_1)">
+            {{vocabLevels.LEVEL_1}}
         </li>
-        <li :class="{ highlighted: level === wordLevels.LEVEL_2 }" @click="setWordLevel(wordLevels.LEVEL_2)">
-            {{wordLevels.LEVEL_2}}
+        <li :class="{ highlighted: level === vocabLevels.LEVEL_2 }" @click="setVocabLevel(vocabLevels.LEVEL_2)">
+            {{vocabLevels.LEVEL_2}}
         </li>
-        <li :class="{ highlighted: level === wordLevels.LEVEL_3 }" @click="setWordLevel(wordLevels.LEVEL_3)">
-            {{wordLevels.LEVEL_3}}
+        <li :class="{ highlighted: level === vocabLevels.LEVEL_3 }" @click="setVocabLevel(vocabLevels.LEVEL_3)">
+            {{vocabLevels.LEVEL_3}}
         </li>
-        <li :class="{ highlighted: level === wordLevels.LEVEL_4 }" @click="setWordLevel(wordLevels.LEVEL_4)">
-            {{wordLevels.LEVEL_4}}
+        <li :class="{ highlighted: level === vocabLevels.LEVEL_4 }" @click="setVocabLevel(vocabLevels.LEVEL_4)">
+            {{vocabLevels.LEVEL_4}}
         </li>
-        <li :class="{ highlighted: level === wordLevels.LEARNED }" @click="setWordLevel(wordLevels.LEARNED)">
+        <li :class="{ highlighted: level === vocabLevels.LEARNED }" @click="setVocabLevel(vocabLevels.LEARNED)">
             <font-awesome-icon icon="check" ref="toggleShowIcon"/>
         </li>
-        <li :class="{ highlighted: level === wordLevels.IGNORED }" @click="setWordLevel(wordLevels.IGNORED)">
+        <li :class="{ highlighted: level === vocabLevels.IGNORED }" @click="setVocabLevel(vocabLevels.IGNORED)">
             <font-awesome-icon icon="ban" ref="toggleShowIcon"/>
         </li>
     </ol>
@@ -24,14 +24,14 @@
 </template>
 
 <script>
-    import {WORD_LEVELS} from "@/constants";
+    import {VOCAB_LEVELS} from "@/constants";
 
     export default {
-        name: "WordLevelPicker",
+        name: "VocabLevelPicker",
         components: {},
         emits: ["onVocabLevelSet"],
         props: {
-            wordId: {
+            vocabId: {
                 type: Number,
                 required: true
             },
@@ -41,14 +41,14 @@
             }
         },
         computed: {
-            wordLevels() {
-                return WORD_LEVELS;
+            vocabLevels() {
+                return VOCAB_LEVELS;
             }
         },
         methods: {
-            async setWordLevel(level) {
-                await this.$store.dispatch("updateWordLevel", {
-                    word_id: this.wordId,
+            async setVocabLevel(level) {
+                await this.$store.dispatch("updateVocabLevel", {
+                    vocabId: this.vocabId,
                     language: this.$route.params.learningLanguage,
                     level: level
                 });

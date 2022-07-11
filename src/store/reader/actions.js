@@ -20,7 +20,7 @@ export default {
 
     async saveMeaningToUser(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/vocabs/${payload.word_id}/meanings`,
+            url: `${context.getters.apiUrl}/users/me/vocabs/${payload.vocabId}/meanings`,
             options: {
                 method: 'POST',
                 body: JSON.stringify({
@@ -35,7 +35,7 @@ export default {
     },
     async addNewMeaning(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/vocabs/${payload.word_id}/meanings`,
+            url: `${context.getters.apiUrl}/vocabs/${payload.vocabId}/meanings`,
             options: {
                 method: 'POST',
                 body: JSON.stringify({
@@ -48,7 +48,7 @@ export default {
             module: "reader",
         });
     },
-    async postNewWord(context, payload) {
+    async postNewVocab(context, payload) {
         return await context.dispatch('fetchCustom', {
             url: `${context.getters.apiUrl}/users/me/vocabs`,
             options: {
@@ -64,9 +64,9 @@ export default {
             module: "reader",
         });
     },
-    async updateWordLevel(context, payload) {
+    async updateVocabLevel(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/vocabs/${payload.word_id}`,
+            url: `${context.getters.apiUrl}/users/me/vocabs/${payload.vocabId}`,
             options: {
                 method: 'PATCH',
                 body: JSON.stringify({
@@ -75,14 +75,14 @@ export default {
                 }),
             },
             protected: true,
-            caller: "updateWordLevel",
+            caller: "updateVocabLevel",
             module: "reader",
         });
     },
 
     async deleteUserMeaning(context, payload) {
         await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/vocabs/${payload.word_id}/meanings/${payload.meaning_id}`,
+            url: `${context.getters.apiUrl}/users/me/vocabs/${payload.vocabId}/meanings/${payload.meaningId}`,
             options: {
                 method: "DELETE",
             },

@@ -21,14 +21,14 @@
 </template>
 
 <script>
-    import {postWord} from "@/components/reader/shared";
+    import {postVocab} from "@/components/reader/shared";
 
     export default {
         name: "MeaningAddingControls",
         components: {},
         emits: ["onMeaningAdded"],
         props: {
-            wordText: {
+            vocabText: {
                 type: String,
                 required: true,
             },
@@ -44,30 +44,31 @@
         },
         methods: {
             addSuggestedMeaning(meaning) {
-                this.postWord(this.wordText).then((new_word) => {
+                this.postVocab(this.vocabText).then((newVocab) => {
                         this.$store.dispatch("saveMeaningToUser", {
-                            word_id: new_word.id,
+                            vocabId: newVocab.id,
                             meaningLanguage: this.$route.params.learningLanguage,
                             meaningText: meaning.text
                         });
-                        this.$emit('onMeaningAdded', new_word, meaning);
+                        this.$emit('onMeaningAdded', newVocab, meaning);
                     }
                 );
             },
             addNewMeaning() {
                 if (this.newMeaning === undefined || this.newMeaning === "")
                     return;
-                this.postWord(this.wordText).then(async (new_word) => {
+                this.postVocab(this.vocabText).then(async (newVocab) => {
                     const meaning = await this.$store.dispatch("addNewMeaning", {
-                        word_id: new_word.id,
+                        vocabId: newVocab.id,
+                        //TODO: no meaning language hard-coding
                         meaningLanguage: "en",
                         meaningText: this.newMeaning,
                     });
-                    this.$emit('onMeaningAdded', new_word, meaning);
+                    this.$emit('onMeaningAdded', newVocab, meaning);
                     this.newMeaning = "";
                 });
             },
-            postWord
+            postVocab
         }
     }
 </script>
