@@ -1,22 +1,21 @@
 <template>
-    <div v-if="word">
-        <h4 class="word-text">{{ word.text }}</h4>
+    <div v-if="vocab">
+        <h4 class="word-text">{{ vocab.text }}</h4>
         <div :class="{'new-word-panel':showAddPanel, 'existing-word-panel':!showAddPanel}">
-            <div v-if="word">
+            <div v-if="vocab">
                 <new-word-panel
                         v-if="showAddPanel"
-                        :word="word"
+                        :word="vocab"
                         @onMeaningAdded="onMeaningAdded"
-                        @onWordLevelSet="onWordLevelSet"
-                >
+                        @onVocabLevelSet="onVocabLevelSet">
 
                 </new-word-panel>
                 <existing-word-panel
                         v-else
-                        :word="word"
+                        :word="vocab"
                         @onAddMoreMeaningsClicked="onAddMoreMeaningsClicked"
                         @onMeaningDeleted="onMeaningDeleted"
-                        @onWordLevelSet="onWordLevelSet">
+                        @onVocabLevelSet="onVocabLevelSet">
                 </existing-word-panel>
             </div>
         </div>
@@ -31,16 +30,16 @@
     export default {
         name: "TheMeaningPanel",
         components: {NewWordPanel, ExistingWordPanel},
-        emits: ['onMeaningAdded', 'onWordLevelSet', 'onMeaningDeleted'],
+        emits: ['onMeaningAdded', 'onVocabLevelSet', 'onMeaningDeleted'],
         props: {
-            word: {
+            vocab: {
                 type: Object,
                 required: false,
-            },
+            }
         },
         watch: {
             word() {
-                if (this.word === null)
+                if (this.vocab === null)
                     this.addingMoreMeanings = false;
             }
         },
@@ -54,7 +53,7 @@
                 return WORD_LEVELS;
             },
             isWordNotSaved() {
-                return this.word.level === WORD_LEVELS.NEW || this.word.level === WORD_LEVELS.IGNORED || this.word.level === WORD_LEVELS.KNOWN;
+                return this.vocab.level === WORD_LEVELS.NEW || this.vocab.level === WORD_LEVELS.IGNORED || this.vocab.level === WORD_LEVELS.KNOWN;
             },
             showAddPanel() {
                 return this.isWordNotSaved || this.addingMoreMeanings;
@@ -69,10 +68,10 @@
                 this.addingMoreMeanings = false;
             },
             onMeaningDeleted(meaning) {
-                this.$emit("onMeaningDeleted", this.word, meaning);
+                this.$emit("onMeaningDeleted", this.vocab, meaning);
             },
-            onWordLevelSet(level) {
-                this.$emit("onWordLevelSet", this.word, level);
+            onVocabLevelSet(level) {
+                this.$emit("onVocabLevelSet", this.vocab, level);
             }
         },
     };

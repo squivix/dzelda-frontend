@@ -8,15 +8,16 @@
                     :words="words"
                     :phrases="phrases"
                     class="lesson-content"
-                    @onWordClicked="setSelectedWord"
-                    @onPhraseClicked="setSelectedPhrase"
-                    @onBackgroundClicked="clearSelectedWord">
+                    @onWordClicked="setSelectedVocab"
+                    @onPhraseClicked="setSelectedVocab"
+                    @onNewPhraseSelected="selectNewPhrase"
+                    @onBackgroundClicked="clearSelectedVocab">
             </the-lesson-content>
             <the-meaning-panel
                     class="meaning-panel"
-                    :word="selectedWord"
+                    :vocab="selectedVocab"
                     @onMeaningAdded="onMeaningAdded"
-                    @onWordLevelSet="onWordLevelSet"
+                    @onVocabLevelSet="onVocabLevelSet"
                     @onMeaningDeleted="onMeaningDeleted">
             </the-meaning-panel>
         </template>
@@ -26,6 +27,7 @@
     import TheLessonContent from '../components/reader/TheLessonContent.vue';
     import TheMeaningPanel from '../components/reader/TheMeaningPanel.vue';
     import {WORD_LEVELS} from "@/constants";
+    import {escapeRegExp} from "@/utils";
 
     export default {
         name: "LessonReader.vue",
@@ -38,7 +40,7 @@
                 lesson: null,
                 words: {},
                 phrases: {},
-                selectedWord: null,
+                selectedVocab: null,
                 lessonElements: null,
             };
         },
@@ -52,7 +54,7 @@
                 return this.loadingLesson || this.loadingWords || this.parsingLesson;
             },
             vocab() {
-                return {...this.words, ...this.phrases}
+                return {...this.words, ...this.phrases};
             }
         },
         methods: {
@@ -71,38 +73,44 @@
                 this.phrases = await this.$store.dispatch("fetchLessonPhrases", {lessonId: this.$route.params.lessonId});
                 this.loadingWords = false;
             },
-
-            setSelectedWord(word) {
-                this.selectedWord = {text: word, ...this.vocab[word.toLowerCase()]};
+            setSelectedVocab(vocabText) {
+                this.selectedVocab = {text: vocabText, ...this.vocab[vocabText.toLowerCase()]};
             },
-            setSelectedPhrase(phrase) {
-                this.selectedWord = {text: phrase, ...this.phrases[phrase.toLowerCase()]};
+            selectNewPhrase(phraseText) {
+                this.selectedVocab = {text: phraseText, level: WORD_LEVELS.NEW, all_meanings: [], user_meanings: []};
             },
-            clearSelectedWord() {
-                this.selectedWord = null;
+            clearSelectedVocab() {
+                this.selectedVocab = null;
             },
+            onMeaningAdded(vocab, new_meaning) {
+                const key = vocab.text.toLowerCase();
 
+                if (this.vocab[key] === undefined) {
+                    //only for new phrases
+                    this.phrases[key] = vocab;
+                    //TODO: find less expensive solution to update lessonElements where the new phrase was added
+                    this.parseLesson();
+                }
 
-            onMeaningAdded(word, new_meaning) {
-                const key = word.text.toLowerCase();
-                this.onWordLevelSet(word, word.level);
+                this.onVocabLevelSet(vocab, vocab.level);
                 this.vocab[key].user_meanings.push(new_meaning);
-                this.vocab[key].id = word.id;
-                this.setSelectedWord(word.text);
+                this.vocab[key].id = vocab.id;
+                this.setSelectedVocab(vocab.text);
             },
-            onWordLevelSet(word, level) {
-                this.vocab[word.text.toLowerCase()].level = level;
+            onVocabLevelSet(vocab, level) {
+                const key = vocab.text.toLowerCase();
+                this.vocab[key].level = level;
                 if (level === WORD_LEVELS.IGNORED || level === WORD_LEVELS.KNOWN) {
-                    this.vocab[word.text.toLowerCase()].user_meanings = [];
-                    this.clearSelectedWord();
+                    this.vocab[key].user_meanings = [];
+                    this.clearSelectedVocab();
                 } else
-                    this.setSelectedWord(word.text);
+                    this.setSelectedVocab(vocab.text);
             },
             onMeaningDeleted(word, deleted_meaning) {
                 const index = word.user_meanings.findIndex((meaning) => meaning.id === deleted_meaning.id)
                 word.user_meanings.splice(index, 1);
                 if (word.user_meanings.length === 0)
-                    this.onWordLevelSet(word, WORD_LEVELS.NEW);
+                    this.onVocabLevelSet(word, WORD_LEVELS.NEW);
             },
             parseLesson() {
                 this.parsingLesson = true;
@@ -117,31 +125,27 @@
 
                 const phrases = Object.keys(this.phrases);
                 for (let paragraph of texts) {
-                    let words = this.paragraphWords(paragraph);
+                    let elements = this.getTextElements(paragraph);
                     let paragraphElements = [];
-                    for (let word of words) {
-                        if (this.isWord(word))
-                            paragraphElements.push({text: word, isWord: true, phrases: {}});
-                        else
-                            paragraphElements.push({text: word, isWord: false, phrases: {}});
-                    }
+                    for (let element of elements)
+                        paragraphElements.push({text: element, isWord: this.isWord(element), phrases: {}});
+
                     for (let phrase of phrases) {
-                        let regex = new RegExp(`${this.escapeRegExp(phrase)}`, 'ig');
+                        let regex = new RegExp(`${escapeRegExp(phrase)}`, 'ig');
                         let matches = paragraph.matchAll(regex);
 
                         for (let match of matches) {
-                            let beforePhraseIndex = this.paragraphWords(paragraph.substring(0, match.index)).length;
-                            let phraseSlice = this.paragraphWords(match[0]);
+                            let beforePhraseIndex = this.getTextElements(paragraph.substring(0, match.index)).length;
+                            let phraseSlice = this.getTextElements(match[0]);
                             const phraseElements = paragraphElements.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length)
                             phraseElements.forEach((pe, index) => pe.phrases[phrase] = index);
-                            // console.log(phraseElements)
                         }
                     }
                     paragraphList.push(paragraphElements);
                 }
                 return paragraphList;
             },
-            paragraphWords(paragraph, regex) {
+            getTextElements(paragraph, regex) {
                 //[^\p{L}\d]
                 return paragraph.split(regex ?? /([^\p{L}\d])/gu).filter((word) => word !== '');
                 // return paragraph.split(/(\s|[^a-zA-Z\d\s:])+/g);
@@ -152,9 +156,6 @@
             isWord(text) {
                 //TODO fix string with numbers being counted as word ex: '123abc' returns true
                 return !!text.match(/[\p{L}]+/gu);
-            },
-            escapeRegExp(text) {
-                return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
             },
         }
         ,

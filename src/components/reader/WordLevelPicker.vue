@@ -29,7 +29,7 @@
     export default {
         name: "WordLevelPicker",
         components: {},
-        emits: ["onWordLevelSet"],
+        emits: ["onVocabLevelSet"],
         props: {
             wordId: {
                 type: Number,
@@ -52,7 +52,7 @@
                     language: this.$route.params.learningLanguage,
                     level: level
                 });
-                this.$emit('onWordLevelSet', level);
+                this.$emit('onVocabLevelSet', level);
             },
         },
     }

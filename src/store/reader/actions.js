@@ -20,7 +20,7 @@ export default {
 
     async saveMeaningToUser(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/words/${payload.word_id}/meanings`,
+            url: `${context.getters.apiUrl}/users/me/vocabs/${payload.word_id}/meanings`,
             options: {
                 method: 'POST',
                 body: JSON.stringify({
@@ -35,7 +35,7 @@ export default {
     },
     async addNewMeaning(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/words/${payload.word_id}/meanings`,
+            url: `${context.getters.apiUrl}/vocabs/${payload.word_id}/meanings`,
             options: {
                 method: 'POST',
                 body: JSON.stringify({
@@ -50,7 +50,7 @@ export default {
     },
     async postNewWord(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/words`,
+            url: `${context.getters.apiUrl}/users/me/vocabs`,
             options: {
                 method: 'POST',
                 body: JSON.stringify({
@@ -66,7 +66,7 @@ export default {
     },
     async updateWordLevel(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/words/${payload.word_id}`,
+            url: `${context.getters.apiUrl}/users/me/vocabs/${payload.word_id}`,
             options: {
                 method: 'PATCH',
                 body: JSON.stringify({
@@ -82,7 +82,7 @@ export default {
 
     async deleteUserMeaning(context, payload) {
         await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/words/${payload.word_id}/meanings/${payload.meaning_id}`,
+            url: `${context.getters.apiUrl}/users/me/vocabs/${payload.word_id}/meanings/${payload.meaning_id}`,
             options: {
                 method: "DELETE",
             },

@@ -3,15 +3,17 @@
         <span v-for="(element, index) in paragraphElements"
               :key="index"
               :class="getWrapperClass(element)"
-              @click.stop="onWrapperClicked($event,index,element)"
-              :ref="`word-wrapper-${index}`">
+              :data-parahraph-element-index="index"
+              @click.stop="onWrapperClicked"
+              :id="`wrapper-p-${paragraphIndex}-w-${index}`"
+              :draggable="true"
+              @dragstart="wrapperDragStart"
+              @dragenter="wrapperDragEnter"
+        >
         <span :class="getWordClass(element)"
               :id="`w${index}`"
               v-if="element.isWord"
               @click.stop="onWordClicked(element.text)">
-        <!--          :draggable="true"-->
-            <!--          @dragstart="wordDragStart"-->
-            <!--          @dragenter="wordDragEnter">-->
       {{ element.text }}</span>
     <span v-else>
         {{ element.text }}
@@ -45,26 +47,36 @@
                 required: false,
                 default: "p"
             },
+            paragraphIndex: {
+                type: Number,
+                required: true,
+            }
         },
         data() {
-            return {};
+            return {dragStartWord: null};
         },
         methods: {
             onWordClicked(word) {
                 this.$emit('onWordClicked', word);
             },
-            onWrapperClicked(event, index, element) {
-                //if word part of multiple phrases
-                let wordPhrases = Object.keys(element.phrases);
-                if (wordPhrases.length > 1) {
+            onWrapperClicked(event) {
+                let wrapperDomElem = event.target;
+                if (wrapperDomElem.parentElement.classList.contains("word-wrapper"))
+                    wrapperDomElem = wrapperDomElem.parentElement;
+                if (!wrapperDomElem.classList.contains("word-wrapper"))
+                    return;
 
+                const paragraphElement = this.paragraphElements[Number(wrapperDomElem.dataset.parahraphElementIndex)]
+                let wordPhrases = Object.keys(paragraphElement.phrases);
+                //if word part of multiple phrases
+                if (wordPhrases.length > 1) {
+                    console.log("Multiple phrases");
                 } else {
-                    const wrapperDomElem = this.$refs[`word-wrapper-${index}`][0];
                     if (wrapperDomElem.classList.contains("phrase-new"))
                         return;
                     let phraseText = wordPhrases[0];
-
-                    this.$emit('onPhraseClicked', phraseText);
+                    if (this.phrases[phraseText])
+                        this.$emit('onPhraseClicked', phraseText);
                 }
             },
             getWordClass(element) {
@@ -93,7 +105,7 @@
                 }
             },
             getWrapperClass(element) {
-                return `${this.getPhrasePositionClass(element)} ${this.getPhraseLevelClass(element, Object.keys(element.phrases)[0])}`;
+                return `word-wrapper ${this.getPhrasePositionClass(element)} ${this.getPhraseLevelClass(element, Object.keys(element.phrases)[0])}`;
             },
             getPhraseLevelClass(element, phrase) {
                 if (isEmptyObject(element.phrases))
@@ -129,21 +141,23 @@
                         allEndWord = false;
                 }
                 if (allStartWord)
-                    return "word-wrapper phrase-start";
+                    return "phrase-start";
                 else if (allEndWord)
-                    return "word-wrapper phrase-end";
+                    return "phrase-end";
                 else
-                    return "word-wrapper phrase-middle";
+                    return "phrase-middle";
             },
-            wordDragStart(event) {
-                // console.log(`start: ${event.target.innerText}`);
+            wrapperDragStart(event) {
                 this.dragStartWord = event.target;
                 event.dataTransfer.setDragImage(document.createElement("img"), 0, 0);
             },
-            wordDragEnter(event) {
+            wrapperDragEnter(event) {
+                //TODO find a better way for selecting phrases
                 let endWord = event.target;
                 let startWord = this.dragStartWord;
-                if (!endWord.classList.contains('word') || !startWord.classList.contains('word'))
+                if (!startWord || !endWord)
+                    return;
+                if (!endWord.classList.contains('word-wrapper') || !startWord.classList.contains('word-wrapper'))
                     return;
 
                 let selectedWords;
@@ -152,31 +166,33 @@
                 } else {
                     let tokens = startWord.id.split('-');
                     const startWordNum = Number(tokens[tokens.length - 1]);
-                    const startWordParagraph = Number(tokens[1]);
+                    const startWordParagraph = Number(tokens[tokens.length - 3]);
                     tokens = endWord.id.split('-');
                     const endWordNum = Number(tokens[tokens.length - 1]);
-                    const endWordParagraph = Number(tokens[1]);
+                    const endWordParagraph = Number(tokens[tokens.length - 3]);
+
                     if (startWordParagraph !== endWordParagraph)
                         return;
-
                     if (startWordNum > endWordNum)
                         [startWord, endWord] = [endWord, startWord];
 
                     selectedWords = [startWord];
-                    const wordsAfterStart = document.querySelectorAll(`#${startWord.id} ~ .word`)
-                    // console.log(wordsAfterStart)
+                    const wordsAfterStart = document.querySelectorAll(`#${startWord.id} ~ .word-wrapper`)
                     for (const w of wordsAfterStart) {
                         if (w === endWord)
                             break;
                         selectedWords.push(w);
                     }
                     selectedWords.push(endWord);
-                    document.querySelectorAll('.word').forEach((w) => w.classList.remove('phrase-word'))
+
+                    document.querySelectorAll('.word-wrapper').forEach((w) => w.classList.remove('phrase-selected'))
                     selectedWords.forEach((w) => {
-                        w.classList.add("phrase-word")
+                        w.classList.add("phrase-selected")
                     });
                 }
             },
+        },
+        mounted() {
         }
     }
 </script>
@@ -260,5 +276,9 @@
 
     .phrase-middle {
         border: 1px solid transparent;
+    }
+
+    .phrase-selected {
+        background-color: red;
     }
 </style>

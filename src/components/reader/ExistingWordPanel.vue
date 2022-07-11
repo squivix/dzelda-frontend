@@ -15,7 +15,7 @@
         <word-level-picker
                 :wordId="word.id"
                 :level="word.level"
-                @onWordLevelSet="onWordLevelSet">
+                @onVocabLevelSet="onVocabLevelSet">
         </word-level-picker>
 
         <textarea class="notes"
@@ -32,7 +32,7 @@
     export default {
         name: "ExistingWordPanel",
         components: {MeaningEditingControls, WordLevelPicker},
-        emits: ["onAddMoreMeaningsClicked", "onMeaningDeleted", "onWordLevelSet"],
+        emits: ["onAddMoreMeaningsClicked", "onMeaningDeleted", "onVocabLevelSet"],
         props: {
             word: {
                 type: Object,
@@ -51,8 +51,8 @@
             onMeaningDeleted(meaning) {
                 this.$emit("onMeaningDeleted", meaning);
             },
-            onWordLevelSet(level) {
-                this.$emit("onWordLevelSet", level);
+            onVocabLevelSet(level) {
+                this.$emit("onVocabLevelSet", level);
             }
         },
 

@@ -30,7 +30,7 @@
     export default {
         name: "NewWordPanel",
         components: {MeaningAddingControls, DictionariesList},
-        emits: ["onMeaningAdded", "onWordLevelSet"],
+        emits: ["onMeaningAdded", "onVocabLevelSet"],
         props: {
             word: {
                 type: Object,
@@ -55,11 +55,11 @@
         methods: {
             markWordAsKnown() {
                 this.postWord(this.word.text, WORD_LEVELS.KNOWN);
-                this.$emit('onWordLevelSet', WORD_LEVELS.KNOWN);
+                this.$emit('onVocabLevelSet', WORD_LEVELS.KNOWN);
             },
             markWordAsIgnored() {
                 this.postWord(this.word.text, WORD_LEVELS.IGNORED);
-                this.$emit('onWordLevelSet', WORD_LEVELS.IGNORED);
+                this.$emit('onVocabLevelSet', WORD_LEVELS.IGNORED);
             },
             onMeaningAdded(word, meaning) {
                 this.$emit('onMeaningAdded', word, meaning);

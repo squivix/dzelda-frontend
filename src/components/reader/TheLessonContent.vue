@@ -4,6 +4,7 @@
                           :paragraph-elements="lessonElements.title"
                           :words="words"
                           :phrases="phrases"
+                          :paragraph-index="0"
                           component="h2"
                           @onWordClicked="onWordClicked"
                           @onPhraseClicked="onPhraseClicked">
@@ -14,6 +15,7 @@
                               :paragraph-elements="paragraph"
                               :words="words"
                               :phrases="phrases"
+                              :paragraph-index="paragraphIndex+1"
                               :key="paragraphIndex"
                               @onWordClicked="onWordClicked"
                               @onPhraseClicked="onPhraseClicked">
@@ -28,7 +30,7 @@
     export default {
         name: "TheLessonContent",
         components: {LessonParagraph},
-        emits: ['onWordClicked', 'onPhraseClicked', 'onBackgroundClicked'],
+        emits: ['onWordClicked', 'onPhraseClicked', 'onNewPhraseSelected', 'onBackgroundClicked'],
         props: {
             title: {
                 type: String,
@@ -60,15 +62,42 @@
             onWordClicked(word) {
                 this.$emit('onWordClicked', word);
             },
-            onPhraseClicked(phrase) {
-                this.$emit('onPhraseClicked', phrase);
+            onPhraseClicked(phraseText) {
+                this.$emit('onPhraseClicked', phraseText);
             },
             onBackgroundClicked() {
+                this.clearSelectedPhrases();
                 this.$emit('onBackgroundClicked');
             },
+            onNewPhraseSelected(phraseText) {
+                this.$emit('onNewPhraseSelected', phraseText);
+            },
+            clearSelectedPhrases() {
+                document.querySelectorAll(".phrase-selected").forEach((el) => el.classList.remove("phrase-selected"))
+            },
+            wrapperDrop() {
+                const selectedPhrase = document.querySelectorAll(".phrase-selected");
+                let phraseText = "";
+                selectedPhrase.forEach((wrapperNode) => {
+                    const wordNode = wrapperNode.childNodes[0];
+                    if (wordNode.classList.contains("word"))
+                        phraseText += wordNode.innerText.toLowerCase() + " ";
+                });
+                phraseText = phraseText.trim();
+                console.log(phraseText);
+
+                //new phrase
+                if (!this.phrases[phraseText]) {
+                    this.onNewPhraseSelected(phraseText);
+                } else {
+                    this.onPhraseClicked(phraseText);
+                }
+            }
         },
         mounted() {
-
+            document.body.addEventListener("drop", this.wrapperDrop)
+            document.body.addEventListener("dragover", e => e.preventDefault())
+            document.body.addEventListener("dragenter", e => e.preventDefault())
         }
     }
     ;
