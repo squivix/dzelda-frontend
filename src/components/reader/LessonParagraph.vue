@@ -29,7 +29,7 @@
     export default {
         name: "LessonParagraph",
         computed: {},
-        emits: ['onWordClicked', 'onPhraseClicked'],
+        emits: ['onWordClicked', 'onPhraseClicked', 'onOverLappingPhrasesClicked'],
         props: {
             paragraphElements: {
                 type: Array,
@@ -71,7 +71,8 @@
                 let wordPhrases = Object.keys(paragraphElement.phrases);
                 //if word part of multiple phrases
                 if (wordPhrases.length > 1) {
-                    console.log("Multiple phrases");
+                    console.log("overlapping phrases");
+                    this.$emit("onOverLappingPhrasesClicked", wordPhrases);
                 } else {
                     if (wrapperDomElem.classList.contains("phrase-new"))
                         return;
@@ -138,7 +139,7 @@
                     const indexInPhrase = element.phrases[phrase];
                     if (indexInPhrase !== 0)
                         allStartWord = false;
-                    if (indexInPhrase !== getTextElements(phrase).length-1)
+                    if (indexInPhrase !== getTextElements(phrase).length - 1)
                         allEndWord = false;
                 }
                 if (allStartWord)

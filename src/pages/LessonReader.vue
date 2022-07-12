@@ -10,17 +10,22 @@
                     class="lesson-content"
                     @onWordClicked="setSelectedVocab"
                     @onPhraseClicked="setSelectedVocab"
+                    @onOverLappingPhrasesClicked="showOverlappingPhrases"
                     @onNewPhraseSelected="selectNewPhrase"
                     @onBackgroundClicked="clearSelectedVocab">
             </the-lesson-content>
-            <the-meaning-panel
-                    class="meaning-panel"
-                    :vocab="selectedVocab"
-                    :is-phrase="selectedIsPhrase"
-                    @onMeaningAdded="onMeaningAdded"
-                    @onVocabLevelSet="onVocabLevelSet"
-                    @onMeaningDeleted="onMeaningDeleted">
+            <the-meaning-panel v-if="!selectedOverLappingPhrases"
+                               class="meaning-panel"
+                               :vocab="selectedVocab"
+                               :is-phrase="selectedIsPhrase"
+                               @onMeaningAdded="onMeaningAdded"
+                               @onVocabLevelSet="onVocabLevelSet"
+                               @onMeaningDeleted="onMeaningDeleted">
             </the-meaning-panel>
+            <overlapping-phrases-panel v-else
+                                       :phrases="selectedOverLappingPhrases"
+                                       @onPhraseClick="setSelectedVocab">
+            </overlapping-phrases-panel>
         </template>
     </base-card>
 </template>
@@ -30,10 +35,11 @@
     import {VOCAB_LEVELS} from "@/constants";
     import {escapeRegExp} from "@/utils";
     import {getTextElements} from "@/components/reader/shared";
+    import OverlappingPhrasesPanel from "@/components/reader/OverlappingPhrasesPanel";
 
     export default {
         name: "LessonReader.vue",
-        components: {TheLessonContent, TheMeaningPanel},
+        components: {OverlappingPhrasesPanel, TheLessonContent, TheMeaningPanel},
         data() {
             return {
                 loadingLesson: true,
@@ -44,6 +50,7 @@
                 phrases: {},
                 selectedVocab: null,
                 selectedIsPhrase: false,
+                selectedOverLappingPhrases: null,
                 lessonElements: null,
             };
         },
@@ -79,13 +86,19 @@
             setSelectedVocab(vocabText) {
                 this.selectedVocab = {text: vocabText, ...this.vocab[vocabText.toLowerCase()]};
                 this.selectedIsPhrase = !!this.phrases[vocabText.toLowerCase()];
+                this.selectedOverLappingPhrases = null;
             },
             selectNewPhrase(phraseText) {
                 this.selectedVocab = {text: phraseText, level: VOCAB_LEVELS.NEW, all_meanings: [], user_meanings: []};
                 this.selectedIsPhrase = true;
+                this.selectedOverLappingPhrases = null;
             },
             clearSelectedVocab() {
                 this.selectedVocab = null;
+                this.selectedOverLappingPhrases = null;
+            },
+            showOverlappingPhrases(phrasesText) {
+                this.selectedOverLappingPhrases = phrasesText;
             },
             onMeaningAdded(vocab, new_meaning) {
                 const key = vocab.text.toLowerCase();

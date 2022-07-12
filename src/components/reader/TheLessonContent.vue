@@ -7,7 +7,8 @@
                           :paragraph-index="0"
                           component="h2"
                           @onWordClicked="onWordClicked"
-                          @onPhraseClicked="onPhraseClicked">
+                          @onPhraseClicked="onPhraseClicked"
+                          @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked">
         </lesson-paragraph>
 
         <div class="lesson-text">
@@ -18,7 +19,8 @@
                               :paragraph-index="paragraphIndex+1"
                               :key="paragraphIndex"
                               @onWordClicked="onWordClicked"
-                              @onPhraseClicked="onPhraseClicked">
+                              @onPhraseClicked="onPhraseClicked"
+                              @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked">
             </lesson-paragraph>
         </div>
     </div>
@@ -26,12 +28,11 @@
 
 <script>
     import LessonParagraph from "@/components/reader/LessonParagraph";
-    import {VOCAB_LEVELS} from "@/constants";
 
     export default {
         name: "TheLessonContent",
         components: {LessonParagraph},
-        emits: ['onWordClicked', 'onPhraseClicked', 'onNewPhraseSelected', 'onBackgroundClicked'],
+        emits: ['onWordClicked', 'onPhraseClicked', 'onOverLappingPhrasesClicked', 'onNewPhraseSelected', 'onBackgroundClicked'],
         props: {
             title: {
                 type: String,
@@ -65,6 +66,9 @@
             },
             onPhraseClicked(phraseText) {
                 this.$emit('onPhraseClicked', phraseText);
+            },
+            onOverLappingPhrasesClicked(phrasesText) {
+                this.$emit('onOverLappingPhrasesClicked', phrasesText);
             },
             onBackgroundClicked() {
                 this.clearSelectedPhrases();
