@@ -159,8 +159,11 @@
                 let startWord = this.dragStartWord;
                 if (!startWord || !endWord)
                     return;
-                if (!endWord.classList.contains('word-wrapper') || !startWord.classList.contains('word-wrapper'))
-                    return;
+                if (!endWord.classList.contains('word-wrapper')) {
+                    endWord = endWord.parentElement;
+                    if (!endWord.classList.contains('word-wrapper'))
+                        return;
+                }
 
                 let selectedWords;
                 if (endWord === startWord) {

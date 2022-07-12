@@ -89,12 +89,17 @@
                         phraseText += wordNode.innerText.toLowerCase() + " ";
                 });
                 phraseText = phraseText.trim();
+                if (phraseText === "")
+                    return;
+
+                //phrase is one word
+                if (this.words[phraseText])
+                    this.onWordClicked(phraseText);
                 //new phrase
-                if (!this.phrases[phraseText]) {
+                else if (!this.phrases[phraseText])
                     this.onNewPhraseSelected(phraseText);
-                } else {
+                else
                     this.onPhraseClicked(phraseText);
-                }
             }
         },
         mounted() {
