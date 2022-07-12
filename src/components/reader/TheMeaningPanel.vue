@@ -6,6 +6,7 @@
                 <new-vocab-panel
                         v-if="showAddPanel"
                         :vocab="vocab"
+                        :is-phrase="isPhrase"
                         @onMeaningAdded="onMeaningAdded"
                         @onVocabLevelSet="onVocabLevelSet">
 
@@ -35,6 +36,11 @@
             vocab: {
                 type: Object,
                 required: false,
+            },
+            isPhrase: {
+                type: Boolean,
+                required: false,
+                default: false,
             }
         },
         watch: {

@@ -24,6 +24,7 @@
 
 <script>
     import {isEmptyObject} from "@/utils";
+    import {getTextElements} from "@/components/reader/shared";
 
     export default {
         name: "LessonParagraph",
@@ -137,7 +138,7 @@
                     const indexInPhrase = element.phrases[phrase];
                     if (indexInPhrase !== 0)
                         allStartWord = false;
-                    if (indexInPhrase !== phrase.split(" ").length)
+                    if (indexInPhrase !== getTextElements(phrase).length-1)
                         allEndWord = false;
                 }
                 if (allStartWord)

@@ -11,7 +11,7 @@
                 :vocab-text="vocab.text">
 
         </dictionaries-list>
-        <div class="mark-buttons-div" v-if="isLevelNew || isLevelIgnored">
+        <div class="mark-buttons-div" v-if="!isPhrase && isLevelNew || isLevelIgnored">
             <button class="button-hollow know-button" @click="markWordAsKnown">Mark as
                 known
             </button>
@@ -36,6 +36,10 @@
                 type: Object,
                 required: true,
             },
+            isPhrase: {
+                type: Boolean,
+                required: true,
+            }
         },
         data() {
             return {};

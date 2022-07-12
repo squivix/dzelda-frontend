@@ -26,6 +26,7 @@
 
 <script>
     import LessonParagraph from "@/components/reader/LessonParagraph";
+    import {VOCAB_LEVELS} from "@/constants";
 
     export default {
         name: "TheLessonContent",

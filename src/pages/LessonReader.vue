@@ -16,6 +16,7 @@
             <the-meaning-panel
                     class="meaning-panel"
                     :vocab="selectedVocab"
+                    :is-phrase="selectedIsPhrase"
                     @onMeaningAdded="onMeaningAdded"
                     @onVocabLevelSet="onVocabLevelSet"
                     @onMeaningDeleted="onMeaningDeleted">
@@ -28,6 +29,7 @@
     import TheMeaningPanel from '../components/reader/TheMeaningPanel.vue';
     import {VOCAB_LEVELS} from "@/constants";
     import {escapeRegExp} from "@/utils";
+    import {getTextElements} from "@/components/reader/shared";
 
     export default {
         name: "LessonReader.vue",
@@ -41,6 +43,7 @@
                 words: {},
                 phrases: {},
                 selectedVocab: null,
+                selectedIsPhrase: false,
                 lessonElements: null,
             };
         },
@@ -75,9 +78,11 @@
             },
             setSelectedVocab(vocabText) {
                 this.selectedVocab = {text: vocabText, ...this.vocab[vocabText.toLowerCase()]};
+                this.selectedIsPhrase = !!this.phrases[vocabText.toLowerCase()];
             },
             selectNewPhrase(phraseText) {
                 this.selectedVocab = {text: phraseText, level: VOCAB_LEVELS.NEW, all_meanings: [], user_meanings: []};
+                this.selectedIsPhrase = true;
             },
             clearSelectedVocab() {
                 this.selectedVocab = null;
@@ -90,9 +95,9 @@
                     this.phrases[key] = vocab;
                     //TODO: find less expensive solution to update lessonElements where the new phrase was added
                     this.parseLesson();
-                }
-
-                this.onVocabLevelSet(vocab, vocab.level);
+                    this.onVocabLevelSet(vocab, vocab.level);
+                } else
+                    this.onVocabLevelSet(vocab, vocab.level);
                 this.vocab[key].user_meanings.push(new_meaning);
                 this.vocab[key].id = vocab.id;
                 this.setSelectedVocab(vocab.text);
@@ -103,6 +108,8 @@
                 if (level === VOCAB_LEVELS.IGNORED || level === VOCAB_LEVELS.KNOWN) {
                     this.vocab[key].user_meanings = [];
                     this.clearSelectedVocab();
+                    if (level === VOCAB_LEVELS.IGNORED && this.phrases[key])
+                        this.phrases[key] = VOCAB_LEVELS.NEW;
                 } else
                     this.setSelectedVocab(vocab.text);
             },
@@ -125,7 +132,7 @@
 
                 const phrases = Object.keys(this.phrases);
                 for (let paragraph of texts) {
-                    let elements = this.getTextElements(paragraph);
+                    let elements = getTextElements(paragraph);
                     let paragraphElements = [];
                     for (let element of elements)
                         paragraphElements.push({text: element, isWord: this.isWord(element), phrases: {}});
@@ -135,8 +142,8 @@
                         let matches = paragraph.matchAll(regex);
 
                         for (let match of matches) {
-                            let beforePhraseIndex = this.getTextElements(paragraph.substring(0, match.index)).length;
-                            let phraseSlice = this.getTextElements(match[0]);
+                            let beforePhraseIndex = getTextElements(paragraph.substring(0, match.index)).length;
+                            let phraseSlice = getTextElements(match[0]);
                             const phraseElements = paragraphElements.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length)
                             phraseElements.forEach((pe, index) => pe.phrases[phrase] = index);
                         }
@@ -145,11 +152,7 @@
                 }
                 return paragraphList;
             },
-            getTextElements(paragraph, regex) {
-                //[^\p{L}\d]
-                return paragraph.split(regex ?? /([^\p{L}\d])/gu).filter((word) => word !== '');
-                // return paragraph.split(/(\s|[^a-zA-Z\d\s:])+/g);
-            },
+
             lessonParagraphs(text) {
                 return text.split(/\s\s+/g);
             },
