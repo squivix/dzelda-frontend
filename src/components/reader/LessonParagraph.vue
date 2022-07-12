@@ -1,5 +1,5 @@
 <template>
-    <component :is="component">
+    <component :is="component" class="paragraph">
         <span v-for="(element, index) in paragraphElements"
               :key="index"
               :class="getWrapperClass(element)"
@@ -9,6 +9,8 @@
               :draggable="true"
               @dragstart="wrapperDragStart"
               @dragenter="wrapperDragEnter"
+              @mouseenter="wrapperHoverStart"
+              @mouseleave="wrapperHoverEnd"
         >
         <span :class="getWordClass(element)"
               :id="`w${index}`"
@@ -70,10 +72,9 @@
                 const paragraphElement = this.paragraphElements[Number(wrapperDomElem.dataset.parahraphElementIndex)]
                 let wordPhrases = Object.keys(paragraphElement.phrases);
                 //if word part of multiple phrases
-                if (wordPhrases.length > 1) {
-                    console.log("overlapping phrases");
+                if (wordPhrases.length > 1)
                     this.$emit("onOverLappingPhrasesClicked", wordPhrases);
-                } else {
+                else {
                     if (wrapperDomElem.classList.contains("phrase-new"))
                         return;
                     let phraseText = wordPhrases[0];
@@ -154,7 +155,6 @@
                 event.dataTransfer.setDragImage(document.createElement("img"), 0, 0);
             },
             wrapperDragEnter(event) {
-                //TODO find a better way for selecting phrases
                 let endWord = event.target;
                 let startWord = this.dragStartWord;
                 if (!startWord || !endWord)
@@ -191,18 +191,79 @@
                     selectedWords.push(endWord);
 
                     document.querySelectorAll('.word-wrapper').forEach((w) => w.classList.remove('phrase-selected'))
-                    selectedWords.forEach((w) => {
-                        w.classList.add("phrase-selected")
-                    });
+                    selectedWords.forEach((w) => w.classList.add("phrase-selected"));
+                }
+
+            },
+            wrapperHoverStart(event) {
+                //TODO find better way of styling multiple elements based on the hover of one
+                const wrapperNode = event.target;
+                if (!wrapperNode.classList.contains("phrase"))
+                    return;
+                const element = this.paragraphElements[Number(wrapperNode.dataset.parahraphElementIndex)]
+                const phrases = Object.keys(element.phrases);
+                if (phrases.length === 0)
+                    return;
+                else if (phrases.length === 1) {
+                    const phraseNodes = this.getPhraseNodes(wrapperNode);
+                    phraseNodes[0].style.borderInlineStart = "1px solid";
+                    phraseNodes[phraseNodes.length - 1].style.borderInlineEnd = "1px solid";
+                    phraseNodes.forEach((pn) => pn.classList.add("phrase-hovered"))
+                } else {
+                    wrapperNode.style.borderInlineStart = "1px solid";
+                    wrapperNode.style.borderInlineEnd = "1px solid";
+                    wrapperNode.classList.add("phrase-hovered");
                 }
             },
+            wrapperHoverEnd(event) {
+                const wrapperNode = event.target;
+                if (!wrapperNode.classList.contains("phrase"))
+                    return;
+                const element = this.paragraphElements[Number(wrapperNode.dataset.parahraphElementIndex)]
+                const phrases = Object.keys(element.phrases);
+                if (phrases.length === 0)
+                    return;
+                else if (phrases.length === 1) {
+                    const phraseNodes = this.getPhraseNodes(wrapperNode);
+                    phraseNodes[0].style.borderInlineStart = "1px solid transparent";
+                    phraseNodes[phraseNodes.length - 1].style.borderInlineEnd = "1px solid transparent";
+                    phraseNodes.forEach((pn) => pn.classList.remove("phrase-hovered"))
+                } else {
+                    //TODO treat case where phrases are not in different directions
+                    wrapperNode.style.borderInlineStart = "1px solid transparent";
+                    wrapperNode.style.borderInlineEnd = "1px solid transparent";
+                    wrapperNode.classList.remove("phrase-hovered");
+                }
+            },
+            getPhraseNodes(node) {
+                const element = this.paragraphElements[Number(node.dataset.parahraphElementIndex)]
+                const phrases = Object.keys(element.phrases);
+
+                const phraseLength = getTextElements(phrases[0]).length;
+                const hoverNodeIndex = element.phrases[phrases[0]];
+                let phraseStart = node;
+                for (let i = hoverNodeIndex; i > 0; i--)
+                    phraseStart = phraseStart.previousSibling;
+
+                const phraseNodes = [phraseStart];
+                let phraseEnd = phraseNodes[phraseNodes.length - 1];
+                for (let i = 1; i < phraseLength; i++) {
+                    phraseNodes.push(phraseEnd.nextSibling);
+                    phraseEnd = phraseNodes[phraseNodes.length - 1];
+                }
+                return phraseNodes;
+            },
         },
+
+
         mounted() {
         }
     }
 </script>
 
 <style scoped>
+    .paragraph {
+    }
 
     .word {
         border: 1px solid transparent;
@@ -258,8 +319,8 @@
     }
 
     .word-wrapper {
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
+        padding-top: 0.4rem;
+        padding-bottom: 0.4rem;
         border: 1px solid transparent;
     }
 
@@ -273,17 +334,29 @@
         border-end-start-radius: 5px;
     }
 
+    .phrase-middle {
+        border: 1px solid transparent;
+    }
+
     .phrase-end {
         padding-right: 0.25rem;
         border-end-end-radius: 5px;
         border-start-end-radius: 5px;
     }
 
-    .phrase-middle {
-        border: 1px solid transparent;
+    .phrase {
+        transition: padding 0.25s ease-out;
+
     }
 
     .phrase-selected {
         background-color: #268AFA;
+    }
+
+    .phrase-hovered {
+        padding-top: 0.65rem;
+        padding-bottom: 0.65rem;
+        border-top: 1px solid;
+        border-bottom: 1px solid;
     }
 </style>
