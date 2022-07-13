@@ -7,7 +7,7 @@
                 :value="modelValue"
                 @input="onInput"
         />
-        <button type="button" @click="toggleShowPassword">
+        <button type="button" @click="toggleShowPassword" class="inv-button">
             <font-awesome-icon
                     :icon="shown ? 'eye-slash' : 'eye'"
                     ref="toggleShowIcon"
@@ -59,8 +59,6 @@
     }
 
     button {
-        background: none;
-        border: none;
         position: absolute;
         top: 3px;
         right: 7px;

@@ -33,7 +33,7 @@ export default {
     },
     async fetchUserLessons(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/lessons`,
+            url: `${context.getters.apiUrl}/users/me/lessons?language=${payload.language}`,
             protected: true,
             caller: "fetchUserLessons",
             module: "content",

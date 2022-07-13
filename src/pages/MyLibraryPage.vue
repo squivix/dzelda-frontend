@@ -55,7 +55,7 @@
         },
         methods: {
             async fetchLessons() {
-                const user_lessons = await this.$store.dispatch("fetchUserLessons");
+                const user_lessons = await this.$store.dispatch("fetchUserLessons", {language: this.$route.params.learningLanguage});
                 const course_map = {};
                 for (let course of this.courses)
                     course_map[course.id] = course;
@@ -73,13 +73,14 @@
 
 <style scoped>
     .library-base-card {
-        margin-left: 2vw;
-        margin-right: 2vw;
         display: flex;
         flex-direction: column;
         row-gap: 1.25rem;
         justify-content: flex-start;
         align-items: stretch;
+        margin-left: 2vw;
+        margin-right: 2vw;
+        margin-bottom: 5vh;
     }
 
     .library-base-card:deep(header) {

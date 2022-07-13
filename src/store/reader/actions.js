@@ -1,3 +1,5 @@
+import {VOCAB_LEVELS} from "@/constants";
+
 export default {
     async fetchLessonWords(context, payload) {
         const lessonId = payload.lessonId;
@@ -98,6 +100,14 @@ export default {
             url: `${context.getters.apiUrl}/users/me/dictionaries?language=${languageCode}`,
             protected: true,
             caller: "fetchDictionaries",
+            module: "reader",
+        });
+    },
+    async fetchUserVocabs(context, payload) {
+        return await context.dispatch('fetchCustom', {
+            url: `${context.getters.apiUrl}/users/me/vocabs?language=${payload.language}&level.neq=${VOCAB_LEVELS.IGNORED}&level.neq=${VOCAB_LEVELS.KNOWN}&page=1`,
+            protected: true,
+            caller: "fetchUserVocabs",
             module: "reader",
         });
     }

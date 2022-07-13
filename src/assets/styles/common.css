@@ -59,6 +59,11 @@ input:not([type='submit']), select {
     cursor: pointer;
 }
 
+.inv-button {
+    background: none;
+    border: none;
+}
+
 a {
     text-decoration: none;
 }
