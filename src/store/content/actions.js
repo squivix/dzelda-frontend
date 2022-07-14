@@ -158,5 +158,18 @@ export default {
             caller: "postCourse",
             module: "content",
         });
+    },
+
+    async updateLanguageLastOpened(context, payload) {
+        return await context.dispatch('fetchCustom', {
+            url: `${context.getters.apiUrl}/users/me/languages/${payload.language}`,
+            options: {
+                method: "PATCH",
+                body: JSON.stringify({lastOpened: "now"})
+            },
+            protected: true,
+            caller: "postCourse",
+            module: "content",
+        });
     }
 }

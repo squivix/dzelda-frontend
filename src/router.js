@@ -116,7 +116,7 @@ const router = createRouter({
 });
 
 
-router.beforeResolve(async to => {
+router.beforeResolve(async (to, from) => {
     const isAuthenticated = store.getters.isAuthenticated;
     //prevent visiting sites that require authentication while unauthenticated
     if (to.meta.requiresAuth && !isAuthenticated)
@@ -132,6 +132,10 @@ router.beforeResolve(async to => {
         const defaultLanguage = await store.dispatch("getOrFetchDefaultLanguage");
         return {path: `/learn/${defaultLanguage.code}${to.path}`};
     }
+
+    if (to.params.learningLanguage && from.params.learningLanguage !== to.params.learningLanguage)
+        await store.dispatch("updateLanguageLastOpened", {language: to.params.learningLanguage});
+
 })
 
 
