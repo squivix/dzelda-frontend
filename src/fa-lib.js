@@ -9,6 +9,9 @@ import {faFilter} from "@fortawesome/free-solid-svg-icons";
 import {faFilterCircleXmark} from "@fortawesome/free-solid-svg-icons";
 import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
 import {faGripLines} from "@fortawesome/free-solid-svg-icons";
+import {faAngleLeft} from "@fortawesome/free-solid-svg-icons";
+import {faAngleRight} from "@fortawesome/free-solid-svg-icons";
+
 
 library.add(faEye);
 library.add(faEyeSlash);
@@ -20,3 +23,5 @@ library.add(faFilter);
 library.add(faFilterCircleXmark);
 library.add(faMagnifyingGlass);
 library.add(faGripLines);
+library.add(faAngleLeft);
+library.add(faAngleRight);

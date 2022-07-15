@@ -31,6 +31,7 @@
         align-items: center;
         padding: 20px 2vw;
         background-color: var(--primary-color);
+        z-index: 5;
     }
 
     header h1 {

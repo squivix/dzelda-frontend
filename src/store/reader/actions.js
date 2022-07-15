@@ -103,11 +103,11 @@ export default {
             module: "reader",
         });
     },
-    async fetchUserVocabs(context, payload) {
+    async fetchUserVocabsPage(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/vocabs?language=${payload.language}&level.neq=${VOCAB_LEVELS.IGNORED}&level.neq=${VOCAB_LEVELS.KNOWN}&page=1`,
+            url: `${context.getters.apiUrl}/users/me/vocabs?language=${payload.language}&level.neq=${VOCAB_LEVELS.IGNORED}&level.neq=${VOCAB_LEVELS.KNOWN}&pageSize=${payload.vocabsPerPage}&page=${payload.page}`,
             protected: true,
-            caller: "fetchUserVocabs",
+            caller: "fetchUserVocabsPage",
             module: "reader",
         });
     }

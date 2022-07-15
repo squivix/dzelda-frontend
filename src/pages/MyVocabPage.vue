@@ -12,31 +12,41 @@
                             <font-awesome-icon icon="filter"></font-awesome-icon>
                         </button>
                     </form>
-
-                    <table class="vocab-table">
-                        <thead class="vocab-thead">
-                        <tr>
-                            <th>Vocab</th>
-                            <th>Meanings</th>
-                            <th>Level</th>
-                        </tr>
-                        </thead>
-                        <tbody class="vocab-rows">
-                        <tr v-for="vocab in vocabs" :key="vocab.id">
-                            <td @click.stop="setSelectedVocab(vocab)" class="link-parent">
-                                <button class="inv-button link">
-                                    {{vocab.text}}
-                                </button>
-                            </td>
-                            <td>
-                                <ul v-for="meaning in vocab.user_meanings" :key="meaning.id">{{meaning.text}}</ul>
-                            </td>
-                            <td>
-                                <vocab-level-display :level="vocab.level"></vocab-level-display>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <div class="vocab-table-wrapper">
+                        <table class="vocab-table">
+                            <thead>
+                            <tr>
+                                <th>Vocab</th>
+                                <th>Meanings</th>
+                                <th>Level</th>
+                            </tr>
+                            </thead>
+                            <tbody class="vocab-tbody">
+                            <tr v-for="vocab in vocabs" :key="vocab.id">
+                                <td @click.stop="setSelectedVocab(vocab)" class="link-parent">
+                                    <button class="inv-button link">
+                                        {{vocab.text}}
+                                    </button>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li v-for="meaning in vocab.user_meanings"
+                                            :key="meaning.id">
+                                            {{meaning.text}}
+                                        </li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <!--                                <vocab-level-display :level="vocab.level"></vocab-level-display>-->
+                                    <vocab-level-picker :level="vocab.level"
+                                                        :vocab-id="vocab.id"
+                                                        @onVocabLevelSet="(level)=>onVocabLevelSet(vocab, level)"
+                                    ></vocab-level-picker>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="meaning-panel-wrapper">
                     <the-meaning-panel
@@ -51,6 +61,23 @@
                     </the-meaning-panel>
                 </div>
             </section>
+            <div class="pagination-div">
+                <form>
+                    <label for="vocab-per-page-select">Vocabs Per Page</label>
+                    <select id="vocab-per-page-select" v-model="vocabsPerPage">
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="150">150</option>
+                        <option value="200">200</option>
+                    </select>
+                </form>
+                <base-page-selector v-if="!!pageCount"
+                                    :current-page="currentPage"
+                                    :pageCount="pageCount"
+                                    :shown-count="Math.min(5,pageCount)"
+                                    @onPageClicked="goToPage">
+                </base-page-selector>
+            </div>
         </template>
     </base-card>
 </template>
@@ -59,28 +86,50 @@
     import TheMeaningPanel from "@/components/reader/TheMeaningPanel";
     import VocabLevelDisplay from "@/components/reader/VocabLevelDisplay";
     import {VOCAB_LEVELS} from "@/constants";
+    import VocabLevelPicker from "@/components/reader/VocabLevelPicker";
+    import BasePageSelector from "@/components/ui/BasePageSelector";
 
     export default {
         name: "MyVocabPage",
-        components: {VocabLevelDisplay, TheMeaningPanel},
+        components: {BasePageSelector, VocabLevelPicker, VocabLevelDisplay, TheMeaningPanel},
         data() {
             return {
                 vocabs: null,
                 selectedVocab: null,
+                vocabsPerPage: 50,
+                currentPage: 1,
+                pageCount: 0
             };
         },
         async mounted() {
-            this.vocabs = await this.fetchVocabs();
+            await this.fetchVocabsPage();
+        },
+        watch: {
+            async vocabsPerPage() {
+                await this.fetchVocabsPage();
+            }
         },
         methods: {
-            async fetchVocabs() {
-                return await this.$store.dispatch("fetchUserVocabs", {language: this.$route.params.learningLanguage});
+            async fetchVocabsPage() {
+                const response = await this.$store.dispatch("fetchUserVocabsPage", {
+                    language: this.$route.params.learningLanguage,
+                    page: this.currentPage,
+                    vocabsPerPage: this.vocabsPerPage,
+                });
+                this.vocabs = response.results;
+
+
+                this.pageCount = Math.ceil(response.count / this.vocabsPerPage);
             },
             setSelectedVocab(vocab) {
                 this.selectedVocab = vocab;
             },
             clearSelectedVocab() {
                 this.selectedVocab = null;
+            },
+            goToPage(page) {
+                this.currentPage = page;
+                this.fetchVocabsPage();
             },
             onMeaningAdded(vocab, meaning) {
                 vocab.user_meanings.push(meaning)
@@ -114,20 +163,14 @@
         display: flex;
         flex-direction: row;
         column-gap: 1rem;
-        height: 100vh;
     }
 
     .bar-table-wrapper {
-        display: flex;
         flex-direction: column;
         justify-content: flex-start;
         flex-grow: 3;
-        overflow: auto;
         padding-right: 0.5rem;
-    }
-
-    .vocab-table {
-
+        margin-bottom: 1rem;
     }
 
     .top-bar {
@@ -173,32 +216,51 @@
         /*position: fixed;*/
     }
 
-    .vocab-thead {
-        border-bottom: 1px solid lightgray;
+    .vocab-table-wrapper {
+        overflow-y: auto;
+        height: 100vh;
     }
 
-    .vocab-thead th {
+    .vocab-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .vocab-table tr {
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+
+    .vocab-table thead th {
+        background-color: white;
         padding-bottom: 0.5rem;
         padding-left: 1rem;
         padding-right: 1rem;
         text-align: start;
+        position: sticky;
+        top: 0;
+
     }
 
-    .vocab-thead th:not(.centered-table-col) {
+    .vocab-table thead th:not(.centered-table-col) {
         text-align: start;
         vertical-align: middle;
         font-weight: bold;
     }
 
-    .vocab-rows tr:nth-child(odd) {
+    .vocab-tbody tr:nth-child(odd) {
         background-color: whitesmoke;
     }
 
-    .vocab-rows td {
+    .vocab-tbody td {
         padding: 1rem 1rem;
     }
 
-    .vocab-rows td button {
+    .vocab-tbody td button {
         font-size: 1rem;
+    }
+
+    .pagination-div {
+     
     }
 </style>
