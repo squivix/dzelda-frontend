@@ -1,25 +1,30 @@
 <template>
-    <div v-if="vocab">
-        <h4 class="vocab-text">{{ vocab.text }}</h4>
-        <div :class="{'new-vocab-panel':showAddPanel, 'existing-vocab-panel':!showAddPanel}">
-            <div v-if="vocab">
-                <new-vocab-panel
-                        v-if="showAddPanel"
-                        :vocab="vocab"
-                        :is-phrase="isPhrase"
-                        @onMeaningAdded="onMeaningAdded"
-                        @onVocabLevelSet="onVocabLevelSet">
+    <div>
+        <div v-if="vocab">
+            <h4 class="vocab-text">{{ vocab.text }}</h4>
+            <div :class="{'meaning-sub-panel':true,'new-vocab-panel':showAddPanel, 'existing-vocab-panel':!showAddPanel}">
+                <div>
+                    <new-vocab-panel
+                            v-if="showAddPanel"
+                            :vocab="vocab"
+                            :is-phrase="isPhrase"
+                            @onMeaningAdded="onMeaningAdded"
+                            @onVocabLevelSet="onVocabLevelSet">
 
-                </new-vocab-panel>
-                <existing-vocab-panel
-                        v-else
-                        :vocab="vocab"
-                        @onAddMoreMeaningsClicked="onAddMoreMeaningsClicked"
-                        @onMeaningDeleted="onMeaningDeleted"
-                        @onVocabLevelSet="onVocabLevelSet">
-                </existing-vocab-panel>
+                    </new-vocab-panel>
+                    <existing-vocab-panel
+                            v-else
+                            :vocab="vocab"
+                            @onAddMoreMeaningsClicked="onAddMoreMeaningsClicked"
+                            @onMeaningDeleted="onMeaningDeleted"
+                            @onVocabLevelSet="onVocabLevelSet">
+                    </existing-vocab-panel>
+                </div>
             </div>
         </div>
+        <slot name="no-selected-panel" v-else>
+
+        </slot>
     </div>
 </template>
 
@@ -45,8 +50,7 @@
         },
         watch: {
             vocab() {
-                if (this.vocab === null)
-                    this.addingMoreMeanings = false;
+                this.addingMoreMeanings = false;
             }
         },
         data() {
@@ -85,7 +89,7 @@
 
 <style scoped>
 
-    .meaning-panel {
+    .meaning-panel-wrapper {
     }
 
     .vocab-text {
@@ -93,17 +97,16 @@
         margin-bottom: 1rem;
     }
 
-    .new-vocab-panel {
-        background-color: #f0f9fe;
-        height: 100%;
+    .meaning-sub-panel {
         padding: 1vw;
         border-radius: 10px;
     }
 
+    .new-vocab-panel {
+        background-color: #f0f9fe;
+    }
+
     .existing-vocab-panel {
         background-color: #FFFCE9;
-        height: 100%;
-        padding: 1vw;
-        border-radius: 10px;
     }
 </style>

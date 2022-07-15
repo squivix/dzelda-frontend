@@ -81,6 +81,19 @@ a:hover {
     cursor: pointer;
 }
 
+.link-parent * {
+    text-decoration: none;
+
+}
+
+.link-parent:hover {
+    cursor: pointer;
+}
+
+.link-parent:hover * {
+    text-decoration: underline;
+}
+
 .unselectable {
     user-select: none;
 }

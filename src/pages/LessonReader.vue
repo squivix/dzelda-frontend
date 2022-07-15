@@ -15,7 +15,7 @@
                     @onBackgroundClicked="clearSelectedVocab">
             </the-lesson-content>
             <the-meaning-panel v-if="!selectedOverLappingPhrases"
-                               class="meaning-panel"
+                               class="meaning-panel-wrapper"
                                :vocab="selectedVocab"
                                :is-phrase="selectedIsPhrase"
                                @onMeaningAdded="onMeaningAdded"
@@ -199,6 +199,7 @@
     .lesson-content {
     }
 
-    .meaning-panel {
+    .meaning-panel-wrapper:deep(.meaning-sub-panel) {
+        height: 100%;
     }
 </style>

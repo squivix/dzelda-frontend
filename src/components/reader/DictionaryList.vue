@@ -1,5 +1,5 @@
 <template>
-    <h5>Dictionaries</h5>
+    <h5 v-if="dictionaries.length>0">Dictionaries</h5>
     <ol class="dictionaries" v-for="dictionary in dictionaries" :key="dictionary.id">
         <li @click="openDictionaryLink(dictionary)">{{dictionary.name}}</li>
     </ol>

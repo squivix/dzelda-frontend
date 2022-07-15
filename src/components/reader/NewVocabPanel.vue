@@ -9,7 +9,6 @@
 
         <dictionaries-list
                 :vocab-text="vocab.text">
-
         </dictionaries-list>
         <div class="mark-buttons-div" v-if="!isPhrase && isLevelNew || isLevelIgnored">
             <button class="button-hollow know-button" @click="markWordAsKnown">Mark as
