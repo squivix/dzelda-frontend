@@ -6,7 +6,7 @@
 
                     <form class="top-bar" @submit.prevent="searchVocabs">
                         <input type="text" class="search-input" placeholder="Search" v-model.trim="searchQuery">
-                        <button type="button" class="search-button">
+                        <button class="search-button">
                             <font-awesome-icon icon="magnifying-glass"></font-awesome-icon>
                         </button>
                         <button type="button" class="filter-button">
@@ -70,7 +70,7 @@
             <div class="pagination-div">
                 <form id="vocab-per-page-form">
                     <label for="vocab-per-page-select">Vocabs Per Page</label>
-                    <select id="vocab-per-page-select" v-model="vocabsPerPage">
+                    <select id="vocab-per-page-select" v-model="maxPerPage">
                         <option value="25">25</option>
                         <option value="50">50</option>
                         <option value="100">100</option>
@@ -105,7 +105,7 @@
                 vocabs: null,
                 selectedVocab: null,
                 searchQuery: null,
-                vocabsPerPage: 25,
+                maxPerPage: 25,
                 currentPage: 1,
                 pageCount: 0
             };
@@ -126,10 +126,10 @@
                     language: this.$route.params.learningLanguage,
                     searchQuery: this.searchQuery,
                     page: this.currentPage,
-                    vocabsPerPage: this.vocabsPerPage,
+                    vocabsPerPage: this.maxPerPage,
                 });
                 this.vocabs = response.results;
-                this.pageCount = Math.ceil(response.count / this.vocabsPerPage);
+                this.pageCount = Math.ceil(response.count / this.maxPerPage);
                 this.loadingVocabs = false;
             },
             setSelectedVocab(vocab) {
@@ -203,7 +203,8 @@
     }
 
     .search-button {
-        flex-basis: 30px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
         background-color: var(--primary-color);
         border: 1px solid var(--on-primary-color);

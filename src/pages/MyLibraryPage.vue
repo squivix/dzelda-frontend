@@ -1,19 +1,23 @@
 <template>
     <base-card title="My Library" class="library-base-card">
         <template v-slot:content>
-            <form class="top-bar">
+            <div class="top-bar">
                 <select class="course-lesson-select" v-model="showListOf">
                     <option name="lessons">Lessons</option>
                     <option name="courses">Courses</option>
                 </select>
-                <input type="text" class="search-input" placeholder="Search">
-                <button type="button" class="search-button">
-                    <font-awesome-icon icon="magnifying-glass"></font-awesome-icon>
-                </button>
-                <button type="button" class="filter-button">
-                    <font-awesome-icon icon="filter"></font-awesome-icon>
-                </button>
-            </form>
+                <div class="search-filter">
+                    <form class="search-filter" @submit.prevent="search">
+                        <input type="text" class="search-input" placeholder="Search" v-model.trim="searchQuery">
+                        <button type="button" class="search-button">
+                            <font-awesome-icon icon="magnifying-glass"></font-awesome-icon>
+                        </button>
+                    </form>
+                    <button type="button" class="filter-button">
+                        <font-awesome-icon icon="filter"></font-awesome-icon>
+                    </button>
+                </div>
+            </div>
 
             <ol class="lesson-list" v-if="showListOf==='Lessons'">
                 <li v-for="lesson in lessons" :key="lesson.id">
@@ -46,7 +50,11 @@
             return {
                 lessons: null,
                 courses: null,
-                showListOf: "Lessons"
+                showListOf: "Lessons",
+                searchQuery: null,
+                maxPerPage: 25,
+                currentPage: 1,
+                pageCount: 0
             };
         },
         async mounted() {
@@ -54,6 +62,9 @@
             await this.fetchLessons();
         },
         methods: {
+            search() {
+
+            },
             async fetchLessons() {
                 const user_lessons = await this.$store.dispatch("fetchUserLessons", {language: this.$route.params.learningLanguage});
                 const course_map = {};
@@ -91,12 +102,21 @@
         width: 100%;
         display: flex;
         flex-direction: row;
-        justify-content: stretch;
+        justify-content: space-between;
+
         column-gap: 0.5vw;
     }
 
+
     .course-lesson-select {
-        flex-grow: 1;
+        flex-basis: 10rem;
+    }
+
+
+    .search-filter {
+        display: flex;
+        flex-direction: row;
+        column-gap: 0.2rem;
     }
 
     .search-input {
@@ -104,7 +124,8 @@
     }
 
     .search-button {
-        flex-basis: 30px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
         background-color: var(--primary-color);
         border: 1px solid var(--on-primary-color);
