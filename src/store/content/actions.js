@@ -7,7 +7,7 @@ export default {
             module: "content",
         });
     },
-    async getOrFetchDefaultLanguage(context) {
+    async getOrFetchDefaultUserLanguage(context) {
         return (await context.dispatch("getOrFetchUserLanguages"))[0];
     },
     async getOrFetchUserLanguages(context) {
@@ -25,7 +25,7 @@ export default {
     },
     async fetchSavedCourses(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/saved-courses`,
+            url: `${context.getters.apiUrl}/users/me/saved-courses?language=${payload.language}`,
             protected: true,
             caller: "fetchSavedCourses",
             module: "content",

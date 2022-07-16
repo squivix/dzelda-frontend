@@ -129,7 +129,7 @@ router.beforeResolve(async (to, from) => {
         return {name: 'explore'}
 
     if (to.meta.redirToLanguageSpecific) {
-        const defaultLanguage = await store.dispatch("getOrFetchDefaultLanguage");
+        const defaultLanguage = await store.dispatch("getOrFetchDefaultUserLanguage");
         return {path: `/learn/${defaultLanguage.code}${to.path}`};
     }
 

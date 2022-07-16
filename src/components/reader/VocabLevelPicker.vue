@@ -1,22 +1,22 @@
 <template>
     <ol class="levels"
         v-if="level !== vocabLevels.NEW && level !== vocabLevels.IGNORED&& level !== vocabLevels.KNOWN">
-        <li :class="{ highlighted: level === vocabLevels.LEVEL_1 }" @click="setVocabLevel(vocabLevels.LEVEL_1)">
+        <li :class="{ highlighted: level === vocabLevels.LEVEL_1 }" @click.stop="setVocabLevel(vocabLevels.LEVEL_1)">
             {{vocabLevels.LEVEL_1}}
         </li>
-        <li :class="{ highlighted: level === vocabLevels.LEVEL_2 }" @click="setVocabLevel(vocabLevels.LEVEL_2)">
+        <li :class="{ highlighted: level === vocabLevels.LEVEL_2 }" @click.stop="setVocabLevel(vocabLevels.LEVEL_2)">
             {{vocabLevels.LEVEL_2}}
         </li>
-        <li :class="{ highlighted: level === vocabLevels.LEVEL_3 }" @click="setVocabLevel(vocabLevels.LEVEL_3)">
+        <li :class="{ highlighted: level === vocabLevels.LEVEL_3 }" @click.stop="setVocabLevel(vocabLevels.LEVEL_3)">
             {{vocabLevels.LEVEL_3}}
         </li>
-        <li :class="{ highlighted: level === vocabLevels.LEVEL_4 }" @click="setVocabLevel(vocabLevels.LEVEL_4)">
+        <li :class="{ highlighted: level === vocabLevels.LEVEL_4 }" @click.stop="setVocabLevel(vocabLevels.LEVEL_4)">
             {{vocabLevels.LEVEL_4}}
         </li>
-        <li :class="{ highlighted: level === vocabLevels.LEARNED }" @click="setVocabLevel(vocabLevels.LEARNED)">
+        <li :class="{ highlighted: level === vocabLevels.LEARNED }" @click.stop="setVocabLevel(vocabLevels.LEARNED)">
             <font-awesome-icon icon="check" ref="toggleShowIcon"/>
         </li>
-        <li :class="{ highlighted: level === vocabLevels.IGNORED }" @click="setVocabLevel(vocabLevels.IGNORED)">
+        <li :class="{ highlighted: level === vocabLevels.IGNORED }" @click.stop="setVocabLevel(vocabLevels.IGNORED)">
             <font-awesome-icon icon="ban" ref="toggleShowIcon"/>
         </li>
     </ol>

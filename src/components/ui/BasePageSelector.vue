@@ -54,6 +54,11 @@
                 pages: null
             }
         },
+        watch: {
+            pageCount() {
+                this.updatePages(this.currentPage);
+            }
+        },
         methods: {
             onPageClicked(page) {
                 this.$emit("onPageClicked", page);
@@ -61,11 +66,8 @@
             },
             updatePages(currentPage) {
                 let pages = [];
-                let start = currentPage - this.beforeCurrentCount;
-                let end;
-                if (start < 1)
-                    start = 1;
-                end = start + this.shownCount + this.beforeCurrentCount;
+                let start = Math.max(1, currentPage - this.beforeCurrentCount);
+                let end = Math.min(this.pageCount + 1, start + this.shownCount + this.beforeCurrentCount);
                 for (let i = start; i < end; i++)
                     pages.push(i);
                 this.pages = pages;

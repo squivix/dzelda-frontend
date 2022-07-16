@@ -1,10 +1,11 @@
 <template>
     <base-card title="My Vocabulary" class="library-base-card">
         <template v-slot:content>
-            <section class="main-content">
+            <section class="main-content" @click="clearSelectedVocab">
                 <div class="bar-table-wrapper">
-                    <form class="top-bar">
-                        <input type="text" class="search-input" placeholder="Search">
+
+                    <form class="top-bar" @submit.prevent="searchVocabs">
+                        <input type="text" class="search-input" placeholder="Search" v-model.trim="searchQuery">
                         <button type="button" class="search-button">
                             <font-awesome-icon icon="magnifying-glass"></font-awesome-icon>
                         </button>
@@ -12,7 +13,9 @@
                             <font-awesome-icon icon="filter"></font-awesome-icon>
                         </button>
                     </form>
-                    <div class="vocab-table-wrapper">
+
+                    <p v-if="loadingVocabs">Loading...</p>
+                    <div class="vocab-table-wrapper" v-else-if="vocabs&&vocabs.length>0">
                         <table class="vocab-table">
                             <thead>
                             <tr>
@@ -47,6 +50,9 @@
                             </tbody>
                         </table>
                     </div>
+                    <div v-else>
+                        <p>No vocabs added yet...</p>
+                    </div>
                 </div>
                 <div class="meaning-panel-wrapper">
                     <the-meaning-panel
@@ -62,9 +68,10 @@
                 </div>
             </section>
             <div class="pagination-div">
-                <form>
+                <form id="vocab-per-page-form">
                     <label for="vocab-per-page-select">Vocabs Per Page</label>
                     <select id="vocab-per-page-select" v-model="vocabsPerPage">
+                        <option value="25">25</option>
                         <option value="50">50</option>
                         <option value="100">100</option>
                         <option value="150">150</option>
@@ -94,9 +101,11 @@
         components: {BasePageSelector, VocabLevelPicker, VocabLevelDisplay, TheMeaningPanel},
         data() {
             return {
+                loadingVocabs: true,
                 vocabs: null,
                 selectedVocab: null,
-                vocabsPerPage: 50,
+                searchQuery: null,
+                vocabsPerPage: 25,
                 currentPage: 1,
                 pageCount: 0
             };
@@ -111,15 +120,17 @@
         },
         methods: {
             async fetchVocabsPage() {
+                this.clearSelectedVocab();
+                this.loadingVocabs = true;
                 const response = await this.$store.dispatch("fetchUserVocabsPage", {
                     language: this.$route.params.learningLanguage,
+                    searchQuery: this.searchQuery,
                     page: this.currentPage,
                     vocabsPerPage: this.vocabsPerPage,
                 });
                 this.vocabs = response.results;
-
-
                 this.pageCount = Math.ceil(response.count / this.vocabsPerPage);
+                this.loadingVocabs = false;
             },
             setSelectedVocab(vocab) {
                 this.selectedVocab = vocab;
@@ -128,8 +139,12 @@
                 this.selectedVocab = null;
             },
             goToPage(page) {
+                //TODO make page transitions work with the browser's back/forth buttons
                 this.currentPage = page;
                 this.fetchVocabsPage();
+            },
+            async searchVocabs() {
+                this.goToPage(1);
             },
             onMeaningAdded(vocab, meaning) {
                 vocab.user_meanings.push(meaning)
@@ -177,13 +192,14 @@
         width: 100%;
         display: flex;
         flex-direction: row;
-        justify-content: stretch;
-        margin-bottom: 1rem;
+        justify-content: flex-end;
+
+        margin-bottom: 2rem;
         column-gap: 0.5vw;
     }
 
     .search-input {
-        flex-grow: 2;
+        /*flex-grow: 2;*/
     }
 
     .search-button {
@@ -218,7 +234,7 @@
 
     .vocab-table-wrapper {
         overflow-y: auto;
-        height: 100vh;
+        max-height: 100vh;
     }
 
     .vocab-table {
@@ -258,9 +274,21 @@
 
     .vocab-tbody td button {
         font-size: 1rem;
+        text-align: start;
     }
 
     .pagination-div {
-     
+        display: flex;
+        flex-direction: column;
+        row-gap: 1rem;
+    }
+
+    #vocab-per-page-form {
+        display: flex;
+        flex-direction: row;
+        column-gap: 0.5rem;
+        justify-content: flex-start;
+        align-items: center;
+
     }
 </style>

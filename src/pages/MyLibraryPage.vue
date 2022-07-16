@@ -64,7 +64,7 @@
                 this.lessons = user_lessons;
             },
             async fetchSavedCourses() {
-                const user_courses = await this.$store.dispatch("fetchSavedCourses");
+                const user_courses = await this.$store.dispatch("fetchSavedCourses", {language: this.$route.params.learningLanguage});
                 this.courses = user_courses;
             }
         }

@@ -36,12 +36,20 @@
             };
         },
         methods: {
-            onSubmit() {
-                this.addCourse();
+            async onSubmit() {
+                const newCourse = await this.addCourse();
+                //TODO move this somewhere more general
+                if (this.$route.query["redir"] !== null)
+                    await this.$router.push({path: this.$route.query["redir"]})
+                else
+                    await this.$router.push({
+                        name: "course",
+                        params: {courseId: newCourse.id, learningLanguage: this.$route.params.learningLanguage}
+                    });
             },
 
             async addCourse() {
-                this.$store.dispatch("postCourse", {
+                return await this.$store.dispatch("postCourse", {
                     languageCode: this.$route.params.learningLanguage,
                     title: this.title,
                     description: this.description,
