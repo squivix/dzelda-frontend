@@ -105,7 +105,8 @@ export default {
     },
     async fetchUserVocabsPage(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/vocabs?language=${payload.language}&level.neq=${VOCAB_LEVELS.IGNORED}&level.neq=${VOCAB_LEVELS.KNOWN}${payload.searchQuery ? `&search=${payload.searchQuery}` : ''}&pageSize=${payload.vocabsPerPage}&page=${payload.page}`,
+            //&level.neq=${VOCAB_LEVELS.IGNORED}&level.neq=${VOCAB_LEVELS.KNOWN}
+            url: `${context.getters.apiUrl}/users/me/vocabs?language=${payload.language}${payload.levels.map((level) => `&level=${level}`).join("")}${payload.searchQuery ? `&search=${payload.searchQuery}` : ''}&pageSize=${payload.vocabsPerPage}&page=${payload.page}`,
             protected: true,
             caller: "fetchUserVocabsPage",
             module: "reader",
