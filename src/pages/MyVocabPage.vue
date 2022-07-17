@@ -3,61 +3,51 @@
         <template v-slot:content>
             <section class="main-content" @click="clearSelectedVocab">
                 <div class="bar-table-wrapper">
+                    <search-filter @onSearchSubmitted="setSearchQuery"
+                                   @onFilterApplied="applyFilters"
+                                   :initial-search-query="initialSearchQuery">
+                        <template v-slot:filters>
+                            <label class="filter-label">Level</label>
+                            <fieldset class="filter-levels">
+                                <div class="checkbox-label">
+                                    <input id="filter-level-1-checkbox"
+                                           type="checkbox"
+                                           :value="vocabLevels.LEVEL_1"
+                                           v-model="filteredLevels">
+                                    <label for="filter-level-1-checkbox">Level 1</label>
+                                </div>
+                                <div class="checkbox-label">
+                                    <input id="filter-level-2-checkbox"
+                                           type="checkbox"
+                                           :value="vocabLevels.LEVEL_2"
+                                           v-model="filteredLevels">
+                                    <label for="filter-level-2-checkbox">Level 2</label>
+                                </div>
+                                <div class="checkbox-label">
+                                    <input id="filter-level-3-checkbox"
+                                           type="checkbox"
+                                           :value="vocabLevels.LEVEL_3"
+                                           v-model="filteredLevels">
+                                    <label for="filter-level-3-checkbox">Level 3</label>
+                                </div>
+                                <div class="checkbox-label">
+                                    <input id="filter-level-4-checkbox"
+                                           type="checkbox"
+                                           :value="vocabLevels.LEVEL_4"
+                                           v-model="filteredLevels">
+                                    <label for="filter-level-4-checkbox">Level 4</label>
+                                </div>
 
-                    <div class="top-bar">
-                        <form @submit.prevent="refreshQuery">
-                            <input type="text" class="search-input" placeholder="Search" v-model.trim="searchQuery">
-                            <button class="search-button">
-                                <font-awesome-icon icon="magnifying-glass"></font-awesome-icon>
-                            </button>
-                        </form>
-                        <button class="filter-button" @click="toggleFilters">
-                            <font-awesome-icon icon="filter"></font-awesome-icon>
-                        </button>
-                    </div>
-
-                    <form :class="{filters:true, 'filter-shown':filtersShown}" @submit="refreshQuery">
-                        <label class="filter-label">Level</label>
-                        <fieldset class="filter-levels">
-                            <div class="checkbox-label">
-                                <input id="filter-level-1-checkbox"
-                                       type="checkbox"
-                                       :value="vocabLevels.LEVEL_1"
-                                       v-model="filteredLevels">
-                                <label for="filter-level-1-checkbox">Level 1</label>
-                            </div>
-                            <div class="checkbox-label">
-                                <input id="filter-level-2-checkbox"
-                                       type="checkbox"
-                                       :value="vocabLevels.LEVEL_2"
-                                       v-model="filteredLevels">
-                                <label for="filter-level-2-checkbox">Level 2</label>
-                            </div>
-                            <div class="checkbox-label">
-                                <input id="filter-level-3-checkbox"
-                                       type="checkbox"
-                                       :value="vocabLevels.LEVEL_3"
-                                       v-model="filteredLevels">
-                                <label for="filter-level-3-checkbox">Level 3</label>
-                            </div>
-                            <div class="checkbox-label">
-                                <input id="filter-level-4-checkbox"
-                                       type="checkbox"
-                                       :value="vocabLevels.LEVEL_4"
-                                       v-model="filteredLevels">
-                                <label for="filter-level-4-checkbox">Level 4</label>
-                            </div>
-
-                            <div class="checkbox-label">
-                                <input id="filter-level-learned-checkbox"
-                                       type="checkbox"
-                                       :value="vocabLevels.LEARNED"
-                                       v-model="filteredLevels">
-                                <label for="filter-level-learned-checkbox">Learned</label>
-                            </div>
-                        </fieldset>
-                        <button class="apply-filters">Apply</button>
-                    </form>
+                                <div class="checkbox-label">
+                                    <input id="filter-level-learned-checkbox"
+                                           type="checkbox"
+                                           :value="vocabLevels.LEARNED"
+                                           v-model="filteredLevels">
+                                    <label for="filter-level-learned-checkbox">Learned</label>
+                                </div>
+                            </fieldset>
+                        </template>
+                    </search-filter>
 
                     <p v-if="loadingVocabs">Loading...</p>
                     <div class="vocab-table-wrapper" v-else-if="vocabs&&vocabs.length>0">
@@ -140,35 +130,47 @@
     import {VOCAB_LEVELS} from "@/constants";
     import VocabLevelPicker from "@/components/reader/VocabLevelPicker";
     import BasePageSelector from "@/components/ui/BasePageSelector";
+    import SearchFilter from "@/components/ui/SearchFilter";
 
     export default {
         name: "MyVocabPage",
-        components: {BasePageSelector, VocabLevelPicker, VocabLevelDisplay, TheMeaningPanel},
+        components: {SearchFilter, BasePageSelector, VocabLevelPicker, VocabLevelDisplay, TheMeaningPanel},
         data() {
             return {
                 loadingVocabs: true,
                 vocabs: null,
                 selectedVocab: null,
-                searchQuery: null,
                 maxPerPage: 25,
                 currentPage: 1,
                 pageCount: 0,
-                filtersShown: false,
-                filteredLevels: [VOCAB_LEVELS.LEVEL_1, VOCAB_LEVELS.LEVEL_2, VOCAB_LEVELS.LEVEL_3, VOCAB_LEVELS.LEVEL_4, VOCAB_LEVELS.LEARNED]
+                filteredLevels: null
             };
         },
         computed: {
             vocabLevels() {
                 return VOCAB_LEVELS;
             },
+            initialSearchQuery() {
+                return this.$route.query.searchQuery;
+            }
 
         },
         async mounted() {
+            try {
+                this.filteredLevels = this.$route.query.level.map((level) => Number(level));
+            } catch (error) {
+                this.filteredLevels = [VOCAB_LEVELS.LEVEL_1, VOCAB_LEVELS.LEVEL_2, VOCAB_LEVELS.LEVEL_3, VOCAB_LEVELS.LEVEL_4, VOCAB_LEVELS.LEARNED];
+            }
             await this.fetchVocabsPage();
         },
         watch: {
             async vocabsPerPage() {
                 await this.fetchVocabsPage();
+            },
+            '$route.query': async function (newVal, oldVal) {
+                if (newVal.page === oldVal.page)
+                    await this.refreshQuery();
+                else await this.fetchVocabsPage();
             }
         },
         methods: {
@@ -177,7 +179,7 @@
                 this.loadingVocabs = true;
                 const response = await this.$store.dispatch("fetchUserVocabsPage", {
                     language: this.$route.params.learningLanguage,
-                    searchQuery: this.searchQuery,
+                    searchQuery: this.$route.query.searchQuery,
                     levels: [...this.filteredLevels],
                     page: this.currentPage,
                     vocabsPerPage: this.maxPerPage,
@@ -185,6 +187,11 @@
                 this.vocabs = response.results;
                 this.pageCount = Math.ceil(response.count / this.maxPerPage);
                 this.loadingVocabs = false;
+            }, setSearchQuery(searchQuery) {
+                this.$router.push({...this.$route, query: {...this.$route.query, searchQuery}});
+            },
+            applyFilters() {
+                this.$router.push({...this.$route, query: {...this.$route.query, level: this.filteredLevels}});
             },
             setSelectedVocab(vocab) {
                 this.selectedVocab = vocab;
@@ -195,13 +202,12 @@
             goToPage(page) {
                 //TODO make page transitions work with the browser's back/forth buttons
                 this.currentPage = page;
-                this.fetchVocabsPage();
+                this.$router.push({...this.$route, query: {...this.$route.query, page: this.currentPage}});
             },
             async refreshQuery() {
-                this.goToPage(1);
-            },
-            toggleFilters() {
-                this.filtersShown = !this.filtersShown;
+                this.currentPage = 1;
+                await this.fetchVocabsPage();
+                // this.goToPage(1);
             },
             onMeaningAdded(vocab, meaning) {
                 vocab.user_meanings.push(meaning)
@@ -245,40 +251,6 @@
         row-gap: 1rem;
         padding-right: 0.5rem;
         margin-bottom: 1rem;
-    }
-
-    .top-bar {
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-end;
-
-        column-gap: 0.5vw;
-    }
-
-    .search-input {
-    }
-
-    .search-button {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background-color: var(--primary-color);
-        border: 1px solid var(--on-primary-color);
-    }
-
-    .search-button svg {
-        color: var(--on-primary-color);
-    }
-
-    .filter-button {
-        border: 2px solid gray;
-        border-radius: 5px;
-        height: 30px;
-    }
-
-    .filter-button:hover {
-        cursor: pointer;
     }
 
     .meaning-panel-wrapper {
@@ -353,66 +325,13 @@
         align-items: center;
     }
 
-    .filters-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        row-gap: 0.5rem;
-    }
-
-    .filters {
-        display: flex;
-        flex-direction: column;
-        row-gap: 0.5rem;
-        align-self: flex-end;
-        border: 1px solid gray;
-        border-radius: 5px;
-        padding: 1rem;
-        transition-property: max-height, border-color, padding;
-        transition-delay: 0s, 0.5s;
-        transition-duration: 0.5s, 0.001s;
-    }
-
     .filter-label {
         font-weight: bold;
-    }
-
-    .filter-shown {
-        max-height: 500px;
-        transition-delay: 0.01s, 0s;
-        transition-duration: 1s, 0.001s;
-    }
-
-    .filters:not(.filter-shown) {
-        max-height: 0;
-        padding-top: 0;
-        padding-bottom: 0;
-        border: 1px solid transparent;
-    }
-
-    .filters:not(.filter-shown) * {
-        visibility: hidden;
-        transition: visibility 0.4s;
-        pointer-events: none;
     }
 
     .filter-levels {
         display: flex;
         flex-direction: row;
         column-gap: 1rem;
-    }
-
-    .apply-filters {
-        align-self: flex-end;
-        border-radius: 3px;
-        padding: 0.5rem 0.5rem;
-        font-size: 1rem;
-        background-color: var(--primary-color);
-        color: var(--on-primary-color);
-        border: 1px solid var(--primary-color)
-    }
-
-    .apply-filters:hover {
-        cursor: pointer;
     }
 </style>
