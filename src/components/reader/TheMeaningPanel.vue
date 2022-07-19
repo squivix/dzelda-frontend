@@ -29,7 +29,7 @@
 </template>
 
 <script>
-    import {VOCAB_LEVELS} from "@/constants.js";
+    import {ALL_LEVELS} from "@/constants.js";
     import NewVocabPanel from "@/components/reader/NewVocabPanel";
     import ExistingVocabPanel from "@/components/reader/ExistingVocabPanel";
 
@@ -60,10 +60,10 @@
         },
         computed: {
             vocabLevels() {
-                return VOCAB_LEVELS;
+                return ALL_LEVELS;
             },
             isVocabNotSaved() {
-                return this.vocab.level === VOCAB_LEVELS.NEW || this.vocab.level === VOCAB_LEVELS.IGNORED || this.vocab.level === VOCAB_LEVELS.KNOWN;
+                return this.vocab.level === ALL_LEVELS.NEW || this.vocab.level === ALL_LEVELS.IGNORED || this.vocab.level === ALL_LEVELS.KNOWN;
             },
             showAddPanel() {
                 return this.isVocabNotSaved || this.addingMoreMeanings;

@@ -21,7 +21,7 @@
 </template>
 
 <script>
-    import {VOCAB_LEVELS} from "@/constants.js";
+    import {ALL_LEVELS} from "@/constants.js";
     import MeaningAddingControls from "@/components/reader/MeaningAddingControls";
     import DictionariesList from "@/components/reader/DictionaryList";
     import {postVocab} from "@/components/reader/shared";
@@ -49,20 +49,20 @@
                 return this.vocab.all_meanings.filter((meaning) => !this.vocab.user_meanings.some((m) => m.id === meaning.id)).slice(0, 3);
             },
             isLevelNew() {
-                return this.vocab.level === VOCAB_LEVELS.NEW;
+                return this.vocab.level === ALL_LEVELS.NEW;
             },
             isLevelIgnored() {
-                return this.vocab.level === VOCAB_LEVELS.IGNORED;
+                return this.vocab.level === ALL_LEVELS.IGNORED;
             }
         },
         methods: {
             markWordAsKnown() {
-                this.postVocab(this.vocab.text, VOCAB_LEVELS.KNOWN);
-                this.$emit('onVocabLevelSet', VOCAB_LEVELS.KNOWN);
+                this.postVocab(this.vocab.text, ALL_LEVELS.KNOWN);
+                this.$emit('onVocabLevelSet', ALL_LEVELS.KNOWN);
             },
             markWordAsIgnored() {
-                this.postVocab(this.vocab.text, VOCAB_LEVELS.IGNORED);
-                this.$emit('onVocabLevelSet', VOCAB_LEVELS.IGNORED);
+                this.postVocab(this.vocab.text, ALL_LEVELS.IGNORED);
+                this.$emit('onVocabLevelSet', ALL_LEVELS.IGNORED);
             },
             onMeaningAdded(vocab, meaning) {
                 this.$emit('onMeaningAdded', vocab, meaning);

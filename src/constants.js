@@ -1,4 +1,4 @@
-export const VOCAB_LEVELS = {
+export const ALL_LEVELS = {
     IGNORED: -1,
     NEW: 0,
     LEVEL_1: 1,
@@ -7,4 +7,12 @@ export const VOCAB_LEVELS = {
     LEVEL_4: 4,
     LEARNED: 5,
     KNOWN: 6,
+};
+
+export const SAVED_VOCAB_LEVELS = {
+    LEVEL_1: 1,
+    LEVEL_2: 2,
+    LEVEL_3: 3,
+    LEVEL_4: 4,
+    LEARNED: 5,
 };

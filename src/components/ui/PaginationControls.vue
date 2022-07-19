@@ -19,6 +19,7 @@
 
 <script>
     import BasePageSelector from "@/components/ui/BasePageSelector";
+    import {updateQueryParams} from "@/components/reader/shared";
 
     export default {
         name: "PaginationControls",
@@ -59,15 +60,7 @@
             goToPage(page) {
                 this.updateQueryParams({page});
             },
-            updateQueryParams(updatedQuery) {
-                this.$router.push({
-                    ...this.$route,
-                    query: {
-                        ...this.$route.query,
-                        ...updatedQuery,
-                    }
-                });
-            },
+            updateQueryParams
         }
     }
 </script>

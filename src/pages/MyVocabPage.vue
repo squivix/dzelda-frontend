@@ -3,14 +3,11 @@
         <template v-slot:content>
             <section class="main-content" @click="clearSelectedVocab">
                 <div class="bar-table-wrapper">
-                    <search-filter @onSearchSubmitted="setSearchQuery"
-                                   @onFilterApplied="applyFilters"
-                                   :initial-search-query="initialSearchQuery">
-                        <template v-slot:filters>
-                            <!--                            <vocab-filters>-->
-                            <!--                            </vocab-filters>-->
-                        </template>
-                    </search-filter>
+                    <vocab-search-filter
+                            :initial-filters="filters"
+                            @onSearchSubmitted="refetchPage"
+                            @onFiltersApplied="refetchPage">
+                    </vocab-search-filter>
 
                     <p v-if="loadingVocabs">Loading...</p>
                     <vocab-table v-else-if="vocabs&&vocabs.length>0"
@@ -49,44 +46,54 @@
 </template>
 
 <script>
-    import {VOCAB_LEVELS} from "@/constants";
+    import {ALL_LEVELS, SAVED_VOCAB_LEVELS} from "@/constants";
     import PaginationControls from "@/components/ui/PaginationControls";
-    import SearchFilter from "@/components/ui/SearchFilter";
     import TheMeaningPanel from "@/components/reader/TheMeaningPanel";
     import VocabTable from "@/components/reader/VocabTable";
-    import VocabFilters from "@/components/reader/VocabFilters";
+    import VocabSearchFilter from "@/components/reader/VocabSearchFilter";
+    import {updateQueryParams} from "@/components/reader/shared";
 
 
     export default {
         name: "MyVocabPage",
-        components: {VocabFilters, VocabTable, PaginationControls, TheMeaningPanel, SearchFilter},
+        components: {VocabSearchFilter, VocabTable, PaginationControls, TheMeaningPanel},
         data() {
             return {
                 loadingVocabs: true,
                 vocabs: null,
                 selectedVocab: null,
                 pageCount: 0,
-                // filters,
                 PER_PAGE_SELECT_OPTIONS: [25, 50, 100, 150, 200]
             };
         },
         computed: {
-            initialSearchQuery() {
-                return this.$route.query.searchQuery;
-            },
-            currentPage() {
-                const queryPage = Number(this.$route.query.page);
-                if (!Number.isNaN(queryPage) && queryPage > 0 && queryPage < this.pageCount)
-                    return queryPage;
-                else
-                    return 1;
+            currentPage: {
+                get() {
+                    const queryPage = Number(this.$route.query.page);
+                    if (!Number.isNaN(queryPage) && queryPage > 0 && queryPage <= this.pageCount)
+                        return queryPage;
+                    else
+                        return 1;
+                },
+                set(newVal) {
+                    this.updateQueryParams({page: newVal})
+                }
             }, maxPerPage() {
                 const queryMaxPerPage = Number(this.$route.query.maxPerPage);
                 if (!Number.isNaN(queryMaxPerPage) && this.PER_PAGE_SELECT_OPTIONS.includes(queryMaxPerPage))
                     return queryMaxPerPage;
                 else
                     return this.PER_PAGE_SELECT_OPTIONS[0];
-            }
+            },
+            filters() {
+                const savedLevelsArray = Object.values(SAVED_VOCAB_LEVELS);
+                const filters = {levels: savedLevelsArray};
+                if (this.$route.query.level) {
+                    const queryLevels = [...this.$route.query.level].map(l => Number(l)).filter(l => savedLevelsArray.includes(l));
+                    filters.levels = queryLevels;
+                }
+                return filters;
+            },
         },
         watch: {
             async currentPage() {
@@ -107,21 +114,19 @@
                 const response = await this.$store.dispatch("fetchUserVocabsPage", {
                     language: this.$route.params.learningLanguage,
                     searchQuery: this.$route.query.searchQuery,
-                    // levels: [...this.filters.levels],
+                    levels: [...this.filters.levels],
                     page: this.currentPage,
                     vocabsPerPage: this.maxPerPage,
                 });
                 this.vocabs = response.results;
                 this.pageCount = Math.ceil(response.count / this.maxPerPage);
                 this.loadingVocabs = false;
-            }, setSearchQuery(searchQuery) {
-                if (searchQuery)
-                    this.$router.push({...this.$route, query: {...this.$route.query, searchQuery}});
+            }
+            refetchPage() {
+                if (this.currentPage === 1)
+                    this.fetchVocabsPage();
                 else
-                    this.$router.push({...this.$route, query: {...this.$route.query, searchQuery: undefined}});
-            },
-            applyFilters() {
-                this.$router.push({...this.$route, query: {...this.$route.query, level: this.filters.levels}});
+                    this.currentPage = 1;
             },
             setSelectedVocab(vocab) {
                 this.selectedVocab = vocab;
@@ -133,7 +138,7 @@
                 vocab.user_meanings.push(meaning)
             },
             onVocabLevelSet(vocab, level) {
-                if (level === VOCAB_LEVELS.IGNORED) {
+                if (level === ALL_LEVELS.IGNORED) {
                     this.vocabs.splice(this.vocabs.findIndex((v) => v.text === vocab.text), 1)
                     this.clearSelectedVocab();
                 } else
@@ -143,7 +148,8 @@
                 const index = vocab.user_meanings.findIndex((v) => v.text === meaning.text);
                 if (index !== -1)
                     vocab.user_meanings.splice(index, 1);
-            },
+            }
+            , updateQueryParams
         }
     }
 </script>
