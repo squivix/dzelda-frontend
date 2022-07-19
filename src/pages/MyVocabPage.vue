@@ -7,84 +7,19 @@
                                    @onFilterApplied="applyFilters"
                                    :initial-search-query="initialSearchQuery">
                         <template v-slot:filters>
-                            <label class="filter-label">Level</label>
-                            <fieldset class="filter-levels">
-                                <div class="checkbox-label">
-                                    <input id="filter-level-1-checkbox"
-                                           type="checkbox"
-                                           :value="vocabLevels.LEVEL_1"
-                                           v-model="filteredLevels">
-                                    <label for="filter-level-1-checkbox">Level 1</label>
-                                </div>
-                                <div class="checkbox-label">
-                                    <input id="filter-level-2-checkbox"
-                                           type="checkbox"
-                                           :value="vocabLevels.LEVEL_2"
-                                           v-model="filteredLevels">
-                                    <label for="filter-level-2-checkbox">Level 2</label>
-                                </div>
-                                <div class="checkbox-label">
-                                    <input id="filter-level-3-checkbox"
-                                           type="checkbox"
-                                           :value="vocabLevels.LEVEL_3"
-                                           v-model="filteredLevels">
-                                    <label for="filter-level-3-checkbox">Level 3</label>
-                                </div>
-                                <div class="checkbox-label">
-                                    <input id="filter-level-4-checkbox"
-                                           type="checkbox"
-                                           :value="vocabLevels.LEVEL_4"
-                                           v-model="filteredLevels">
-                                    <label for="filter-level-4-checkbox">Level 4</label>
-                                </div>
-
-                                <div class="checkbox-label">
-                                    <input id="filter-level-learned-checkbox"
-                                           type="checkbox"
-                                           :value="vocabLevels.LEARNED"
-                                           v-model="filteredLevels">
-                                    <label for="filter-level-learned-checkbox">Learned</label>
-                                </div>
-                            </fieldset>
+                            <vocab-filters
+                                    v-model="filters">
+                            </vocab-filters>
                         </template>
                     </search-filter>
 
                     <p v-if="loadingVocabs">Loading...</p>
-                    <div class="vocab-table-wrapper" v-else-if="vocabs&&vocabs.length>0">
-                        <table class="vocab-table">
-                            <thead>
-                            <tr>
-                                <th>Vocab</th>
-                                <th>Meanings</th>
-                                <th>Level</th>
-                            </tr>
-                            </thead>
-                            <tbody class="vocab-tbody">
-                            <tr v-for="vocab in vocabs" :key="vocab.id">
-                                <td @click.stop="setSelectedVocab(vocab)" class="link-parent">
-                                    <button class="inv-button link">
-                                        {{vocab.text}}
-                                    </button>
-                                </td>
-                                <td>
-                                    <ul>
-                                        <li v-for="meaning in vocab.user_meanings"
-                                            :key="meaning.id">
-                                            {{meaning.text}}
-                                        </li>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <!--                                <vocab-level-display :level="vocab.level"></vocab-level-display>-->
-                                    <vocab-level-picker :level="vocab.level"
-                                                        :vocab-id="vocab.id"
-                                                        @onVocabLevelSet="(level)=>onVocabLevelSet(vocab, level)"
-                                    ></vocab-level-picker>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <vocab-table v-else-if="vocabs&&vocabs.length>0"
+                                 :vocabs="vocabs"
+                                 @onVocabClicked="setSelectedVocab"
+                                 @onVocabLevelSet="onVocabLevelSet">
+
+                    </vocab-table>
                     <div v-else>
                         <p>No vocabs added yet...</p>
                     </div>
@@ -102,76 +37,74 @@
                     </the-meaning-panel>
                 </div>
             </section>
-            <div class="pagination-div">
-                <form id="vocab-per-page-form">
-                    <label for="vocab-per-page-select">Vocabs Per Page</label>
-                    <select id="vocab-per-page-select" v-model="maxPerPage">
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                        <option value="150">150</option>
-                        <option value="200">200</option>
-                    </select>
-                </form>
-                <base-page-selector v-if="!!pageCount"
-                                    :current-page="currentPage"
-                                    :pageCount="pageCount"
-                                    :shown-count="Math.min(5,pageCount)"
-                                    @onPageClicked="goToPage">
-                </base-page-selector>
-            </div>
+            <pagination-controls v-if="pageCount"
+                                 v-model="pagination"
+                                 :page-count="pageCount"
+                                 per-page-select-label="Vocabs Per Page"
+                                 :per-page-select-options="PER_PAGE_SELECT_OPTIONS"
+                                 @onRefetchNeeded="fetchVocabsPage">
+            </pagination-controls>
         </template>
     </base-card>
 </template>
 
 <script>
-    import TheMeaningPanel from "@/components/reader/TheMeaningPanel";
-    import VocabLevelDisplay from "@/components/reader/VocabLevelDisplay";
     import {VOCAB_LEVELS} from "@/constants";
-    import VocabLevelPicker from "@/components/reader/VocabLevelPicker";
-    import BasePageSelector from "@/components/ui/BasePageSelector";
+    import PaginationControls from "@/components/ui/PaginationControls";
     import SearchFilter from "@/components/ui/SearchFilter";
+    import TheMeaningPanel from "@/components/reader/TheMeaningPanel";
+    import VocabTable from "@/components/reader/VocabTable";
+    import VocabFilters from "@/components/reader/VocabFilters";
+
 
     export default {
         name: "MyVocabPage",
-        components: {SearchFilter, BasePageSelector, VocabLevelPicker, VocabLevelDisplay, TheMeaningPanel},
+        components: {VocabFilters, VocabTable, PaginationControls, TheMeaningPanel, SearchFilter},
         data() {
+            let currentPage;
+            if (!Number.isNaN(Number(this.$route.query.page)) && Number(this.$route.query.page) > 0)
+                currentPage = Number(this.$route.query.page);
+            else
+                currentPage = 1;
+
+            const PER_PAGE_SELECT_OPTIONS = [25, 50, 100, 150, 200];
+            let maxPerPage;
+            if (!Number.isNaN(Number(this.$route.query.maxPerPage)) && PER_PAGE_SELECT_OPTIONS.includes(maxPerPage))
+                maxPerPage = Number(this.$route.query.maxPerPage);
+            else
+                maxPerPage = PER_PAGE_SELECT_OPTIONS[0];
+            let filters = {levels: [VOCAB_LEVELS.LEVEL_1, VOCAB_LEVELS.LEVEL_2, VOCAB_LEVELS.LEVEL_3, VOCAB_LEVELS.LEVEL_4, VOCAB_LEVELS.LEARNED]};
+            if (this.$route.query.level && this.$route.query.level.length > 0)
+                filters.levels = [...this.$route.query.level].map((l) => Number(l));
+
             return {
                 loadingVocabs: true,
                 vocabs: null,
                 selectedVocab: null,
-                maxPerPage: 25,
-                currentPage: 1,
+                pagination: {
+                    currentPage,
+                    maxPerPage,
+                },
                 pageCount: 0,
-                filteredLevels: null
+                filters,
+                PER_PAGE_SELECT_OPTIONS
             };
         },
         computed: {
-            vocabLevels() {
-                return VOCAB_LEVELS;
-            },
             initialSearchQuery() {
                 return this.$route.query.searchQuery;
             }
-
-        },
-        async mounted() {
-            try {
-                this.filteredLevels = this.$route.query.level.map((level) => Number(level));
-            } catch (error) {
-                this.filteredLevels = [VOCAB_LEVELS.LEVEL_1, VOCAB_LEVELS.LEVEL_2, VOCAB_LEVELS.LEVEL_3, VOCAB_LEVELS.LEVEL_4, VOCAB_LEVELS.LEARNED];
-            }
-            await this.fetchVocabsPage();
         },
         watch: {
-            async vocabsPerPage() {
-                await this.fetchVocabsPage();
-            },
-            '$route.query': async function (newVal, oldVal) {
-                if (newVal.page === oldVal.page)
-                    await this.refreshQuery();
-                else await this.fetchVocabsPage();
+            pagination: {
+                async handler() {
+                    await this.fetchVocabsPage();
+                },
+                deep: true
             }
+        },
+        async mounted() {
+            await this.fetchVocabsPage();
         },
         methods: {
             async fetchVocabsPage() {
@@ -180,34 +113,27 @@
                 const response = await this.$store.dispatch("fetchUserVocabsPage", {
                     language: this.$route.params.learningLanguage,
                     searchQuery: this.$route.query.searchQuery,
-                    levels: [...this.filteredLevels],
-                    page: this.currentPage,
-                    vocabsPerPage: this.maxPerPage,
+                    levels: [...this.filters.levels],
+                    page: this.pagination.currentPage,
+                    vocabsPerPage: this.pagination.maxPerPage,
                 });
                 this.vocabs = response.results;
-                this.pageCount = Math.ceil(response.count / this.maxPerPage);
+                this.pageCount = Math.ceil(response.count / this.pagination.maxPerPage);
                 this.loadingVocabs = false;
             }, setSearchQuery(searchQuery) {
-                this.$router.push({...this.$route, query: {...this.$route.query, searchQuery}});
+                if (searchQuery)
+                    this.$router.push({...this.$route, query: {...this.$route.query, searchQuery}});
+                else
+                    this.$router.push({...this.$route, query: {...this.$route.query, searchQuery: undefined}});
             },
             applyFilters() {
-                this.$router.push({...this.$route, query: {...this.$route.query, level: this.filteredLevels}});
+                this.$router.push({...this.$route, query: {...this.$route.query, level: this.filters.levels}});
             },
             setSelectedVocab(vocab) {
                 this.selectedVocab = vocab;
             },
             clearSelectedVocab() {
                 this.selectedVocab = null;
-            },
-            goToPage(page) {
-                //TODO make page transitions work with the browser's back/forth buttons
-                this.currentPage = page;
-                this.$router.push({...this.$route, query: {...this.$route.query, page: this.currentPage}});
-            },
-            async refreshQuery() {
-                this.currentPage = 1;
-                await this.fetchVocabsPage();
-                // this.goToPage(1);
             },
             onMeaningAdded(vocab, meaning) {
                 vocab.user_meanings.push(meaning)
@@ -267,71 +193,4 @@
         /*position: fixed;*/
     }
 
-    .vocab-table-wrapper {
-        overflow-y: auto;
-        max-height: 100vh;
-    }
-
-    .vocab-table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-
-    .vocab-table tr {
-        padding-right: 1rem;
-        padding-left: 1rem;
-    }
-
-    .vocab-table thead th {
-        background-color: white;
-        padding-bottom: 0.5rem;
-        padding-left: 1rem;
-        padding-right: 1rem;
-        text-align: start;
-        position: sticky;
-        top: 0;
-    }
-
-    .vocab-table thead th:not(.centered-table-col) {
-        text-align: start;
-        vertical-align: middle;
-        font-weight: bold;
-    }
-
-    .vocab-tbody tr:nth-child(odd) {
-        background-color: whitesmoke;
-    }
-
-    .vocab-tbody td {
-        padding: 1rem 1rem;
-    }
-
-    .vocab-tbody td button {
-        font-size: 1rem;
-        text-align: start;
-    }
-
-    .pagination-div {
-        display: flex;
-        flex-direction: column;
-        row-gap: 1rem;
-    }
-
-    #vocab-per-page-form {
-        display: flex;
-        flex-direction: row;
-        column-gap: 0.5rem;
-        justify-content: flex-start;
-        align-items: center;
-    }
-
-    .filter-label {
-        font-weight: bold;
-    }
-
-    .filter-levels {
-        display: flex;
-        flex-direction: row;
-        column-gap: 1rem;
-    }
 </style>
