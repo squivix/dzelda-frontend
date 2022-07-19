@@ -63,6 +63,30 @@
             updateQueryParams
         }
     }
+
+    // interface/mixin-like way for all hosts of the PaginationControls component to have the necessary computed properties
+    export const paginationControlsHost = {
+        computed: {
+            currentPage: {
+                get() {
+                    const queryPage = Number(this.$route.query.page);
+                    if (!Number.isNaN(queryPage) && queryPage > 0 && queryPage <= this.pageCount)
+                        return queryPage;
+                    else
+                        return 1;
+                },
+                set(newVal) {
+                    this.updateQueryParams({page: newVal})
+                }
+            }, maxPerPage() {
+                const queryMaxPerPage = Number(this.$route.query.maxPerPage);
+                if (!Number.isNaN(queryMaxPerPage) && this.PER_PAGE_SELECT_OPTIONS.includes(queryMaxPerPage))
+                    return queryMaxPerPage;
+                else
+                    return this.PER_PAGE_SELECT_OPTIONS[0];
+            },
+        }
+    }
 </script>
 
 <style scoped>

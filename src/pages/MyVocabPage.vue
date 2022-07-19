@@ -48,13 +48,14 @@
 <script>
     import {ALL_LEVELS, SAVED_VOCAB_LEVELS} from "@/constants";
     import PaginationControls from "@/components/ui/PaginationControls";
+    import {paginationControlsHost} from "@/components/ui/PaginationControls";
     import TheMeaningPanel from "@/components/reader/TheMeaningPanel";
     import VocabTable from "@/components/reader/VocabTable";
     import VocabSearchFilter from "@/components/reader/VocabSearchFilter";
     import {updateQueryParams} from "@/components/reader/shared";
+    import {mergeDeep} from "@/utils";
 
-
-    export default {
+    let MyVocabPage = {
         name: "MyVocabPage",
         components: {VocabSearchFilter, VocabTable, PaginationControls, TheMeaningPanel},
         data() {
@@ -66,25 +67,9 @@
                 PER_PAGE_SELECT_OPTIONS: [25, 50, 100, 150, 200]
             };
         },
+
         computed: {
-            currentPage: {
-                get() {
-                    const queryPage = Number(this.$route.query.page);
-                    if (!Number.isNaN(queryPage) && queryPage > 0 && queryPage <= this.pageCount)
-                        return queryPage;
-                    else
-                        return 1;
-                },
-                set(newVal) {
-                    this.updateQueryParams({page: newVal})
-                }
-            }, maxPerPage() {
-                const queryMaxPerPage = Number(this.$route.query.maxPerPage);
-                if (!Number.isNaN(queryMaxPerPage) && this.PER_PAGE_SELECT_OPTIONS.includes(queryMaxPerPage))
-                    return queryMaxPerPage;
-                else
-                    return this.PER_PAGE_SELECT_OPTIONS[0];
-            },
+            ...paginationControlsHost.computed,
             filters() {
                 const savedLevelsArray = Object.values(SAVED_VOCAB_LEVELS);
                 const filters = {levels: savedLevelsArray};
@@ -152,6 +137,8 @@
             , updateQueryParams
         }
     }
+    MyVocabPage = mergeDeep(MyVocabPage, paginationControlsHost)
+    export default MyVocabPage;
 </script>
 
 
