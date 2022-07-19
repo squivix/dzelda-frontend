@@ -32,7 +32,7 @@
 <script>
     import TheLessonContent from '../components/reader/TheLessonContent.vue';
     import TheMeaningPanel from '../components/reader/TheMeaningPanel.vue';
-    import {VOCAB_LEVELS} from "@/constants";
+    import {ALL_LEVELS} from "@/constants";
     import {escapeRegExp} from "@/utils";
     import {getTextElements} from "@/components/reader/shared";
     import OverlappingPhrasesPanel from "@/components/reader/OverlappingPhrasesPanel";
@@ -89,7 +89,7 @@
                 this.selectedOverLappingPhrases = null;
             },
             selectNewPhrase(phraseText) {
-                this.selectedVocab = {text: phraseText, level: VOCAB_LEVELS.NEW, all_meanings: [], user_meanings: []};
+                this.selectedVocab = {text: phraseText, level: ALL_LEVELS.NEW, all_meanings: [], user_meanings: []};
                 this.selectedIsPhrase = true;
                 this.selectedOverLappingPhrases = null;
             },
@@ -118,11 +118,11 @@
             onVocabLevelSet(vocab, level) {
                 const key = vocab.text.toLowerCase();
                 this.vocab[key].level = level;
-                if (level === VOCAB_LEVELS.IGNORED || level === VOCAB_LEVELS.KNOWN) {
+                if (level === ALL_LEVELS.IGNORED || level === ALL_LEVELS.KNOWN) {
                     this.vocab[key].user_meanings = [];
                     this.clearSelectedVocab();
-                    if (level === VOCAB_LEVELS.IGNORED && this.phrases[key])
-                        this.phrases[key] = VOCAB_LEVELS.NEW;
+                    if (level === ALL_LEVELS.IGNORED && this.phrases[key])
+                        this.phrases[key] = ALL_LEVELS.NEW;
                 } else
                     this.setSelectedVocab(vocab.text);
             },
@@ -130,7 +130,7 @@
                 const index = word.user_meanings.findIndex((meaning) => meaning.id === deleted_meaning.id)
                 word.user_meanings.splice(index, 1);
                 if (word.user_meanings.length === 0)
-                    this.onVocabLevelSet(word, VOCAB_LEVELS.NEW);
+                    this.onVocabLevelSet(word, ALL_LEVELS.NEW);
             },
             parseLesson() {
                 this.parsingLesson = true;

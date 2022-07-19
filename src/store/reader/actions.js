@@ -1,5 +1,3 @@
-import {VOCAB_LEVELS} from "@/constants";
-
 export default {
     async fetchLessonWords(context, payload) {
         const lessonId = payload.lessonId;
@@ -59,6 +57,7 @@ export default {
                     language: payload.language,
                     text: payload.text,
                     level: payload.level,
+                    isPhrase: payload.isPhrase,
                 }),
             },
             protected: true,

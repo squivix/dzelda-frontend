@@ -24,7 +24,7 @@
 </template>
 
 <script>
-    import {VOCAB_LEVELS} from "@/constants";
+    import {ALL_LEVELS} from "@/constants";
 
     export default {
         name: "VocabLevelPicker",
@@ -42,7 +42,7 @@
         },
         computed: {
             vocabLevels() {
-                return VOCAB_LEVELS;
+                return ALL_LEVELS;
             }
         },
         methods: {

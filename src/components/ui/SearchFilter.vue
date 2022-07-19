@@ -10,7 +10,7 @@
             <font-awesome-icon icon="filter"></font-awesome-icon>
         </button>
     </div>
-    <form :class="{filters:true, 'filter-shown':isFiltersShown}" @submit.prevent="onFilterApplied">
+    <form :class="{filters:true, 'filter-shown':isFiltersShown}" @submit.prevent="onFiltersApplied">
         <slot name="filters">
 
         </slot>
@@ -19,17 +19,18 @@
 </template>
 
 <script>
-    import {VOCAB_LEVELS} from "@/constants";
+    import {SAVED_VOCAB_LEVELS} from "@/constants";
+    import {updateQueryParams} from "@/components/reader/shared";
 
     export default {
         name: "SearchFilter",
-        emits: ['onSearchSubmitted', 'onFilterApplied'],
+        emits: ['onSearchSubmitted', 'onFiltersApplied'],
         props: {
             initialSearchQuery: {
                 type: String,
                 required: false,
                 default: null,
-            }
+            },
         },
         data() {
             return {
@@ -39,7 +40,7 @@
         },
         computed: {
             vocabLevels() {
-                return VOCAB_LEVELS;
+                return SAVED_VOCAB_LEVELS;
             },
         },
         methods: {
@@ -47,11 +48,15 @@
                 this.isFiltersShown = !this.isFiltersShown;
             },
             onSearchSubmitted() {
-                this.$emit('onSearchSubmitted', this.searchQuery);
+                if (this.searchQuery)
+                    this.updateQueryParams({searchQuery: this.searchQuery}).then(() => this.$emit('onSearchSubmitted'));
+                else
+                    this.updateQueryParams({searchQuery: undefined}).then(() => this.$emit('onSearchSubmitted'));
             },
-            onFilterApplied() {
-                this.$emit('onFilterApplied');
+            onFiltersApplied() {
+                this.$emit('onFiltersApplied');
             }
+            , updateQueryParams
         }
     }
 </script>
