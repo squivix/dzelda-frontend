@@ -7,9 +7,8 @@
                                    @onFilterApplied="applyFilters"
                                    :initial-search-query="initialSearchQuery">
                         <template v-slot:filters>
-                            <vocab-filters
-                                    v-model="filters">
-                            </vocab-filters>
+                            <!--                            <vocab-filters>-->
+                            <!--                            </vocab-filters>-->
                         </template>
                     </search-filter>
 
@@ -38,8 +37,9 @@
                 </div>
             </section>
             <pagination-controls v-if="pageCount"
-                                 v-model="pagination"
                                  :page-count="pageCount"
+                                 :maxPerPage="maxPerPage"
+                                 :current-page="currentPage"
                                  per-page-select-label="Vocabs Per Page"
                                  :per-page-select-options="PER_PAGE_SELECT_OPTIONS"
                                  @onRefetchNeeded="fetchVocabsPage">
@@ -61,46 +61,40 @@
         name: "MyVocabPage",
         components: {VocabFilters, VocabTable, PaginationControls, TheMeaningPanel, SearchFilter},
         data() {
-            let currentPage;
-            if (!Number.isNaN(Number(this.$route.query.page)) && Number(this.$route.query.page) > 0)
-                currentPage = Number(this.$route.query.page);
-            else
-                currentPage = 1;
-
-            const PER_PAGE_SELECT_OPTIONS = [25, 50, 100, 150, 200];
-            let maxPerPage;
-            if (!Number.isNaN(Number(this.$route.query.maxPerPage)) && PER_PAGE_SELECT_OPTIONS.includes(maxPerPage))
-                maxPerPage = Number(this.$route.query.maxPerPage);
-            else
-                maxPerPage = PER_PAGE_SELECT_OPTIONS[0];
-            let filters = {levels: [VOCAB_LEVELS.LEVEL_1, VOCAB_LEVELS.LEVEL_2, VOCAB_LEVELS.LEVEL_3, VOCAB_LEVELS.LEVEL_4, VOCAB_LEVELS.LEARNED]};
-            if (this.$route.query.level && this.$route.query.level.length > 0)
-                filters.levels = [...this.$route.query.level].map((l) => Number(l));
-
             return {
                 loadingVocabs: true,
                 vocabs: null,
                 selectedVocab: null,
-                pagination: {
-                    currentPage,
-                    maxPerPage,
-                },
                 pageCount: 0,
-                filters,
-                PER_PAGE_SELECT_OPTIONS
+                // filters,
+                PER_PAGE_SELECT_OPTIONS: [25, 50, 100, 150, 200]
             };
         },
         computed: {
             initialSearchQuery() {
                 return this.$route.query.searchQuery;
+            },
+            currentPage() {
+                const queryPage = Number(this.$route.query.page);
+                if (!Number.isNaN(queryPage) && queryPage > 0 && queryPage < this.pageCount)
+                    return queryPage;
+                else
+                    return 1;
+            }, maxPerPage() {
+                const queryMaxPerPage = Number(this.$route.query.maxPerPage);
+                if (!Number.isNaN(queryMaxPerPage) && this.PER_PAGE_SELECT_OPTIONS.includes(queryMaxPerPage))
+                    return queryMaxPerPage;
+                else
+                    return this.PER_PAGE_SELECT_OPTIONS[0];
             }
         },
         watch: {
-            pagination: {
-                async handler() {
+            async currentPage() {
+                await this.fetchVocabsPage();
+            },
+            async maxPerPage() {
+                if (this.currentPage === 1)
                     await this.fetchVocabsPage();
-                },
-                deep: true
             }
         },
         async mounted() {
@@ -113,12 +107,12 @@
                 const response = await this.$store.dispatch("fetchUserVocabsPage", {
                     language: this.$route.params.learningLanguage,
                     searchQuery: this.$route.query.searchQuery,
-                    levels: [...this.filters.levels],
-                    page: this.pagination.currentPage,
-                    vocabsPerPage: this.pagination.maxPerPage,
+                    // levels: [...this.filters.levels],
+                    page: this.currentPage,
+                    vocabsPerPage: this.maxPerPage,
                 });
                 this.vocabs = response.results;
-                this.pageCount = Math.ceil(response.count / this.pagination.maxPerPage);
+                this.pageCount = Math.ceil(response.count / this.maxPerPage);
                 this.loadingVocabs = false;
             }, setSearchQuery(searchQuery) {
                 if (searchQuery)

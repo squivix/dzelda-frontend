@@ -2,7 +2,9 @@
     <div class="pagination-div">
         <form id="per-page-form">
             <label for="per-page-select" v-if="perPageSelectLabel">{{perPageSelectLabel}}</label>
-            <select id="per-page-select" v-model="maxPerPage">
+            <select id="per-page-select"
+                    :value="maxPerPage"
+                    @change="updateQueryParams({maxPerPage:$event.target.value})">
                 <option v-for="option in perPageSelectOptions" :key="option" :value="option">{{option}}</option>
             </select>
         </form>
@@ -20,11 +22,15 @@
 
     export default {
         name: "PaginationControls",
-        emits: ['onRefetchNeeded', 'update:modelValue'],
+        emits: ['onRefetchNeeded'],
         components: {BasePageSelector},
         props: {
-            modelValue: {
-                type: Object,
+            maxPerPage: {
+                type: Number,
+                required: true
+            },
+            currentPage: {
+                type: Number,
                 required: true
             },
             perPageSelectOptions: {
@@ -43,70 +49,25 @@
                 type: Number,
                 required: true,
             },
-        }, watch: {
-            $data: {
-                handler: function (newVal) {
-                    this.$emit("update:modelValue", newVal);
-                },
-                deep: true,
-            },
+        },
+        watch: {
             async maxPerPage() {
                 this.goToPage(1);
             },
-            '$route.query': async function (newVal, oldVal) {
-                if (newVal.page === oldVal.page || !oldVal)
-                    this.goToPage(1);
-                else
-                    this.updateStateFromQueryParams(newVal);
-            }
-        },
-        data() {
-            return {
-                // maxPerPage: this.perPageSelectOptions[0],
-                // currentPage: 1,
-                maxPerPage: this.modelValue.maxPerPage,
-                currentPage: this.modelValue.currentPage,
-            };
-        },
-        mounted() {
-            // this.updateStateFromQueryParams();
         },
         methods: {
             goToPage(page) {
-                this.currentPage = page;
-                this.updateQueryParams();
+                this.updateQueryParams({page});
             },
-            updateQueryParams() {
+            updateQueryParams(updatedQuery) {
                 this.$router.push({
                     ...this.$route,
                     query: {
                         ...this.$route.query,
-                        page: this.currentPage,
-                        maxPerPage: this.maxPerPage
+                        ...updatedQuery,
                     }
                 });
             },
-            updateStateFromQueryParams(queryParams) {
-                if (!queryParams)
-                    queryParams = this.$route.query;
-                const queryParamPage = Number(queryParams.page);
-
-                if (!Number.isNaN(queryParamPage)) {
-                    if (queryParamPage > 0 && queryParamPage <= this.pageCount)
-                        this.currentPage = queryParamPage;
-                    else
-                        this.goToPage(1);
-                }
-
-                const queryParamMaxPerPage = Number(queryParams.maxPerPage);
-
-                if (!Number.isNaN(queryParamMaxPerPage)) {
-                    if (this.perPageSelectOptions.includes(queryParamMaxPerPage))
-                        this.maxPerPage = queryParamMaxPerPage;
-                    else
-                        this.maxPerPage = this.perPageSelectOptions[0];
-                }
-            }
         }
     }
 </script>
