@@ -18,8 +18,10 @@
                     </button>
                 </div>
             </div>
+            <div v-if="loading">
 
-            <ol class="lesson-list" v-if="showListOf==='Lessons'">
+            </div>
+            <ol class="lesson-list" v-else-if="showListOf==='Lessons'">
                 <li v-for="lesson in lessons" :key="lesson.id">
                     <lesson-list-item
                             :lesson="lesson">
@@ -34,52 +36,90 @@
                     </course-card>
                 </li>
             </ol>
+            <!--suppress JSUnresolvedVariable -->
+            <pagination-controls
+                    v-if="pageCount"
+                    :page-count="pageCount"
+                    :maxPerPage="maxPerPage"
+                    :current-page="currentPage"
+                    :per-page-select-label="`${showListOf} Per Page`"
+                    :per-page-select-options="PER_PAGE_SELECT_OPTIONS">
+            </pagination-controls>
         </template>
-
     </base-card>
 </template>
 <script>
     import BaseCard from "@/components/ui/BaseCard";
     import LessonListItem from "@/components/content/LessonListItem";
     import CourseCard from "@/components/content/CourseCard";
+    import PaginationControls from "@/components/ui/PaginationControls";
+    import {paginationControlsHost} from "@/components/ui/PaginationControls";
+    import {mergeDeep} from "@/utils";
 
-    export default {
+    let MyLibraryPage = {
         name: "MyLibraryPage",
-        components: {LessonListItem, CourseCard, BaseCard},
+        components: {PaginationControls, LessonListItem, CourseCard, BaseCard},
         data() {
             return {
                 lessons: null,
                 courses: null,
                 showListOf: "Lessons",
                 searchQuery: null,
-                maxPerPage: 25,
-                currentPage: 1,
-                pageCount: 0
+                pageCount: 0,
+                loading: true,
+                PER_PAGE_SELECT_OPTIONS: [10, 15, 20, 50]
             };
         },
         async mounted() {
-            await this.fetchSavedCourses();
-            await this.fetchLessons();
+            await this.fetchContent();
+        },
+        watch: {
+            async currentPage() {
+                await this.fetchContent();
+            },
+            async maxPerPage() {
+                if (this.currentPage === 1)
+                    await this.fetchContent();
+            },
+            async showListOf() {
+                if (this.currentPage === 1)
+                    await this.fetchContent();
+                else
+                    this.currentPage = 1;
+            }
         },
         methods: {
-            search() {
-
+            async fetchContent() {
+                this.loading = true;
+                if (this.showListOf === "Lessons")
+                    await this.fetchLessons();
+                else if (this.showListOf === "Courses")
+                    await this.fetchSavedCourses();
+                this.loading = false;
             },
             async fetchLessons() {
-                const user_lessons = await this.$store.dispatch("fetchUserLessons", {language: this.$route.params.learningLanguage});
-                const course_map = {};
-                for (let course of this.courses)
-                    course_map[course.id] = course;
-                for (let i = 0; i < user_lessons.length; i++)
-                    user_lessons[i].course = course_map[user_lessons[i].course]
-                this.lessons = user_lessons;
+                const response = await this.$store.dispatch("fetchUserLessonsPage",
+                    {
+                        language: this.$route.params.learningLanguage,
+                        page: this.currentPage,
+                        maxPerPage: this.maxPerPage
+                    });
+                this.lessons = response.results;
+                this.pageCount = Math.ceil(response.count / this.maxPerPage);
             },
             async fetchSavedCourses() {
-                const user_courses = await this.$store.dispatch("fetchSavedCourses", {language: this.$route.params.learningLanguage});
-                this.courses = user_courses;
+                const response = await this.$store.dispatch("fetchSavedCourses", {
+                    language: this.$route.params.learningLanguage,
+                    page: this.currentPage,
+                    maxPerPage: this.maxPerPage
+                });
+                this.courses = response.results;
+                this.pageCount = Math.ceil(response.count / this.maxPerPage);
             }
         }
     }
+    MyLibraryPage = mergeDeep(MyLibraryPage, paginationControlsHost)
+    export default MyLibraryPage;
 </script>
 
 <style scoped>

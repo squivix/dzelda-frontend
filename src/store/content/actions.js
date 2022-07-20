@@ -25,15 +25,15 @@ export default {
     },
     async fetchSavedCourses(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/saved-courses?language=${payload.language}`,
+            url: `${context.getters.apiUrl}/users/me/saved-courses?language=${payload.language}&pageSize=${payload.maxPerPage}&page=${payload.page}`,
             protected: true,
             caller: "fetchSavedCourses",
             module: "content",
         });
     },
-    async fetchUserLessons(context, payload) {
+    async fetchUserLessonsPage(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/lessons?language=${payload.language}`,
+            url: `${context.getters.apiUrl}/users/me/lessons?language=${payload.language}&pageSize=${payload.maxPerPage}&page=${payload.page}`,
             protected: true,
             caller: "fetchUserLessons",
             module: "content",

@@ -23,7 +23,6 @@
 
     export default {
         name: "PaginationControls",
-        emits: ['onRefetchNeeded'],
         components: {BasePageSelector},
         props: {
             maxPerPage: {
@@ -85,6 +84,9 @@
                 else
                     return this.PER_PAGE_SELECT_OPTIONS[0];
             },
+        },
+        methods: {
+            updateQueryParams
         }
     }
 </script>

@@ -33,13 +33,13 @@
                     </the-meaning-panel>
                 </div>
             </section>
+            <!--suppress JSUnresolvedVariable -->
             <pagination-controls v-if="pageCount"
                                  :page-count="pageCount"
                                  :maxPerPage="maxPerPage"
                                  :current-page="currentPage"
                                  per-page-select-label="Vocabs Per Page"
-                                 :per-page-select-options="PER_PAGE_SELECT_OPTIONS"
-                                 @onRefetchNeeded="fetchVocabsPage">
+                                 :per-page-select-options="PER_PAGE_SELECT_OPTIONS">
             </pagination-controls>
         </template>
     </base-card>
@@ -69,7 +69,6 @@
         },
 
         computed: {
-            ...paginationControlsHost.computed,
             filters() {
                 const savedLevelsArray = Object.values(SAVED_VOCAB_LEVELS);
                 const filters = {levels: savedLevelsArray};
@@ -134,7 +133,6 @@
                 if (index !== -1)
                     vocab.user_meanings.splice(index, 1);
             }
-            , updateQueryParams
         }
     }
     MyVocabPage = mergeDeep(MyVocabPage, paginationControlsHost)
