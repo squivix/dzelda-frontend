@@ -1,18 +1,14 @@
 <template>
     <div class="dropdown">
-        <label :for="`dropdown-checkbox-${label}-${componentId}`" class="dropdown-label link">
+        <label :for="`dropdown-checkbox-${label}`" class="dropdown-label link">
             <slot name="button">
 
             </slot>
         </label>
 
-        <input :id="`dropdown-checkbox-${label}-${componentId}`" type="checkbox" class="dropdown-checkbox"
-               v-model="shown">
-        <!--TODO: fix clickable when hidden-->
-
+        <input :id="`dropdown-checkbox-${label}`" type="checkbox" class="dropdown-checkbox" v-model="shown">
         <component :is="isPointy?'base-pointy-div':'div'" class="menu">
             <slot name="menu">
-
             </slot>
         </component>
     </div>
@@ -33,21 +29,19 @@
             },
             label: {
                 type: String,
-                required: false,
-                default: "",
+                required: true,
             }
         },
         data() {
             return {
                 shown: false,
-                componentId: Math.random(),
             }
         },
         watch: {
             '$route.path'() {
                 this.shown = false;
             }
-        }
+        },
     }
 </script>
 
@@ -61,12 +55,13 @@
         top: 100%;
         left: 50%;
         transform: translate(-50%, 10px);
-        opacity: 0;
         text-align: center;
-        transition: opacity .4s ease;
         border: 1px solid gray;
         border-radius: 5px;
         background-color: var(--on-primary-color);
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.4s linear, visibility 0s linear 0.4s;
     }
 
     .dropdown-checkbox {
@@ -77,7 +72,9 @@
     }
 
     .dropdown-checkbox:checked + .menu {
+        visibility: visible;
         opacity: 1;
+        transition-delay: 0s;
     }
 
 </style>
