@@ -22,46 +22,48 @@
         </div>
 
         <div class="right-side-div">
-            <div class="drop-down" v-if="currentLanguage">
-                <label for="lang-dropdown-checkbox" class="lang-dropdown-label link">
-                    <img :src="currentLanguage.flag_image_circular" alt="Language Icon" class="language-icon">
+            <base-drop-down v-if="currentLanguage" class="language-dropdown" label="language">
+                <template v-slot:button>
+                    <!--suppress HtmlUnknownTarget, JSUnresolvedVariable -->
+                    <img :src="currentLanguage.flag_image_circular" alt="Current Language Icon" class="language-icon">
                     <span class="language-button">
                         <font-awesome-icon icon="chevron-down"></font-awesome-icon>
                     </span>
-                </label>
+                </template>
+                <template v-slot:menu>
+                    <ul class="add-menu">
+                        <li v-for="language in otherLanguages" :key="language.code">
+                            <!--suppress HtmlUnknownTarget -->
+                            <img :src="language.flag_image_circular" alt="Language Icon" class="language-icon">
+                            <router-link :to="{ name: 'explore-lang' ,params:{learningLanguage:language.code}}">
+                                {{language.name}}
+                            </router-link>
+                        </li>
+                    </ul>
+                </template>
+            </base-drop-down>
 
-                <input id="lang-dropdown-checkbox" type="checkbox" class="dropdown-checkbox" ref="dropdown-checkbox">
-                <ul class="add-menu">
-                    <li v-for="language in userLanguages" :key="language.code">
-                        <router-link :to="{ name: 'explore-lang' ,params:{learningLanguage:language.code}}">
-                            {{language.name}}
-                        </router-link>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="drop-down">
-                <label for="add-dropdown-checkbox" class="link">
+            <base-drop-down :is-pointy="true" label="add-menu">
+                <template v-slot:button>
                     <span class="add-button">
                         <font-awesome-icon icon="plus"></font-awesome-icon>
                     </span>
-                </label>
-
-                <input id="add-dropdown-checkbox" type="checkbox" class="dropdown-checkbox" ref="dropdown-checkbox">
-                <!--TODO: fix clickable when hidden-->
-                <ul class="add-menu">
-                    <li>
-                        <router-link :to="{ name: 'add-lesson' }">
-                            Add Lesson
-                        </router-link>
-                    </li>
-                    <li>
-                        <router-link :to="{ name: 'add-course' }">
-                            Add Course
-                        </router-link>
-                    </li>
-                </ul>
-            </div>
+                </template>
+                <template v-slot:menu>
+                    <ul class="add-menu">
+                        <li>
+                            <router-link :to="{ name: 'add-lesson' }">
+                                Add Lesson
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link :to="{ name: 'add-course' }">
+                                Add Course
+                            </router-link>
+                        </li>
+                    </ul>
+                </template>
+            </base-drop-down>
 
             <router-link :to="{ name: 'sign-out' }">
                 <button class="sign-out-button button-hollow link">Sign Out</button>
@@ -70,10 +72,11 @@
     </header>
 </template>
 <script>
+    import BaseDropDown from "@/components/ui/BaseDropDown";
 
     export default {
         name: "AuthHeader",
-        components: {},
+        components: {BaseDropDown},
         data() {
             return {};
         },
@@ -82,11 +85,9 @@
                 return this.$store.getters.currentLanguage;
             }, userLanguages() {
                 return this.$store.getters.userLanguages;
-            }
-        },
-        watch: {
-            '$route.path'() {
-                this.$refs["dropdown-checkbox"].checked = false;
+            },
+            otherLanguages() {
+                return this.userLanguages.filter(lang => lang.code !== this.currentLanguage.code)
             }
         },
         async mounted() {
@@ -178,61 +179,6 @@
         font-size: 1rem;
     }
 
-
-    .drop-down {
-        margin: 0 auto;
-        display: inline-block;
-        padding: 0 30px;
-        position: relative;
-        text-align: center;
-    }
-
-    .add-menu {
-        position: absolute;
-        top: 50px;
-        left: -20px;
-        clear: both;
-        opacity: 0;
-        overflow: hidden;
-        text-align: center;
-        transition: opacity .4s ease;
-        width: 150px;
-        border: 1px solid gray;
-        border-radius: 8px;
-    }
-
-    .add-menu li {
-        background-color: white;
-    }
-
-
-    .add-menu li a {
-        display: block;
-        padding: 10px 5px;
-        text-decoration: none;
-        color: black;
-    }
-
-    .add-menu li:hover {
-        background-color: lightgray;
-        cursor: pointer;
-    }
-
-    .dropdown-checkbox {
-        position: absolute;
-        opacity: 0;
-        height: 0;
-    }
-
-    .dropdown-checkbox:checked + .add-menu {
-        opacity: 1;
-    }
-
-    .dropdown-checkbox:checked + .add-menu li {
-        display: block;
-    }
-
-
     .language-icon {
         width: 50px;
         height: 50px;
@@ -249,8 +195,7 @@
         margin-inline-start: -3px;
     }
 
-
-    .lang-dropdown-label {
+    :deep(.dropdown-label) {
         display: flex;
         flex-direction: row;
         align-items: center;
