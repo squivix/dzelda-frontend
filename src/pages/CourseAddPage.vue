@@ -39,7 +39,7 @@
             async onSubmit() {
                 const newCourse = await this.addCourse();
                 //TODO move this somewhere more general
-                if (this.$route.query["redir"] !== null)
+                if (this.$route.query["redir"])
                     await this.$router.push({path: this.$route.query["redir"]})
                 else
                     await this.$router.push({

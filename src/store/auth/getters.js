@@ -5,7 +5,4 @@ export default {
     isAuthenticated(state, getters) {
         return !!getters.getUserToken;
     },
-    getUserLanguages(state) {
-        return state.userLanguages;
-    }
 }

@@ -11,7 +11,7 @@ export default {
         return (await context.dispatch("getOrFetchUserLanguages"))[0];
     },
     async getOrFetchUserLanguages(context) {
-        return context.getters.getUserLanguages ?? await context.dispatch("fetchUserLanguages");
+        return context.getters.userLanguages ?? await context.dispatch("fetchUserLanguages");
     },
     async fetchUserLanguages(context) {
         const languages = await context.dispatch('fetchCustom', {
@@ -111,7 +111,7 @@ export default {
     async editLesson(context, payload) {
         const lessonId = payload.lessonId;
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/lessons/${lessonId}`,
+            url: `${context.getters.apiUrl}/users/me/lessons/${lessonId}`,
             options: {
                 method: "PUT",
                 body: JSON.stringify({
@@ -161,6 +161,8 @@ export default {
     },
 
     async updateLanguageLastOpened(context, payload) {
+        context.commit("setLastOpenedLanguage", {language: payload.language});
+
         return await context.dispatch('fetchCustom', {
             url: `${context.getters.apiUrl}/users/me/languages/${payload.language}`,
             options: {

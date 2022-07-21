@@ -11,7 +11,7 @@ import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
 import {faGripLines} from "@fortawesome/free-solid-svg-icons";
 import {faAngleLeft} from "@fortawesome/free-solid-svg-icons";
 import {faAngleRight} from "@fortawesome/free-solid-svg-icons";
-
+import {faChevronDown} from "@fortawesome/free-solid-svg-icons";
 
 library.add(faEye);
 library.add(faEyeSlash);
@@ -25,3 +25,4 @@ library.add(faMagnifyingGlass);
 library.add(faGripLines);
 library.add(faAngleLeft);
 library.add(faAngleRight);
+library.add(faChevronDown);

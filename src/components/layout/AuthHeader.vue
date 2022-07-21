@@ -22,14 +22,33 @@
         </div>
 
         <div class="right-side-div">
+            <div class="drop-down" v-if="currentLanguage">
+                <label for="lang-dropdown-checkbox" class="lang-dropdown-label link">
+                    <img :src="currentLanguage.flag_image_circular" alt="Language Icon" class="language-icon">
+                    <span class="language-button">
+                        <font-awesome-icon icon="chevron-down"></font-awesome-icon>
+                    </span>
+                </label>
+
+                <input id="lang-dropdown-checkbox" type="checkbox" class="dropdown-checkbox" ref="dropdown-checkbox">
+                <ul class="add-menu">
+                    <li v-for="language in userLanguages" :key="language.code">
+                        <router-link :to="{ name: 'explore-lang' ,params:{learningLanguage:language.code}}">
+                            {{language.name}}
+                        </router-link>
+                    </li>
+                </ul>
+            </div>
+
             <div class="drop-down">
-                <label for="dropdown-checkbox" class="link">
+                <label for="add-dropdown-checkbox" class="link">
                     <span class="add-button">
                         <font-awesome-icon icon="plus"></font-awesome-icon>
                     </span>
                 </label>
 
-                <input type="checkbox" id="dropdown-checkbox" ref="dropdown-checkbox">
+                <input id="add-dropdown-checkbox" type="checkbox" class="dropdown-checkbox" ref="dropdown-checkbox">
+                <!--TODO: fix clickable when hidden-->
                 <ul class="add-menu">
                     <li>
                         <router-link :to="{ name: 'add-lesson' }">
@@ -41,16 +60,6 @@
                             Add Course
                         </router-link>
                     </li>
-<!--                    <li>-->
-<!--                        <router-link :to="{ name: '' }">-->
-<!--                            Import Website-->
-<!--                        </router-link>-->
-<!--                    </li>-->
-<!--                    <li>-->
-<!--                        <router-link :to="{ name: '' }">-->
-<!--                            Import E-book-->
-<!--                        </router-link>-->
-<!--                    </li>-->
                 </ul>
             </div>
 
@@ -61,27 +70,26 @@
     </header>
 </template>
 <script>
-    import store from "@/store";
 
     export default {
         name: "AuthHeader",
         components: {},
+        data() {
+            return {};
+        },
+        computed: {
+            currentLanguage() {
+                return this.$store.getters.currentLanguage;
+            }, userLanguages() {
+                return this.$store.getters.userLanguages;
+            }
+        },
         watch: {
-            $route() {
+            '$route.path'() {
                 this.$refs["dropdown-checkbox"].checked = false;
             }
         },
-        data() {
-            return {
-                learningLanguage: null
-            };
-        },
         async mounted() {
-            //if no lang was specified
-            if (this.$route.name !== undefined) {
-                const languages = await store.dispatch('fetchUserLanguages');
-                this.learningLanguage = languages[0];
-            }
         }
     }
 </script>
@@ -210,13 +218,41 @@
         cursor: pointer;
     }
 
-    #dropdown-checkbox {
+    .dropdown-checkbox {
         position: absolute;
         opacity: 0;
         height: 0;
     }
 
-    #dropdown-checkbox:checked + .add-menu {
+    .dropdown-checkbox:checked + .add-menu {
         opacity: 1;
+    }
+
+    .dropdown-checkbox:checked + .add-menu li {
+        display: block;
+    }
+
+
+    .language-icon {
+        width: 50px;
+        height: 50px;
+        background-color: var(--on-primary-color);
+        border-radius: 50%;
+        padding: 0.2rem;
+    }
+
+    .language-button {
+        background-color: var(--on-primary-color);
+        padding: 0.2rem;
+        border-start-end-radius: 5px;
+        border-end-end-radius: 5px;
+        margin-inline-start: -3px;
+    }
+
+
+    .lang-dropdown-label {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
     }
 </style>

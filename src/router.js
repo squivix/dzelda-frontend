@@ -39,6 +39,7 @@ const router = createRouter({
         },
         {
             path: '/learn/:learningLanguage/explore',
+            name: "explore-lang",
             component: ExplorePage,
             meta: {requiresAuth: true, showFooter: false}
         },
@@ -127,10 +128,10 @@ router.beforeResolve(async (to, from) => {
 
     if ((to.name === "login" || to.name === "home") && isAuthenticated)
         return {name: 'explore'}
-
-    if (to.meta.redirToLanguageSpecific) {
+    if (isAuthenticated) {
         const defaultLanguage = await store.dispatch("getOrFetchDefaultUserLanguage");
-        return {path: `/learn/${defaultLanguage.code}${to.path}`};
+        if (to.meta.redirToLanguageSpecific)
+            return {path: `/learn/${defaultLanguage.code}${to.path}`};
     }
 
     if (to.params.learningLanguage && from.params.learningLanguage !== to.params.learningLanguage)

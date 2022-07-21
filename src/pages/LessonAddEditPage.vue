@@ -51,7 +51,6 @@
         },
         watch: {
             selectedCourse(newVal) {
-                console.log(newVal)
                 if (newVal === "New Course")
                     this.$router.push({
                         name: 'add-course',

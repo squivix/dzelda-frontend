@@ -6,16 +6,10 @@
                     <option name="lessons">Lessons</option>
                     <option name="courses">Courses</option>
                 </select>
-                <div class="search-filter">
-                    <form class="search-filter" @submit.prevent="search">
-                        <input type="text" class="search-input" placeholder="Search" v-model.trim="searchQuery">
-                        <button type="button" class="search-button">
-                            <font-awesome-icon icon="magnifying-glass"></font-awesome-icon>
-                        </button>
-                    </form>
-                    <button type="button" class="filter-button">
-                        <font-awesome-icon icon="filter"></font-awesome-icon>
-                    </button>
+                <div class="search-filter-wrapper">
+                    <library-search-filter>
+
+                    </library-search-filter>
                 </div>
             </div>
             <div v-if="loading">
@@ -55,10 +49,11 @@
     import PaginationControls from "@/components/ui/PaginationControls";
     import {paginationControlsHost} from "@/components/ui/PaginationControls";
     import {mergeDeep} from "@/utils";
+    import LibrarySearchFilter from "@/components/reader/LibrarySearchFilter";
 
     let MyLibraryPage = {
         name: "MyLibraryPage",
-        components: {PaginationControls, LessonListItem, CourseCard, BaseCard},
+        components: {LibrarySearchFilter, PaginationControls, LessonListItem, CourseCard, BaseCard},
         data() {
             return {
                 lessons: null,
@@ -143,10 +138,14 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-
         column-gap: 0.5vw;
     }
 
+    .search-filter-wrapper {
+        display: flex;
+        flex-direction: column;
+        row-gap: 1rem;
+    }
 
     .course-lesson-select {
         flex-basis: 10rem;

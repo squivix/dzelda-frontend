@@ -7,7 +7,7 @@
                         :to="{name:'course', params:{learningLanguage:$route.params.learningLanguage, courseId:course.id}}">
                     <h4>{{course.title}}</h4>
                 </router-link>
-
+                <!--TODO:Only show link if user is authorized to edit course-->
                 <router-link
                         :to="{name:'edit-course', params:{learningLanguage:$route.params.learningLanguage, courseId:course.id}}">
                     <h4>Edit</h4>
@@ -32,7 +32,7 @@
                 if (this.course.image !== null)
                     return `${this.$store.getters.baseUrl}${this.course.image}`;
                 else
-                    return `${this.$store.getters.baseUrl}/media/default-course-image.png`
+                    return `${this.$store.getters.baseUrl}/media/blank-image.jpg`
             }
         }
     }
