@@ -6,8 +6,12 @@
             </slot>
         </label>
 
-        <input :id="`dropdown-checkbox-${label}`" type="checkbox" class="dropdown-checkbox" v-model="shown">
-        <component :is="isPointy?'base-pointy-div':'div'" class="menu">
+        <input :id="`dropdown-checkbox-${label}`"
+               type="checkbox" class="dropdown-checkbox"
+               ref="dropdown-checkbox"
+               :name="group"
+               @change="onCheckboxChange">
+        <component :is="isPointy?'base-pointy-div':'div'" :class="{menu:true, 'pointy-menu':isPointy}">
             <slot name="menu">
             </slot>
         </component>
@@ -30,18 +34,29 @@
             label: {
                 type: String,
                 required: true,
+            },
+            group: {
+                type: String,
+                required: false,
+                default: "default-group",
             }
         },
-        data() {
-            return {
-                shown: false,
+        methods: {
+            onCheckboxChange(event) {
+                if (event.target.checked) {
+                    const otherCheckboxes = document.querySelectorAll(`.dropdown-checkbox[name=${this.group}]:not([id=dropdown-checkbox-${this.label}])`)
+                    otherCheckboxes.forEach((checkbox) => {
+                        checkbox.checked = false
+                        checkbox.dispatchEvent(new Event('change'));
+                    });
+                }
             }
         },
         watch: {
             '$route.path'() {
-                this.shown = false;
+                this.$refs['dropdown-checkbox'].checked = false;
             }
-        },
+        }
     }
 </script>
 
@@ -54,7 +69,7 @@
         position: absolute;
         top: 100%;
         left: 50%;
-        transform: translate(-50%, 10px);
+        transform: translate(-50%, 0px);
         text-align: center;
         border: 1px solid gray;
         border-radius: 5px;
@@ -62,6 +77,10 @@
         visibility: hidden;
         opacity: 0;
         transition: opacity 0.4s linear, visibility 0s linear 0.4s;
+    }
+
+    .pointy-menu {
+        transform: translate(-50%, 10px);
     }
 
     .dropdown-checkbox {

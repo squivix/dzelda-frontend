@@ -25,17 +25,18 @@
             <base-drop-down v-if="currentLanguage" class="language-dropdown" label="language">
                 <template v-slot:button>
                     <!--suppress HtmlUnknownTarget, JSUnresolvedVariable -->
-                    <img :src="currentLanguage.flag_image_circular" alt="Current Language Icon" class="language-icon">
+                    <img :src="currentLanguage.flag_image_circular" alt="Current Language Icon"
+                         class="language-icon current-language-icon">
                     <span class="language-button">
                         <font-awesome-icon icon="chevron-down"></font-awesome-icon>
                     </span>
                 </template>
                 <template v-slot:menu>
-                    <ul class="add-menu">
+                    <ul class="dropdown-menu language-menu">
                         <li v-for="language in otherLanguages" :key="language.code">
                             <!--suppress HtmlUnknownTarget -->
-                            <img :src="language.flag_image_circular" alt="Language Icon" class="language-icon">
                             <router-link :to="{ name: 'explore-lang' ,params:{learningLanguage:language.code}}">
+                                <img :src="language.flag_image_circular" alt="Language Icon" class="language-icon">
                                 {{language.name}}
                             </router-link>
                         </li>
@@ -50,7 +51,7 @@
                     </span>
                 </template>
                 <template v-slot:menu>
-                    <ul class="add-menu">
+                    <ul class="dropdown-menu add-menu">
                         <li>
                             <router-link :to="{ name: 'add-lesson' }">
                                 Add Lesson
@@ -158,7 +159,6 @@
         }
     }
 
-
     .sign-out-button {
         min-width: 105px;
         color: var(--on-primary-color);
@@ -179,9 +179,40 @@
         font-size: 1rem;
     }
 
+    .dropdown-menu {
+        width: 11vw;
+    }
+
+    .dropdown-menu li {
+        padding: 0;
+    }
+
+    .dropdown-menu li a {
+        margin: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding: 0.5rem 1rem;
+        color: black;
+        font-family: sans-serif;
+        font-size: 1rem;
+    }
+
+    .dropdown-menu li:hover {
+        cursor: pointer;
+        background-color: lightgray;
+    }
+
+    .dropdown-menu a:hover {
+        text-decoration: none;
+    }
+
     .language-icon {
         width: 50px;
         height: 50px;
+    }
+
+    .current-language-icon {
         background-color: var(--on-primary-color);
         border-radius: 50%;
         padding: 0.2rem;
