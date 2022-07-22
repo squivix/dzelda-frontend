@@ -198,8 +198,8 @@
         height: 100%;
         color: black;
         font-family: sans-serif;
-        font-size: 1rem;
-        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+        padding: 0.5rem 0;
     }
 
     .dropdown-menu li:hover, .language-add-button a:hover {
@@ -218,7 +218,7 @@
     .language-grid {
         display: grid;
         width: 25vw;
-        max-width: 350px;
+        max-width: 250px;
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     }
 
@@ -228,7 +228,6 @@
         justify-content: center;
         align-items: center;
         column-gap: 0.5rem;
-        vertical-align: center;
         text-align: center;
     }
 
