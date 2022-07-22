@@ -27,20 +27,28 @@
                     <!--suppress HtmlUnknownTarget, JSUnresolvedVariable -->
                     <img :src="currentLanguage.flag_image_circular" alt="Current Language Icon"
                          class="language-icon current-language-icon">
-                    <span class="language-button">
+                    <span class="language-menu-arrow">
                         <font-awesome-icon icon="chevron-down"></font-awesome-icon>
                     </span>
                 </template>
                 <template v-slot:menu>
-                    <ul class="dropdown-menu language-menu">
-                        <li v-for="language in otherLanguages" :key="language.code">
-                            <!--suppress HtmlUnknownTarget -->
-                            <router-link :to="{ name: 'explore-lang' ,params:{learningLanguage:language.code}}">
-                                <img :src="language.flag_image_circular" alt="Language Icon" class="language-icon">
-                                {{language.name}}
+                    <div class="dropdown-menu">
+                        <ul class="language-grid">
+                            <li v-for="language in otherLanguages" :key="language.code">
+                                <router-link :to="{ name: 'explore-lang' ,params:{learningLanguage:language.code}}">
+                                    <!--suppress HtmlUnknownTarget -->
+                                    <img :src="language.flag_image_circular" alt="Language Icon" class="language-icon">
+                                    <p>{{language.name}}</p>
+                                </router-link>
+                            </li>
+                        </ul>
+                        <div class="language-add-button">
+                            <router-link :to="{ name: 'my-profile' }">
+                                <font-awesome-icon icon="circle-plus" class="language-icon">
+                                </font-awesome-icon>
                             </router-link>
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
                 </template>
             </base-drop-down>
 
@@ -179,26 +187,22 @@
         font-size: 1rem;
     }
 
-    .dropdown-menu {
-        width: 11vw;
-    }
-
     .dropdown-menu li {
         padding: 0;
     }
 
-    .dropdown-menu li a {
+    .dropdown-menu li a, .language-add-button a {
         margin: 0;
         display: block;
         width: 100%;
         height: 100%;
-        padding: 0.5rem 1rem;
         color: black;
         font-family: sans-serif;
         font-size: 1rem;
+        padding: 0.5rem 0.75rem;
     }
 
-    .dropdown-menu li:hover {
+    .dropdown-menu li:hover, .language-add-button a:hover {
         cursor: pointer;
         background-color: lightgray;
     }
@@ -207,18 +211,47 @@
         text-decoration: none;
     }
 
+    .add-menu {
+        width: 125px;
+    }
+
+    .language-grid {
+        display: grid;
+        width: 25vw;
+        max-width: 350px;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+
+    .language-grid li a {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        column-gap: 0.5rem;
+        vertical-align: center;
+        text-align: center;
+    }
+
     .language-icon {
-        width: 50px;
-        height: 50px;
+        width: 25px;
+        height: 25px;
+    }
+
+    .language-add-button {
+        grid-row: last;
+        grid-column: 1/last;
+
     }
 
     .current-language-icon {
+        width: 50px;
+        height: 50px;
         background-color: var(--on-primary-color);
         border-radius: 50%;
         padding: 0.2rem;
     }
 
-    .language-button {
+    .language-menu-arrow {
         background-color: var(--on-primary-color);
         padding: 0.2rem;
         border-start-end-radius: 5px;

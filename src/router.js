@@ -15,6 +15,7 @@ import CourseAddPage from './pages/CourseAddPage.vue'
 import CourseEditPage from './pages/CourseEditPage.vue'
 
 import store from './store/index.js'
+import MyProfilePage from "@/pages/MyProfilePage";
 
 const router = createRouter({
     routes: [
@@ -111,7 +112,12 @@ const router = createRouter({
             name: "edit-course",
             meta: {requiresAuth: true, showFooter: false}
         },
-
+        {
+            path: '/profiles/me',
+            component: MyProfilePage,
+            name: "my-profile",
+            meta: {requiresAuth: true, showFooter: true}
+        },
     ],
     history: createWebHistory(),
 });
