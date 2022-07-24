@@ -10,7 +10,7 @@
                         v-model="username"
                         autocomplete="username"
                         :class="{'error-input': !!error}"/>
-                <label for="new-password">Password</label>
+                <label for="current-password">Password</label>
                 <base-password-input
                         v-model="password"
                         id="current-password"
@@ -32,9 +32,11 @@
 </template>
 <script>
     import * as utils from '../../utils.js';
+    import BasePasswordInput from "@/components/ui/BasePasswordInput";
 
     export default {
         name: "UserLogin",
+        components: {BasePasswordInput},
         data() {
             return {
                 username: '',

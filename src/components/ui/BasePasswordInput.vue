@@ -16,9 +16,11 @@
     </div>
 </template>
 <script>
+    import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+
     export default {
         name: "BasePasswordInput",
-        components: {},
+        components: {FontAwesomeIcon},
         inheritAttrs: false,
         props: {
             modelValue: String,

@@ -1,4 +1,15 @@
 export default {
+    async fetchUserProfile(context) {
+        return await context.dispatch('fetchCustom', {
+            url: `${context.getters.apiUrl}/users/me`,
+            protected: true,
+            caller: "fetchUserProfile",
+            module: "content",
+        });
+    },
+    async getOrFetchUserProfile(context) {
+        return context.getters.userProfile ?? await context.dispatch("fetchUserProfile");
+    },
     async fetchAllLanguages(context) {
         return await context.dispatch('fetchCustom', {
             url: `${context.getters.apiUrl}/languages`,

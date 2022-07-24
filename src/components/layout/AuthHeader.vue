@@ -74,22 +74,55 @@
                 </template>
             </base-drop-down>
 
-            <router-link :to="{ name: 'sign-out' }">
-                <button class="sign-out-button button-hollow link">Sign Out</button>
-            </router-link>
+            <base-drop-down :is-pointy="true" label="profile-menu" v-if="userProfile">
+                <template v-slot:button>
+                    <img v-if="profilePicture" :src="profilePicture" alt="profile picture"
+                         class="profile-picture">
+                    <font-awesome-icon v-else icon="user" class="profile-picture"></font-awesome-icon>
+                </template>
+                <template v-slot:menu>
+                    <ul class="dropdown-menu profile-menu">
+                        <li>
+                            <router-link :to="{ name: 'my-profile' }">
+                                My Profile
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link :to="{ name: 'settings' }">
+                                Settings
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link :to="{ name: 'sign-out' }">
+                                Sign Out
+                            </router-link>
+                        </li>
+
+                    </ul>
+                </template>
+            </base-drop-down>
         </div>
     </header>
 </template>
 <script>
     import BaseDropDown from "@/components/ui/BaseDropDown";
+    import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
     export default {
         name: "AuthHeader",
-        components: {BaseDropDown},
+        components: {BaseDropDown, FontAwesomeIcon},
         data() {
-            return {};
+            return {
+                userProfile: null
+            };
         },
         computed: {
+            profilePicture() {
+                if (this.userProfile.profile_picture !== null)
+                    return `${this.$store.getters.baseUrl}${this.userProfile.profile_picture}`;
+                else
+                    return null;
+            },
             currentLanguage() {
                 return this.$store.getters.currentLanguage;
             }, userLanguages() {
@@ -97,9 +130,15 @@
             },
             otherLanguages() {
                 return this.userLanguages.filter(lang => lang.code !== this.currentLanguage.code)
+            },
+        },
+        methods: {
+            async fetchUserProfile() {
+                return await this.$store.dispatch("getOrFetchUserProfile");
             }
         },
         async mounted() {
+            this.userProfile = await this.fetchUserProfile();
         }
     }
 </script>
@@ -159,6 +198,7 @@
         justify-content: center;
         align-items: center;
         column-gap: min(2vw, 15px);
+        margin-right: 1rem;
     }
 
     @media screen and (max-width: 400px) {
@@ -262,5 +302,24 @@
         display: flex;
         flex-direction: row;
         align-items: center;
+    }
+
+    .profile-picture {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--on-primary-color);
+    }
+
+    svg.profile-picture {
+        width: 20px;
+        height: 20px;
+        padding: 0.5rem;
+        color: var(--primary-color);
+    }
+
+    .profile-menu {
+        width: 10vw;
+        max-width: 100px;
     }
 </style>

@@ -16,6 +16,7 @@ import CourseEditPage from './pages/CourseEditPage.vue'
 
 import store from './store/index.js'
 import MyProfilePage from "@/pages/MyProfilePage";
+import SettingsPage from "@/pages/SettingsPage";
 
 const router = createRouter({
     routes: [
@@ -116,6 +117,11 @@ const router = createRouter({
             path: '/profiles/me',
             component: MyProfilePage,
             name: "my-profile",
+            meta: {requiresAuth: true, showFooter: true}
+        }, {
+            path: '/settings',
+            component: SettingsPage,
+            name: "settings",
             meta: {requiresAuth: true, showFooter: true}
         },
     ],
