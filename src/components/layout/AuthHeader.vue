@@ -74,9 +74,9 @@
                 </template>
             </base-drop-down>
 
-            <base-drop-down :is-pointy="true" label="profile-menu" v-if="userProfile">
+            <base-drop-down :is-pointy="true" label="profile-menu">
                 <template v-slot:button>
-                    <img v-if="profilePicture" :src="profilePicture" alt="profile picture"
+                    <img v-if="userProfile&&profilePicture" :src="profilePicture" alt="profile picture"
                          class="profile-picture">
                     <font-awesome-icon v-else icon="user" class="profile-picture"></font-awesome-icon>
                 </template>
@@ -84,16 +84,19 @@
                     <ul class="dropdown-menu profile-menu">
                         <li>
                             <router-link :to="{ name: 'my-profile' }">
+                                <font-awesome-icon icon="user"></font-awesome-icon>
                                 My Profile
                             </router-link>
                         </li>
                         <li>
                             <router-link :to="{ name: 'settings' }">
+                                <font-awesome-icon icon="gear"></font-awesome-icon>
                                 Settings
                             </router-link>
                         </li>
                         <li>
                             <router-link :to="{ name: 'sign-out' }">
+                                <font-awesome-icon icon="arrow-right-from-bracket"></font-awesome-icon>
                                 Sign Out
                             </router-link>
                         </li>
@@ -320,6 +323,16 @@
 
     .profile-menu {
         width: 10vw;
-        max-width: 100px;
+        max-width: 120px;
     }
+
+    .profile-menu li a {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        column-gap: 0.5rem;
+        align-items: center;
+        padding: 1rem 0.5rem;
+    }
+
 </style>

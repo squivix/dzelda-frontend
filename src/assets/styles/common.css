@@ -92,6 +92,7 @@ a:hover {
 
 .link-parent:hover * {
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .unselectable {

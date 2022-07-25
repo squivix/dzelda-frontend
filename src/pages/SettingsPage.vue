@@ -2,16 +2,29 @@
     <base-card title="Settings" class="settings-base-card">
         <template v-slot:content>
             <div class="content">
-                <aside>
-                    <ul class="nav-panel">
-                        <li>Account</li>
-                        <li>Languages</li>
-                        <li>Notifications</li>
+                <nav class="nav-panel">
+                    <ul>
+                        <li>
+                            <router-link :to="{name:'account-settings'}">
+                                Account
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link :to="{name:'language-settings'}">
+                                Languages
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link :to="{name:'notification-settings'}">
+                                Notifications
+                            </router-link>
+                        </li>
                     </ul>
-                </aside>
-                <div class="settings-tab">
-                    <p>There should be some settings here</p>
-                </div>
+                </nav>
+                <hr class="vertical-divider">
+                <router-view class="settings-tab">
+
+                </router-view>
             </div>
         </template>
 
@@ -23,7 +36,7 @@
 
     export default {
         name: "SettingsPage",
-        components: {BaseCard}
+        components: {BaseCard},
     }
 </script>
 
@@ -44,17 +57,29 @@
         flex-direction: column;
         row-gap: 1rem;
         height: 100%;
-        border-inline-end: 1px solid gray;
-        padding-inline-end: 1rem;
         flex: 1;
     }
 
-    .settings-tab {
-        padding-inline-start: 1rem;
-        flex: 2;
+    .nav-panel a {
+        display: block;
+        width: 100%;
+        text-decoration: none;
+        color: black;
+        padding: 1rem 1rem;
     }
 
-    .nav-panel li {
+    .nav-panel a:hover {
+        background-color: lightgray;
+    }
 
+
+    .settings-tab {
+        flex: 4;
+    }
+
+    .vertical-divider {
+        border-left: 3px solid silver;
+        border-radius: 5px;
+        margin: 0 1rem 0 0;
     }
 </style>

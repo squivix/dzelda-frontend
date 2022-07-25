@@ -17,6 +17,10 @@ import CourseEditPage from './pages/CourseEditPage.vue'
 import store from './store/index.js'
 import MyProfilePage from "@/pages/MyProfilePage";
 import SettingsPage from "@/pages/SettingsPage";
+import AccountTab from "@/components/settings/AccountTab";
+import LanguagesTab from "@/components/settings/LanguagesTab";
+import NotificationsTab from "@/components/settings/NotificationsTab";
+import NewLanguagePage from "@/pages/NewLanguagePage";
 
 const router = createRouter({
     routes: [
@@ -114,6 +118,12 @@ const router = createRouter({
             meta: {requiresAuth: true, showFooter: false}
         },
         {
+            path: '/learn/new',
+            component: NewLanguagePage,
+            name: "new-language",
+            meta: {requiresAuth: true, showFooter: false}
+        },
+        {
             path: '/profiles/me',
             component: MyProfilePage,
             name: "my-profile",
@@ -121,8 +131,24 @@ const router = createRouter({
         }, {
             path: '/settings',
             component: SettingsPage,
+            redirect: {name: "account-settings",},
             name: "settings",
-            meta: {requiresAuth: true, showFooter: true}
+            meta: {requiresAuth: true, showFooter: true},
+            children: [
+                {
+                    path: '/settings/account',
+                    name: "account-settings",
+                    component: AccountTab,
+                }, {
+                    path: '/settings/languages',
+                    name: "language-settings",
+                    component: LanguagesTab,
+                }, {
+                    path: '/settings/notifications',
+                    name: "notification-settings",
+                    component: NotificationsTab,
+                },
+            ],
         },
     ],
     history: createWebHistory(),

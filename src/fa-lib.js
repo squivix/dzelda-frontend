@@ -14,6 +14,8 @@ import {faAngleRight} from "@fortawesome/free-solid-svg-icons";
 import {faChevronDown} from "@fortawesome/free-solid-svg-icons";
 import {faCirclePlus} from "@fortawesome/free-solid-svg-icons";
 import {faUser} from "@fortawesome/free-solid-svg-icons";
+import {faGear} from "@fortawesome/free-solid-svg-icons";
+import {faArrowRightFromBracket} from "@fortawesome/free-solid-svg-icons";
 
 library.add(faEye);
 library.add(faEyeSlash);
@@ -30,3 +32,5 @@ library.add(faAngleRight);
 library.add(faChevronDown);
 library.add(faCirclePlus);
 library.add(faUser);
+library.add(faGear);
+library.add(faArrowRightFromBracket);

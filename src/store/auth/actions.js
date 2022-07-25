@@ -40,6 +40,7 @@ export default {
 
 
     async signOut(context) {
+        //TODO clear local vuex data (like languages learning, profile etc)
         const response = await context.dispatch('fetchProtected', {
             url: `${context.getters.apiUrl}/auth/token/logout/`,
             options: {method: "POST"}
