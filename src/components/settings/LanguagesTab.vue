@@ -14,8 +14,8 @@
                 <td>{{language.name}}</td>
                 <td>{{language.time_added}}</td>
                 <td>
-                    <button class="inv-button link">Remove</button>
-                    <button class="inv-button link">Reset Progress</button>
+                    <button class="inv-button link" @click="removeLanguage(language)">Remove</button>
+                    <button class="inv-button link" @click="resetLanguageProgress">Reset Progress</button>
                 </td>
             </tr>
             </tbody>
@@ -60,6 +60,17 @@
             },
             async fetchUserLanguages() {
                 return await this.$store.dispatch("getOrFetchUserLanguages");
+            },
+            async removeLanguage(language) {
+                //TODO move to modal dialogue
+                if (confirm("Are you sure you want to delete this language?")) {
+                    await this.$store.dispatch("deleteLanguage", {
+                        language: language.code,
+                    });
+                    this.userLanguages = await this.fetchUserLanguages();
+                }
+            }, resetLanguageProgress() {
+
             }
         },
         async mounted() {

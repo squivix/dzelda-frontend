@@ -124,9 +124,6 @@
         row-gap: 1.25rem;
         justify-content: flex-start;
         align-items: stretch;
-        margin-left: 2vw;
-        margin-right: 2vw;
-        margin-bottom: 5vh;
     }
 
     .library-base-card:deep(header) {

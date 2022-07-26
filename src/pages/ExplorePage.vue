@@ -15,8 +15,6 @@
 
 <style scoped>
     .explore-base-card {
-        margin-left: 2vw;
-        margin-right: 2vw;
-        margin-bottom: 5vh;
+
     }
 </style>

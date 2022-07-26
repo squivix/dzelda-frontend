@@ -14,11 +14,11 @@
                                 Languages
                             </router-link>
                         </li>
-                        <li>
-                            <router-link :to="{name:'notification-settings'}">
-                                Notifications
-                            </router-link>
-                        </li>
+                        <!--                        <li>-->
+                        <!--                            <router-link :to="{name:'notification-settings'}">-->
+                        <!--                                Notifications-->
+                        <!--                            </router-link>-->
+                        <!--                        </li>-->
                     </ul>
                 </nav>
                 <hr class="vertical-divider">
@@ -42,9 +42,7 @@
 
 <style scoped>
     .settings-base-card {
-        margin-left: 2vw;
-        margin-right: 2vw;
-        margin-bottom: 5vh;
+
     }
 
     .content {

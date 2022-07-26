@@ -1,5 +1,5 @@
 <template>
-    <base-card title="My Vocabulary" class="library-base-card">
+    <base-card title="My Vocabulary" class="my-vocab-base-card">
         <template v-slot:content>
             <section class="main-content" @click="clearSelectedVocab">
                 <div class="bar-table-wrapper">
@@ -142,10 +142,7 @@
 
 <style scoped>
 
-    .library-base-card {
-        margin-left: 2vw;
-        margin-right: 2vw;
-        margin-bottom: 5vh;
+    .my-vocab-base-card {
     }
 
     .main-content {

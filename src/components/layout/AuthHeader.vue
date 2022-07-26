@@ -43,7 +43,7 @@
                             </li>
                         </ul>
                         <div class="language-add-button">
-                            <router-link :to="{ name: 'my-profile' }">
+                            <router-link :to="{ name: 'new-language' }">
                                 <font-awesome-icon icon="circle-plus" class="language-icon">
                                 </font-awesome-icon>
                             </router-link>

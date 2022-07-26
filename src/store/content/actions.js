@@ -184,5 +184,32 @@ export default {
             caller: "postCourse",
             module: "content",
         });
+    },
+    async addLanguage(context, payload) {
+        const language = await context.dispatch('fetchCustom', {
+            url: `${context.getters.apiUrl}/users/me/languages`,
+            options: {
+                method: "POST",
+                body: JSON.stringify({
+                    language: payload.language
+                })
+            },
+            protected: true,
+            caller: "addLanguage",
+            module: "content",
+        });
+        await context.commit("addUserLanguage", {language});
+    },
+    async deleteLanguage(context, payload) {
+        await context.dispatch('fetchCustom', {
+            url: `${context.getters.apiUrl}/users/me/languages/${payload.language}`,
+            options: {
+                method: "DELETE",
+            },
+            protected: true,
+            caller: "deleteLanguage",
+            module: "content",
+        });
+        await context.commit("removeUserLanguage", {languageCode: payload.language});
     }
 }

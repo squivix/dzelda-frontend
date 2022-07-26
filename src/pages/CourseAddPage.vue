@@ -63,10 +63,6 @@
 <style scoped>
 
     .add-course-base-card {
-        margin-left: 2vw;
-        margin-right: 2vw;
-        margin-bottom: 5vh;
-
         display: flex;
         flex-direction: column;
         row-gap: 1.25rem;

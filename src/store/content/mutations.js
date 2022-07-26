@@ -11,5 +11,13 @@ export default {
                 // swap with userLanguages[0]
                 [state.userLanguages[i], state.userLanguages[0]] = [state.userLanguages[0], state.userLanguages[i]];
         }
+    },
+    addUserLanguage(state, payload) {
+        state.userLanguages.unshift(payload.language);
+    },
+    removeUserLanguage(state, payload) {
+        const index = state.userLanguages.findIndex((language) => language.code === payload.languageCode);
+        if (index !== -1)
+            state.userLanguages.splice(index, 1);
     }
 }
