@@ -1,3 +1,5 @@
+import {GUIDED_USERNAME} from "@/constants";
+
 export default {
     async fetchUserProfile(context) {
         return await context.dispatch('fetchCustom', {
@@ -211,5 +213,21 @@ export default {
             module: "content",
         });
         await context.commit("removeUserLanguage", {languageCode: payload.language});
+    },
+    async fetchRecommendedLessons(context, payload) {
+        return await context.dispatch('fetchCustom', {
+            url: `${context.getters.apiUrl}/lessons?language=${payload.language}&sortBy=Best`,
+            protected: true,
+            caller: "fetchRecommendedLessons",
+            module: "content",
+        });
+    },
+    async fetchGuidedCourses(context, payload) {
+        return await context.dispatch('fetchCustom', {
+            url: `${context.getters.apiUrl}/courses?language=${payload.language}&&addedBy=${GUIDED_USERNAME}&sortBy=Best`,
+            protected: true,
+            caller: "fetchGuidedCourses",
+            module: "content",
+        });
     }
 }

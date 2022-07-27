@@ -1,7 +1,7 @@
 <template>
-    <h1>Explore</h1>
-<!--    <base-card title="Explore" class="explore-base-card">-->
-<!--        <template v-slot:content>-->
+    <base-card class="explore-base-card">
+        <template v-slot:all>
+            <h2>Explore</h2>
             <nav class="tab-bar">
                 <ul class="tab-labels">
                     <li :class="{'tab-label':true, 'current-tab':currentTab==='Browse'}"
@@ -12,30 +12,30 @@
                         @click="setCurrentTab('Guided')">
                         Guided
                     </li>
-                    <li :class="{'tab-label':true, 'current-tab':currentTab==='Search' }"
-                        @click="setCurrentTab('Search')">
-                        Search
-                    </li>
-                    <li class="filler"></li>
                 </ul>
             </nav>
 
-            <div class="tab-content">
-                The tab content is supposed to be here
-            </div>
-<!--        </template>-->
-<!--    </base-card>-->
+            <browse-tab v-if="currentTab==='Browse'">
+
+            </browse-tab>
+            <guided-tab v-else>
+
+            </guided-tab>
+        </template>
+    </base-card>
 </template>
 
 <script>
     import BaseCard from "@/components/ui/BaseCard";
+    import BrowseTab from "@/components/explore/BrowseTab";
+    import GuidedTab from "@/components/explore/GuidedTab";
 
     export default {
         name: "ExplorePage",
-        components: {BaseCard},
+        components: {BaseCard, BrowseTab, GuidedTab},
         data() {
             return {
-                currentTab: "Browse"
+                currentTab: "Browse",
             };
         },
         methods: {
@@ -48,19 +48,25 @@
 
 <style scoped>
     .explore-base-card {
+        display: flex;
+        flex-direction: column;
+        row-gap: 1rem;
+    }
 
+    h2 {
+        font-size: 2rem;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
     }
 
     .tab-labels {
         display: flex;
         flex-direction: row;
+        /*justify-content: center;*/
     }
 
     .tab-labels .tab-label {
-        background-color: #F0F0F0;
         font-size: 1.2rem;
         padding: 1rem 1rem;
-        border: 1px solid darkgray;
     }
 
     .tab-labels .tab-label:hover {
@@ -68,19 +74,11 @@
     }
 
     .tab-labels .tab-label.current-tab {
-        background-color: white;
-        border-bottom-color: white;
-    }
-
-    .filler {
-        flex-grow: 1;
-        border-bottom: 1px solid darkgray;
+        border-bottom: 3px solid var(--secondary-color);
     }
 
     .tab-content {
-        border: 1px solid darkgray;
         border-top: none;
         border-radius: 3px;
-        height: 100vh;
     }
 </style>

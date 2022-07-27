@@ -16,3 +16,5 @@ export const SAVED_VOCAB_LEVELS = {
     LEVEL_4: 4,
     LEARNED: 5,
 };
+
+export const GUIDED_USERNAME="language_learner";
