@@ -39,6 +39,10 @@
 </script>
 
 <style scoped>
+    .base-card {
+        margin: 0;
+    }
+
     .course-article {
         display: flex;
         flex-direction: column;

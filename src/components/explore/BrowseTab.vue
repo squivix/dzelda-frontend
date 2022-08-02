@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ul v-if="recommendedLessons">
+        <ul v-if="recommendedLessons" class="lessons-list">
             <lesson-list-item v-for="lesson in recommendedLessons" :key="lesson.id" :lesson="lesson"></lesson-list-item>
         </ul>
     </div>
@@ -29,5 +29,9 @@
 </script>
 
 <style scoped>
-
+    .lessons-list {
+        display: flex;
+        flex-direction: column;
+        row-gap: 0.5rem;
+    }
 </style>
