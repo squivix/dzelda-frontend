@@ -81,7 +81,7 @@
                 }
             },
             async addLesson() {
-                this.lesson = await this.$store.dispatch("postLesson", {
+                this.lesson = await this.$store.dispatch("postUserLesson", {
                     courseId: this.selectedCourse,
                     title: this.title,
                     text: this.text,

@@ -66,7 +66,7 @@ export default {
         const courseId = payload.courseId;
         const languageCode = payload.languageCode;
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/courses/${courseId}?language=${languageCode}`,
+            url: `${context.getters.apiUrl}/courses/${courseId}?language=${languageCode}`,
             protected: true,
             caller: "fetchCourse",
             module: "content",
@@ -84,36 +84,38 @@ export default {
     },
     async fetchEditableCourses(context) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/editable-courses`,
+            url: `${context.getters.apiUrl}/courses?canEdit=true`,
             protected: true,
             caller: "fetchEditableCourses",
             module: "content",
         });
     },
 
-    async postLesson(context, payload) {
-        const courseId = payload.courseId;
-        return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/courses/${courseId}/lessons`,
-            options: {
-                method: "POST",
-                body: JSON.stringify({
-                    title: payload.title,
-                    text: payload.text,
-                })
-            },
-            protected: true,
-            caller: "postLesson",
-            module: "content",
-        });
-    },
+    // async postLesson(context, payload) {
+    //     return await context.dispatch('fetchCustom', {
+    //         url: `${context.getters.apiUrl}/lessons`,
+    //         options: {
+    //             method: "POST",
+    //             body: JSON.stringify({
+    //                 title: payload.title,
+    //                 text: payload.text,
+    //                 courseId: payload.courseId
+    //             })
+    //         },
+    //         protected: true,
+    //         caller: "postLesson",
+    //         module: "content",
+    //     });
+    // },
     async postUserLesson(context, payload) {
         return await context.dispatch('fetchCustom', {
             url: `${context.getters.apiUrl}/users/me/lessons`,
             options: {
                 method: "POST",
                 body: JSON.stringify({
-                    lessonId: payload.lessonId
+                    title: payload.title,
+                    text: payload.text,
+                    courseId: payload.courseId
                 })
             },
             protected: true,
