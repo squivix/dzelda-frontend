@@ -10,7 +10,7 @@
 </template>
 
 <script>
-    import {ALL_LEVELS} from "@/constants";
+    import {ALL_VOCAB_LEVELS} from "@/constants";
 
     export default {
         name: "VocabLevelDisplay",
@@ -22,7 +22,7 @@
         },
         computed: {
             vocabLevels() {
-                return ALL_LEVELS;
+                return ALL_VOCAB_LEVELS;
             }
         }
     }

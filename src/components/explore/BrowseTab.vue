@@ -17,9 +17,9 @@
         },
         methods: {
             async fetchRecommendedLessons() {
-                return await this.$store.dispatch("fetchRecommendedLessons", {
+                return (await this.$store.dispatch("fetchRecommendedLessons", {
                     language: this.$route.params.learningLanguage,
-                });
+                }))["results"];
             }
         },
         async mounted() {

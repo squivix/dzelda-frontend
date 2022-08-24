@@ -46,7 +46,7 @@
 </template>
 
 <script>
-    import {ALL_LEVELS, SAVED_VOCAB_LEVELS} from "@/constants";
+    import {ALL_VOCAB_LEVELS, SAVED_VOCAB_LEVELS} from "@/constants";
     import PaginationControls from "@/components/ui/PaginationControls";
     import {paginationControlsHost} from "@/components/ui/PaginationControls";
     import TheMeaningPanel from "@/components/reader/TheMeaningPanel";
@@ -119,19 +119,19 @@
                 this.selectedVocab = null;
             },
             onMeaningAdded(vocab, meaning) {
-                vocab.user_meanings.push(meaning)
+                vocab.userMeanings.push(meaning)
             },
             onVocabLevelSet(vocab, level) {
-                if (level === ALL_LEVELS.IGNORED) {
+                if (level === ALL_VOCAB_LEVELS.IGNORED) {
                     this.vocabs.splice(this.vocabs.findIndex((v) => v.text === vocab.text), 1)
                     this.clearSelectedVocab();
                 } else
                     vocab.level = level;
             },
             onMeaningDeleted(vocab, meaning) {
-                const index = vocab.user_meanings.findIndex((v) => v.text === meaning.text);
+                const index = vocab.userMeanings.findIndex((v) => v.text === meaning.text);
                 if (index !== -1)
-                    vocab.user_meanings.splice(index, 1);
+                    vocab.userMeanings.splice(index, 1);
             }
         }
     }

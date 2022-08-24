@@ -1,6 +1,7 @@
 <template>
     <div class="new-vocab-panel">
         <meaning-adding-controls
+                :vocab-id="vocab.id"
                 :vocab-text="vocab.text"
                 :suggested-meanings="suggestedMeanings"
                 @onMeaningAdded="onMeaningAdded">
@@ -21,7 +22,7 @@
 </template>
 
 <script>
-    import {ALL_LEVELS} from "@/constants.js";
+    import {ALL_VOCAB_LEVELS} from "@/constants.js";
     import MeaningAddingControls from "@/components/reader/MeaningAddingControls";
     import DictionariesList from "@/components/reader/DictionaryList";
     import {postVocab} from "@/components/reader/shared";
@@ -46,23 +47,23 @@
         computed: {
             suggestedMeanings() {
                 //TODO add button to show all meanings
-                return this.vocab.all_meanings.filter((meaning) => !this.vocab.user_meanings.some((m) => m.id === meaning.id)).slice(0, 3);
+                return this.vocab.allMeanings.filter((meaning) => !this.vocab.userMeanings.some((m) => m.id === meaning.id)).slice(0, 3);
             },
             isLevelNew() {
-                return this.vocab.level === ALL_LEVELS.NEW;
+                return this.vocab.level === ALL_VOCAB_LEVELS.NEW;
             },
             isLevelIgnored() {
-                return this.vocab.level === ALL_LEVELS.IGNORED;
+                return this.vocab.level === ALL_VOCAB_LEVELS.IGNORED;
             }
         },
         methods: {
             markWordAsKnown() {
-                this.postVocab(this.vocab.text, ALL_LEVELS.KNOWN);
-                this.$emit('onVocabLevelSet', ALL_LEVELS.KNOWN);
+                this.postVocab(this.vocab.id, ALL_VOCAB_LEVELS.KNOWN);
+                this.$emit('onVocabLevelSet', ALL_VOCAB_LEVELS.KNOWN);
             },
             markWordAsIgnored() {
-                this.postVocab(this.vocab.text, ALL_LEVELS.IGNORED);
-                this.$emit('onVocabLevelSet', ALL_LEVELS.IGNORED);
+                this.postVocab(this.vocab.id, ALL_VOCAB_LEVELS.IGNORED);
+                this.$emit('onVocabLevelSet', ALL_VOCAB_LEVELS.IGNORED);
             },
             onMeaningAdded(vocab, meaning) {
                 this.$emit('onMeaningAdded', vocab, meaning);

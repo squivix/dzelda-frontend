@@ -3,7 +3,7 @@ import {GUIDED_USERNAME} from "@/constants";
 export default {
     async fetchUserProfile(context) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me`,
+            url: `${context.getters.apiUrl}/users/me/profile/`,
             protected: true,
             caller: "fetchUserProfile",
             module: "content",
@@ -14,7 +14,7 @@ export default {
     },
     async fetchAllLanguages(context) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/languages`,
+            url: `${context.getters.apiUrl}/languages/`,
             protected: false,
             caller: "fetchAllLanguages",
             module: "content",
@@ -28,7 +28,7 @@ export default {
     },
     async fetchUserLanguages(context) {
         const languages = await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/languages`,
+            url: `${context.getters.apiUrl}/users/me/languages/`,
             protected: true,
             caller: "fetchUserLanguages",
             module: "content",
@@ -38,7 +38,7 @@ export default {
     },
     async fetchSavedCourses(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/saved-courses?language=${payload.language}&pageSize=${payload.maxPerPage}&page=${payload.page}`,
+            url: `${context.getters.apiUrl}/users/me/library/courses/?language=${payload.language}&pageSize=${payload.maxPerPage}&page=${payload.page}`,
             protected: true,
             caller: "fetchSavedCourses",
             module: "content",
@@ -46,7 +46,7 @@ export default {
     },
     async fetchUserLessonsPage(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/lessons?language=${payload.language}&pageSize=${payload.maxPerPage}&page=${payload.page}`,
+            url: `${context.getters.apiUrl}/users/me/library/lessons/?language=${payload.language}&pageSize=${payload.maxPerPage}&page=${payload.page}`,
             protected: true,
             caller: "fetchUserLessons",
             module: "content",
@@ -56,7 +56,7 @@ export default {
         const lessonId = payload.lessonId;
         const languageCode = payload.languageCode;
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/lessons/${lessonId}?language=${languageCode}`,
+            url: `${context.getters.apiUrl}/lessons/${lessonId}/`,
             protected: true,
             caller: "fetchLesson",
             module: "content",
@@ -66,7 +66,7 @@ export default {
         const courseId = payload.courseId;
         const languageCode = payload.languageCode;
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/courses/${courseId}?language=${languageCode}`,
+            url: `${context.getters.apiUrl}/courses/${courseId}/`,
             protected: true,
             caller: "fetchCourse",
             module: "content",
@@ -76,7 +76,7 @@ export default {
         const courseId = payload.courseId;
         // const languageCode = payload.languageCode;
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/courses/${courseId}/lessons`,
+            url: `${context.getters.apiUrl}/courses/${courseId}/lessons/`,
             protected: true,
             caller: "fetchCourseLessons",
             module: "content",
@@ -84,7 +84,7 @@ export default {
     },
     async fetchEditableCourses(context) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/courses?canEdit=true`,
+            url: `${context.getters.apiUrl}/courses/?canEdit=true`,
             protected: true,
             caller: "fetchEditableCourses",
             module: "content",
@@ -109,7 +109,7 @@ export default {
     // },
     async postUserLesson(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/lessons`,
+            url: `${context.getters.apiUrl}/users/me/library/lessons/`,
             options: {
                 method: "POST",
                 body: JSON.stringify({
@@ -126,7 +126,7 @@ export default {
     async editLesson(context, payload) {
         const lessonId = payload.lessonId;
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/lessons/${lessonId}`,
+            url: `${context.getters.apiUrl}/users/me/library/lessons/${lessonId}/`,
             options: {
                 method: "PUT",
                 body: JSON.stringify({
@@ -161,7 +161,7 @@ export default {
 
     async updateCourse(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/courses/${payload.id}`,
+            url: `${context.getters.apiUrl}/courses/${payload.id}/`,
             options: {
                 method: "PUT",
                 body: JSON.stringify({
@@ -179,7 +179,7 @@ export default {
         context.commit("setLastOpenedLanguage", {language: payload.language});
 
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/languages/${payload.language}`,
+            url: `${context.getters.apiUrl}/users/me/languages/${payload.language}/`,
             options: {
                 method: "PATCH",
                 body: JSON.stringify({lastOpened: "now"})
@@ -191,7 +191,7 @@ export default {
     },
     async addLanguage(context, payload) {
         const language = await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/languages`,
+            url: `${context.getters.apiUrl}/users/me/languages/`,
             options: {
                 method: "POST",
                 body: JSON.stringify({
@@ -206,7 +206,7 @@ export default {
     },
     async deleteLanguage(context, payload) {
         await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/languages/${payload.language}`,
+            url: `${context.getters.apiUrl}/users/me/languages/${payload.language}/`,
             options: {
                 method: "DELETE",
             },
@@ -218,7 +218,7 @@ export default {
     },
     async fetchRecommendedLessons(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/lessons?language=${payload.language}&sortBy=Best`,
+            url: `${context.getters.apiUrl}/lessons/?language=${payload.language}&sortBy=best`,
             protected: true,
             caller: "fetchRecommendedLessons",
             module: "content",
@@ -226,7 +226,7 @@ export default {
     },
     async fetchGuidedCourses(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/courses?language=${payload.language}&&addedBy=${GUIDED_USERNAME}&sortBy=Best`,
+            url: `${context.getters.apiUrl}/courses/?language=${payload.language}&&addedBy=${GUIDED_USERNAME}&sortBy=best`,
             protected: true,
             caller: "fetchGuidedCourses",
             module: "content",

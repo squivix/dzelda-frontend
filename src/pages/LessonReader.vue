@@ -32,7 +32,7 @@
 <script>
     import TheLessonContent from '../components/reader/TheLessonContent.vue';
     import TheMeaningPanel from '../components/reader/TheMeaningPanel.vue';
-    import {ALL_LEVELS} from "@/constants";
+    import {ALL_VOCAB_LEVELS, SAVED_VOCAB_LEVELS} from "@/constants";
     import {escapeRegExp} from "@/utils";
     import {getTextElements} from "@/components/reader/shared";
     import OverlappingPhrasesPanel from "@/components/reader/OverlappingPhrasesPanel";
@@ -89,7 +89,12 @@
                 this.selectedOverLappingPhrases = null;
             },
             selectNewPhrase(phraseText) {
-                this.selectedVocab = {text: phraseText, level: ALL_LEVELS.NEW, all_meanings: [], user_meanings: []};
+                this.selectedVocab = {
+                    text: phraseText,
+                    level: ALL_VOCAB_LEVELS.NEW,
+                    allMeanings: [],
+                    userMeanings: []
+                };
                 this.selectedIsPhrase = true;
                 this.selectedOverLappingPhrases = null;
             },
@@ -111,26 +116,26 @@
                     this.onVocabLevelSet(vocab, vocab.level);
                 } else
                     this.onVocabLevelSet(vocab, vocab.level);
-                this.vocab[key].user_meanings.push(new_meaning);
+                this.vocab[key].userMeanings.push(new_meaning);
                 this.vocab[key].id = vocab.id;
                 this.setSelectedVocab(vocab.text);
             },
             onVocabLevelSet(vocab, level) {
                 const key = vocab.text.toLowerCase();
                 this.vocab[key].level = level;
-                if (level === ALL_LEVELS.IGNORED || level === ALL_LEVELS.KNOWN) {
-                    this.vocab[key].user_meanings = [];
+                if (level === ALL_VOCAB_LEVELS.IGNORED || level === ALL_VOCAB_LEVELS.KNOWN) {
+                    this.vocab[key].userMeanings = [];
                     this.clearSelectedVocab();
-                    if (level === ALL_LEVELS.IGNORED && this.phrases[key])
-                        this.phrases[key] = ALL_LEVELS.NEW;
+                    if (level === ALL_VOCAB_LEVELS.IGNORED && this.phrases[key])
+                        this.phrases[key] = ALL_VOCAB_LEVELS.NEW;
                 } else
                     this.setSelectedVocab(vocab.text);
             },
             onMeaningDeleted(word, deleted_meaning) {
-                const index = word.user_meanings.findIndex((meaning) => meaning.id === deleted_meaning.id)
-                word.user_meanings.splice(index, 1);
-                if (word.user_meanings.length === 0)
-                    this.onVocabLevelSet(word, ALL_LEVELS.NEW);
+                const index = word.userMeanings.findIndex((meaning) => meaning.id === deleted_meaning.id)
+                word.userMeanings.splice(index, 1);
+                if (word.userMeanings.length === 0)
+                    this.onVocabLevelSet(word, ALL_VOCAB_LEVELS.NEW);
             },
             parseLesson() {
                 this.parsingLesson = true;
@@ -148,7 +153,11 @@
                     let elements = getTextElements(paragraph);
                     let paragraphElements = [];
                     for (let element of elements)
-                        paragraphElements.push({text: element, isWord: this.isWord(element), phrases: {}});
+                        paragraphElements.push({
+                            text: element,
+                            isWord: !!this.words[element.toLowerCase()],
+                            phrases: {}
+                        });
 
                     for (let phrase of phrases) {
                         let regex = new RegExp(`${escapeRegExp(phrase)}`, 'ig');
@@ -168,10 +177,6 @@
 
             lessonParagraphs(text) {
                 return text.split(/\s\s+/g);
-            },
-            isWord(text) {
-                //TODO fix string with numbers being counted as word ex: '123abc' returns true
-                return !!text.match(/[\p{L}]+/gu);
             },
         }
         ,

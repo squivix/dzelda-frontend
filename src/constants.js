@@ -1,4 +1,4 @@
-export const ALL_LEVELS = {
+export const ALL_VOCAB_LEVELS = {
     IGNORED: -1,
     NEW: 0,
     LEVEL_1: 1,

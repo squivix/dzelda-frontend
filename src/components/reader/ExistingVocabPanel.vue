@@ -3,7 +3,7 @@
         <meaning-editing-controls
                 @onMeaningDeleted="onMeaningDeleted"
                 :vocab-id="vocab.id"
-                :saved-meanings="vocab.user_meanings"
+                :saved-meanings="vocab.userMeanings"
         >
         </meaning-editing-controls>
 

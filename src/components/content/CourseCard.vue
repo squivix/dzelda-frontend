@@ -2,7 +2,7 @@
     <base-card>
         <template v-slot:all>
             <article class="course-article">
-                <img :src="imageUrl" alt="course image" class="course-image">
+                <img :src="imageUrl" @error="setDefaultImage" alt="course image" class="course-image">
                 <router-link
                         :to="{name:'course', params:{learningLanguage:$route.params.learningLanguage, courseId:course.id}}">
                     <h4>{{course.title}}</h4>
@@ -30,9 +30,18 @@
         computed: {
             imageUrl() {
                 if (this.course.image !== null)
-                    return `${this.$store.getters.baseUrl}${this.course.image}`;
+                    return this.course.image;
                 else
-                    return `${this.$store.getters.baseUrl}/media/blank-image.jpg`
+                    return this.defaultImageUrl;
+            },
+            defaultImageUrl() {
+                return `${this.$store.getters.baseUrl}/media/blank-image.png`;
+            }
+        },
+        methods: {
+            setDefaultImage(event) {
+                if (event.target.src !== this.defaultImageUrl)
+                    event.target.src = this.defaultImageUrl;
             }
         }
     }

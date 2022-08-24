@@ -2,7 +2,7 @@ export default {
     async fetchLessonWords(context, payload) {
         const lessonId = payload.lessonId;
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/lessons/${lessonId}/words`,
+            url: `${context.getters.apiUrl}/users/me/library/lessons/${lessonId}/words/`,
             protected: true,
             caller: "fetchLessonWords",
             module: "reader",
@@ -11,7 +11,7 @@ export default {
     async fetchLessonPhrases(context, payload) {
         const lessonId = payload.lessonId;
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/lessons/${lessonId}/phrases`,
+            url: `${context.getters.apiUrl}/users/me/library/lessons/${lessonId}/phrases/`,
             protected: true,
             caller: "fetchLessonPhrases",
             module: "reader",
@@ -20,12 +20,11 @@ export default {
 
     async saveMeaningToUser(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/vocabs/${payload.vocabId}/meanings`,
+            url: `${context.getters.apiUrl}/users/me/meanings/`,
             options: {
                 method: 'POST',
                 body: JSON.stringify({
-                    language: payload.meaningLanguage,
-                    text: payload.meaningText,
+                    meaningId: payload.meaningId,
                 }),
             },
             protected: true,
@@ -35,12 +34,13 @@ export default {
     },
     async addNewMeaning(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/vocabs/${payload.vocabId}/meanings`,
+            url: `${context.getters.apiUrl}/meanings/`,
             options: {
                 method: 'POST',
                 body: JSON.stringify({
-                    language: payload.meaningLanguage,
-                    text: payload.meaningText,
+                    text: payload.text,
+                    vocabId: payload.vocabId,
+                    language: payload.language,
                 }),
             },
             protected: true,
@@ -50,14 +50,15 @@ export default {
     },
     async postNewVocab(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/vocabs`,
+            url: `${context.getters.apiUrl}/users/me/vocabs/`,
             options: {
                 method: 'POST',
                 body: JSON.stringify({
-                    language: payload.language,
-                    text: payload.text,
-                    level: payload.level,
-                    isPhrase: payload.isPhrase,
+                    vocabId: payload.vocabId
+                    // language: payload.language,
+                    // text: payload.text,
+                    // level: payload.level,
+                    // isPhrase: payload.isPhrase,
                 }),
             },
             protected: true,
@@ -67,7 +68,7 @@ export default {
     },
     async updateVocabLevel(context, payload) {
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/vocabs/${payload.vocabId}`,
+            url: `${context.getters.apiUrl}/users/me/vocabs/${payload.vocabId}/`,
             options: {
                 method: 'PATCH',
                 body: JSON.stringify({
@@ -83,7 +84,7 @@ export default {
 
     async deleteUserMeaning(context, payload) {
         await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/vocabs/${payload.vocabId}/meanings/${payload.meaningId}`,
+            url: `${context.getters.apiUrl}/users/me/vocabs/${payload.vocabId}/meanings/${payload.meaningId}/`,
             options: {
                 method: "DELETE",
             },
@@ -96,7 +97,7 @@ export default {
     async fetchDictionaries(context, payload) {
         const languageCode = payload.language;
         return await context.dispatch('fetchCustom', {
-            url: `${context.getters.apiUrl}/users/me/dictionaries?language=${languageCode}`,
+            url: `${context.getters.apiUrl}/users/me/dictionaries/?language=${languageCode}`,
             protected: true,
             caller: "fetchDictionaries",
             module: "reader",
@@ -105,7 +106,7 @@ export default {
     async fetchUserVocabsPage(context, payload) {
         return await context.dispatch('fetchCustom', {
             //&level.neq=${VOCAB_LEVELS.IGNORED}&level.neq=${VOCAB_LEVELS.KNOWN}
-            url: `${context.getters.apiUrl}/users/me/vocabs?language=${payload.language}${payload.levels ? payload.levels.map((level) => `&level=${level}`).join("") : ""}${payload.searchQuery ? `&search=${payload.searchQuery}` : ''}&pageSize=${payload.vocabsPerPage}&page=${payload.page}`,
+            url: `${context.getters.apiUrl}/users/me/vocabs/?language=${payload.language}${payload.levels ? payload.levels.map((level) => `&level=${level}`).join("") : ""}${payload.searchQuery ? `&search=${payload.searchQuery}` : ''}&pageSize=${payload.vocabsPerPage}&page=${payload.page}`,
             protected: true,
             caller: "fetchUserVocabsPage",
             module: "reader",

@@ -83,7 +83,7 @@
                     id: this.$route.params.courseId,
                     title: this.title,
                     description: this.description,
-                    is_public: this.isPublic,
+                    isPublic: this.isPublic,
                     lessons: this.lessons.map(lesson => lesson.id)
                 })
             },
@@ -111,7 +111,7 @@
             const course = await this.fetchCourse();
             this.title = course.title;
             this.description = course.description;
-            this.isPublic = course.is_public;
+            this.isPublic = course.isPublic;
             this.lessons = await this.fetchCourseLessons();
         }
     }

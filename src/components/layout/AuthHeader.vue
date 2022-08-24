@@ -25,7 +25,7 @@
             <base-drop-down v-if="currentLanguage" class="language-dropdown" label="language">
                 <template v-slot:button>
                     <!--suppress HtmlUnknownTarget, JSUnresolvedVariable -->
-                    <img :src="currentLanguage.flag_image_circular" alt="Current Language Icon"
+                    <img :src="currentLanguage.flagCircularImage" alt="Current Language Icon"
                          class="language-icon current-language-icon">
                     <span class="language-menu-arrow">
                         <font-awesome-icon icon="chevron-down"></font-awesome-icon>
@@ -37,7 +37,7 @@
                             <li v-for="language in otherLanguages" :key="language.code">
                                 <router-link :to="{ name: 'explore-lang' ,params:{learningLanguage:language.code}}">
                                     <!--suppress HtmlUnknownTarget -->
-                                    <img :src="language.flag_image_circular" alt="Language Icon" class="language-icon">
+                                    <img :src="language.flagCircularImage" alt="Language Icon" class="language-icon">
                                     <p>{{language.name}}</p>
                                 </router-link>
                             </li>
@@ -121,8 +121,8 @@
         },
         computed: {
             profilePicture() {
-                if (this.userProfile.profile_picture !== null)
-                    return `${this.$store.getters.baseUrl}${this.userProfile.profile_picture}`;
+                if (this.userProfile.profilePicture !== null)
+                    return `${this.$store.getters.baseUrl}${this.userProfile.profilePicture}`;
                 else
                     return null;
             },

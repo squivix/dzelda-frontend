@@ -7,7 +7,7 @@
         </td>
         <td>
             <ul>
-                <li v-for="meaning in vocab.user_meanings"
+                <li v-for="meaning in vocab.userMeanings"
                     :key="meaning.id">
                     {{meaning.text}}
                 </li>

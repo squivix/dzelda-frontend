@@ -28,6 +28,10 @@
         components: {},
         emits: ["onMeaningAdded"],
         props: {
+            vocabId: {
+                type: Number,
+                required: true,
+            },
             vocabText: {
                 type: String,
                 required: true,
@@ -44,11 +48,9 @@
         },
         methods: {
             addSuggestedMeaning(meaning) {
-                this.postVocab(this.vocabText).then((newVocab) => {
+                this.postVocab(this.vocabId).then((newVocab) => {
                         this.$store.dispatch("saveMeaningToUser", {
-                            vocabId: newVocab.id,
-                            meaningLanguage: this.$route.params.learningLanguage,
-                            meaningText: meaning.text
+                            meaningId: meaning.id
                         });
                         this.$emit('onMeaningAdded', newVocab, meaning);
                     }
@@ -57,15 +59,19 @@
             addNewMeaning() {
                 if (this.newMeaning === undefined || this.newMeaning === "")
                     return;
-                this.postVocab(this.vocabText).then(async (newVocab) => {
-                    const meaning = await this.$store.dispatch("addNewMeaning", {
+                this.postVocab(this.vocabId).then(async (newVocab) => {
+                    this.$store.dispatch("addNewMeaning", {
+                        text: this.newMeaning,
                         vocabId: newVocab.id,
                         //TODO: no meaning language hard-coding
-                        meaningLanguage: "en",
-                        meaningText: this.newMeaning,
+                        language: "en",
+                    }).then(async newMeaning => {
+                        await this.$store.dispatch("saveMeaningToUser", {
+                            meaningId: newMeaning.id
+                        });
+                        this.$emit('onMeaningAdded', newVocab, newMeaning);
+                        this.newMeaning = "";
                     });
-                    this.$emit('onMeaningAdded', newVocab, meaning);
-                    this.newMeaning = "";
                 });
             },
             postVocab
