@@ -72,7 +72,6 @@ export default {
             options: {
                 method: 'PATCH',
                 body: JSON.stringify({
-                    language: payload.language,
                     level: payload.level,
                 }),
             },

@@ -37,6 +37,7 @@
             vocab: {
                 type: Object,
                 required: true,
+
             },
         },
         data() {

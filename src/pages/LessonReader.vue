@@ -105,9 +105,10 @@
             showOverlappingPhrases(phrasesText) {
                 this.selectedOverLappingPhrases = phrasesText;
             },
-            onMeaningAdded(vocab, new_meaning) {
+            onMeaningAdded(vocab, newMeaning) {
                 const key = vocab.text.toLowerCase();
-
+                if (vocab.level === ALL_VOCAB_LEVELS.KNOWN || vocab.level === ALL_VOCAB_LEVELS.IGNORED)
+                    vocab.level = ALL_VOCAB_LEVELS.LEVEL_1;
                 if (this.vocab[key] === undefined) {
                     //only for new phrases
                     this.phrases[key] = vocab;
@@ -116,7 +117,7 @@
                     this.onVocabLevelSet(vocab, vocab.level);
                 } else
                     this.onVocabLevelSet(vocab, vocab.level);
-                this.vocab[key].userMeanings.push(new_meaning);
+                this.vocab[key].userMeanings.push(newMeaning);
                 this.vocab[key].id = vocab.id;
                 this.setSelectedVocab(vocab.text);
             },

@@ -1,5 +1,6 @@
 <template>
     <div class="new-vocab-panel">
+
         <meaning-adding-controls
                 :vocab-id="vocab.id"
                 :vocab-text="vocab.text"
@@ -57,12 +58,20 @@
             }
         },
         methods: {
-            markWordAsKnown() {
-                this.postVocab(this.vocab.id, ALL_VOCAB_LEVELS.KNOWN);
+            async markWordAsKnown() {
+                await this.postVocab(this.vocab.id);
+                this.$store.dispatch("updateVocabLevel", {
+                    vocabId: this.vocab.id,
+                    level: ALL_VOCAB_LEVELS.KNOWN
+                })
                 this.$emit('onVocabLevelSet', ALL_VOCAB_LEVELS.KNOWN);
             },
-            markWordAsIgnored() {
-                this.postVocab(this.vocab.id, ALL_VOCAB_LEVELS.IGNORED);
+            async markWordAsIgnored() {
+                await this.postVocab(this.vocab.id);
+                this.$store.dispatch("updateVocabLevel", {
+                    vocabId: this.vocab.id,
+                    level: ALL_VOCAB_LEVELS.IGNORED
+                })
                 this.$emit('onVocabLevelSet', ALL_VOCAB_LEVELS.IGNORED);
             },
             onMeaningAdded(vocab, meaning) {
