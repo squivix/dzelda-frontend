@@ -1,9 +1,5 @@
-export async function postVocab(vocabId) {
-    return await this.$store.dispatch("postNewVocab", {
-        // language: this.$route.params.learningLanguage,
-        // text: wordText,
-        // level: level,
-        // isPhrase: isPhrase,
+export async function postUserVocab(vocabId) {
+    return await this.$store.dispatch("postUserVocab", {
         vocabId:vocabId,
     });
 }

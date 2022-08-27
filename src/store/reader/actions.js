@@ -50,19 +50,31 @@ export default {
     },
     async postNewVocab(context, payload) {
         return await context.dispatch('fetchCustom', {
+            url: `${context.getters.apiUrl}/vocabs/`,
+            options: {
+                method: 'POST',
+                body: JSON.stringify({
+                    text: payload.text,
+                    language: payload.language,
+                    isPhrase: payload.isPhrase,
+                }),
+            },
+            protected: true,
+            caller: "postNewWord",
+            module: "reader",
+        });
+    },
+    async postUserVocab(context, payload) {
+        return await context.dispatch('fetchCustom', {
             url: `${context.getters.apiUrl}/users/me/vocabs/`,
             options: {
                 method: 'POST',
                 body: JSON.stringify({
                     vocabId: payload.vocabId
-                    // language: payload.language,
-                    // text: payload.text,
-                    // level: payload.level,
-                    // isPhrase: payload.isPhrase,
                 }),
             },
             protected: true,
-            caller: "postNewWord",
+            caller: "postUserVocab",
             module: "reader",
         });
     },

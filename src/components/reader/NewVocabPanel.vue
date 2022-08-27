@@ -4,6 +4,7 @@
         <meaning-adding-controls
                 :vocab-id="vocab.id"
                 :vocab-text="vocab.text"
+                :is-phrase="isPhrase"
                 :suggested-meanings="suggestedMeanings"
                 @onMeaningAdded="onMeaningAdded">
 
@@ -26,7 +27,7 @@
     import {ALL_VOCAB_LEVELS} from "@/constants.js";
     import MeaningAddingControls from "@/components/reader/MeaningAddingControls";
     import DictionariesList from "@/components/reader/DictionaryList";
-    import {postVocab} from "@/components/reader/shared";
+    import {postUserVocab} from "@/components/reader/shared";
 
     export default {
         name: "NewVocabPanel",
@@ -59,7 +60,7 @@
         },
         methods: {
             async markWordAsKnown() {
-                await this.postVocab(this.vocab.id);
+                await this.postUserVocab(this.vocab.id);
                 this.$store.dispatch("updateVocabLevel", {
                     vocabId: this.vocab.id,
                     level: ALL_VOCAB_LEVELS.KNOWN
@@ -67,7 +68,7 @@
                 this.$emit('onVocabLevelSet', ALL_VOCAB_LEVELS.KNOWN);
             },
             async markWordAsIgnored() {
-                await this.postVocab(this.vocab.id);
+                await this.postUserVocab(this.vocab.id);
                 this.$store.dispatch("updateVocabLevel", {
                     vocabId: this.vocab.id,
                     level: ALL_VOCAB_LEVELS.IGNORED
@@ -77,7 +78,7 @@
             onMeaningAdded(vocab, meaning) {
                 this.$emit('onMeaningAdded', vocab, meaning);
             },
-            postVocab
+            postUserVocab
         }
     }
 </script>

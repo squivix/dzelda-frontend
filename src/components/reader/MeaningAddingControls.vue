@@ -21,7 +21,7 @@
 </template>
 
 <script>
-    import {postVocab} from "@/components/reader/shared";
+    import {postUserVocab} from "@/components/reader/shared";
 
     export default {
         name: "MeaningAddingControls",
@@ -30,11 +30,16 @@
         props: {
             vocabId: {
                 type: Number,
-                required: true,
+                required: false,
             },
             vocabText: {
                 type: String,
                 required: true,
+            },
+            isPhrase: {
+                type: Boolean,
+                required: false,
+                default: false,
             },
             suggestedMeanings: {
                 type: Array,
@@ -48,18 +53,26 @@
         },
         methods: {
             addSuggestedMeaning(meaning) {
-                this.postVocab(this.vocabId).then((newVocab) => {
-                        this.$store.dispatch("saveMeaningToUser", {
-                            meaningId: meaning.id
-                        });
-                        this.$emit('onMeaningAdded', newVocab, meaning);
-                    }
-                );
+                this.postUserVocab(this.vocabId).then(newVocab => {
+                    this.$store.dispatch("saveMeaningToUser", {
+                        meaningId: meaning.id
+                    });
+                    this.$emit('onMeaningAdded', newVocab, meaning);
+                });
             },
-            addNewMeaning() {
+            async addNewMeaning() {
                 if (this.newMeaning === undefined || this.newMeaning === "")
                     return;
-                this.postVocab(this.vocabId).then(async (newVocab) => {
+                let vocabId = this.vocabId;
+                if (this.isPhrase && !this.vocabId) {
+                    vocabId = (await this.$store.dispatch("postNewVocab", {
+                        text: this.vocabText,
+                        language: this.$route.params.learningLanguage,
+                        isPhrase: true,
+                    })).id;
+                }
+
+                this.postUserVocab(vocabId).then(async (newVocab) => {
                     this.$store.dispatch("addNewMeaning", {
                         text: this.newMeaning,
                         vocabId: newVocab.id,
@@ -74,7 +87,7 @@
                     });
                 });
             },
-            postVocab
+            postUserVocab
         }
     }
 </script>
