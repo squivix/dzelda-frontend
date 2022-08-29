@@ -3,7 +3,7 @@ import router from '../../router.js'
 
 export default {
     async signUp(context, payload) {
-        const response = await fetch(`${context.getters.apiUrl}/auth/users/`, {
+        const response = await fetch(`${context.rootGetters.apiUrl}/auth/users/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -21,7 +21,7 @@ export default {
         }
     },
     async login(context, payload) {
-        const response = await fetch(`${context.getters.apiUrl}/auth/token/login/`, {
+        const response = await fetch(`${context.rootGetters.apiUrl}/auth/token/login/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -42,7 +42,7 @@ export default {
     async signOut(context) {
         //TODO clear local vuex data (like languages learning, profile etc)
         const response = await context.dispatch('fetchProtected', {
-            url: `${context.getters.apiUrl}/auth/token/logout/`,
+            url: `${context.rootGetters.apiUrl}/auth/token/logout/`,
             options: {method: "POST"}
         });
         if (response.ok) {

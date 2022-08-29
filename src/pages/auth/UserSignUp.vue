@@ -50,13 +50,12 @@
                     email: this.email,
                     username: this.username,
                     password: this.password,
-                    //TODO make this functional on the back end
                     initialLanguage: this.selectedLanguage,
                 });
             },
 
             async fetchLanguages() {
-                this.allLanguages = await this.$store.dispatch("fetchAllLanguages");
+                this.allLanguages = await this.$store.dispatch("content/fetchAllLanguages");
             },
         },
         mounted() {

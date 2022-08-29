@@ -9,9 +9,9 @@ const store = createStore({
         baseUrl: `http://localhost:8000`,
     },
     modules: {
-        authModule,
-        contentModule,
-        readerModule,
+        auth: authModule,
+        content: contentModule,
+        reader: readerModule,
     },
     getters: {
         baseUrl(state) {
@@ -25,7 +25,7 @@ const store = createStore({
         async fetchCustom(context, payload) {
             let response;
             if (payload.protected)
-                response = await context.dispatch("fetchProtected", {url: payload.url, options: payload.options});
+                response = await context.dispatch("auth/fetchProtected", {url: payload.url, options: payload.options});
             else
                 response = await fetch(payload.url, payload.options);
             if (response.ok && response.status !== 204)

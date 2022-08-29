@@ -21,6 +21,7 @@
                 <router-link to="forgot-password" id="forgot-password-link" class="link">
                     Forgot Password?
                 </router-link>
+                <!--TODO fix unrelated error messages showing here-->
                 <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
                 <button id="login-button" class="primary-button" type="submit">
@@ -32,7 +33,7 @@
 </template>
 <script>
     import * as utils from '../../utils.js';
-    import BasePasswordInput from "@/components/ui/BasePasswordInput";
+    import BasePasswordInput from "@/components/general/ui/BasePasswordInput";
 
     export default {
         name: "UserLogin",
@@ -64,16 +65,17 @@
             async submitForm() {
                 this.error = null;
                 try {
-                    await this.$store.dispatch('login', {
+                    await this.$store.dispatch('auth/login', {
                         email: this.email,
                         username: this.username,
                         password: this.password,
                     });
                 } catch (error) {
+                    console.error(error)
                     this.error = error.message;
                     return;
                 }
-                this.$router.push({name: 'explore'});
+                await this.$router.push({name: 'explore'});
             },
         },
     };

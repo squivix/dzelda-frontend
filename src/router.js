@@ -5,22 +5,22 @@ import UserLogin from './pages/auth/UserLogin.vue'
 import UserSignOut from './pages/auth/UserSignOut.vue'
 import UserSignUp from './pages/auth/UserSignUp.vue'
 import ForgotPassword from './pages/auth/ForgotPassword.vue'
-import CourseViewer from './pages/CourseViewer.vue'
-import LessonReader from './pages/LessonReader.vue'
-import ExplorePage from './pages/ExplorePage.vue'
-import MyLibraryPage from './pages/MyLibraryPage.vue'
-import MyVocabPage from './pages/MyVocabPage.vue'
-import LessonAddEditPage from './pages/LessonAddEditPage.vue'
-import CourseAddPage from './pages/CourseAddPage.vue'
-import CourseEditPage from './pages/CourseEditPage.vue'
+import CoursePage from './pages/view/CoursePage.vue'
+import LessonReaderPage from './pages/reader/LessonReaderPage.vue'
+import ExplorePage from './pages/view/ExplorePage.vue'
+import MyLibraryPage from './pages/view/MyLibraryPage.vue'
+import MyVocabPage from './pages/view/MyVocabPage.vue'
+import LessonAddEditPage from './pages/change/LessonAddEditPage.vue'
+import CourseAddPage from './pages/change/CourseAddPage.vue'
+import CourseEditPage from './pages/change/CourseEditPage.vue'
 
 import store from './store/index.js'
-import MyProfilePage from "@/pages/MyProfilePage";
-import SettingsPage from "@/pages/SettingsPage";
-import AccountTab from "@/components/settings/AccountTab";
-import LanguagesTab from "@/components/settings/LanguagesTab";
-import NotificationsTab from "@/components/settings/NotificationsTab";
-import NewLanguagePage from "@/pages/NewLanguagePage";
+import MyProfilePage from "@/pages/user/MyProfilePage";
+import SettingsPage from "@/pages/user/SettingsPage";
+import AccountTab from "@/components/page/settings/AccountTab";
+import LanguagesTab from "@/components/page/settings/LanguagesTab";
+import NotificationsTab from "@/components/page/settings/NotificationsTab";
+import NewLanguagePage from "@/pages/user/NewLanguagePage";
 
 const router = createRouter({
     routes: [
@@ -73,7 +73,7 @@ const router = createRouter({
         },
         {
             path: '/learn/:learningLanguage/lessons/:lessonId',
-            component: LessonReader,
+            component: LessonReaderPage,
             name: 'lesson',
             meta: {requiresAuth: true, showFooter: false}
         },
@@ -107,7 +107,7 @@ const router = createRouter({
         },
         {
             path: '/learn/:learningLanguage/courses/:courseId',
-            component: CourseViewer,
+            component: CoursePage,
             name: 'course',
             meta: {requiresAuth: true, showFooter: false}
         },
@@ -156,24 +156,24 @@ const router = createRouter({
 
 
 router.beforeResolve(async (to, from) => {
-    const isAuthenticated = store.getters.isAuthenticated;
+    const isAuthenticated = store.getters["auth/isAuthenticated"];
     //prevent visiting sites that require authentication while unauthenticated
     if (to.meta.requiresAuth && !isAuthenticated)
         return {name: 'login'}
 
-    if (to.meta.requiresAuth && isAuthenticated && store.state.token === undefined)
+    if (to.meta.requiresAuth && isAuthenticated && store.state.auth.token === undefined)
         store.commit("setToken", {token: localStorage.auth_token})
 
     if ((to.name === "login" || to.name === "home") && isAuthenticated)
         return {name: 'explore'}
     if (isAuthenticated) {
-        const defaultLanguage = await store.dispatch("getOrFetchDefaultUserLanguage");
+        const defaultLanguage = await store.dispatch("content/getOrFetchDefaultUserLanguage");
         if (to.meta.redirToLanguageSpecific)
             return {path: `/learn/${defaultLanguage.code}${to.path}`};
     }
 
     if (to.params.learningLanguage && from.params.learningLanguage !== to.params.learningLanguage)
-        await store.dispatch("updateLanguageLastOpened", {language: to.params.learningLanguage});
+        await store.dispatch("content/updateLanguageLastOpened", {language: to.params.learningLanguage});
 
 })
 
