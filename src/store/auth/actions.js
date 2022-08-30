@@ -75,7 +75,7 @@ export default {
             method: options.method,
             headers: {
                 ...options.headers,
-                Authorization: `Token ${context.getters.getUserToken}`,
+                Authorization: `Token ${context.getters.userToken}`,
             },
             body: options.body
         });

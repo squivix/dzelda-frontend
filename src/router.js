@@ -160,9 +160,8 @@ router.beforeResolve(async (to, from) => {
     //prevent visiting sites that require authentication while unauthenticated
     if (to.meta.requiresAuth && !isAuthenticated)
         return {name: 'login'}
-
-    if (to.meta.requiresAuth && isAuthenticated && store.state.auth.token === undefined)
-        store.commit("setToken", {token: localStorage.auth_token})
+    if (to.meta.requiresAuth && isAuthenticated && !store.state.auth.token)
+        store.commit("auth/setToken", {token: localStorage.auth_token})
 
     if ((to.name === "login" || to.name === "home") && isAuthenticated)
         return {name: 'explore'}

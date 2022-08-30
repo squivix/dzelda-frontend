@@ -51,7 +51,7 @@
             this.supportedLanguages = supportedLanguages.map((lang) => {
                 return {
                     ...lang,
-                    isLearning: this.$store.getters.userLanguages.findIndex(l => l.code === lang.code) !== -1
+                    isLearning: this.$store.getters["content/userLanguages"].findIndex(l => l.code === lang.code) !== -1
                 }
             });
         }

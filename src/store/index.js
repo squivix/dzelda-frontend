@@ -1,7 +1,7 @@
 import {createStore} from "vuex";
-import authModule from './auth/index.js'
-import contentModule from './content/index.js'
-import readerModule from './reader/index.js';
+import auth from './auth/index.js'
+import content from './content/index.js'
+import reader from './reader/index.js';
 
 const store = createStore({
     strict: true,
@@ -9,9 +9,9 @@ const store = createStore({
         baseUrl: `http://localhost:8000`,
     },
     modules: {
-        auth: authModule,
-        content: contentModule,
-        reader: readerModule,
+        auth,
+        content,
+        reader
     },
     getters: {
         baseUrl(state) {

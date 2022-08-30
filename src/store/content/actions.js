@@ -10,6 +10,7 @@ export default {
         }, {root: true});
     },
     async getOrFetchUserProfile(context) {
+        //TODO no user profile getter
         return context.getters.userProfile ?? await context.dispatch("fetchUserProfile");
     },
     async fetchAllLanguages(context) {

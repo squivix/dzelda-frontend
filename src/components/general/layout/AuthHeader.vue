@@ -127,9 +127,9 @@
                     return null;
             },
             currentLanguage() {
-                return this.$store.getters.currentLanguage;
+                return this.$store.getters["content/currentLanguage"];
             }, userLanguages() {
-                return this.$store.getters.userLanguages;
+                return this.$store.getters["content/userLanguages"];
             },
             otherLanguages() {
                 return this.userLanguages.filter(lang => lang.code !== this.currentLanguage.code)

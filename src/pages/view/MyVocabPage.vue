@@ -95,7 +95,7 @@
             async fetchVocabsPage() {
                 this.clearSelectedVocab();
                 this.loadingVocabs = true;
-                const response = await this.$store.dispatch("content/fetchUserVocabsPage", {
+                const response = await this.$store.dispatch("reader/fetchUserVocabsPage", {
                     language: this.$route.params.learningLanguage,
                     searchQuery: this.$route.query.searchQuery,
                     levels: [...this.filters.levels],
