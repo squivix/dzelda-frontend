@@ -23,11 +23,23 @@ const store = createStore({
     },
     actions: {
         async fetchCustom(context, payload) {
-            let response;
-            if (payload.protected)
-                response = await context.dispatch("auth/fetchProtected", {url: payload.url, options: payload.options});
-            else
-                response = await fetch(payload.url, payload.options);
+            let options = {
+                method: payload.options?.method ?? "GET",
+                headers: payload.options?.headers ?? {
+                    'Content-Type': 'application/json'
+                },
+                ...payload.options
+            };
+
+            const response = await fetch(payload.url, {
+                method: options.method,
+                headers: {
+                    ...options.headers,
+                    Authorization: payload.protected ? `Token ${context.getters["auth/userToken"]}` : undefined,
+                },
+                body: options.body
+            });
+
             if (response.ok && response.status !== 204)
                 return await response.json();
             else if (response.status >= 400 && response.status < 500) {

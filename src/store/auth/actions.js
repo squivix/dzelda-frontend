@@ -1,93 +1,68 @@
-import router from '../../router.js'
+import router from '@/router.js'
 
 
 export default {
     async signUp(context, payload) {
-        const response = await fetch(`${context.rootGetters.apiUrl}/auth/users/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
+        return await context.dispatch('fetchCustom', {
+            url: `${context.rootGetters.apiUrl}/auth/users/`,
+            options: {
+                method: "POST",
+                body: JSON.stringify({
+                    email: payload.email,
+                    username: payload.username,
+                    password: payload.password,
+                    initialLanguage: payload.initialLanguage
+                })
             },
-            body: JSON.stringify(payload)
-        });
-
-        if (response.ok) {
-            const responseData = await response.json();
-            console.log(responseData)
-        } else {
-            const responseData = await response.text();
-            console.log(`vuexstore:auth/signUp:Response code ${response.status}: ${responseData}`)
-            throw new Error(responseData)
-        }
+            protected: false,
+            caller: "signUp",
+            module: "auth",
+        }, {root: true});
     },
     async login(context, payload) {
-        const response = await fetch(`${context.rootGetters.apiUrl}/auth/token/login/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
+        const responseData = await context.dispatch('fetchCustom', {
+            url: `${context.rootGetters.apiUrl}/auth/token/login/`,
+            options: {
+                method: "POST",
+                body: JSON.stringify({
+                    email: payload.email,
+                    username: payload.username,
+                    password: payload.password,
+                })
             },
-            body: JSON.stringify(payload)
-        });
-        if (response.ok) {
-            const responseData = await response.json();
-            await context.dispatch("saveToken", {token: responseData.auth_token});
-        } else {
-            const responseData = await response.text();
-            console.log(`vuexstore:auth/login:Response code ${response.status}: ${responseData}`)
-            throw new Error(responseData)
-        }
-    },
+            protected: false,
+            caller: "login",
+            module: "auth",
+        }, {root: true});
 
-
-    async signOut(context) {
-        //TODO clear local vuex data (like languages learning, profile etc)
-        const response = await context.dispatch('fetchProtected', {
-            url: `${context.rootGetters.apiUrl}/auth/token/logout/`,
-            options: {method: "POST"}
-        });
-        if (response.ok) {
-            await context.dispatch("deleteToken");
-        } else {
-            const responseData = await response.text();
-            console.log(`vuexstore:auth/signOut:Response code ${response.status}: ${responseData}`)
-            throw new Error(responseData);
-        }
+        await context.dispatch("saveToken", {token: responseData.auth_token});
     },
 
     saveToken(context, payload) {
         if (!payload.token)
             return;
-        localStorage.auth_token = payload.token;
-        context.commit("setToken", {token: payload.auth_token});
+        localStorage.authToken = payload.token;
+        context.commit("setToken", {token: payload.token});
     },
 
-
-    async fetchProtected(context, payload) {
-        let options = {
-            method: payload.options?.method ?? "GET",
-            headers: payload.options?.headers ?? {
-                'Content-Type': 'application/json'
+    async signOut(context) {
+        await context.dispatch('fetchCustom', {
+            url: `${context.rootGetters.apiUrl}/auth/token/logout/`,
+            options: {
+                method: "POST",
             },
-            ...payload.options
-        };
+            protected: true,
+            caller: "signOut",
+            module: "auth",
+        }, {root: true});
 
-        const response = await fetch(payload.url, {
-            method: options.method,
-            headers: {
-                ...options.headers,
-                Authorization: `Token ${context.getters.userToken}`,
-            },
-            body: options.body
-        });
-        if (response.status === 401) {
-            await context.dispatch("deleteToken");
-            await router.push({name: 'login'});
-        } else
-            return response;
+        await context.dispatch("deleteToken");
+        //TODO clear local vuex data (like languages learning, profile etc)
     },
+
 
     async deleteToken(context) {
-        delete localStorage.auth_token;
+        delete localStorage.authToken;
         await context.commit("setToken", {token: null});
     }
 

@@ -46,7 +46,7 @@
 
         methods: {
             submitForm() {
-                this.$store.dispatch('signUp', {
+                this.$store.dispatch('auth/signUp', {
                     email: this.email,
                     username: this.username,
                     password: this.password,

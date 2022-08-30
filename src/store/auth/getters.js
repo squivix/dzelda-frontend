@@ -1,6 +1,6 @@
 export default {
     userToken(state) {
-        return state.token ?? localStorage.auth_token;
+        return state.token ?? localStorage.authToken;
     },
     isAuthenticated(state, getters) {
         return !!getters.userToken;

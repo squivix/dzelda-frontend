@@ -161,7 +161,7 @@ router.beforeResolve(async (to, from) => {
     if (to.meta.requiresAuth && !isAuthenticated)
         return {name: 'login'}
     if (to.meta.requiresAuth && isAuthenticated && !store.state.auth.token)
-        store.commit("auth/setToken", {token: localStorage.auth_token})
+        store.commit("auth/setToken", {token: localStorage.authToken})
 
     if ((to.name === "login" || to.name === "home") && isAuthenticated)
         return {name: 'explore'}
