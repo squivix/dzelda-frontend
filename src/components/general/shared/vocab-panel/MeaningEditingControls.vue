@@ -16,6 +16,8 @@
 </template>
 
 <script>
+    import {useMeaningStore} from "@/stores/meaning";
+
     export default {
         name: "MeaningEditingControls",
         components: {},
@@ -32,8 +34,7 @@
         },
         methods: {
             async deleteMeaning(meaning) {
-                await this.$store.dispatch("reader/deleteUserMeaning", {
-                    vocabId: this.vocabId,
+                await this.meaningStore.deleteUserMeaning({
                     meaningId: meaning.id
                 });
                 this.$emit('onMeaningDeleted', meaning);
@@ -44,19 +45,21 @@
                     await this.deleteMeaning(meaning)
                 else if (editedMeaning === meaning.text)
                     return;
-                this.$store.dispatch("reader/deleteUserMeaning", {
+                this.meaningStore.deleteUserMeaning({
                     vocabId: this.vocabId,
                     meaningId: meaning.id
                 }).then(() => {
-                    this.$store.dispatch("reader/addNewMeaning", {
+                    this.meaningStore.addNewMeaning({
                         vocabId: this.vocabId,
                         meaningLanguage: "en",
                         meaningText: editedMeaning,
                     });
                 });
             },
+        },
+        created() {
+            this.meaningStore = useMeaningStore();
         }
-
     }
 </script>
 

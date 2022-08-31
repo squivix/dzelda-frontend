@@ -32,6 +32,9 @@
     </base-card>
 </template>
 <script>
+    import {useAuthStore} from "@/stores/auth";
+    import {useLanguageStore} from "@/stores/language";
+
     export default {
         name: "UserSignUp",
         data() {
@@ -46,7 +49,7 @@
 
         methods: {
             submitForm() {
-                this.$store.dispatch('auth/signUp', {
+                this.authStore.signUp({
                     email: this.email,
                     username: this.username,
                     password: this.password,
@@ -55,12 +58,16 @@
             },
 
             async fetchLanguages() {
-                this.allLanguages = await this.$store.dispatch("content/fetchAllLanguages");
+                this.allLanguages = await this.languageStore.fetchLanguages();
             },
         },
         mounted() {
             this.fetchLanguages();
         },
+        created() {
+            this.authStore = useAuthStore();
+            this.languageStore = useLanguageStore();
+        }
     };
 </script>
 <style scoped>

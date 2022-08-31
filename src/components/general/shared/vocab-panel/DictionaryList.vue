@@ -6,6 +6,8 @@
 </template>
 
 <script>
+    import {useDictionaryStore} from "@/stores/dictionary";
+
     export default {
         name: "DictionaryList",
         components: {},
@@ -31,10 +33,10 @@
         }
         ,
         async mounted() {
-            this.dictionaries = await this.$store.dispatch("reader/fetchDictionaries",
-                {
-                    language: this.$route.params.learningLanguage
-                });
+            this.dictionaries = await this.dictionaryStore.fetchDictionaries(this.$route.params.learningLanguage);
+        },
+        created() {
+            this.dictionaryStore = useDictionaryStore();
         }
     }
 </script>

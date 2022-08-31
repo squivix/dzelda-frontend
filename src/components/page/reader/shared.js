@@ -1,6 +1,9 @@
+import {useVocabStore} from "@/stores/vocab";
+
 export async function postUserVocab(vocabId) {
-    return await this.$store.dispatch("reader/postUserVocab", {
-        vocabId:vocabId,
+    const vocabStore = useVocabStore();
+    return await vocabStore.postUserVocab({
+        vocabId: vocabId,
     });
 }
 

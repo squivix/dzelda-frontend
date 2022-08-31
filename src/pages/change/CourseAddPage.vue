@@ -24,6 +24,7 @@
 
 <script>
     import BaseCard from "@/components/general/ui/BaseCard";
+    import {useCourseStore} from "@/stores/course";
 
     export default {
         name: "CourseAddPage",
@@ -49,13 +50,16 @@
             },
 
             async addCourse() {
-                return await this.$store.dispatch("content/postCourse", {
+                return await this.courseStore.postCourse({
                     languageCode: this.$route.params.learningLanguage,
                     title: this.title,
                     description: this.description,
                     isPublic: this.isPublic,
                 })
             }
+        },
+        created() {
+            this.courseStore = useCourseStore();
         }
     }
 </script>

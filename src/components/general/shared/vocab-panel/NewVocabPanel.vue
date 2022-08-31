@@ -28,6 +28,7 @@
     import MeaningAddingControls from "@/components/general/shared/vocab-panel/MeaningAddingControls";
     import DictionariesList from "@/components/general/shared/vocab-panel/DictionaryList";
     import {postUserVocab} from "@/components/page/reader/shared";
+    import {useVocabStore} from "@/stores/vocab";
 
     export default {
         name: "NewVocabPanel",
@@ -61,7 +62,7 @@
         methods: {
             async markWordAsKnown() {
                 await this.postUserVocab(this.vocab.id);
-                this.$store.dispatch("reader/updateVocabLevel", {
+                await this.vocabStore.updateVocabLevel({
                     vocabId: this.vocab.id,
                     level: ALL_VOCAB_LEVELS.KNOWN
                 })
@@ -69,7 +70,7 @@
             },
             async markWordAsIgnored() {
                 await this.postUserVocab(this.vocab.id);
-                this.$store.dispatch("reader/updateVocabLevel", {
+                await this.vocabStore.updateVocabLevel({
                     vocabId: this.vocab.id,
                     level: ALL_VOCAB_LEVELS.IGNORED
                 })
@@ -79,6 +80,9 @@
                 this.$emit('onMeaningAdded', vocab, meaning);
             },
             postUserVocab
+        },
+        created() {
+            this.vocabStore = useVocabStore();
         }
     }
 </script>

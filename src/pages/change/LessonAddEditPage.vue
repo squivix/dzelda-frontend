@@ -31,6 +31,8 @@
 
 <script>
     import BaseCard from "@/components/general/ui/BaseCard";
+    import {useCourseStore} from "@/stores/course";
+    import {useLessonStore} from "@/stores/lesson";
 
     export default {
         name: "LessonAddEditPage",
@@ -60,7 +62,7 @@
         },
         methods: {
             async fetchEditableCourses() {
-                this.editableCourses = await this.$store.dispatch("content/fetchEditableCourses");
+                this.editableCourses = await this.courseStore.fetchEditableCourses();
             },
             async onSubmit(event) {
                 if (this.lesson == null)
@@ -81,16 +83,16 @@
                 }
             },
             async addLesson() {
-                this.lesson = await this.$store.dispatch("content/postUserLesson", {
+                this.lesson = await this.lessonStore.postLesson({
                     courseId: this.selectedCourse,
                     title: this.title,
                     text: this.text,
                 });
-                await this.$store.dispatch("content/postUserLesson", {lessonId: this.lesson.id})
+                await this.lessonStore.postUserLesson({lessonId: this.lesson.id})
             },
 
             async editLesson() {
-                this.$store.dispatch("content/editLesson", {
+                await this.lessonStore.editLesson({
                     lessonId: this.$route.params.lessonId,
                     courseId: this.selectedCourse,
                     title: this.title,
@@ -101,7 +103,7 @@
         async mounted() {
             await this.fetchEditableCourses();
             if (this.$route.name === "edit-lesson") {
-                this.lesson = await this.$store.dispatch("content/fetchLesson", {
+                this.lesson = await this.lessonStore.fetchLesson({
                     lessonId: this.$route.params.lessonId,
                     languageCode: this.$route.params.learningLanguage
                 });
@@ -109,6 +111,10 @@
                 this.title = this.lesson.title;
                 this.text = this.lesson.text;
             }
+        },
+        created() {
+            this.courseStore = useCourseStore();
+            this.lessonStore = useLessonStore();
         }
     }
 

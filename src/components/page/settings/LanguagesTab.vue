@@ -37,6 +37,8 @@
 </template>
 
 <script>
+    import {useLanguageStore} from "@/stores/language";
+
     export default {
         name: "LanguagesTab",
         data() {
@@ -56,16 +58,16 @@
         },
         methods: {
             async fetchAllLanguages() {
-                return await this.$store.dispatch("content/fetchAllLanguages");
+                return await this.languageStore.fetchLanguages();
             },
             async fetchUserLanguages() {
-                return await this.$store.dispatch("content/getOrFetchUserLanguages");
+                return await this.languageStore.getOrFetchUserLanguages();
             },
             async removeLanguage(language) {
                 //TODO move to modal dialogue
                 if (confirm("Are you sure you want to delete this language?")) {
-                    await this.$store.dispatch("content/deleteLanguage", {
-                        language: language.code,
+                    await this.languageStore.deleteLanguage({
+                        languageCode: language.code,
                     });
                     this.userLanguages = await this.fetchUserLanguages();
                 }
@@ -76,6 +78,9 @@
         async mounted() {
             this.allLanguages = await this.fetchAllLanguages();
             this.userLanguages = await this.fetchUserLanguages()
+        },
+        created() {
+            this.languageStore = useLanguageStore();
         }
     }
 </script>

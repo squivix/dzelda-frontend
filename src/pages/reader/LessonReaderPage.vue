@@ -36,6 +36,8 @@
     import {escapeRegExp} from "@/utils";
     import {getTextElements} from "@/components/page/reader/shared";
     import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel";
+    import {useLessonStore} from "@/stores/lesson";
+    import {useVocabStore} from "@/stores/vocab";
 
     export default {
         name: "LessonReaderPage",
@@ -54,7 +56,7 @@
                 lessonElements: null,
             };
         },
-        async created() {
+        async mounted() {
             await this.fetchLesson();
             await this.fetchWordsLevels();
             this.parseLesson();
@@ -70,17 +72,14 @@
         methods: {
             async fetchLesson() {
                 this.loadingLesson = true;
-                this.lesson = await this.$store.dispatch("content/fetchLesson", {
-                    lessonId: this.$route.params.lessonId,
-                    languageCode: this.$route.params.learningLanguage
-                });
+                this.lesson = await this.lessonStore.fetchLesson({lessonId: this.$route.params.lessonId});
                 this.lesson.text = this.lesson.text.replace(/[\r\n]{3,}/g, '\n\n');
                 this.loadingLesson = false;
             },
             async fetchWordsLevels() {
                 this.loadingWords = true;
-                this.words = await this.$store.dispatch("reader/fetchLessonWords", {lessonId: this.$route.params.lessonId});
-                this.phrases = await this.$store.dispatch("reader/fetchLessonPhrases", {lessonId: this.$route.params.lessonId});
+                this.words = await this.vocabStore.fetchLessonWords({lessonId: this.$route.params.lessonId});
+                this.phrases = await this.vocabStore.fetchLessonPhrases({lessonId: this.$route.params.lessonId});
                 this.loadingWords = false;
             },
             setSelectedVocab(vocabText) {
@@ -179,10 +178,12 @@
             lessonParagraphs(text) {
                 return text.split(/\s\s+/g);
             },
+        },
+        created() {
+            this.lessonStore = useLessonStore();
+            this.vocabStore = useVocabStore();
         }
-        ,
-    }
-    ;
+    };
 </script>
 <style>
     body {

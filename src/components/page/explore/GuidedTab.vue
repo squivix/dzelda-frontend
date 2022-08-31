@@ -8,6 +8,7 @@
 
 <script>
     import CourseCard from "@/components/page/content/CourseCard";
+    import {useCourseStore} from "@/stores/course";
 
     export default {
         name: "GuidedTab",
@@ -19,13 +20,16 @@
         },
         methods: {
             async fetchGuidedCourses() {
-                return await this.$store.dispatch("content/fetchGuidedCourses", {
-                    language: this.$route.params.learningLanguage,
+                return await this.courseStore.fetchGuidedCourses({
+                    languageCode: this.$route.params.learningLanguage,
                 })
             }
         },
         async mounted() {
             this.guidedCourses = await this.fetchGuidedCourses();
+        },
+        created() {
+            this.courseStore = useCourseStore();
         }
     }
 </script>

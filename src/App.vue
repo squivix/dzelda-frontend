@@ -18,11 +18,12 @@
     import GuestHeader from './components/general/layout/GuestHeader.vue';
     import TheFooter from './components/general/layout/TheFooter.vue';
     import AuthHeader from './components/general/layout/AuthHeader.vue';
+    import {useAuthStore} from "@/stores/auth";
 
     export default {
         computed: {
             isAuthenticated() {
-                return this.$store.getters["auth/isAuthenticated"];
+                return this.authStore.isAuthenticated;
             },
         },
         components: {
@@ -30,6 +31,9 @@
             AuthHeader,
             TheFooter,
         },
+        created() {
+            this.authStore = useAuthStore()
+        }
     };
 </script>
 <style>

@@ -3,10 +3,13 @@
 </template>
 
 <script>
+    import {useAuthStore} from "@/stores/auth";
+
     export default {
         name: "UserSignOut",
         async created() {
-            await this.$store.dispatch('auth/signOut');
+            const authStore = useAuthStore();
+            await authStore.signOut();
             await this.$router.push({name: 'home'});
         },
     };

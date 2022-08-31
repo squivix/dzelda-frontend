@@ -25,6 +25,7 @@
 
 <script>
     import {ALL_VOCAB_LEVELS} from "@/constants";
+    import {useVocabStore} from "@/stores/vocab";
 
     export default {
         name: "VocabLevelPicker",
@@ -47,14 +48,16 @@
         },
         methods: {
             async setVocabLevel(level) {
-                await this.$store.dispatch("reader/updateVocabLevel", {
+                await this.vocabStore.updateVocabLevel({
                     vocabId: this.vocabId,
-                    language: this.$route.params.learningLanguage,
                     level: level
                 });
                 this.$emit('onVocabLevelSet', level);
             },
         },
+        created() {
+            this.vocabStore = useVocabStore();
+        }
     }
 </script>
 

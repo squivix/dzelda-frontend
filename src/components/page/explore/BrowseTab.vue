@@ -8,6 +8,7 @@
 
 <script>
     import LessonListItem from "@/components/page/content/LessonListItem";
+    import {useLessonStore} from "@/stores/lesson";
 
     export default {
         name: "BrowseTab",
@@ -17,13 +18,14 @@
         },
         methods: {
             async fetchRecommendedLessons() {
-                return (await this.$store.dispatch("content/fetchRecommendedLessons", {
-                    language: this.$route.params.learningLanguage,
-                }))["results"];
+                return (await this.lessonStore.fetchRecommendedLessons({languageCode: this.$route.params.learningLanguage}))["results"];
             }
         },
         async mounted() {
             this.recommendedLessons = await this.fetchRecommendedLessons();
+        },
+        async created() {
+            this.lessonStore = useLessonStore();
         }
     }
 </script>

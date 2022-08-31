@@ -14,13 +14,16 @@ import LessonAddEditPage from './pages/change/LessonAddEditPage.vue'
 import CourseAddPage from './pages/change/CourseAddPage.vue'
 import CourseEditPage from './pages/change/CourseEditPage.vue'
 
-import store from './store/index.js'
 import MyProfilePage from "@/pages/user/MyProfilePage";
 import SettingsPage from "@/pages/user/SettingsPage";
 import AccountTab from "@/components/page/settings/AccountTab";
 import LanguagesTab from "@/components/page/settings/LanguagesTab";
 import NotificationsTab from "@/components/page/settings/NotificationsTab";
 import NewLanguagePage from "@/pages/user/NewLanguagePage";
+import {useStore} from "@/stores";
+import {useAuthStore} from "@/stores/auth";
+import {useProfileStore} from "@/stores/profile";
+import {useLanguageStore} from "@/stores/language";
 
 const router = createRouter({
     routes: [
@@ -156,23 +159,26 @@ const router = createRouter({
 
 
 router.beforeResolve(async (to, from) => {
-    const isAuthenticated = store.getters["auth/isAuthenticated"];
+
+    const authStore = useAuthStore();
+    const languageStore = useLanguageStore();
+    const isAuthenticated = authStore.isAuthenticated;
     //prevent visiting sites that require authentication while unauthenticated
     if (to.meta.requiresAuth && !isAuthenticated)
         return {name: 'login'}
-    if (to.meta.requiresAuth && isAuthenticated && !store.state.auth.token)
-        store.commit("auth/setToken", {token: localStorage.authToken})
+    if (to.meta.requiresAuth && isAuthenticated && !authStore.token)
+        authStore.token = localStorage.authToken;
 
     if ((to.name === "login" || to.name === "home") && isAuthenticated)
         return {name: 'explore'}
     if (isAuthenticated) {
-        const defaultLanguage = await store.dispatch("content/getOrFetchDefaultUserLanguage");
+        const defaultLanguage = await languageStore.getOrFetchDefaultUserLanguage();
         if (to.meta.redirToLanguageSpecific)
             return {path: `/learn/${defaultLanguage.code}${to.path}`};
     }
 
     if (to.params.learningLanguage && from.params.learningLanguage !== to.params.learningLanguage)
-        await store.dispatch("content/updateLanguageLastOpened", {language: to.params.learningLanguage});
+        await languageStore.updateLanguageLastOpened({languageCode: to.params.learningLanguage});
 
 })
 

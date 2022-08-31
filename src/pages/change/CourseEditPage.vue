@@ -57,6 +57,7 @@
 <script>
     import BaseCard from "@/components/general/ui/BaseCard";
     import {VueDraggableNext} from 'vue-draggable-next'
+    import {useCourseStore} from "@/stores/course";
 
     export default {
         name: "CourseEditPage",
@@ -76,15 +77,15 @@
         methods: {
             onSubmit() {
                 this.editCourse();
-                this.$router.push({ name:'course', ...this.$route.params})
+                this.$router.push({name: 'course', ...this.$route.params})
             },
             async editCourse() {
-                await this.$store.dispatch("content/updateCourse", {
+                await this.courseStore.updateCourse({
                     id: this.$route.params.courseId,
                     title: this.title,
                     description: this.description,
                     isPublic: this.isPublic,
-                    lessons: this.lessons.map(lesson => lesson.id)
+                    lessonIds: this.lessons.map(lesson => lesson.id)
                 })
             },
 
@@ -95,13 +96,12 @@
                     this.selectedLessons = [];
             },
             async fetchCourse() {
-                return await this.$store.dispatch("content/fetchCourse", {
+                return await this.courseStore.fetchCourse({
                     courseId: this.$route.params.courseId,
-                    languageCode: this.$route.params.learningLanguage,
                 });
             },
             async fetchCourseLessons() {
-                return await this.$store.dispatch("content/fetchCourseLessons", {
+                return await this.courseStore.fetchCourseLessons({
                     courseId: this.$route.params.courseId,
                 });
             }
@@ -113,6 +113,9 @@
             this.description = course.description;
             this.isPublic = course.isPublic;
             this.lessons = await this.fetchCourseLessons();
+        },
+        created() {
+            this.courseStore = useCourseStore();
         }
     }
 </script>

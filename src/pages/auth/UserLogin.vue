@@ -34,6 +34,7 @@
 <script>
     import * as utils from '../../utils.js';
     import BasePasswordInput from "@/components/general/ui/BasePasswordInput";
+    import {useAuthStore} from "@/stores/auth";
 
     export default {
         name: "UserLogin",
@@ -65,7 +66,7 @@
             async submitForm() {
                 this.error = null;
                 try {
-                    await this.$store.dispatch('auth/login', {
+                    await this.authStore.login({
                         email: this.email,
                         username: this.username,
                         password: this.password,
@@ -78,6 +79,9 @@
                 await this.$router.push({name: 'explore'});
             },
         },
+        created() {
+            this.authStore = useAuthStore();
+        }
     };
 </script>
 <style scoped>

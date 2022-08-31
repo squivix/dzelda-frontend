@@ -51,6 +51,8 @@
     import {paginationControlsHost} from "@/components/general/ui/PaginationControls";
     import {mergeDeep} from "@/utils";
     import LibrarySearchFilter from "@/components/page/reader/LibrarySearchFilter";
+    import {useLessonStore} from "@/stores/lesson";
+    import {useCourseStore} from "@/stores/course";
 
     let MyLibraryPage = {
         name: "MyLibraryPage",
@@ -94,9 +96,9 @@
                 this.loading = false;
             },
             async fetchLessons() {
-                const response = await this.$store.dispatch("content/fetchUserLessonsPage",
+                const response = await this.lessonStore.fetchUserLessonsPage(
                     {
-                        language: this.$route.params.learningLanguage,
+                        languageCode: this.$route.params.learningLanguage,
                         page: this.currentPage,
                         maxPerPage: this.maxPerPage
                     });
@@ -104,14 +106,18 @@
                 this.pageCount = Math.ceil(response.count / this.maxPerPage);
             },
             async fetchSavedCourses() {
-                const response = await this.$store.dispatch("content/fetchSavedCourses", {
-                    language: this.$route.params.learningLanguage,
+                const response = await this.courseStore.fetchUserCourses({
+                    languageCode: this.$route.params.learningLanguage,
                     page: this.currentPage,
                     maxPerPage: this.maxPerPage
                 });
                 this.courses = response.results;
                 this.pageCount = Math.ceil(response.count / this.maxPerPage);
             }
+        },
+        created() {
+            this.courseStore = useCourseStore();
+            this.lessonStore = useLessonStore();
         }
     }
     MyLibraryPage = mergeDeep(MyLibraryPage, paginationControlsHost)

@@ -22,6 +22,8 @@
 
 <script>
     import {postUserVocab} from "@/components/page/reader/shared";
+    import {useMeaningStore} from "@/stores/meaning";
+    import {useVocabStore} from "@/stores/vocab";
 
     export default {
         name: "MeaningAddingControls",
@@ -53,10 +55,8 @@
         },
         methods: {
             addSuggestedMeaning(meaning) {
-                this.postUserVocab(this.vocabId).then(newVocab => {
-                    this.$store.dispatch("reader/saveMeaningToUser", {
-                        meaningId: meaning.id
-                    });
+                this.postUserVocab(this.vocabId).then(async newVocab => {
+                    await this.meaningStore.saveMeaningToUser({meaningId: meaning.id});
                     this.$emit('onMeaningAdded', newVocab, meaning);
                 });
             },
@@ -65,21 +65,21 @@
                     return;
                 let vocabId = this.vocabId;
                 if (this.isPhrase && !this.vocabId) {
-                    vocabId = (await this.$store.dispatch("reader/postNewVocab", {
+                    vocabId = (await this.vocabStore.postNewVocab({
                         text: this.vocabText,
-                        language: this.$route.params.learningLanguage,
+                        languageCode: this.$route.params.learningLanguage,
                         isPhrase: true,
                     })).id;
                 }
 
                 this.postUserVocab(vocabId).then(async (newVocab) => {
-                    this.$store.dispatch("reader/addNewMeaning", {
+                    this.meaningStore.addNewMeaning({
                         text: this.newMeaning,
                         vocabId: newVocab.id,
-                        //TODO: no meaning language hard-coding
-                        language: "en",
+                        //TODO: no language hard-coding
+                        languageCode: "en",
                     }).then(async newMeaning => {
-                        await this.$store.dispatch("reader/saveMeaningToUser", {
+                        await this.meaningStore.saveMeaningToUser({
                             meaningId: newMeaning.id
                         });
                         this.$emit('onMeaningAdded', newVocab, newMeaning);
@@ -88,6 +88,10 @@
                 });
             },
             postUserVocab
+        },
+        created() {
+            this.vocabStore = useVocabStore();
+            this.meaningStore = useMeaningStore();
         }
     }
 </script>

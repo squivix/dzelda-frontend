@@ -26,6 +26,7 @@
 
 <script>
     import BaseCard from "@/components/general/ui/BaseCard";
+    import {useStore} from "@/stores";
 
     export default {
         name: "LessonListItem",
@@ -44,14 +45,14 @@
         computed: {
             imageUrl() {
                 if (this.lesson.image !== null)
-                    return `${this.$store.getters.baseUrl}${this.lesson.image}`;
+                    return `${this.store.baseUrl}${this.lesson.image}`;
                 else if (this.lesson.course.image !== null)
-                    return `${this.$store.getters.baseUrl}${this.lesson.course.image}`;
+                    return `${this.store.baseUrl}${this.lesson.course.image}`;
                 else
                     return this.defaultImageUrl;
             },
             defaultImageUrl() {
-                return `${this.$store.getters.baseUrl}/media/blank-image.png`;
+                return `${this.store.baseUrl}/media/blank-image.png`;
             }
         },
         methods: {
@@ -59,6 +60,9 @@
                 if (event.target.src !== this.defaultImageUrl)
                     event.target.src = this.defaultImageUrl;
             }
+        },
+        created() {
+            this.store = useStore();
         }
     }
 </script>

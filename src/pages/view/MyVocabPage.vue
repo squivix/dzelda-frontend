@@ -54,6 +54,7 @@
     import VocabSearchFilter from "@/components/page/my-vocabs/VocabSearchFilter";
     import {updateQueryParams} from "@/components/page/reader/shared";
     import {mergeDeep} from "@/utils";
+    import {useVocabStore} from "@/stores/vocab";
 
     let MyVocabPage = {
         name: "MyVocabPage",
@@ -95,7 +96,7 @@
             async fetchVocabsPage() {
                 this.clearSelectedVocab();
                 this.loadingVocabs = true;
-                const response = await this.$store.dispatch("reader/fetchUserVocabsPage", {
+                const response = await this.vocabStore.fetchUserVocabsPage({
                     language: this.$route.params.learningLanguage,
                     searchQuery: this.$route.query.searchQuery,
                     levels: [...this.filters.levels],
@@ -133,6 +134,9 @@
                 if (index !== -1)
                     vocab.userMeanings.splice(index, 1);
             }
+        },
+        created() {
+            this.vocabStore = useVocabStore();
         }
     }
     MyVocabPage = mergeDeep(MyVocabPage, paginationControlsHost)

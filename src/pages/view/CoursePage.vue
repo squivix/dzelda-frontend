@@ -14,6 +14,7 @@
 <script>
     import BaseCard from "@/components/general/ui/BaseCard";
     import LessonListItem from "@/components/page/content/LessonListItem";
+    import {useCourseStore} from "@/stores/course";
 
     export default {
         name: "CoursePage",
@@ -33,16 +34,14 @@
         },
         methods: {
             async fetchCourse() {
-                this.course = await this.$store.dispatch("content/fetchCourse", {
-                    courseId: this.$route.params.courseId,
-                    languageCode: this.$route.params.learningLanguage,
-                });
+                this.course = await this.courseStore.fetchCourse({courseId: this.$route.params.courseId});
             },
             async fetchCourseLessons() {
-                this.lessons = await this.$store.dispatch("content/fetchCourseLessons", {
-                    courseId: this.$route.params.courseId,
-                });
+                this.lessons = await this.courseStore.fetchCourseLessons({courseId: this.$route.params.courseId});
             }
+        },
+        created() {
+            this.courseStore = useCourseStore();
         }
     }
 </script>

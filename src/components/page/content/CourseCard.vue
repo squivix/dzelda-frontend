@@ -19,6 +19,8 @@
 </template>
 
 <script>
+    import {useStore} from "@/stores";
+
     export default {
         name: "CourseCard",
         props: {
@@ -35,7 +37,7 @@
                     return this.defaultImageUrl;
             },
             defaultImageUrl() {
-                return `${this.$store.getters.baseUrl}/media/blank-image.png`;
+                return `${this.store.baseUrl}/media/blank-image.png`;
             }
         },
         methods: {
@@ -43,6 +45,9 @@
                 if (event.target.src !== this.defaultImageUrl)
                     event.target.src = this.defaultImageUrl;
             }
+        },
+        created() {
+            const store = useStore();
         }
     }
 </script>

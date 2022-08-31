@@ -110,6 +110,9 @@
 <script>
     import BaseDropDown from "@/components/general/ui/BaseDropDown";
     import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+    import {useStore} from "@/stores";
+    import {useLanguageStore} from "@/stores/language";
+    import {useProfileStore} from "@/stores/profile";
 
     export default {
         name: "AuthHeader",
@@ -122,14 +125,14 @@
         computed: {
             profilePicture() {
                 if (this.userProfile.profilePicture !== null)
-                    return `${this.$store.getters.baseUrl}${this.userProfile.profilePicture}`;
+                    return `${this.store.baseUrl}${this.userProfile.profilePicture}`;
                 else
                     return null;
             },
             currentLanguage() {
-                return this.$store.getters["content/currentLanguage"];
+                return this.languageStore.currentLanguage;
             }, userLanguages() {
-                return this.$store.getters["content/userLanguages"];
+                return this.languageStore.userLanguages;
             },
             otherLanguages() {
                 return this.userLanguages.filter(lang => lang.code !== this.currentLanguage.code)
@@ -137,11 +140,16 @@
         },
         methods: {
             async fetchUserProfile() {
-                return await this.$store.dispatch("content/getOrFetchUserProfile");
+                return await this.profileStore.fetchUserProfile();
             }
         },
         async mounted() {
             this.userProfile = await this.fetchUserProfile();
+        },
+        async created() {
+            this.store = useStore();
+            this.languageStore = useLanguageStore();
+            this.profileStore = useProfileStore();
         }
     }
 </script>

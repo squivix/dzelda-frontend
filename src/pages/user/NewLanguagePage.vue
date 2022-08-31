@@ -23,6 +23,8 @@
 <script>
     import BaseCard from "@/components/general/ui/BaseCard";
     import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+    import {useLessonStore} from "@/stores/lesson";
+    import {useLanguageStore} from "@/stores/language";
 
     export default {
         name: "NewLanguagePage",
@@ -34,14 +36,14 @@
         },
         methods: {
             async fetchSupportedLanguages() {
-                return await this.$store.dispatch("content/fetchAllLanguages");
+                return await this.languageStore.fetchLanguages({supported: true});
             },
             async addNewLanguage(language) {
                 //TODO move to custom dialog
                 if (language.isLearning)
                     alert(`You are already learning ${language.name}`);
                 else if (confirm(`Start learning ${language.name}?`)) {
-                    await this.$store.dispatch("content/addLanguage", {language: language.code});
+                    await this.languageStore.addLanguage({languageCode: language.code});
                     await this.$router.push({name: 'explore', params: {learningLanguage: language.code}})
                 }
             }
@@ -51,11 +53,13 @@
             this.supportedLanguages = supportedLanguages.map((lang) => {
                 return {
                     ...lang,
-                    isLearning: this.$store.getters["content/userLanguages"].findIndex(l => l.code === lang.code) !== -1
+                    isLearning: this.languageStore.userLanguages.findIndex(l => l.code === lang.code) !== -1
                 }
             });
+        },
+        created() {
+            this.languageStore = useLanguageStore();
         }
-
     }
 </script>
 
