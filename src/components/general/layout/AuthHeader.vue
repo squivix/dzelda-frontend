@@ -2,7 +2,7 @@
     <header>
         <div class="title-nav-div">
             <router-link :to="{ name: 'home'}" style="text-decoration: none; color: inherit">
-                <h1 class="unselectable">FLA</h1>
+                <h1 class="unselectable">Dzelda</h1>
             </router-link>
             <nav>
                 <ul>
@@ -108,7 +108,7 @@
     </header>
 </template>
 <script>
-    import BaseDropDown from "@/components/general/ui/BaseDropDown";
+    import BaseDropDown from "@/components/general/ui/BaseDropDown.vue";
     import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
     import {useStore} from "@/stores";
     import {useLanguageStore} from "@/stores/language";

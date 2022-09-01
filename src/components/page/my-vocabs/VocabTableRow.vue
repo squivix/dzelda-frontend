@@ -24,7 +24,7 @@
 </template>
 
 <script>
-    import VocabLevelPicker from "@/components/general/shared/vocab-panel/VocabLevelPicker";
+    import VocabLevelPicker from "@/components/general/shared/vocab-panel/VocabLevelPicker.vue";
 
     export default {
         name: "VocabTableRow",

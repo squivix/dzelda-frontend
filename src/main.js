@@ -1,14 +1,13 @@
 import {createApp} from 'vue'
-import App from './App.vue'
-import router from './router';
-import store from './stores/index.js'
+import App from '@/App.vue'
+import router from '@/router.js';
 
 import BaseCard from '@/components/general/ui/BaseCard.vue'
 import BasePasswordInput from '@/components/general/ui/BasePasswordInput.vue'
 
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
-import './fa-lib.js';
+import '@/fa-lib.js';
 import {createPinia} from "pinia";
 
 const app = createApp(App)

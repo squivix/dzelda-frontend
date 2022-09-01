@@ -32,11 +32,11 @@
     </base-card>
 </template>
 <script>
-    import * as utils from '../../utils.js';
-    import BasePasswordInput from "@/components/general/ui/BasePasswordInput";
-    import {useAuthStore} from "@/stores/auth";
+import * as utils from '../../utils.js';
+import BasePasswordInput from "@/components/general/ui/BasePasswordInput.vue";
+import {useAuthStore} from "@/stores/auth";
 
-    export default {
+export default {
         name: "UserLogin",
         components: {BasePasswordInput},
         data() {

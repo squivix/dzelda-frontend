@@ -55,11 +55,11 @@
 </template>
 
 <script>
-    import BaseCard from "@/components/general/ui/BaseCard";
-    import {VueDraggableNext} from 'vue-draggable-next'
-    import {useCourseStore} from "@/stores/course";
+import BaseCard from "@/components/general/ui/BaseCard.vue";
+import {VueDraggableNext} from 'vue-draggable-next'
+import {useCourseStore} from "@/stores/course";
 
-    export default {
+export default {
         name: "CourseEditPage",
         components: {
             BaseCard,

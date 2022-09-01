@@ -7,10 +7,10 @@
 </template>
 
 <script>
-    import LessonListItem from "@/components/page/content/LessonListItem";
-    import {useLessonStore} from "@/stores/lesson";
+import LessonListItem from "@/components/page/content/LessonListItem.vue";
+import {useLessonStore} from "@/stores/lesson";
 
-    export default {
+export default {
         name: "BrowseTab",
         components: {LessonListItem},
         data() {

@@ -35,6 +35,11 @@ export const useStore = defineStore("main", {
             if (response.ok && response.status !== 204)
                 return await response.json();
             else if (response.status >= 400 && response.status < 500) {
+                if (response.status === 401) {
+                    authStore.token = null;
+                    delete localStorage.authToken;
+                }
+
                 const responseData = await response.text();
                 throw new Error(responseData);
             }

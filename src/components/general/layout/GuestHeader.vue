@@ -1,7 +1,7 @@
 <template>
     <header>
         <router-link :to="{name:'root'}" style="text-decoration: none; color: inherit">
-            <h1 class="unselectable">FLA</h1>
+            <h1 class="unselectable">Dzelda</h1>
         </router-link>
 
         <div id="auth-buttons">

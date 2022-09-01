@@ -1,55 +1,35 @@
 {
-  "name": "fla-frontend",
-  "version": "0.1.0",
-  "private": true,
+  "name": "dzelda-frontend",
+  "version": "0.0.0",
   "scripts": {
-    "serve": "vue-cli-service serve --port 8081",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173",
+    "test:unit": "vitest --environment jsdom",
+    "test:e2e": "start-server-and-test preview http://localhost:4173/ 'cypress open --e2e'",
+    "test:e2e:ci": "start-server-and-test preview http://localhost:4173/ 'cypress run --e2e'",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "pinia": "^2.0.17",
+    "vue": "^3.2.37",
+    "vue-router": "^4.1.3",
     "@fortawesome/fontawesome-svg-core": "^6.1.0",
     "@fortawesome/free-regular-svg-icons": "^6.1.0",
     "@fortawesome/free-solid-svg-icons": "^6.1.0",
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
-    "core-js": "^3.8.3",
-    "pinia": "^2.0.21",
-    "vue": "^3.2.13",
-    "vue-draggable-next": "^2.1.1",
-    "vue-router": "^4.0.14"
+    "vue-draggable-next": "^2.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^9.4.0",
-    "webpack-bundle-analyzer": "^4.5.0"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {
-      "no-unused-vars": "warn",
-      "no-empty": "warn",
-      "vue/no-unused-components": "warn"
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
-  ]
+    "@vitejs/plugin-vue": "^3.0.1",
+    "@vue/test-utils": "^2.0.2",
+    "cypress": "^10.4.0",
+    "eslint": "8.22.0",
+    "eslint-plugin-cypress": "^2.12.1",
+    "eslint-plugin-vue": "^9.3.0",
+    "jsdom": "^20.0.0",
+    "start-server-and-test": "^1.14.0",
+    "vite": "^3.0.4",
+    "vitest": "^0.21.0"
+  }
 }

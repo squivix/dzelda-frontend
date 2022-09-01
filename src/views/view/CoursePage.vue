@@ -12,11 +12,11 @@
 </template>
 
 <script>
-    import BaseCard from "@/components/general/ui/BaseCard";
-    import LessonListItem from "@/components/page/content/LessonListItem";
-    import {useCourseStore} from "@/stores/course";
+import BaseCard from "@/components/general/ui/BaseCard.vue";
+import LessonListItem from "@/components/page/content/LessonListItem.vue";
+import {useCourseStore} from "@/stores/course";
 
-    export default {
+export default {
         name: "CoursePage",
         components: {LessonListItem, BaseCard},
         data() {

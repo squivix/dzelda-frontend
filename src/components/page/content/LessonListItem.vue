@@ -25,10 +25,10 @@
 </template>
 
 <script>
-    import BaseCard from "@/components/general/ui/BaseCard";
-    import {useStore} from "@/stores";
+import BaseCard from "@/components/general/ui/BaseCard.vue";
+import {useStore} from "@/stores";
 
-    export default {
+export default {
         name: "LessonListItem",
         components: {BaseCard},
         props: {

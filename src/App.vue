@@ -15,10 +15,11 @@
     </div>
 </template>
 <script>
-    import GuestHeader from './components/general/layout/GuestHeader.vue';
-    import TheFooter from './components/general/layout/TheFooter.vue';
-    import AuthHeader from './components/general/layout/AuthHeader.vue';
+    import GuestHeader from '@/components/general/layout/GuestHeader.vue';
+    import TheFooter from '@/components/general/layout/TheFooter.vue';
+    import AuthHeader from '@/components/general/layout/AuthHeader.vue';
     import {useAuthStore} from "@/stores/auth";
+
 
     export default {
         computed: {

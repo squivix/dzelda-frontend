@@ -30,11 +30,11 @@
 </template>
 
 <script>
-    import BaseCard from "@/components/general/ui/BaseCard";
-    import {useCourseStore} from "@/stores/course";
-    import {useLessonStore} from "@/stores/lesson";
+import BaseCard from "@/components/general/ui/BaseCard.vue";
+import {useCourseStore} from "@/stores/course";
+import {useLessonStore} from "@/stores/lesson";
 
-    export default {
+export default {
         name: "LessonAddEditPage",
         components: {BaseCard},
         computed: {

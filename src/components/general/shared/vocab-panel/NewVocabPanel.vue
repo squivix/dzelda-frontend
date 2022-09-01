@@ -24,13 +24,13 @@
 </template>
 
 <script>
-    import {ALL_VOCAB_LEVELS} from "@/constants";
-    import MeaningAddingControls from "@/components/general/shared/vocab-panel/MeaningAddingControls";
-    import DictionariesList from "@/components/general/shared/vocab-panel/DictionaryList";
-    import {postUserVocab} from "@/components/page/reader/shared";
-    import {useVocabStore} from "@/stores/vocab";
+import {ALL_VOCAB_LEVELS} from "@/constants.js";
+import MeaningAddingControls from "@/components/general/shared/vocab-panel/MeaningAddingControls.vue";
+import DictionariesList from "@/components/general/shared/vocab-panel/DictionaryList.vue";
+import {postUserVocab} from "@/components/page/reader/shared.js";
+import {useVocabStore} from "@/stores/vocab";
 
-    export default {
+export default {
         name: "NewVocabPanel",
         components: {MeaningAddingControls, DictionariesList},
         emits: ["onMeaningAdded", "onVocabLevelSet"],

@@ -21,7 +21,7 @@
 </template>
 
 <script>
-    import VocabTableRow from "@/components/page/my-vocabs/VocabTableRow";
+    import VocabTableRow from "@/components/page/my-vocabs/VocabTableRow.vue";
 
     export default {
         name: "VocabTable",

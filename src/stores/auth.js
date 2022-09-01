@@ -44,8 +44,8 @@ export const useAuthStore = defineStore("auth", {
                     })
                 },
                 false);
-            localStorage.authToken = responseData.token;
-            this.token = responseData.token;
+            localStorage.authToken = responseData.auth_token;
+            this.token = responseData.auth_token;
         },
 
         async signOut() {

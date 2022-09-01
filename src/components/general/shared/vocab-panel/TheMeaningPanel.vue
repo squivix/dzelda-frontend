@@ -29,11 +29,11 @@
 </template>
 
 <script>
-    import {ALL_VOCAB_LEVELS} from "@/constants";
-    import NewVocabPanel from "@/components/general/shared/vocab-panel/NewVocabPanel";
-    import ExistingVocabPanel from "@/components/general/shared/vocab-panel/ExistingVocabPanel";
+import {ALL_VOCAB_LEVELS} from "@/constants";
+import NewVocabPanel from "@/components/general/shared/vocab-panel/NewVocabPanel.vue";
+import ExistingVocabPanel from "@/components/general/shared/vocab-panel/ExistingVocabPanel.vue";
 
-    export default {
+export default {
         name: "TheMeaningPanel",
         components: {NewVocabPanel, ExistingVocabPanel},
         emits: ['onMeaningAdded', 'onVocabLevelSet', 'onMeaningDeleted'],

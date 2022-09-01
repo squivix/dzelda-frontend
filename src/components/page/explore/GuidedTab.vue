@@ -7,10 +7,10 @@
 </template>
 
 <script>
-    import CourseCard from "@/components/page/content/CourseCard";
-    import {useCourseStore} from "@/stores/course";
+import CourseCard from "@/components/page/content/CourseCard.vue";
+import {useCourseStore} from "@/stores/course";
 
-    export default {
+export default {
         name: "GuidedTab",
         components: {CourseCard},
         data() {

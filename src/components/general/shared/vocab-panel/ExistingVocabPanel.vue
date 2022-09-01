@@ -26,10 +26,10 @@
 </template>
 
 <script>
-    import VocabLevelPicker from "@/components/general/shared/vocab-panel/VocabLevelPicker";
-    import MeaningEditingControls from "@/components/general/shared/vocab-panel/MeaningEditingControls";
+import VocabLevelPicker from "@/components/general/shared/vocab-panel/VocabLevelPicker.vue";
+import MeaningEditingControls from "@/components/general/shared/vocab-panel/MeaningEditingControls.vue";
 
-    export default {
+export default {
         name: "ExistingVocabPanel",
         components: {MeaningEditingControls, VocabLevelPicker},
         emits: ["onAddMoreMeaningsClicked", "onMeaningDeleted", "onVocabLevelSet"],

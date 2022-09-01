@@ -18,10 +18,10 @@
 </template>
 
 <script>
-    import BasePageSelector from "@/components/general/ui/BasePageSelector";
-    import {updateQueryParams} from "@/components/page/reader/shared";
+import BasePageSelector from "@/components/general/ui/BasePageSelector.vue";
+import {updateQueryParams} from "@/components/page/reader/shared.js";
 
-    export default {
+export default {
         name: "PaginationControls",
         components: {BasePageSelector},
         props: {

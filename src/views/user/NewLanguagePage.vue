@@ -21,12 +21,11 @@
 </template>
 
 <script>
-    import BaseCard from "@/components/general/ui/BaseCard";
-    import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-    import {useLessonStore} from "@/stores/lesson";
-    import {useLanguageStore} from "@/stores/language";
+import BaseCard from "@/components/general/ui/BaseCard.vue";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {useLanguageStore} from "@/stores/language";
 
-    export default {
+export default {
         name: "NewLanguagePage",
         components: {BaseCard, FontAwesomeIcon},
         data() {

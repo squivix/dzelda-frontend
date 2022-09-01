@@ -27,7 +27,7 @@
 </template>
 
 <script>
-    import LessonParagraph from "@/components/page/reader/LessonParagraph";
+    import LessonParagraph from "@/components/page/reader/LessonParagraph.vue";
 
     export default {
         name: "TheLessonContent",

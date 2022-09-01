@@ -26,11 +26,11 @@
 </template>
 
 <script>
-    import BaseCard from "@/components/general/ui/BaseCard";
-    import BrowseTab from "@/components/page/explore/BrowseTab";
-    import GuidedTab from "@/components/page/explore/GuidedTab";
+import BaseCard from "@/components/general/ui/BaseCard.vue";
+import BrowseTab from "@/components/page/explore/BrowseTab.vue";
+import GuidedTab from "@/components/page/explore/GuidedTab.vue";
 
-    export default {
+export default {
         name: "ExplorePage",
         components: {BaseCard, BrowseTab, GuidedTab},
         data() {

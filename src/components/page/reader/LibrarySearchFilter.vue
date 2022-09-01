@@ -9,7 +9,7 @@
 </template>
 
 <script>
-    import SearchFilter from "@/components/general/ui/SearchFilter";
+    import SearchFilter from "@/components/general/ui/SearchFilter.vue";
 
     export default {
         name: "LibrarySearchFilter",
