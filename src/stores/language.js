@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
-import {useStore} from "@/stores/index";
+import {useStore} from "@/stores/index.js";
+
 
 export const useLanguageStore = defineStore("language", {
     state() {
@@ -26,25 +27,8 @@ export const useLanguageStore = defineStore("language", {
             this.userLanguages = languages;
             return languages;
         },
-        async getOrFetchDefaultUserLanguage() {
-            return (await this.getOrFetchUserLanguages())[0];
-        },
-        async getOrFetchUserLanguages() {
-            return this.userLanguages ?? await this.fetchUserLanguages();
-        },
 
-        async updateLanguageLastOpened({languageCode}) {
-            const store = useStore();
-            const responseData = await store.fetchCustom(`${store.apiUrl}/users/me/languages/${languageCode}/`,
-                {
-                    method: "PATCH",
-                    body: JSON.stringify({lastOpened: "now"})
-                },
-                true);
-            this.setLastOpenedLanguage(languageCode);
-            return responseData;
-        },
-        async addLanguage({languageCode}) {
+        async addLanguageToUser({languageCode}) {
             const store = useStore();
             const language = await store.fetchCustom(`${store.apiUrl}/users/me/languages/`,
                 {
@@ -57,7 +41,7 @@ export const useLanguageStore = defineStore("language", {
 
             this.userLanguages.unshift(language);
         },
-        async deleteLanguage({languageCode}) {
+        async deleteLanguageFromUser({languageCode}) {
             const store = useStore();
             await store.fetchCustom(
                 `${store.apiUrl}/users/me/languages/${languageCode}/`,
@@ -70,7 +54,17 @@ export const useLanguageStore = defineStore("language", {
             if (index !== -1)
                 this.userLanguages.splice(index, 1);
         },
-
+        async updateLanguageLastOpened({languageCode}) {
+            const store = useStore();
+            const responseData = await store.fetchCustom(`${store.apiUrl}/users/me/languages/${languageCode}/`,
+                {
+                    method: "PATCH",
+                    body: JSON.stringify({lastOpened: "now"})
+                },
+                true);
+            this.setLastOpenedLanguage(languageCode);
+            return responseData;
+        },
         setLastOpenedLanguage(languageCode) {
             if (!this.userLanguages || this.userLanguages.length < 2)
                 return;

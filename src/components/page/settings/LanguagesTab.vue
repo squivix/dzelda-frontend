@@ -61,12 +61,12 @@
                 return await this.languageStore.fetchLanguages();
             },
             async fetchUserLanguages() {
-                return await this.languageStore.getOrFetchUserLanguages();
+                return await this.languageStore.fetchUserLanguages();
             },
             async removeLanguage(language) {
                 //TODO move to modal dialogue
                 if (confirm("Are you sure you want to delete this language?")) {
-                    await this.languageStore.deleteLanguage({
+                    await this.languageStore.deleteLanguageFromUser({
                         languageCode: language.code,
                     });
                     this.userLanguages = await this.fetchUserLanguages();

@@ -56,7 +56,7 @@
         methods: {
             addSuggestedMeaning(meaning) {
                 this.postUserVocab(this.vocabId).then(async newVocab => {
-                    await this.meaningStore.saveMeaningToUser({meaningId: meaning.id});
+                    await this.meaningStore.addMeaningToUser({meaningId: meaning.id});
                     this.$emit('onMeaningAdded', newVocab, meaning);
                 });
             },
@@ -65,7 +65,7 @@
                     return;
                 let vocabId = this.vocabId;
                 if (this.isPhrase && !this.vocabId) {
-                    vocabId = (await this.vocabStore.postNewVocab({
+                    vocabId = (await this.vocabStore.createVocab({
                         text: this.vocabText,
                         languageCode: this.$route.params.learningLanguage,
                         isPhrase: true,
@@ -73,13 +73,13 @@
                 }
 
                 this.postUserVocab(vocabId).then(async (newVocab) => {
-                    this.meaningStore.addNewMeaning({
+                    this.meaningStore.createMeaning({
                         text: this.newMeaning,
                         vocabId: newVocab.id,
                         //TODO: no language hard-coding
                         languageCode: "en",
                     }).then(async newMeaning => {
-                        await this.meaningStore.saveMeaningToUser({
+                        await this.meaningStore.addMeaningToUser({
                             meaningId: newMeaning.id
                         });
                         this.$emit('onMeaningAdded', newVocab, newMeaning);

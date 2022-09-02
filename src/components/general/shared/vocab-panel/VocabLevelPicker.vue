@@ -48,7 +48,7 @@
         },
         methods: {
             async setVocabLevel(level) {
-                await this.vocabStore.updateVocabLevel({
+                await this.vocabStore.updateUserVocab({
                     vocabId: this.vocabId,
                     level: level
                 });

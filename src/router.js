@@ -169,7 +169,7 @@ router.beforeResolve(async (to, from) => {
     if ((to.name === "login" || to.name === "home") && isAuthenticated)
         return {name: 'explore'}
     if (isAuthenticated) {
-        const defaultLanguage = await languageStore.getOrFetchDefaultUserLanguage();
+        const defaultLanguage = (await languageStore.fetchUserLanguages())[0];
         if (to.meta.redirToLanguageSpecific)
             return {path: `/learn/${defaultLanguage.code}${to.path}`};
     }

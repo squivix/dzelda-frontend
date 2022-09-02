@@ -121,6 +121,7 @@ export default {
       this.setSelectedVocab(vocab.text);
     },
     onVocabLevelSet(vocab, level) {
+
       const key = vocab.text.toLowerCase();
       this.vocab[key].level = level;
       if (level === ALL_VOCAB_LEVELS.IGNORED || level === ALL_VOCAB_LEVELS.KNOWN) {
@@ -162,7 +163,7 @@ export default {
         for (let phrase of phrases) {
           let regex = new RegExp(`${escapeRegExp(phrase)}`, 'ig');
           let matches = paragraph.matchAll(regex);
-
+          //TODO fix phrase splitting across many words for example "familia con pocos" => "a c" phrase
           for (let match of matches) {
             let beforePhraseIndex = getTextElements(paragraph.substring(0, match.index)).length;
             let phraseSlice = getTextElements(match[0]);

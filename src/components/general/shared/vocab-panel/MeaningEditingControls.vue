@@ -34,7 +34,7 @@
         },
         methods: {
             async deleteMeaning(meaning) {
-                await this.meaningStore.deleteUserMeaning({
+                await this.meaningStore.deleteMeaningFromUser({
                     meaningId: meaning.id
                 });
                 this.$emit('onMeaningDeleted', meaning);
@@ -45,11 +45,11 @@
                     await this.deleteMeaning(meaning)
                 else if (editedMeaning === meaning.text)
                     return;
-                this.meaningStore.deleteUserMeaning({
+                this.meaningStore.deleteMeaningFromUser({
                     vocabId: this.vocabId,
                     meaningId: meaning.id
                 }).then(() => {
-                    this.meaningStore.addNewMeaning({
+                    this.meaningStore.createMeaning({
                         vocabId: this.vocabId,
                         meaningLanguage: "en",
                         meaningText: editedMeaning,

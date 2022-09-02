@@ -42,7 +42,7 @@ export default {
                 if (language.isLearning)
                     alert(`You are already learning ${language.name}`);
                 else if (confirm(`Start learning ${language.name}?`)) {
-                    await this.languageStore.addLanguage({languageCode: language.code});
+                    await this.languageStore.addLanguageToUser({languageCode: language.code});
                     await this.$router.push({name: 'explore', params: {learningLanguage: language.code}})
                 }
             }

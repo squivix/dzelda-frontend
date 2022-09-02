@@ -27,7 +27,7 @@ export const useStore = defineStore("main", {
                 method: options.method,
                 headers: {
                     ...options.headers,
-                    Authorization: isProtected ? `Token ${authStore.userToken}` : undefined,
+                    Authorization: isProtected ? `Token ${authStore.authToken}` : undefined,
                 },
                 body: options.body
             });

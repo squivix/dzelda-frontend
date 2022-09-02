@@ -1,23 +1,24 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/index";
+import {encodeUrlQueryParams} from "@/utils.js";
 
 export const useLessonStore = defineStore("lesson", {
     actions: {
-        async fetchUserLessonsPage({languageCode, maxPerPage, page}) {
+        async fetchLessons({languageCode, sortBy, maxPerPage, page}) {
+            const store = useStore();
+            const queryParams = {language: languageCode, sortBy: sortBy ?? "best", maxPerPage, page};
+            return await store.fetchCustom(
+                `${store.apiUrl}/lessons/?${encodeUrlQueryParams(queryParams)}&pageSize=${maxPerPage}&page=${page}`,
+                {},
+                true);
+        },
+        async fetchLibraryLessons({languageCode, maxPerPage, page}) {
             const store = useStore();
             return await store.fetchCustom(
                 `${store.apiUrl}/users/me/library/lessons/?language=${languageCode}&pageSize=${maxPerPage}&page=${page}`,
                 {},
                 true);
         },
-        async fetchLesson({lessonId}) {
-            const store = useStore();
-            return await store.fetchCustom(
-                `${store.apiUrl}/lessons/${lessonId}/`,
-                {},
-                true);
-        },
-
         async fetchCourseLessons({courseId}) {
             const store = useStore();
             return await store.fetchCustom(
@@ -25,9 +26,9 @@ export const useLessonStore = defineStore("lesson", {
                 {},
                 true);
         },
-        async postLesson({title, text, courseId}) {
+        async createLesson({title, text, courseId}) {
             const store = useStore();
-            return await store.fetchCustom(
+            const newLesson = await store.fetchCustom(
                 `${store.apiUrl}/lessons/`,
                 {
                     method: "POST",
@@ -38,8 +39,10 @@ export const useLessonStore = defineStore("lesson", {
                     })
                 },
                 true);
+            await this.lessonStore.addLessonToUser({lessonId: newLesson.id})
+            return newLesson;
         },
-        async postUserLesson({lessonId}) {
+        async addLessonToUser({lessonId}) {
             const store = useStore();
             return await store.fetchCustom(
                 `${store.apiUrl}/users/me/library/lessons/`,
@@ -51,7 +54,14 @@ export const useLessonStore = defineStore("lesson", {
                 },
                 true);
         },
-        async editLesson({lessonId, courseId, title, text}) {
+        async fetchLesson({lessonId}) {
+            const store = useStore();
+            return await store.fetchCustom(
+                `${store.apiUrl}/lessons/${lessonId}/`,
+                {},
+                true);
+        },
+        async updateLesson({lessonId, courseId, title, text}) {
             const store = useStore();
             return await store.fetchCustom(
                 `${store.apiUrl}/users/me/library/lessons/${lessonId}/`,
@@ -64,14 +74,6 @@ export const useLessonStore = defineStore("lesson", {
                     })
                 },
                 true,);
-        },
-
-        async fetchRecommendedLessons({languageCode}) {
-            const store = useStore();
-            return await store.fetchCustom(
-                `${store.apiUrl}/lessons/?language=${languageCode}&sortBy=best`,
-                {},
-                true);
         },
     }
 })

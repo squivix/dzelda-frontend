@@ -8,11 +8,11 @@ export const useAuthStore = defineStore("auth", {
         };
     },
     getters: {
-        userToken(state) {
+        authToken(state) {
             return state.token ?? localStorage.authToken;
         },
         isAuthenticated() {
-            return !!this.userToken;
+            return !!this.authToken;
         },
     },
     actions: {
@@ -59,7 +59,7 @@ export const useAuthStore = defineStore("auth", {
 
             delete localStorage.authToken;
             this.token = null;
-            //TODO clear local vuex data (like languages learning, profile etc)
+            //TODO clear local pinia store data (like languages learning, profile etc)
         },
     }
 })

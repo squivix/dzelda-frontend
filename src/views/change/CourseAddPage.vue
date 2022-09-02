@@ -50,7 +50,7 @@ export default {
     },
 
     async addCourse() {
-      return await this.courseStore.postCourse({
+      return await this.courseStore.createCourse({
         languageCode: this.$route.params.learningLanguage,
         title: this.title,
         description: this.description,

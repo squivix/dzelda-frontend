@@ -2,7 +2,7 @@ import {useVocabStore} from "@/stores/vocab";
 
 export async function postUserVocab(vocabId) {
     const vocabStore = useVocabStore();
-    return await vocabStore.postUserVocab({
+    return await vocabStore.addVocabToUser({
         vocabId: vocabId,
     });
 }

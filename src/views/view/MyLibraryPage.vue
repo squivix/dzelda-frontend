@@ -95,7 +95,7 @@ let MyLibraryPage = {
       this.loading = false;
     },
     async fetchLessons() {
-      const response = await this.lessonStore.fetchUserLessonsPage(
+      const response = await this.lessonStore.fetchLibraryLessons(
           {
             languageCode: this.$route.params.learningLanguage,
             page: this.currentPage,
@@ -105,7 +105,7 @@ let MyLibraryPage = {
       this.pageCount = Math.ceil(response.count / this.maxPerPage);
     },
     async fetchSavedCourses() {
-      const response = await this.courseStore.fetchUserCourses({
+      const response = await this.courseStore.fetchLibraryCourses({
         languageCode: this.$route.params.learningLanguage,
         page: this.currentPage,
         maxPerPage: this.maxPerPage

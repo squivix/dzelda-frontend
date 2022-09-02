@@ -94,7 +94,7 @@ let MyVocabPage = {
     async fetchVocabsPage() {
       this.clearSelectedVocab();
       this.loadingVocabs = true;
-      const response = await this.vocabStore.fetchUserVocabsPage({
+      const response = await this.vocabStore.fetchUserVocabs({
         language: this.$route.params.learningLanguage,
         searchQuery: this.$route.query.searchQuery,
         levels: [...this.filters.levels],

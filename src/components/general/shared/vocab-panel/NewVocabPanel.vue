@@ -62,7 +62,7 @@ export default {
         methods: {
             async markWordAsKnown() {
                 await this.postUserVocab(this.vocab.id);
-                await this.vocabStore.updateVocabLevel({
+                await this.vocabStore.updateUserVocab({
                     vocabId: this.vocab.id,
                     level: ALL_VOCAB_LEVELS.KNOWN
                 })
@@ -70,7 +70,7 @@ export default {
             },
             async markWordAsIgnored() {
                 await this.postUserVocab(this.vocab.id);
-                await this.vocabStore.updateVocabLevel({
+                await this.vocabStore.updateUserVocab({
                     vocabId: this.vocab.id,
                     level: ALL_VOCAB_LEVELS.IGNORED
                 })
