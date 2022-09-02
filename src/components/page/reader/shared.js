@@ -1,12 +1,3 @@
-import {useVocabStore} from "@/stores/vocab";
-
-export async function postUserVocab(vocabId) {
-    const vocabStore = useVocabStore();
-    return await vocabStore.addVocabToUser({
-        vocabId: vocabId,
-    });
-}
-
 export function getTextElements(paragraph, regex) {
     //[^\p{L}\d]
     return paragraph.split(regex ?? /([^\p{L}\d])/gu).filter((word) => word !== '');
