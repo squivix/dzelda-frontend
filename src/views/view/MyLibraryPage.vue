@@ -8,9 +8,9 @@
           <option name="courses">Courses</option>
         </select>
         <div class="search-filter-wrapper">
-          <library-search-filter>
+          <!--          <library-search-filter>-->
 
-          </library-search-filter>
+          <!--          </library-search-filter>-->
         </div>
       </div>
       <div v-if="loading">
@@ -32,14 +32,14 @@
         </li>
       </ol>
       <!--suppress JSUnresolvedVariable -->
-      <pagination-controls
-          v-if="pageCount"
-          :page-count="pageCount"
-          :maxPerPage="maxPerPage"
-          :current-page="currentPage"
-          :per-page-select-label="`${showListOf} Per Page`"
-          :per-page-select-options="PER_PAGE_SELECT_OPTIONS">
-      </pagination-controls>
+      <!--      <pagination-controls-->
+      <!--          v-if="pageCount"-->
+      <!--          :page-count="pageCount"-->
+      <!--          :maxPerPage="maxPerPage"-->
+      <!--          :current-page="currentPage"-->
+      <!--          :per-page-select-label="`${showListOf} Per Page`"-->
+      <!--          :per-page-select-options="PER_PAGE_SELECT_OPTIONS">-->
+      <!--      </pagination-controls>-->
     </template>
   </base-card>
 </template>
@@ -47,15 +47,12 @@
 import BaseCard from "@/components/general/ui/BaseCard.vue";
 import LessonListItem from "@/components/page/content/LessonListItem.vue";
 import CourseCard from "@/components/page/content/CourseCard.vue";
-import PaginationControls, {paginationControlsHost} from "@/components/general/ui/PaginationControls.vue";
-import {mergeDeep} from "@/utils.js";
-import LibrarySearchFilter from "@/components/page/reader/LibrarySearchFilter.vue";
 import {useLessonStore} from "@/stores/lesson";
 import {useCourseStore} from "@/stores/course";
 
-let MyLibraryPage = {
+export default {
   name: "MyLibraryPage",
-  components: {LibrarySearchFilter, PaginationControls, LessonListItem, CourseCard, BaseCard},
+  components: { LessonListItem, CourseCard, BaseCard},
   data() {
     return {
       lessons: null,
@@ -119,8 +116,6 @@ let MyLibraryPage = {
     this.lessonStore = useLessonStore();
   }
 }
-MyLibraryPage = mergeDeep(MyLibraryPage, paginationControlsHost)
-export default MyLibraryPage;
 </script>
 
 <style scoped>

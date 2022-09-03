@@ -3,10 +3,7 @@
     <template v-slot:content>
       <section class="main-content" @click="clearSelectedVocab">
         <div class="bar-table-wrapper">
-          <vocab-search-filter
-              :initial-filters="filters"
-              @onSearchSubmitted="refetchPage"
-              @onFiltersApplied="refetchPage">
+          <vocab-search-filter>
           </vocab-search-filter>
 
           <p v-if="loadingVocabs">Loading...</p>
@@ -33,11 +30,10 @@
           </the-meaning-panel>
         </div>
       </section>
-      <!--suppress JSUnresolvedVariable -->
+      <!--suppress JSUnresolvedVariable-->
       <pagination-controls v-if="pageCount"
                            :page-count="pageCount"
-                           :maxPerPage="maxPerPage"
-                           :current-page="currentPage"
+                           :maxPerPage="$query.maxPerPage"
                            per-page-select-label="Vocabs Per Page"
                            :per-page-select-options="PER_PAGE_SELECT_OPTIONS">
       </pagination-controls>
@@ -46,15 +42,14 @@
 </template>
 
 <script>
-import {ALL_VOCAB_LEVELS, SAVED_VOCAB_LEVELS} from "@/constants.js";
-import PaginationControls, {paginationControlsHost} from "@/components/general/ui/PaginationControls.vue";
+import {ALL_VOCAB_LEVELS} from "@/constants.js";
 import TheMeaningPanel from "@/components/general/shared/vocab-panel/TheMeaningPanel.vue";
 import VocabTable from "@/components/page/my-vocabs/VocabTable.vue";
 import VocabSearchFilter from "@/components/page/my-vocabs/VocabSearchFilter.vue";
-import {mergeDeep} from "@/utils.js";
+import PaginationControls from "@/components/general/ui/PaginationControls.vue";
 import {useVocabStore} from "@/stores/vocab";
 
-let MyVocabPage = {
+export default {
   name: "MyVocabPage",
   components: {VocabSearchFilter, VocabTable, PaginationControls, TheMeaningPanel},
   data() {
@@ -66,26 +61,20 @@ let MyVocabPage = {
       PER_PAGE_SELECT_OPTIONS: [25, 50, 100, 150, 200]
     };
   },
-
-  computed: {
-    filters() {
-      const savedLevelsArray = Object.values(SAVED_VOCAB_LEVELS);
-      const filters = {levels: savedLevelsArray};
-      if (this.$route.query.level) {
-        const queryLevels = [...this.$route.query.level].map(l => Number(l)).filter(l => savedLevelsArray.includes(l));
-        filters.levels = queryLevels;
-      }
-      return filters;
-    },
-  },
   watch: {
-    async currentPage() {
+    // TODO fix bug where going from ?page=2 then pressing back button does not trigger this refetch
+    async "$query.page"() {
       await this.fetchVocabsPage();
     },
-    async maxPerPage() {
-      if (this.currentPage === 1)
-        await this.fetchVocabsPage();
-    }
+    async "$query.maxPerPage"() {
+      this.refetchPage();
+    },
+    async "$query.searchQuery"() {
+      this.refetchPage();
+    },
+    async "$query.level"() {
+      this.refetchPage();
+    },
   },
   async mounted() {
     await this.fetchVocabsPage();
@@ -96,20 +85,20 @@ let MyVocabPage = {
       this.loadingVocabs = true;
       const response = await this.vocabStore.fetchUserVocabs({
         language: this.$route.params.learningLanguage,
-        searchQuery: this.$route.query.searchQuery,
-        levels: [...this.filters.levels],
-        page: this.currentPage,
-        vocabsPerPage: this.maxPerPage,
+        searchQuery: this.$query.searchQuery,
+        levels: [...this.$query.level],
+        page: this.$query.page,
+        vocabsPerPage: this.$query.maxPerPage,
       });
       this.vocabs = response.results;
-      this.pageCount = Math.ceil(response.count / this.maxPerPage);
+      this.pageCount = Math.ceil(response.count / this.$query.maxPerPage);
       this.loadingVocabs = false;
     },
     refetchPage() {
-      if (this.currentPage === 1)
+      if (this.$query.page === 1)
         this.fetchVocabsPage();
       else
-        this.currentPage = 1;
+        this.$query.page = 1;
     },
     setSelectedVocab(vocab) {
       this.selectedVocab = vocab;
@@ -137,8 +126,6 @@ let MyVocabPage = {
     this.vocabStore = useVocabStore();
   }
 }
-MyVocabPage = mergeDeep(MyVocabPage, paginationControlsHost)
-export default MyVocabPage;
 </script>
 
 

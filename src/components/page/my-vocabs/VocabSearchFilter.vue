@@ -1,7 +1,6 @@
 <template>
   <search-filter @onSearchSubmitted="onSearchSubmitted"
-                 @onFiltersApplied="onFiltersApplied"
-                 :initial-search-query="initialSearchQuery">
+                 @onFiltersApplied="onFiltersApplied">
     <template v-slot:filters>
       <label class="filter-label">Level</label>
       <fieldset class="filter-levels">
@@ -50,20 +49,16 @@
 <script>
 import {SAVED_VOCAB_LEVELS} from "@/constants.js";
 import SearchFilter from "@/components/general/ui/SearchFilter.vue";
-import {updateQueryParams} from "@/components/page/reader/shared.js";
 
 export default {
   name: "VocabSearchFilter",
   components: {SearchFilter},
-  emits: ['onFiltersApplied', 'onSearchSubmitted'],
-  props: {
-    initialFilters: {
-      type: Object,
-      required: true
-    }
-  }, data() {
+  emits: ["onFiltersApplied", "onSearchSubmitted"],
+  props: {}, data() {
     return {
-      filters: this.initialFilters,
+      filters: {
+        levels: this.$query.level
+      },
     };
   },
 
@@ -71,18 +66,14 @@ export default {
     savedVocabLevels() {
       return SAVED_VOCAB_LEVELS;
     },
-    initialSearchQuery() {
-      return this.$route.query.searchQuery;
-    },
   },
   methods: {
     onSearchSubmitted(searchQuery) {
-      this.$emit('onSearchSubmitted', searchQuery);
+      this.$emit("onSearchSubmitted", searchQuery);
     },
     onFiltersApplied() {
-      this.updateQueryParams({level: this.filters.levels}).then(() => this.$emit('onFiltersApplied'));
+      this.$query.level = this.filters.levels;
     },
-    updateQueryParams
   },
 }
 </script>
