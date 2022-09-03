@@ -95,7 +95,7 @@ export default {
       this.loadingVocabs = false;
     },
     refetchPage() {
-      if (this.$query.page === 1)
+      if (!this.$query.page || this.$query.page === 1)
         this.fetchVocabsPage();
       else
         this.$query.page = 1;
@@ -107,11 +107,11 @@ export default {
       this.selectedVocab = null;
     },
     onMeaningAdded(vocab, meaning) {
-      vocab.userMeanings.push(meaning)
+      vocab.userMeanings.push(meaning);
     },
     onVocabLevelSet(vocab, level) {
       if (level === ALL_VOCAB_LEVELS.IGNORED) {
-        this.vocabs.splice(this.vocabs.findIndex((v) => v.text === vocab.text), 1)
+        this.vocabs.splice(this.vocabs.findIndex((v) => v.text === vocab.text), 1);
         this.clearSelectedVocab();
       } else
         vocab.level = level;
@@ -125,7 +125,7 @@ export default {
   created() {
     this.vocabStore = useVocabStore();
   }
-}
+};
 </script>
 
 

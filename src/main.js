@@ -1,19 +1,15 @@
-import {createApp} from "vue"
-import App from "@/App.vue"
+import {createApp} from "vue";
+import App from "@/App.vue";
 import router from "@/router";
 
-import BaseCard from "@/components/general/ui/BaseCard.vue"
-import BasePasswordInput from "@/components/general/ui/BasePasswordInput.vue"
+import BaseCard from "@/components/general/ui/BaseCard.vue";
+import BasePasswordInput from "@/components/general/ui/BasePasswordInput.vue";
 
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 import "@/fa-lib.js";
 import {createPinia} from "pinia";
-import QuerySynchronizer, {
-    ArrayDatatype,
-    IntDatatype,
-    StringDatatype as NumberDataType
-} from "@oarepo/vue-query-synchronizer";
+import QuerySynchronizer from "@oarepo/vue-query-synchronizer";
 
 const app = createApp(App)
 
@@ -27,7 +23,7 @@ app.use(pinia)
 //other libraries
 app.use(QuerySynchronizer, {
     router,
-    debug: true,
+    debug: false,
     navigationOperation: "push",
 //TODO add array of numbers component see library github
 })
