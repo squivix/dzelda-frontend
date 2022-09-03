@@ -9,7 +9,7 @@
 <script>
 import CourseCard from "@/components/page/content/CourseCard.vue";
 import {useCourseStore} from "@/stores/course";
-import {GUIDED_USERNAME} from "../../../constants.js";
+import {GUIDED_USERNAME} from "@/constants.js";
 
 export default {
   name: "GuidedTab",
@@ -24,7 +24,7 @@ export default {
       return await this.courseStore.fetchCourses({
         languageCode: this.$route.params.learningLanguage,
         addedBy: GUIDED_USERNAME,
-      })
+      });
     }
   },
   async mounted() {
@@ -33,7 +33,7 @@ export default {
   created() {
     this.courseStore = useCourseStore();
   }
-}
+};
 </script>
 
 <style scoped>

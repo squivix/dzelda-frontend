@@ -8,7 +8,7 @@ export const useLessonStore = defineStore("lesson", {
             const store = useStore();
             const queryParams = {language: languageCode, sortBy: sortBy ?? "best", maxPerPage, page};
             return await store.fetchCustom(
-                `${store.apiUrl}/lessons/?${encodeUrlQueryParams(queryParams)}&pageSize=${maxPerPage}&page=${page}`,
+                `${store.apiUrl}/lessons/?${encodeUrlQueryParams(queryParams)}`,
                 {},
                 true);
         },
