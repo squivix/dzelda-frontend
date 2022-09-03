@@ -47,7 +47,7 @@
             }
         },
         created() {
-            const store = useStore();
+            this.store = useStore();
         }
     }
 </script>

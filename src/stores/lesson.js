@@ -12,10 +12,11 @@ export const useLessonStore = defineStore("lesson", {
                 {},
                 true);
         },
-        async fetchLibraryLessons({languageCode, maxPerPage, page}) {
+        async fetchLibraryLessons({languageCode, searchQuery, maxPerPage, page}) {
+            const queryParams = {language: languageCode, pageSize: maxPerPage, page, search: searchQuery};
             const store = useStore();
             return await store.fetchCustom(
-                `${store.apiUrl}/users/me/library/lessons/?language=${languageCode}&pageSize=${maxPerPage}&page=${page}`,
+                `${store.apiUrl}/users/me/library/lessons/?${encodeUrlQueryParams(queryParams)}`,
                 {},
                 true);
         },
@@ -39,7 +40,7 @@ export const useLessonStore = defineStore("lesson", {
                     })
                 },
                 true);
-            await this.lessonStore.addLessonToUser({lessonId: newLesson.id})
+            await this.lessonStore.addLessonToUser({lessonId: newLesson.id});
             return newLesson;
         },
         async addLessonToUser({lessonId}) {
@@ -76,4 +77,4 @@ export const useLessonStore = defineStore("lesson", {
                 true,);
         },
     }
-})
+});

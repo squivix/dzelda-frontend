@@ -5,17 +5,18 @@ import {encodeUrlQueryParams} from "../utils.js";
 export const useCourseStore = defineStore("course", {
     actions: {
         async fetchCourses({languageCode, addedBy, sortBy, editableBy}) {
-            const queryParams = {language: languageCode, addedBy, sortBy: sortBy ?? "best", editableBy}
+            const queryParams = {language: languageCode, addedBy, sortBy: sortBy ?? "best", editableBy};
             const store = useStore();
             return await store.fetchCustom(
                 `${store.apiUrl}/courses/?${encodeUrlQueryParams(queryParams)}`,
                 {},
                 true);
         },
-        async fetchLibraryCourses({languageCode, maxPerPage, page}) {
+        async fetchLibraryCourses({languageCode, searchQuery, maxPerPage, page}) {
+            const queryParams = {language: languageCode, pageSize: maxPerPage, page, search: searchQuery};
             const store = useStore();
             return await store.fetchCustom(
-                `${store.apiUrl}/users/me/library/courses/?language=${languageCode}&pageSize=${maxPerPage}&page=${page}`,
+                `${store.apiUrl}/users/me/library/courses/?${encodeUrlQueryParams(queryParams)}`,
                 {},
                 true);
         },
@@ -73,4 +74,4 @@ export const useCourseStore = defineStore("course", {
 
 
     }
-})
+});

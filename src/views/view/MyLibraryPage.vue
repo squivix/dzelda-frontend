@@ -8,9 +8,9 @@
           <option name="courses">Courses</option>
         </select>
         <div class="search-filter-wrapper">
-          <!--          <library-search-filter>-->
+          <library-search-filter>
 
-          <!--          </library-search-filter>-->
+          </library-search-filter>
         </div>
       </div>
       <div v-if="loading">
@@ -32,14 +32,14 @@
         </li>
       </ol>
       <!--suppress JSUnresolvedVariable -->
-      <!--      <pagination-controls-->
-      <!--          v-if="pageCount"-->
-      <!--          :page-count="pageCount"-->
-      <!--          :maxPerPage="maxPerPage"-->
-      <!--          :current-page="currentPage"-->
-      <!--          :per-page-select-label="`${showListOf} Per Page`"-->
-      <!--          :per-page-select-options="PER_PAGE_SELECT_OPTIONS">-->
-      <!--      </pagination-controls>-->
+      <pagination-controls
+          v-if="pageCount"
+          :page-count="pageCount"
+          :current-page="$query.page"
+          :maxPerPage="$query.maxPerPage"
+          :per-page-select-label="`${showListOf} Per Page`"
+          :per-page-select-options="PER_PAGE_SELECT_OPTIONS">
+      </pagination-controls>
     </template>
   </base-card>
 </template>
@@ -49,10 +49,12 @@ import LessonListItem from "@/components/page/content/LessonListItem.vue";
 import CourseCard from "@/components/page/content/CourseCard.vue";
 import {useLessonStore} from "@/stores/lesson";
 import {useCourseStore} from "@/stores/course";
+import PaginationControls from "@/components/general/ui/PaginationControls.vue";
+import LibrarySearchFilter from "@/components/page/reader/LibrarySearchFilter.vue";
 
 export default {
   name: "MyLibraryPage",
-  components: { LessonListItem, CourseCard, BaseCard},
+  components: {LessonListItem, PaginationControls, LibrarySearchFilter, CourseCard, BaseCard},
   data() {
     return {
       lessons: null,
@@ -66,23 +68,27 @@ export default {
   },
   async mounted() {
     await this.fetchContent();
-  },
-  watch: {
-    async currentPage() {
+  }, watch: {
+    async "$query.page"() {
       await this.fetchContent();
     },
-    async maxPerPage() {
-      if (this.currentPage === 1)
-        await this.fetchContent();
+    async "$query.maxPerPage"() {
+      this.refetchPage();
     },
-    async showListOf() {
-      if (this.currentPage === 1)
-        await this.fetchContent();
-      else
-        this.currentPage = 1;
-    }
+    async "$query.searchQuery"() {
+      this.refetchPage();
+    },
+    async "$query.level"() {
+      this.refetchPage();
+    },
   },
   methods: {
+    refetchPage() {
+      if (!this.$query.page || this.$query.page === 1)
+        this.fetchContent();
+      else
+        this.$query.page = 1;
+    },
     async fetchContent() {
       this.loading = true;
       if (this.showListOf === "Lessons")
@@ -95,27 +101,29 @@ export default {
       const response = await this.lessonStore.fetchLibraryLessons(
           {
             languageCode: this.$route.params.learningLanguage,
-            page: this.currentPage,
-            maxPerPage: this.maxPerPage
+            page: this.$query.page,
+            maxPerPage: this.$query.maxPerPage,
+            searchQuery: this.$query.searchQuery,
           });
       this.lessons = response.results;
-      this.pageCount = Math.ceil(response.count / this.maxPerPage);
+      this.pageCount = Math.ceil(response.count / this.$query.maxPerPage);
     },
     async fetchSavedCourses() {
       const response = await this.courseStore.fetchLibraryCourses({
         languageCode: this.$route.params.learningLanguage,
-        page: this.currentPage,
-        maxPerPage: this.maxPerPage
+        page: this.$query.page,
+        maxPerPage: this.$query.maxPerPage,
+        searchQuery: this.$query.searchQuery,
       });
       this.courses = response.results;
-      this.pageCount = Math.ceil(response.count / this.maxPerPage);
+      this.pageCount = Math.ceil(response.count / this.$query.maxPerPage);
     }
   },
   created() {
     this.courseStore = useCourseStore();
     this.lessonStore = useLessonStore();
   }
-}
+};
 </script>
 
 <style scoped>

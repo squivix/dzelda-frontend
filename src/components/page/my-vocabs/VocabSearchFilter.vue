@@ -1,6 +1,6 @@
 <template>
-  <search-filter @onSearchSubmitted="onSearchSubmitted"
-                 @onFiltersApplied="onFiltersApplied">
+  <search-filter
+      @onFiltersApplied="onFiltersApplied">
     <template v-slot:filters>
       <label class="filter-label">Level</label>
       <fieldset class="filter-levels">
@@ -53,7 +53,6 @@ import SearchFilter from "@/components/general/ui/SearchFilter.vue";
 export default {
   name: "VocabSearchFilter",
   components: {SearchFilter},
-  emits: ["onFiltersApplied", "onSearchSubmitted"],
   props: {}, data() {
     return {
       filters: {
@@ -68,14 +67,11 @@ export default {
     },
   },
   methods: {
-    onSearchSubmitted(searchQuery) {
-      this.$emit("onSearchSubmitted", searchQuery);
-    },
     onFiltersApplied() {
       this.$query.level = this.filters.levels;
     },
   },
-}
+};
 </script>
 
 <style scoped>

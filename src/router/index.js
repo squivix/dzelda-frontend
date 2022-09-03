@@ -1,18 +1,18 @@
 import {createRouter, createWebHistory} from "vue-router";
 
-import HomePage from "@/views/HomePage.vue"
-import UserLogin from "@/views/auth/UserLogin.vue"
-import UserSignOut from "@/views/auth/UserSignOut.vue"
-import UserSignUp from "@/views/auth/UserSignUp.vue"
-import ForgotPassword from "@/views/auth/ForgotPassword.vue"
-import CoursePage from "@/views/view/CoursePage.vue"
-import LessonReaderPage from "@/views/reader/LessonReaderPage.vue"
-import ExplorePage from "@/views/view/ExplorePage.vue"
-import MyLibraryPage from "@/views/view/MyLibraryPage.vue"
-import MyVocabPage from "@/views/view/MyVocabPage.vue"
-import LessonAddEditPage from "@/views/change/LessonAddEditPage.vue"
-import CourseAddPage from "@/views/change/CourseAddPage.vue"
-import CourseEditPage from "@/views/change/CourseEditPage.vue"
+import HomePage from "@/views/HomePage.vue";
+import UserLogin from "@/views/auth/UserLogin.vue";
+import UserSignOut from "@/views/auth/UserSignOut.vue";
+import UserSignUp from "@/views/auth/UserSignUp.vue";
+import ForgotPassword from "@/views/auth/ForgotPassword.vue";
+import CoursePage from "@/views/view/CoursePage.vue";
+import LessonReaderPage from "@/views/reader/LessonReaderPage.vue";
+import ExplorePage from "@/views/view/ExplorePage.vue";
+import MyLibraryPage from "@/views/view/MyLibraryPage.vue";
+import MyVocabPage from "@/views/view/MyVocabPage.vue";
+import LessonAddEditPage from "@/views/change/LessonAddEditPage.vue";
+import CourseAddPage from "@/views/change/CourseAddPage.vue";
+import CourseEditPage from "@/views/change/CourseEditPage.vue";
 import MyProfilePage from "@/views/user/MyProfilePage.vue";
 import SettingsPage from "@/views/user/SettingsPage.vue";
 import AccountTab from "@/components/page/settings/AccountTab.vue";
@@ -64,6 +64,11 @@ const router = createRouter({
             meta: {
                 requiresAuth: true,
                 showFooter: false,
+                query: {
+                    page: "int:1",
+                    maxPerPage: "int:10",
+                    searchQuery: "string:",
+                }
             }
         },
         {
@@ -180,12 +185,12 @@ router.beforeEach(async (to, from) => {
     const isAuthenticated = authStore.isAuthenticated;
     //prevent visiting sites that require authentication while unauthenticated
     if (to.meta.requiresAuth && !isAuthenticated)
-        return {name: "login"}
+        return {name: "login"};
     if (to.meta.requiresAuth && isAuthenticated && !authStore.token)
         authStore.token = localStorage.authToken;
 
     if ((to.name === "login" || to.name === "home") && isAuthenticated)
-        return {name: "explore"}
+        return {name: "explore"};
 
     if (isAuthenticated && to.meta.redirToLanguageSpecific) {
         const defaultLanguage = (await languageStore.fetchUserLanguages())[0];
@@ -195,7 +200,7 @@ router.beforeEach(async (to, from) => {
     if (to.params.learningLanguage && from.params.learningLanguage !== to.params.learningLanguage)
         await languageStore.updateLanguageLastOpened({languageCode: to.params.learningLanguage});
 
-})
+});
 
 
 export default router;
