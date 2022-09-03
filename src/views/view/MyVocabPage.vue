@@ -33,7 +33,6 @@
       <!--suppress JSUnresolvedVariable-->
       <pagination-controls v-if="pageCount"
                            :page-count="pageCount"
-                           :maxPerPage="$query.maxPerPage"
                            per-page-select-label="Vocabs Per Page"
                            :per-page-select-options="PER_PAGE_SELECT_OPTIONS">
       </pagination-controls>
@@ -61,23 +60,16 @@ export default {
       PER_PAGE_SELECT_OPTIONS: [25, 50, 100, 150, 200]
     };
   },
-  watch: {
-    // TODO fix bug where going from ?page=2 then pressing back button does not trigger this refetch
-    async "$query.page"() {
-      await this.fetchVocabsPage();
-    },
-    async "$query.maxPerPage"() {
-      this.refetchPage();
-    },
-    async "$query.searchQuery"() {
-      this.refetchPage();
-    },
-    async "$query.level"() {
-      this.refetchPage();
-    },
-  },
+  watch: {},
   async mounted() {
     await this.fetchVocabsPage();
+    // TODO fix bug where going from ?page=2 then pressing back button does not trigger this refetch
+    this.unwatches = [
+      this.$watch("$query.page", this.fetchVocabsPage),
+      this.$watch("$query.maxPerPage", this.refetchPage),
+      this.$watch("$query.searchQuery", this.refetchPage),
+      this.$watch("$query.level", this.refetchPage)
+    ];
   },
   methods: {
     async fetchVocabsPage() {
@@ -122,9 +114,14 @@ export default {
         vocab.userMeanings.splice(index, 1);
     }
   },
+  beforeRouteLeave() {
+    while (this.unwatches.length)
+      (this.unwatches.pop())();
+  },
   created() {
     this.vocabStore = useVocabStore();
   }
+
 };
 </script>
 

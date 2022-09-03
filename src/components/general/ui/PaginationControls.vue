@@ -2,15 +2,16 @@
   <div class="pagination-div">
     <form id="per-page-form">
       <label for="per-page-select" v-if="perPageSelectLabel">{{ perPageSelectLabel }}</label>
+      <!--suppress JSUnresolvedVariable-->
       <select id="per-page-select"
-              :value="maxPerPage"
+              :value="$query.maxPerPage"
               @change="setMaxPerPage($event.target.value)">
         <option v-for="option in perPageSelectOptions" :key="option" :value="option">{{ option }}</option>
       </select>
     </form>
     <!--suppress JSUnresolvedVariable -->
     <base-page-selector v-if="!!pageCount"
-                        :current-page="$query.page"
+                        :current-page="$query.page??1"
                         :pageCount="pageCount"
                         :shown-count="Math.min(5,pageCount)"
                         @onPageClicked="goToPage">
@@ -25,10 +26,6 @@ export default {
   name: "PaginationControls",
   components: {BasePageSelector},
   props: {
-    maxPerPage: {
-      type: Number,
-      required: true
-    },
     perPageSelectOptions: {
       type: Array,
       required: false,

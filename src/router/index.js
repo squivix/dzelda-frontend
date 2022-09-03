@@ -199,7 +199,6 @@ router.beforeEach(async (to, from) => {
 
     if (to.params.learningLanguage && from.params.learningLanguage !== to.params.learningLanguage)
         await languageStore.updateLanguageLastOpened({languageCode: to.params.learningLanguage});
-
 });
 
 
