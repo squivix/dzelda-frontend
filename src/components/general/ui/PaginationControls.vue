@@ -36,7 +36,7 @@ export default {
     perPageSelectLabel: {
       type: String,
       required: false,
-      default: null,
+      default: "Max Per Page",
     },
     pageCount: {
       type: Number,

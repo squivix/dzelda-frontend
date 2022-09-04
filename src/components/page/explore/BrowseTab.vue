@@ -13,19 +13,22 @@ import {useLessonStore} from "@/stores/lesson";
 export default {
   name: "BrowseTab",
   components: {LessonListItem},
+  emits: ["onPageFetched"],
   data() {
     return {recommendedLessons: null};
   },
   methods: {
     async fetchRecommendedLessons() {
-      return (await this.lessonStore.fetchLessons({
+      const response = await this.lessonStore.fetchLessons({
         languageCode: this.$route.params.learningLanguage,
         sortBy: "best",
-      }))["results"];
+      });
+      this.recommendedLessons = response.results;
+      this.$emit("onPageFetched", Math.ceil(response.count / this.$query.maxPerPage));
     }
   },
   async mounted() {
-    this.recommendedLessons = await this.fetchRecommendedLessons();
+    await this.fetchRecommendedLessons();
   },
   async created() {
     this.lessonStore = useLessonStore();

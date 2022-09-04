@@ -21,14 +21,16 @@ export default {
   },
   methods: {
     async fetchGuidedCourses() {
-      return await this.courseStore.fetchCourses({
+      const response = await this.courseStore.fetchCourses({
         languageCode: this.$route.params.learningLanguage,
         addedBy: GUIDED_USERNAME,
       });
+      this.guidedCourses = response.results;
+      this.$emit("onPageFetched", Math.ceil(response.count / this.$query.maxPerPage));
     }
   },
   async mounted() {
-    this.guidedCourses = await this.fetchGuidedCourses();
+    await this.fetchGuidedCourses();
   },
   created() {
     this.courseStore = useCourseStore();

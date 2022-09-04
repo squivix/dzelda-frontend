@@ -64,7 +64,7 @@ export default {
   async mounted() {
     await this.fetchVocabsPage();
     // TODO fix bug where going from ?page=2 then pressing back button does not trigger this refetch
-    this.unwatches = [
+    this.unwatchesOnRouteExit = [
       this.$watch("$query.page", this.fetchVocabsPage),
       this.$watch("$query.maxPerPage", this.refetchPage),
       this.$watch("$query.searchQuery", this.refetchPage),
@@ -115,8 +115,8 @@ export default {
     }
   },
   beforeRouteLeave() {
-    while (this.unwatches.length)
-      (this.unwatches.pop())();
+    while (this.unwatchesOnRouteExit.length)
+      (this.unwatchesOnRouteExit.pop())();
   },
   created() {
     this.vocabStore = useVocabStore();
