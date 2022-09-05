@@ -20,9 +20,12 @@ router.beforeEach(async (to, from) => {
     //prevent visiting sites that require authentication while unauthenticated
     if (to.meta.requiresAuth && !isAuthenticated)
         return {name: "login"};
+
+    //save token if it's not saved
     if (to.meta.requiresAuth && isAuthenticated && !authStore.token)
         authStore.token = localStorage.authToken;
 
+    //take to explore if logged in
     if ((to.name === "login" || to.name === "home") && isAuthenticated)
         return {name: "explore"};
 

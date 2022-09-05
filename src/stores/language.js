@@ -23,7 +23,10 @@ export const useLanguageStore = defineStore("language", {
             const store = useStore();
             const languages = await store.fetchCustom(`${store.apiUrl}/users/me/languages/`,
                 {},
-                true,);
+                true,
+                true,
+                this,
+                "userLanguages");
             this.userLanguages = languages;
             return languages;
         },

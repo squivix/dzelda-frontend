@@ -15,7 +15,7 @@ export const useProfileStore = defineStore("profile", {
             this.userProfile = await store.fetchCustom(
                 `${store.apiUrl}/users/me/profile/`,
                 {},
-                true,);
+                true);
             return this.userProfile;
         },
     }

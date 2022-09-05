@@ -14,8 +14,8 @@ export const useStore = defineStore("main", {
         },
     },
     actions: {
-        async fetchCustom(url, options, isProtected, doCache, cacheStore, cacheKey) {
-            if (doCache) {
+        async fetchCustom(url, options, isProtected, doCache = false, cacheStore, cacheKey) {
+            if (doCache && cacheStore && cacheKey) {
                 const hit = cacheStore[cacheKey];
                 if (hit)
                     return hit;
