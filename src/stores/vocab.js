@@ -7,7 +7,7 @@ export const useVocabStore = defineStore("vocab", {
             const store = useStore();
             return await store.fetchCustom(
                 //&level.neq=${VOCAB_LEVELS.IGNORED}&level.neq=${VOCAB_LEVELS.KNOWN}
-                `${store.apiUrl}/users/me/vocabs/?language=${languageCode}${levels ? levels.map((level) => `&level=${level}`).join("") : ""}${searchQuery ? `&search=${searchQuery}` : ''}&pageSize=${vocabsPerPage}&page=${page}`,
+                `${store.apiUrl}/users/me/vocabs/?language=${languageCode}${levels ? levels.map((level) => `&level=${level}`).join("") : ""}${searchQuery ? `&search=${searchQuery}` : ""}&pageSize=${vocabsPerPage}&page=${page}`,
                 {},
                 true);
         },
@@ -16,7 +16,7 @@ export const useVocabStore = defineStore("vocab", {
             return await store.fetchCustom(
                 `${store.apiUrl}/vocabs/`,
                 {
-                    method: 'POST',
+                    method: "POST",
                     body: JSON.stringify({
                         text: text,
                         language: language,
@@ -30,7 +30,7 @@ export const useVocabStore = defineStore("vocab", {
             return await store.fetchCustom(
                 `${store.apiUrl}/users/me/vocabs/`,
                 {
-                    method: 'POST',
+                    method: "POST",
                     body: JSON.stringify({
                         vocabId: vocabId
                     }),
@@ -42,7 +42,7 @@ export const useVocabStore = defineStore("vocab", {
             return await store.fetchCustom(
                 `${store.apiUrl}/users/me/vocabs/${vocabId}/`,
                 {
-                    method: 'PATCH',
+                    method: "PATCH",
                     body: JSON.stringify({
                         level: level,
                     }),

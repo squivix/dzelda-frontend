@@ -30,8 +30,8 @@
   </base-card>
 </template>
 <script>
-import TheLessonContent from '@/components/page/reader/TheLessonContent.vue';
-import TheMeaningPanel from '@/components/general/shared/vocab-panel/TheMeaningPanel.vue';
+import TheLessonContent from "@/components/page/reader/TheLessonContent.vue";
+import TheMeaningPanel from "@/components/general/shared/vocab-panel/TheMeaningPanel.vue";
 import {ALL_VOCAB_LEVELS} from "@/constants";
 import {escapeRegExp} from "@/utils.js";
 import {getTextElements} from "@/components/page/reader/shared.js";
@@ -73,7 +73,7 @@ export default {
     async fetchLesson() {
       this.loadingLesson = true;
       this.lesson = await this.lessonStore.fetchLesson({lessonId: this.$route.params.lessonId});
-      this.lesson.text = this.lesson.text.replace(/[\r\n]{3,}/g, '\n\n');
+      this.lesson.text = this.lesson.text.replace(/[\r\n]{3,}/g, "\n\n");
       this.loadingLesson = false;
     },
     async fetchWordsLevels() {
@@ -161,9 +161,8 @@ export default {
           });
 
         for (let phrase of phrases) {
-          let regex = new RegExp(`${escapeRegExp(phrase)}`, 'ig');
+          let regex = new RegExp(`[^\\p{L}\\d]${phrase}[^\\p{L}\\d]`, "igu");
           let matches = paragraph.matchAll(regex);
-          //TODO fix phrase splitting across many words for example "familia con pocos" => "a c" phrase
           for (let match of matches) {
             let beforePhraseIndex = getTextElements(paragraph.substring(0, match.index)).length;
             let phraseSlice = getTextElements(match[0]);

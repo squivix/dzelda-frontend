@@ -68,19 +68,11 @@ export default {
   },
   async mounted() {
     await this.fetchContent();
-  }, watch: {
-    async "$query.page"() {
-      await this.fetchContent();
-    },
-    async "$query.maxPerPage"() {
-      this.refetchPage();
-    },
-    async "$query.searchQuery"() {
-      this.refetchPage();
-    },
-    async "$query.level"() {
-      this.refetchPage();
-    },
+    this.unwatchesOnRouteExit = [
+      this.$watch("$query.page", this.fetchContent),
+      this.$watch("$query.maxPerPage", this.refetchPage),
+      this.$watch("$query.searchQuery", this.refetchPage)
+    ];
   },
   methods: {
     refetchPage() {
@@ -118,6 +110,9 @@ export default {
       this.courses = response.results;
       this.pageCount = Math.ceil(response.count / this.$query.maxPerPage);
     }
+  }, beforeRouteLeave() {
+    while (this.unwatchesOnRouteExit.length)
+      (this.unwatchesOnRouteExit.pop())();
   },
   created() {
     this.courseStore = useCourseStore();
