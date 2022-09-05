@@ -1,11 +1,12 @@
 import {defineStore} from "pinia";
 import {useAuthStore} from "@/stores/auth";
+import {retarget} from "jsdom/lib/jsdom/living/helpers/shadow-dom.js";
 
 export const useStore = defineStore("main", {
     state() {
         return {
             baseUrl: `http://localhost:8000`,
-        }
+        };
     },
     getters: {
         apiUrl(state) {
@@ -13,11 +14,16 @@ export const useStore = defineStore("main", {
         },
     },
     actions: {
-        async fetchCustom(url, options, isProtected) {
+        async fetchCustom(url, options, isProtected, doCache, cacheStore, cacheKey) {
+            if (doCache) {
+                const hit = cacheStore[cacheKey];
+                if (hit)
+                    return hit;
+            }
             options = {
                 method: options?.method ?? "GET",
                 headers: options?.headers ?? {
-                    'Content-Type': 'application/json'
+                    "Content-Type": "application/json"
                 },
                 ...options
             };
@@ -32,9 +38,12 @@ export const useStore = defineStore("main", {
                 body: options.body
             });
 
-            if (response.ok && response.status !== 204)
-                return await response.json();
-            else if (response.status >= 400 && response.status < 500) {
+            if (response.ok && response.status !== 204) {
+                const data = await response.json();
+                if (doCache)
+                    cacheStore[cacheKey] = data;
+                return data;
+            } else if (response.status >= 400 && response.status < 500) {
                 if (response.status === 401) {
                     authStore.token = null;
                     delete localStorage.authToken;
