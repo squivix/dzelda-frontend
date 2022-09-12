@@ -24,8 +24,8 @@
 </template>
 
 <script>
-    import {ALL_VOCAB_LEVELS} from "@/constants";
-    import {useVocabStore} from "@/stores/vocab";
+    import {ALL_VOCAB_LEVELS} from "@/constants.js";
+    import {useVocabStore} from "@/stores/vocab.js";
 
     export default {
         name: "VocabLevelPicker",

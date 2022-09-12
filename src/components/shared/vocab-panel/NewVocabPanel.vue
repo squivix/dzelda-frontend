@@ -24,10 +24,10 @@
 </template>
 
 <script>
-import {ALL_VOCAB_LEVELS} from "@/constants.js";
-import MeaningAddingControls from "@/components/general/shared/vocab-panel/MeaningAddingControls.vue";
-import DictionariesList from "@/components/general/shared/vocab-panel/DictionaryList.vue";
-import {useVocabStore} from "@/stores/vocab";
+import {ALL_VOCAB_LEVELS} from "@/constants";
+import MeaningAddingControls from "@/components/shared/vocab-panel/MeaningAddingControls.vue";
+import DictionariesList from "@/components/shared/vocab-panel/DictionaryList.vue";
+import {useVocabStore} from "@/stores/vocab.js";
 
 export default {
   name: "NewVocabPanel",

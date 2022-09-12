@@ -31,13 +31,12 @@
 </template>
 <script>
 import TheLessonContent from "@/components/page/reader/TheLessonContent.vue";
-import TheMeaningPanel from "@/components/general/shared/vocab-panel/TheMeaningPanel.vue";
-import {ALL_VOCAB_LEVELS} from "@/constants";
-import {escapeRegExp} from "@/utils.js";
+import TheMeaningPanel from "@/components/shared/vocab-panel/TheMeaningPanel.vue";
+import {ALL_VOCAB_LEVELS} from "@/constants.js";
 import {getTextElements} from "@/components/page/reader/shared.js";
 import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel.vue";
-import {useLessonStore} from "@/stores/lesson";
-import {useVocabStore} from "@/stores/vocab";
+import {useLessonStore} from "@/stores/lesson.js";
+import {useVocabStore} from "@/stores/vocab.js";
 
 export default {
   name: "LessonReaderPage",

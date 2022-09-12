@@ -16,7 +16,7 @@
 </template>
 
 <script>
-    import {useMeaningStore} from "@/stores/meaning";
+    import {useMeaningStore} from "@/stores/meaning.js";
 
     export default {
         name: "MeaningEditingControls",

@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import BaseCard from "@/components/general/ui/BaseCard.vue";
-import LessonListItem from "@/components/page/content/LessonListItem.vue";
-import {useCourseStore} from "@/stores/course";
+import BaseCard from "@/components/ui/BaseCard.vue";
+import LessonListItem from "@/components/shared/content/LessonListItem.vue";
+import {useCourseStore} from "@/stores/course.js";
 
 export default {
         name: "CoursePage",

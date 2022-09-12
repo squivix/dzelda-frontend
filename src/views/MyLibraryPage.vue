@@ -44,12 +44,12 @@
   </base-card>
 </template>
 <script>
-import BaseCard from "@/components/general/ui/BaseCard.vue";
-import LessonListItem from "@/components/page/content/LessonListItem.vue";
-import CourseCard from "@/components/page/content/CourseCard.vue";
-import {useLessonStore} from "@/stores/lesson";
-import {useCourseStore} from "@/stores/course";
-import PaginationControls from "@/components/general/ui/PaginationControls.vue";
+import BaseCard from "@/components/ui/BaseCard.vue";
+import LessonListItem from "@/components/shared/content/LessonListItem.vue";
+import CourseCard from "@/components/shared/content/CourseCard.vue";
+import {useLessonStore} from "@/stores/lesson.js";
+import {useCourseStore} from "@/stores/course.js";
+import PaginationControls from "@/components/ui/PaginationControls.vue";
 import LibrarySearchFilter from "@/components/page/reader/LibrarySearchFilter.vue";
 
 export default {
@@ -65,6 +65,11 @@ export default {
       loading: true,
       PER_PAGE_SELECT_OPTIONS: [10, 15, 20, 50]
     };
+  },
+  watch: {
+    showListOf() {
+      this.fetchContent();
+    }
   },
   async mounted() {
     await this.fetchContent();

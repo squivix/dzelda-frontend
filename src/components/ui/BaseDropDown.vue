@@ -20,7 +20,7 @@
 
 <script>
 
-import BasePointyDiv from "@/components/general/ui/BasePointyDiv.vue";
+import BasePointyDiv from "@/components/ui/BasePointyDiv.vue";
 
 export default {
   name: "BaseDropDown",

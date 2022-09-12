@@ -108,11 +108,11 @@
   </header>
 </template>
 <script>
-import BaseDropDown from "@/components/general/ui/BaseDropDown.vue";
+import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {useStore} from "@/stores";
-import {useLanguageStore} from "@/stores/language";
-import {useProfileStore} from "@/stores/profile";
+import {useStore} from "@/stores/index.js";
+import {useLanguageStore} from "@/stores/language.js";
+import {useProfileStore} from "@/stores/profile.js";
 
 export default {
   name: "AuthHeader",

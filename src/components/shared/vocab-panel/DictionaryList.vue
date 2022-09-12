@@ -6,7 +6,7 @@
 </template>
 
 <script>
-    import {useDictionaryStore} from "@/stores/dictionary";
+    import {useDictionaryStore} from "@/stores/dictionary.js";
 
     export default {
         name: "DictionaryList",

@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import VocabLevelPicker from "@/components/general/shared/vocab-panel/VocabLevelPicker.vue";
-import MeaningEditingControls from "@/components/general/shared/vocab-panel/MeaningEditingControls.vue";
+import VocabLevelPicker from "@/components/shared/vocab-panel/VocabLevelPicker.vue";
+import MeaningEditingControls from "@/components/shared/vocab-panel/MeaningEditingControls.vue";
 
 export default {
         name: "ExistingVocabPanel",

@@ -21,8 +21,8 @@
 </template>
 
 <script>
-import {useMeaningStore} from "@/stores/meaning";
-import {useVocabStore} from "@/stores/vocab";
+import {useMeaningStore} from "@/stores/meaning.js";
+import {useVocabStore} from "@/stores/vocab.js";
 
 export default {
   name: "MeaningAddingControls",

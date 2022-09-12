@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import {SAVED_VOCAB_LEVELS} from "@/constants";
+import {SAVED_VOCAB_LEVELS} from "@/constants.js";
 
 export default {
   name: "SearchFilter",

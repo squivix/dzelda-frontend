@@ -19,7 +19,7 @@
 </template>
 
 <script>
-    import {useStore} from "@/stores";
+    import {useStore} from "@/stores/index.js";
 
     export default {
         name: "CourseCard",
@@ -32,7 +32,7 @@
         computed: {
             imageUrl() {
                 if (this.course.image !== null)
-                    return this.course.image;
+                    return `${this.store.baseUrl}${this.course.image}`;
                 else
                     return this.defaultImageUrl;
             },

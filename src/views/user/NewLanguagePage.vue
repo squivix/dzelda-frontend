@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import BaseCard from "@/components/general/ui/BaseCard.vue";
+import BaseCard from "@/components/ui/BaseCard.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {useLanguageStore} from "@/stores/language";
 

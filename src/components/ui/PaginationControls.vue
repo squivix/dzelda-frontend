@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import BasePageSelector from "@/components/general/ui/BasePageSelector.vue";
+import BasePageSelector from "@/components/ui/BasePageSelector.vue";
 
 export default {
   name: "PaginationControls",

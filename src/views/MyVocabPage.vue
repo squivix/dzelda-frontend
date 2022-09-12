@@ -41,12 +41,12 @@
 </template>
 
 <script>
-import {ALL_VOCAB_LEVELS} from "@/constants.js";
-import TheMeaningPanel from "@/components/general/shared/vocab-panel/TheMeaningPanel.vue";
+import {ALL_VOCAB_LEVELS} from "@/constants";
+import TheMeaningPanel from "@/components/shared/vocab-panel/TheMeaningPanel.vue";
 import VocabTable from "@/components/page/my-vocabs/VocabTable.vue";
 import VocabSearchFilter from "@/components/page/my-vocabs/VocabSearchFilter.vue";
-import PaginationControls from "@/components/general/ui/PaginationControls.vue";
-import {useVocabStore} from "@/stores/vocab";
+import PaginationControls from "@/components/ui/PaginationControls.vue";
+import {useVocabStore} from "@/stores/vocab.js";
 
 export default {
   name: "MyVocabPage",

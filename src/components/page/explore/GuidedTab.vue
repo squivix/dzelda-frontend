@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import CourseCard from "@/components/page/content/CourseCard.vue";
+import CourseCard from "@/components/shared/content/CourseCard.vue";
 import {useCourseStore} from "@/stores/course";
 import {GUIDED_USERNAME} from "@/constants.js";
 

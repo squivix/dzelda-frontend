@@ -48,7 +48,7 @@
 
 <script>
 import {SAVED_VOCAB_LEVELS} from "@/constants.js";
-import SearchFilter from "@/components/general/ui/SearchFilter.vue";
+import SearchFilter from "@/components/ui/SearchFilter.vue";
 
 export default {
   name: "VocabSearchFilter",

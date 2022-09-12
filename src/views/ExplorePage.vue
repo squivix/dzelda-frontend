@@ -30,10 +30,10 @@
 </template>
 
 <script>
-import BaseCard from "@/components/general/ui/BaseCard.vue";
+import BaseCard from "@/components/ui/BaseCard.vue";
 import BrowseTab from "@/components/page/explore/BrowseTab.vue";
 import GuidedTab from "@/components/page/explore/GuidedTab.vue";
-import PaginationControls from "@/components/general/ui/PaginationControls.vue";
+import PaginationControls from "@/components/ui/PaginationControls.vue";
 
 export default {
   name: "ExplorePage",

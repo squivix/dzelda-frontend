@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import LessonListItem from "@/components/page/content/LessonListItem.vue";
+import LessonListItem from "@/components/shared/content/LessonListItem.vue";
 import {useLessonStore} from "@/stores/lesson";
 
 export default {

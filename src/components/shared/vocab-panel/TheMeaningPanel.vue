@@ -29,9 +29,9 @@
 </template>
 
 <script>
-import {ALL_VOCAB_LEVELS} from "@/constants";
-import NewVocabPanel from "@/components/general/shared/vocab-panel/NewVocabPanel.vue";
-import ExistingVocabPanel from "@/components/general/shared/vocab-panel/ExistingVocabPanel.vue";
+import {ALL_VOCAB_LEVELS} from "@/constants.js";
+import NewVocabPanel from "@/components/shared/vocab-panel/NewVocabPanel.vue";
+import ExistingVocabPanel from "@/components/shared/vocab-panel/ExistingVocabPanel.vue";
 
 export default {
         name: "TheMeaningPanel",

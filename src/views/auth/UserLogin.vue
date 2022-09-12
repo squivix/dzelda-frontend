@@ -33,7 +33,7 @@
 </template>
 <script>
 import * as utils from '../../utils.js';
-import BasePasswordInput from "@/components/general/ui/BasePasswordInput.vue";
+import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
 import {useAuthStore} from "@/stores/auth";
 
 export default {

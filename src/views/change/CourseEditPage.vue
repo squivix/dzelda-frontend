@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import BaseCard from "@/components/general/ui/BaseCard.vue";
+import BaseCard from "@/components/ui/BaseCard.vue";
 import {VueDraggableNext} from 'vue-draggable-next'
 import {useCourseStore} from "@/stores/course";
 

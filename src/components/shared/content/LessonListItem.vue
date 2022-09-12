@@ -25,8 +25,8 @@
 </template>
 
 <script>
-import BaseCard from "@/components/general/ui/BaseCard.vue";
-import {useStore} from "@/stores";
+import BaseCard from "@/components/ui/BaseCard.vue";
+import {useStore} from "@/stores/index.js";
 
 export default {
         name: "LessonListItem",

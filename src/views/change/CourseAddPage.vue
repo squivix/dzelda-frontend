@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import BaseCard from "@/components/general/ui/BaseCard.vue";
+import BaseCard from "@/components/ui/BaseCard.vue";
 import {useCourseStore} from "@/stores/course";
 
 export default {
