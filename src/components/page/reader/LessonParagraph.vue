@@ -238,6 +238,7 @@ export default {
     getPhraseNodes(node, elementPhrase) {
       const phraseLength = elementPhrase.length;
       const hoverNodeIndex = elementPhrase.index;
+
       let phraseStart = node;
       for (let i = hoverNodeIndex; i > 0; i--)
         phraseStart = phraseStart.previousSibling;

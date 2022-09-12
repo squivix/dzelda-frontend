@@ -56,6 +56,7 @@ export default {
     };
   },
   async mounted() {
+    await this.lessonStore.addLessonToUser({lessonId: this.$route.params.lessonId});
     await this.fetchLesson();
     await this.fetchWordsLevels();
     this.parseLesson();

@@ -13,7 +13,6 @@
                              :vocab="vocab"
                              @onVocabClicked="onVocabClicked"
                              @onVocabLevelSet="onVocabLevelSet">
-
             </vocab-table-row>
             </tbody>
         </table>
@@ -70,5 +69,6 @@
         vertical-align: middle;
         font-weight: bold;
     }
+
 
 </style>

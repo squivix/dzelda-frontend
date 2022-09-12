@@ -12,7 +12,7 @@ export const useLanguageStore = defineStore("language", {
         },
     },
     actions: {
-        async fetchLanguages({supported}) {
+        async fetchLanguages({supported = true}) {
             const store = useStore();
             return await store.fetchCustom(
                 `${store.apiUrl}/languages/?supported=${supported}`,
