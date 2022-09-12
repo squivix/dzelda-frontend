@@ -166,7 +166,11 @@ export default {
             let beforePhraseIndex = getTextElements(paragraph.substring(0, match.index)).length;
             let phraseSlice = getTextElements(match[0]);
             const phraseElements = paragraphElements.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length)
-            phraseElements.forEach((pe, index) => pe.phrases[phrase] = index);
+            phraseElements.forEach((pe, index) => pe.phrases[phrase] = {
+              index: index,
+              length: phraseElements.length
+            });
+
           }
         }
         paragraphList.push(paragraphElements);
