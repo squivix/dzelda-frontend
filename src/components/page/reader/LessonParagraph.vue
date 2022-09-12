@@ -108,12 +108,12 @@ export default {
       }
     },
     getWrapperClass(element) {
-      return `word-wrapper ${this.getPhrasePositionClass(element)} ${this.getPhraseLevelClass(element, Object.keys(element.phrases)[0])}`;
+      return `word-wrapper ${this.getPhrasePositionClass(element)} ${this.getPhraseLevelClass(element)}`;
     },
-    getPhraseLevelClass(element, phrase) {
+    getPhraseLevelClass(element) {
       if (isEmptyObject(element.phrases))
         return "";
-      switch (this.phrases[phrase].level) {
+      switch (this.phrases[Object.keys(element.phrases)[0].toLowerCase()].level) {
         case 0:
           return "phrase-new";
         case 1:

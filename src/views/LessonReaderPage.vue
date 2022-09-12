@@ -161,7 +161,7 @@ export default {
           });
 
         for (let phrase of phrases) {
-          let regex = new RegExp(`[^\\p{L}\\d]${phrase}[^\\p{L}\\d]`, "igu");
+          let regex = new RegExp(`[^\\p{L}\\d]*${phrase}[^\\p{L}\\d]*`, "igu");
           let matches = paragraph.matchAll(regex);
           for (let match of matches) {
             let beforePhraseIndex = getTextElements(paragraph.substring(0, match.index)).length;

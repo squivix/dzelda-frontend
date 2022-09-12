@@ -11,7 +11,7 @@ export const useVocabStore = defineStore("vocab", {
                 {},
                 true);
         },
-        async createVocab({text, language, isPhrase}) {
+        async createVocab({text, languageCode, isPhrase}) {
             const store = useStore();
             return await store.fetchCustom(
                 `${store.apiUrl}/vocabs/`,
@@ -19,7 +19,7 @@ export const useVocabStore = defineStore("vocab", {
                     method: "POST",
                     body: JSON.stringify({
                         text: text,
-                        language: language,
+                        language: languageCode,
                         isPhrase: isPhrase,
                     }),
                 },
