@@ -9,14 +9,14 @@ export const useProfileStore = defineStore("profile", {
     },
     actions: {
         async fetchUserProfile() {
-            if (this.userProfile)
-                return this.userProfile;
             const store = useStore();
-            this.userProfile = await store.fetchCustom(
+            return await store.fetchCustom(
                 `${store.apiUrl}/users/me/profile/`,
                 {},
-                true);
-            return this.userProfile;
+                true,
+                true,
+                this,
+                "userProfile");
         },
     }
 

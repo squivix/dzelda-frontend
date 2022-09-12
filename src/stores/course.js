@@ -34,13 +34,13 @@ export const useCourseStore = defineStore("course", {
                     })
                 },
                 true);
-            await this.addCourseToLibrary({courseId: newCourse.id});
+            // await this.addCourseToLibrary({courseId: newCourse.id});
             return newCourse;
         },
         async addCourseToLibrary({courseId}) {
             const store = useStore();
             return await store.fetchCustom(
-                `${store.apiUrl}/users/me/courses/`,
+                `${store.apiUrl}/users/me/library/courses/`,
                 {
                     method: "POST",
                     body: JSON.stringify({

@@ -36,11 +36,11 @@ export const useLessonStore = defineStore("lesson", {
                     body: JSON.stringify({
                         title: title,
                         text: text,
-                        courseId: courseId,
+                        course: courseId,
                     })
                 },
                 true);
-            await this.lessonStore.addLessonToUser({lessonId: newLesson.id});
+            await this.addLessonToUser({lessonId: newLesson.id});
             return newLesson;
         },
         async addLessonToUser({lessonId}) {
@@ -50,7 +50,7 @@ export const useLessonStore = defineStore("lesson", {
                 {
                     method: "POST",
                     body: JSON.stringify({
-                        lessonId: lessonId
+                        lesson: lessonId
                     })
                 },
                 true);

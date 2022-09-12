@@ -88,7 +88,7 @@ export default {
   font-size: 1.25rem;
 }
 
-.edit-course-form input, .edit-course-form select, .edit-course-form textarea {
+.edit-course-form input:not([type=checkbox]), .edit-course-form select, .edit-course-form textarea {
   margin-bottom: 1rem;
   font-size: 1rem;
 }

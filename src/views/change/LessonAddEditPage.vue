@@ -33,6 +33,7 @@
 import BaseCard from "@/components/general/ui/BaseCard.vue";
 import {useCourseStore} from "@/stores/course";
 import {useLessonStore} from "@/stores/lesson";
+import {useProfileStore} from "@/stores/profile.js";
 
 export default {
   name: "LessonAddEditPage",
@@ -54,19 +55,17 @@ export default {
   watch: {
     selectedCourse(newVal) {
       if (newVal === "New Course")
-        this.$router.push({
-          name: 'add-course',
-          params: {learningLanguage: this.$route.params.learningLanguage}
-        });
+        this.$router.push({name: "add-course"});
     }
   },
   methods: {
     async fetchEditableCourses() {
-      this.editableCourses = await this.courseStore.fetchCourses({
+      const response = await this.courseStore.fetchCourses({
         //TODO replace me with username
         languageCode: this.$route.params.learningLanguage,
-        editableBy: "me",
+        editableBy: (await this.profileStore.fetchUserProfile()).username,
       });
+      this.editableCourses = response.results;
     },
     async onSubmit(event) {
       if (this.lesson == null)
@@ -76,12 +75,12 @@ export default {
 
       if (event.submitter.id === "save-button") {
         await this.$router.push({
-          name: 'edit-lesson',
+          name: "edit-lesson",
           params: {learningLanguage: this.$route.params.learningLanguage, lessonId: this.lesson.id}
         });
       } else if (event.submitter.id === "save-and-open-button") {
         await this.$router.push({
-          name: 'lesson',
+          name: "lesson",
           params: {learningLanguage: this.$route.params.learningLanguage, lessonId: this.lesson.id}
         });
       }
@@ -119,6 +118,7 @@ export default {
   created() {
     this.courseStore = useCourseStore();
     this.lessonStore = useLessonStore();
+    this.profileStore = useProfileStore();
   }
 }
 
