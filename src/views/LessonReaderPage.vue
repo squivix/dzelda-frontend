@@ -155,6 +155,9 @@ export default {
       let paragraphList = [];
 
       const phrases = Object.keys(this.phrases);
+      // wrap every paragraph in whitespace to allow regex to detect phrases at the beginning of paragraph
+      texts = texts.map(text => ` ${text} `);
+
       for (let paragraph of texts) {
         let elements = getTextElements(paragraph);
         let paragraphElements = [];
@@ -166,7 +169,8 @@ export default {
           });
 
         for (let phrase of phrases) {
-          let regex = new RegExp(`[^\\p{L}\\d]*${phrase}[^\\p{L}\\d]*`, "igu");
+          //detect every phrase surrounded by non letters and non-numbers
+          let regex = new RegExp(`[^\\p{L}\\d]${phrase}[^\\p{L}\\d]`, "igu");
           let matches = paragraph.matchAll(regex);
           for (let match of matches) {
             let beforePhraseIndex = getTextElements(paragraph.substring(0, match.index)).length;
