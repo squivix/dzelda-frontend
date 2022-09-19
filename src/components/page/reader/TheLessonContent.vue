@@ -14,7 +14,7 @@
                         @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked">
       </lesson-paragraph>
     </div>
-    <div class="lesson-text">
+    <div class="lesson-text styled-scrollbars">
       <lesson-paragraph v-for="(paragraph, paragraphIndex) in lessonElements.text"
                         :paragraph-elements="paragraph"
                         :words="words"
@@ -26,6 +26,7 @@
                         @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked">
       </lesson-paragraph>
     </div>
+
     <div>
       <audio v-if="audio" controls :src="audio">
         Your browser does not support the audio element.
@@ -36,6 +37,7 @@
 
 <script>
 import LessonParagraph from "@/components/page/reader/LessonParagraph.vue";
+
 import {BLANK_IMAGE_URL} from "@/constants.js";
 
 export default {
@@ -131,7 +133,6 @@ export default {
 }
 ;
 </script>
-
 <style scoped>
 .lesson-content {
   display: flex;

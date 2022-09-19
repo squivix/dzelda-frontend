@@ -1,5 +1,5 @@
 <template>
-    <div class="vocab-table-wrapper">
+    <div class="vocab-table-wrapper styled-scrollbars">
         <table class="vocab-table">
             <thead>
             <tr>
