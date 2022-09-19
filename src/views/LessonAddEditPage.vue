@@ -2,8 +2,8 @@
   <base-card :title="pageTitle" class="add-edit-lesson-base-card" v-if="editableCourses">
     <template v-slot:content>
       <form class="add-edit-lesson-form" @submit.prevent="onSubmit">
-        <div class="image-div">
-          <img :src="imageUrl" class="lesson-image" alt="lesson image">
+        <div class="file-inputs-div">
+          <img :src="imageUrl" class="course-image" alt="lesson image">
           <label for="image-input" class="file-input-label button-hollow">
             <FontAwesomeIcon icon="upload"></FontAwesomeIcon>
             Upload Image
@@ -57,30 +57,27 @@ import {useLessonStore} from "@/stores/lesson.js";
 import {useProfileStore} from "@/stores/profile.js";
 import {useStore} from "@/stores/index.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {BASE_URL} from "@/constants";
+import {BLANK_IMAGE_URL} from "@/constants.js";
 
 export default {
   name: "LessonAddEditPage",
   components: {BaseCard, FontAwesomeIcon},
   computed: {
     pageTitle() {
-      return this.$route.name === "edit-lesson" ? "Add Lesson" : "Edit Lesson";
+      return this.$route.name !== "edit-lesson" ? "Add Lesson" : "Edit Lesson";
     },
-    defaultImageUrl() {
-      return `${this.store.baseUrl}/media/blank-image.png`;
-    }
   },
   data() {
     return {
       lesson: null,
       editableCourses: null,
-      selectedCourse: null,
+      selectedCourse: "",
       title: "",
       text: "",
       image: null,
       audio: null,
-      imageUrl: this.lesson?.image ?? this.lesson?.course?.image ?? `${BASE_URL}/media/blank-image.png`,
-      audioUrl: this.lesson?.audio ?? "",
+      imageUrl: BLANK_IMAGE_URL,
+      audioUrl: null,
     };
   },
   watch: {
@@ -159,7 +156,7 @@ export default {
       this.selectedCourse = this.lesson.course.id;
       this.title = this.lesson.title;
       this.text = this.lesson.text;
-      this.imageUrl = this.lesson?.image ?? this.lesson?.course?.image ?? `${BASE_URL}/media/blank-image.png`;
+      this.imageUrl = this.lesson?.image ?? this.lesson?.course?.image ?? BLANK_IMAGE_URL;
       this.audioUrl = this.lesson?.audio ?? "";
     }
   },
@@ -187,7 +184,7 @@ export default {
   margin-bottom: 1rem;
 }
 
-.lesson-image {
+.course-image {
   width: 200px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-radius: 5px;
@@ -198,7 +195,7 @@ export default {
   column-gap: 1rem;
 }
 
-.add-edit-lesson-form .image-div {
+.add-edit-lesson-form .file-inputs-div {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
@@ -223,7 +220,7 @@ audio {
 
 .add-edit-lesson-form label {
   margin-bottom: 0.5rem;
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 
 .add-edit-lesson-form input, .add-edit-lesson-form select, .add-edit-lesson-form textarea {

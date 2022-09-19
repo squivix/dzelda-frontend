@@ -5,6 +5,7 @@
           :title="lesson.title"
           :text="lesson.text"
           :lessonElements="lessonElements"
+          :audio="lesson.audio"
           :words="words"
           :phrases="phrases"
           class="lesson-content"

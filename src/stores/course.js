@@ -20,18 +20,22 @@ export const useCourseStore = defineStore("course", {
                 {},
                 true);
         },
-        async createCourse({languageCode, title, description, isPublic}) {
+        async createCourse({languageCode, title, description, image, isPublic}) {
             const store = useStore();
+            const formData = new FormData();
+            formData.append("image", image);
+            formData.append("data", JSON.stringify({
+                language: languageCode,
+                title: title,
+                description: description,
+                isPublic: isPublic,
+            }));
             const newCourse = await store.fetchCustom(
                 `${store.apiUrl}/courses/`,
                 {
                     method: "POST",
-                    body: JSON.stringify({
-                        language: languageCode,
-                        title: title,
-                        description: description,
-                        isPublic: isPublic,
-                    })
+                    body: formData,
+                    headers: {},
                 },
                 true);
             // await this.addCourseToLibrary({courseId: newCourse.id});
@@ -56,18 +60,22 @@ export const useCourseStore = defineStore("course", {
                 {},
                 true);
         },
-        async updateCourse({id, title, description, isPublic, lessonIds}) {
+        async updateCourse({id, title, description, isPublic, image, lessonIds}) {
             const store = useStore();
+            const formData = new FormData();
+            formData.append("image", image);
+            formData.append("data", JSON.stringify({
+                title: title,
+                description: description,
+                isPublic: isPublic,
+                lessons: lessonIds,
+            }));
             return await store.fetchCustom(
                 `${store.apiUrl}/courses/${id}/`,
                 {
                     method: "PUT",
-                    body: JSON.stringify({
-                        title: title,
-                        description: description,
-                        isPublic: isPublic,
-                        lessons: lessonIds,
-                    })
+                    body: formData,
+                    headers: {}
                 },
                 true);
         },

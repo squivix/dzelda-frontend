@@ -1,4 +1,5 @@
 export const BASE_URL = "http://localhost:8000";
+export const BLANK_IMAGE_URL = `${BASE_URL}/media/blank-image.png`;
 export const ALL_VOCAB_LEVELS = {
     IGNORED: -1,
     NEW: 0,

@@ -1,5 +1,7 @@
 <template>
   <div @click="onBackgroundClicked">
+
+
     <lesson-paragraph class="title"
                       :paragraph-elements="lessonElements.title"
                       :words="words"
@@ -23,6 +25,11 @@
                         @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked">
       </lesson-paragraph>
     </div>
+    <div>
+      <audio v-if="audio" controls :src="audio">
+        Your browser does not support the audio element.
+      </audio>
+    </div>
   </div>
 </template>
 
@@ -41,6 +48,10 @@ export default {
     text: {
       type: String,
       required: true,
+    },
+    audio: {
+      type: String,
+      required: false,
     },
     words: {
       type: Object,
@@ -117,6 +128,10 @@ export default {
   flex-direction: column;
   row-gap: 1rem;
   user-select: none;
+}
+
+audio {
+
 }
 
 .title {

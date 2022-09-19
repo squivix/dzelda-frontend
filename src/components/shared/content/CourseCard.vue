@@ -20,6 +20,7 @@
 
 <script>
 import {useStore} from "@/stores/index.js";
+import {BLANK_IMAGE_URL} from "@/constants.js";
 
 export default {
   name: "CourseCard",
@@ -34,16 +35,13 @@ export default {
       if (this.course.image !== null)
         return this.course.image;
       else
-        return this.defaultImageUrl;
+        return BLANK_IMAGE_URL;
     },
-    defaultImageUrl() {
-      return `${this.store.baseUrl}/media/blank-image.png`;
-    }
   },
   methods: {
     setDefaultImage(event) {
-      if (event.target.src !== this.defaultImageUrl)
-        event.target.src = this.defaultImageUrl;
+      if (event.target.src !== BLANK_IMAGE_URL)
+        event.target.src = BLANK_IMAGE_URL;
     }
   },
   created() {

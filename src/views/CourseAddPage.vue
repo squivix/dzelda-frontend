@@ -1,21 +1,32 @@
 <template>
   <base-card title="Add Course" class="add-course-base-card">
     <template v-slot:content>
-      <form class="edit-course-form" @submit.prevent="onSubmit">
-        <label for="course-title">Title</label>
-        <input id="course-title" type="text" placeholder="Course Title" v-model="title" required>
-        <label for="course-description">Description</label>
-        <textarea id="course-description" placeholder="Course Description" v-model="description"></textarea>
 
-        <!--TODO:make into component with auto complete -->
-        <!--<label for="course-tags">Tags</label>-->
-        <!--<input id="course-tags" placeholder="Course Tags">-->
+      <form class="add-course-form" @submit.prevent="onSubmit">
+        <div class="file-inputs-div">
+          <img :src="imageUrl" class="course-image" alt="course image">
+          <label for="image-input" class="file-input-label button-hollow">
+            <FontAwesomeIcon icon="upload"></FontAwesomeIcon>
+            Upload Image
+          </label>
+          <input id="image-input" type="file" accept="image/png, image/jpeg" @change="setImageFile" class="file-input">
+        </div>
+        <div class="other-inputs-div">
+          <label for="course-title">Title</label>
+          <input id="course-title" type="text" placeholder="Course Title" v-model="title" required>
+          <label for="course-description">Description</label>
+          <textarea id="course-description" placeholder="Course Description" v-model="description"></textarea>
 
-        <label for="is-public-checkbox" class="checkbox-label">
-          <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
-          Public
-        </label>
-        <button id="save-button" type="submit" class="primary-button">Save</button>
+          <!--TODO:make into component with auto complete -->
+          <!--<label for="course-tags">Tags</label>-->
+          <!--<input id="course-tags" placeholder="Course Tags">-->
+
+          <label for="is-public-checkbox" class="checkbox-label">
+            <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
+            Public
+          </label>
+          <button id="save-button" type="submit" class="primary-button">Save</button>
+        </div>
       </form>
 
     </template>
@@ -25,18 +36,27 @@
 <script>
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {useCourseStore} from "@/stores/course.js";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {BLANK_IMAGE_URL} from "@/constants.js";
 
 export default {
   name: "CourseAddPage",
-  components: BaseCard,
+  components: {BaseCard, FontAwesomeIcon},
   data() {
     return {
       title: null,
       description: null,
       isPublic: true,
+      image: null,
+      imageUrl: BLANK_IMAGE_URL
     };
   },
   methods: {
+    setImageFile(event) {
+      this.image = event.target.files[0];
+      // noinspection JSUnresolvedFunction
+      this.imageUrl = URL.createObjectURL(this.image);
+    },
     async onSubmit() {
       const newCourse = await this.addCourse();
       //TODO move this somewhere more general
@@ -44,7 +64,7 @@ export default {
         await this.$router.push({path: this.$route.query["redir"]})
       else
         await this.$router.push({
-          name: "course",
+          name: "edit-course",
           params: {courseId: newCourse.id, learningLanguage: this.$route.params.learningLanguage}
         });
     },
@@ -55,6 +75,7 @@ export default {
         title: this.title,
         description: this.description,
         isPublic: this.isPublic,
+        image: this.image,
       })
     }
   },
@@ -78,17 +99,30 @@ export default {
   margin-bottom: 1rem;
 }
 
-.edit-course-form {
+.add-course-form {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  column-gap: 1rem;
 }
 
-.edit-course-form label {
+.file-inputs-div {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+.other-inputs-div {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.add-course-form label {
   margin-bottom: 0.5rem;
   font-size: 1.25rem;
 }
 
-.edit-course-form input:not([type=checkbox]), .edit-course-form select, .edit-course-form textarea {
+.add-course-form input:not([type=checkbox]), .add-course-form select, .add-course-form textarea {
   margin-bottom: 1rem;
   font-size: 1rem;
 }
@@ -104,5 +138,19 @@ export default {
 #course-description {
   resize: none;
   height: 15vh;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.course-image {
+  width: 200px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius: 5px;
+}
+
+.file-input-label {
+  font-size: 0.5rem;
 }
 </style>
