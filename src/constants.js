@@ -1,3 +1,4 @@
+export const BASE_URL = "http://localhost:8000";
 export const ALL_VOCAB_LEVELS = {
     IGNORED: -1,
     NEW: 0,
@@ -17,4 +18,4 @@ export const SAVED_VOCAB_LEVELS = {
     LEARNED: 5,
 };
 
-export const GUIDED_USERNAME="language_learner";
+export const GUIDED_USERNAME = "language_learner";

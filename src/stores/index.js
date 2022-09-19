@@ -1,10 +1,10 @@
 import {defineStore} from "pinia";
 import {useAuthStore} from "@/stores/auth";
-import {retarget} from "jsdom/lib/jsdom/living/helpers/shadow-dom.js";
 
 export const useStore = defineStore("main", {
     state() {
         return {
+            //TODO move to constant
             baseUrl: `http://localhost:8000`,
         };
     },

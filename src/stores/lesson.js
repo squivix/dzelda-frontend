@@ -27,17 +27,23 @@ export const useLessonStore = defineStore("lesson", {
                 {},
                 true);
         },
-        async createLesson({title, text, courseId}) {
+        async createLesson({title, text, courseId, image, audio}) {
             const store = useStore();
+            const formData = new FormData();
+            formData.append("image", image);
+            formData.append("audio", audio);
+            formData.append("data", JSON.stringify({
+                title: title,
+                text: text,
+                course: courseId,
+            }));
+
             const newLesson = await store.fetchCustom(
                 `${store.apiUrl}/lessons/`,
                 {
                     method: "POST",
-                    body: JSON.stringify({
-                        title: title,
-                        text: text,
-                        course: courseId,
-                    })
+                    body: formData,
+                    headers: {}
                 },
                 true);
             await this.addLessonToUser({lessonId: newLesson.id});
@@ -62,7 +68,7 @@ export const useLessonStore = defineStore("lesson", {
                 {},
                 true);
         },
-        async updateLesson({lessonId, courseId, title, text}) {
+        async updateLesson({lessonId, courseId, title, text, image}) {
             const store = useStore();
             return await store.fetchCustom(
                 `${store.apiUrl}/users/me/library/lessons/${lessonId}/`,

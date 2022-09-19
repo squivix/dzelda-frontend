@@ -4,11 +4,22 @@
       <form class="add-edit-lesson-form" @submit.prevent="onSubmit">
         <div class="image-div">
           <img :src="imageUrl" class="lesson-image" alt="lesson image">
-          <label for="image-input" class="image-input-label button-hollow">
+          <label for="image-input" class="input-label button-hollow">
             <FontAwesomeIcon icon="upload"></FontAwesomeIcon>
             Upload Image
           </label>
-          <input id="image-input" type="file" accept="image/png, image/jpeg">
+          <input id="image-input" type="file" accept="image/png, image/jpeg" @change="setImageFile">
+
+          <label for="audio-input" class="input-label button-hollow">
+            <FontAwesomeIcon icon="upload"></FontAwesomeIcon>
+            Upload Audio
+          </label>
+          <input id="audio-input" type="file" accept="audio/*" @change="setAudioFile">
+
+          <audio controls ref="audio" :src="audioUrl">
+            Your browser does not support the audio element.
+          </audio>
+
         </div>
         <div class="other-div">
           <label for="lesson-course">Course</label>
@@ -41,11 +52,12 @@
 
 <script>
 import BaseCard from "@/components/ui/BaseCard.vue";
-import {useCourseStore} from "@/stores/course";
-import {useLessonStore} from "@/stores/lesson";
+import {useCourseStore} from "@/stores/course.js";
+import {useLessonStore} from "@/stores/lesson.js";
 import {useProfileStore} from "@/stores/profile.js";
 import {useStore} from "@/stores/index.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {BASE_URL} from "@/constants";
 
 export default {
   name: "LessonAddEditPage",
@@ -53,12 +65,6 @@ export default {
   computed: {
     pageTitle() {
       return this.lesson === null ? "Add Lesson" : "Edit Lesson";
-    },
-    imageUrl() {
-      if (this.lesson?.image)
-        return this.lesson.image;
-      else
-        return this.defaultImageUrl;
     },
     defaultImageUrl() {
       return `${this.store.baseUrl}/media/blank-image.png`;
@@ -71,6 +77,10 @@ export default {
       selectedCourse: "",
       title: "",
       text: "",
+      image: null,
+      audio: null,
+      imageUrl: this.lesson?.image ?? `${BASE_URL}/media/blank-image.png`,
+      audioUrl: this.lesson?.audio ?? "",
     };
   },
   watch: {
@@ -80,6 +90,18 @@ export default {
     }
   },
   methods: {
+    setImageFile(event) {
+      this.image = event.target.files[0];
+      // noinspection JSUnresolvedFunction
+      this.imageUrl = URL.createObjectURL(this.image);
+    },
+    setAudioFile(event) {
+      this.audio = event.target.files[0];
+      // noinspection JSUnresolvedFunction
+      this.audioUrl = URL.createObjectURL(this.audio);
+
+      this.$refs.audio.load();
+    },
     async fetchEditableCourses() {
       const response = await this.courseStore.fetchCourses({
         //TODO replace me with username
@@ -111,6 +133,8 @@ export default {
         courseId: this.selectedCourse,
         title: this.title,
         text: this.text,
+        image: this.image,
+        audio: this.audio
       });
 
     },
@@ -121,6 +145,7 @@ export default {
         courseId: this.selectedCourse,
         title: this.title,
         text: this.text,
+        image: this.image
       });
     }
   },
@@ -142,7 +167,7 @@ export default {
     this.lessonStore = useLessonStore();
     this.profileStore = useProfileStore();
   }
-}
+};
 
 
 </script>
@@ -183,7 +208,7 @@ export default {
   flex-grow: 1;
 }
 
-.image-input-label {
+.input-label {
   border-color: var(--primary-color-dark);
   color: var(--primary-color-dark);
   text-align: center;

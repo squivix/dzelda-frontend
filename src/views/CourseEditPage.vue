@@ -57,7 +57,7 @@
 <script>
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {VueDraggableNext} from 'vue-draggable-next'
-import {useCourseStore} from "@/stores/course";
+import {useCourseStore} from "@/stores/course.js";
 
 export default {
         name: "CourseEditPage",
