@@ -1,18 +1,19 @@
 <template>
   <div @click="onBackgroundClicked">
 
-
-    <lesson-paragraph class="title"
-                      :paragraph-elements="lessonElements.title"
-                      :words="words"
-                      :phrases="phrases"
-                      :paragraph-index="0"
-                      component="h2"
-                      @onWordClicked="onWordClicked"
-                      @onPhraseClicked="onPhraseClicked"
-                      @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked">
-    </lesson-paragraph>
-
+    <div class="top-div">
+      <img :src="image" @error="setDefaultImage" alt="lesson image" class="lesson-image">
+      <lesson-paragraph class="title"
+                        :paragraph-elements="lessonElements.title"
+                        :words="words"
+                        :phrases="phrases"
+                        :paragraph-index="0"
+                        component="h2"
+                        @onWordClicked="onWordClicked"
+                        @onPhraseClicked="onPhraseClicked"
+                        @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked">
+      </lesson-paragraph>
+    </div>
     <div class="lesson-text">
       <lesson-paragraph v-for="(paragraph, paragraphIndex) in lessonElements.text"
                         :paragraph-elements="paragraph"
@@ -35,6 +36,7 @@
 
 <script>
 import LessonParagraph from "@/components/page/reader/LessonParagraph.vue";
+import {BLANK_IMAGE_URL} from "@/constants.js";
 
 export default {
   name: "TheLessonContent",
@@ -46,6 +48,10 @@ export default {
       required: true,
     },
     text: {
+      type: String,
+      required: true,
+    },
+    image: {
       type: String,
       required: true,
     },
@@ -72,6 +78,10 @@ export default {
     };
   },
   methods: {
+    setDefaultImage(event) {
+      if (event.target.src !== BLANK_IMAGE_URL)
+        event.target.src = BLANK_IMAGE_URL;
+    },
     onWordClicked(word) {
       this.$emit("onWordClicked", word);
     },
@@ -89,7 +99,7 @@ export default {
       this.$emit("onNewPhraseSelected", phraseText);
     },
     clearSelectedPhrases() {
-      document.querySelectorAll(".phrase-selected").forEach((el) => el.classList.remove("phrase-selected"))
+      document.querySelectorAll(".phrase-selected").forEach((el) => el.classList.remove("phrase-selected"));
     },
     wrapperDrop() {
       const selectedPhrase = document.querySelectorAll(".phrase-selected");
@@ -114,9 +124,9 @@ export default {
     }
   },
   mounted() {
-    document.body.addEventListener("drop", this.wrapperDrop)
-    document.body.addEventListener("dragover", e => e.preventDefault())
-    document.body.addEventListener("dragenter", e => e.preventDefault())
+    document.body.addEventListener("drop", this.wrapperDrop);
+    document.body.addEventListener("dragover", e => e.preventDefault());
+    document.body.addEventListener("dragenter", e => e.preventDefault());
   }
 }
 ;
@@ -130,12 +140,22 @@ export default {
   user-select: none;
 }
 
-audio {
+.top-div {
+  display: flex;
+  flex-direction: row;
+  column-gap: 1rem;
+}
 
+.lesson-image {
+  width: 150px;
+  height: 150px;
+  /*border: 3px solid var(--primary-color-dark);*/
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius: 5px;
 }
 
 .title {
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   line-height: 2.5rem;
 }
 
@@ -149,6 +169,7 @@ p {
   font-size: 1.15rem;
   line-height: 2.25rem;
 }
+
 
 span {
   /*user-select: none;*/

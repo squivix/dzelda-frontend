@@ -2,7 +2,7 @@
   <base-card>
     <template v-slot:all>
       <article class="lesson-article">
-        <img :src="imageUrl" @error="setDefaultImage" alt="lesson image" class="course-image">
+        <img :src="imageUrl" @error="setDefaultImage" alt="lesson image" class="lesson-image">
         <div>
           <router-link
               :to="{name:'lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}">
@@ -77,7 +77,7 @@ export default {
   align-items: flex-start;
 }
 
-.course-image {
+.lesson-image {
   width: 200px;
   height: 200px;
   /*border: 3px solid var(--primary-color-dark);*/

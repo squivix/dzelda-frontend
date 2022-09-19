@@ -5,6 +5,7 @@
           :title="lesson.title"
           :text="lesson.text"
           :lessonElements="lessonElements"
+          :image="imageUrl"
           :audio="lesson.audio"
           :words="words"
           :phrases="phrases"
@@ -33,7 +34,7 @@
 <script>
 import TheLessonContent from "@/components/page/reader/TheLessonContent.vue";
 import TheMeaningPanel from "@/components/shared/vocab-panel/TheMeaningPanel.vue";
-import {ALL_VOCAB_LEVELS} from "@/constants.js";
+import {ALL_VOCAB_LEVELS, BLANK_IMAGE_URL} from "@/constants.js";
 import {getTextElements} from "@/components/page/reader/shared.js";
 import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel.vue";
 import {useLessonStore} from "@/stores/lesson.js";
@@ -65,6 +66,9 @@ export default {
   computed: {
     loading() {
       return this.loadingLesson || this.loadingWords || this.parsingLesson;
+    },
+    imageUrl() {
+      return this.lesson.image ?? this.lesson.course.image ?? BLANK_IMAGE_URL;
     },
     vocab() {
       return {...this.words, ...this.phrases};
@@ -134,7 +138,7 @@ export default {
         this.setSelectedVocab(vocab.text);
     },
     onMeaningDeleted(word, deleted_meaning) {
-      const index = word.userMeanings.findIndex((meaning) => meaning.id === deleted_meaning.id)
+      const index = word.userMeanings.findIndex((meaning) => meaning.id === deleted_meaning.id);
       word.userMeanings.splice(index, 1);
       if (word.userMeanings.length === 0)
         this.onVocabLevelSet(word, ALL_VOCAB_LEVELS.NEW);
@@ -167,7 +171,7 @@ export default {
           for (let match of matches) {
             let beforePhraseIndex = getTextElements(paragraph.substring(0, match.index)).length;
             let phraseSlice = getTextElements(match[0]);
-            const phraseElements = paragraphElements.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length)
+            const phraseElements = paragraphElements.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length);
             phraseElements.forEach((pe, index) => pe.phrases[phrase] = {
               index: index,
               length: phraseElements.length
@@ -200,11 +204,11 @@ body {
   width: 80vw;
   display: grid;
   grid-template-columns: 2fr 1.3fr;
-  grid-template-rows: 75vh;
+  grid-template-rows: 70vh;
   margin: auto;
   column-gap: 2rem;
   border-radius: 20px;
-  max-width: 1300px;
+  max-width: 1150px;
   padding: 40px min(5vw, 20px);
 }
 
