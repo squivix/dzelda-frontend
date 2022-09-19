@@ -1,24 +1,24 @@
 <template>
-  <base-card :title="pageTitle" class="add-edit-lesson-base-card">
+  <base-card :title="pageTitle" class="add-edit-lesson-base-card" v-if="editableCourses">
     <template v-slot:content>
       <form class="add-edit-lesson-form" @submit.prevent="onSubmit">
         <div class="image-div">
           <img :src="imageUrl" class="lesson-image" alt="lesson image">
-          <label for="image-input" class="input-label button-hollow">
+          <label for="image-input" class="file-input-label button-hollow">
             <FontAwesomeIcon icon="upload"></FontAwesomeIcon>
             Upload Image
           </label>
           <input id="image-input" type="file" accept="image/png, image/jpeg" @change="setImageFile">
 
-          <label for="audio-input" class="input-label button-hollow">
+          <audio controls ref="audio" :src="audioUrl">
+            Your browser does not support the audio element.
+          </audio>
+          <label for="audio-input" class="file-input-label button-hollow">
             <FontAwesomeIcon icon="upload"></FontAwesomeIcon>
             Upload Audio
           </label>
           <input id="audio-input" type="file" accept="audio/*" @change="setAudioFile">
 
-          <audio controls ref="audio" :src="audioUrl">
-            Your browser does not support the audio element.
-          </audio>
 
         </div>
         <div class="other-div">
@@ -64,7 +64,7 @@ export default {
   components: {BaseCard, FontAwesomeIcon},
   computed: {
     pageTitle() {
-      return this.lesson === null ? "Add Lesson" : "Edit Lesson";
+      return this.$route.name === "edit-lesson" ? "Add Lesson" : "Edit Lesson";
     },
     defaultImageUrl() {
       return `${this.store.baseUrl}/media/blank-image.png`;
@@ -74,12 +74,12 @@ export default {
     return {
       lesson: null,
       editableCourses: null,
-      selectedCourse: "",
+      selectedCourse: null,
       title: "",
       text: "",
       image: null,
       audio: null,
-      imageUrl: this.lesson?.image ?? `${BASE_URL}/media/blank-image.png`,
+      imageUrl: this.lesson?.image ?? this.lesson?.course?.image ?? `${BASE_URL}/media/blank-image.png`,
       audioUrl: this.lesson?.audio ?? "",
     };
   },
@@ -104,7 +104,6 @@ export default {
     },
     async fetchEditableCourses() {
       const response = await this.courseStore.fetchCourses({
-        //TODO replace me with username
         languageCode: this.$route.params.learningLanguage,
         editableBy: (await this.profileStore.fetchUserProfile()).username,
       });
@@ -145,7 +144,8 @@ export default {
         courseId: this.selectedCourse,
         title: this.title,
         text: this.text,
-        image: this.image
+        image: this.image,
+        audio: this.audio
       });
     }
   },
@@ -156,9 +156,11 @@ export default {
         lessonId: this.$route.params.lessonId,
         languageCode: this.$route.params.learningLanguage
       });
-      this.selectedCourse = this.lesson.course;
+      this.selectedCourse = this.lesson.course.id;
       this.title = this.lesson.title;
       this.text = this.lesson.text;
+      this.imageUrl = this.lesson?.image ?? this.lesson?.course?.image ?? `${BASE_URL}/media/blank-image.png`;
+      this.audioUrl = this.lesson?.audio ?? "";
     }
   },
   created() {
@@ -208,7 +210,11 @@ export default {
   flex-grow: 1;
 }
 
-.input-label {
+audio {
+  width: auto;
+}
+
+.file-input-label {
   border-color: var(--primary-color-dark);
   color: var(--primary-color-dark);
   text-align: center;
@@ -217,7 +223,7 @@ export default {
 
 .add-edit-lesson-form label {
   margin-bottom: 0.5rem;
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
 
 .add-edit-lesson-form input, .add-edit-lesson-form select, .add-edit-lesson-form textarea {

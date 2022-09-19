@@ -68,17 +68,23 @@ export const useLessonStore = defineStore("lesson", {
                 {},
                 true);
         },
-        async updateLesson({lessonId, courseId, title, text, image}) {
+        async updateLesson({lessonId, courseId, title, text, image, audio}) {
             const store = useStore();
+            const formData = new FormData();
+            formData.append("image", image);
+            formData.append("audio", audio);
+            formData.append("data", JSON.stringify({
+                course: courseId,
+                title: title,
+                text: text,
+            }));
+
             return await store.fetchCustom(
-                `${store.apiUrl}/users/me/library/lessons/${lessonId}/`,
+                `${store.apiUrl}/lessons/${lessonId}/`,
                 {
-                    method: "PUT",
-                    body: JSON.stringify({
-                        course: courseId,
-                        title: title,
-                        text: text,
-                    })
+                    method: "PATCH",
+                    body: formData,
+                    headers: {}
                 },
                 true,);
         },
