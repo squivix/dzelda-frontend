@@ -60,6 +60,7 @@ export default {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
+  width: 70vw;
 }
 
 h2 {
@@ -70,7 +71,6 @@ h2 {
 .tab-labels {
   display: flex;
   flex-direction: row;
-  /*justify-content: center;*/
 }
 
 .tab-labels .tab-label {

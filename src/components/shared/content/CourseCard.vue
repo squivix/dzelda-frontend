@@ -10,7 +10,7 @@
         <!--TODO:Only show link if user is authorized to edit course-->
         <router-link
             :to="{name:'edit-course', params:{learningLanguage:$route.params.learningLanguage, courseId:course.id}}">
-          <h4>Edit</h4>
+          <p>Edit</p>
         </router-link>
 
       </article>
@@ -53,6 +53,8 @@ export default {
 <style scoped>
 .base-card {
   margin: 0;
+  height: 100%;
+  padding: 2vh 2rem;
 }
 
 .course-article {

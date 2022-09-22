@@ -178,6 +178,7 @@ export default {
   row-gap: 1.25rem;
   justify-content: flex-start;
   align-items: stretch;
+  width: 70vw;
 }
 
 .add-edit-lesson-base-card:deep(header) {

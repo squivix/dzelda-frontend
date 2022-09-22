@@ -14,11 +14,6 @@
                 Languages
               </router-link>
             </li>
-            <!--                        <li>-->
-            <!--                            <router-link :to="{name:'notification-settings'}">-->
-            <!--                                Notifications-->
-            <!--                            </router-link>-->
-            <!--                        </li>-->
           </ul>
         </nav>
         <hr class="vertical-divider">
@@ -42,7 +37,7 @@ export default {
 
 <style scoped>
 .settings-base-card {
-
+  width: 70vw;
 }
 
 .content {

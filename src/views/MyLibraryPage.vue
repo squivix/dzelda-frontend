@@ -133,6 +133,7 @@ export default {
   row-gap: 1.25rem;
   justify-content: flex-start;
   align-items: stretch;
+  width: 70vw;
 }
 
 .library-base-card:deep(header) {
@@ -156,35 +157,6 @@ export default {
 .course-lesson-select {
   flex-basis: 10rem;
 }
-
-
-.search-filter {
-  display: flex;
-  flex-direction: row;
-  column-gap: 0.2rem;
-}
-
-.search-input {
-  flex-grow: 2;
-}
-
-.search-button {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: var(--primary-color);
-  border: 1px solid var(--on-primary-color);
-}
-
-.search-button svg {
-  color: var(--on-primary-color);
-}
-
-.filter-button {
-  border: 2px solid gray;
-  border-radius: 5px;
-}
-
 
 .lesson-list {
   display: flex;

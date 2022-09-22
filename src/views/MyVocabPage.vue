@@ -129,6 +129,7 @@ export default {
 <style scoped>
 
 .my-vocab-base-card {
+  width: 70vw;
 }
 
 .main-content {
