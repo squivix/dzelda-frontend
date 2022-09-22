@@ -2,9 +2,9 @@
   <base-card>
     <template v-slot:all>
       <article>
-        <div class="card-content">
+        <div class="item-content">
           <img :src="imageUrl" @error="setDefaultImage" alt="lesson image" class="lesson-image">
-          <div>
+          <div class="title-subtitle">
             <router-link
                 :to="{name:'lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}"
                 class="link">
@@ -16,17 +16,30 @@
               <p class="course-title">{{ lesson.course.title }}</p>
             </router-link>
             <!--TODO:Only show link if user is authorized to edit lesson-->
-            <router-link
-                :to="{name:'edit-lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}">
-              <p>Edit</p>
-            </router-link>
+
           </div>
         </div>
-        <button class="more-button inv-button">
-          <FontAwesomeIcon icon="ellipsis-vertical">
+        <base-drop-down
+            :label="`lesson-item-${lesson.id}`"
+            group="lesson-items"
+            :centered="false">
+          <template v-slot:button>
+            <FontAwesomeIcon icon="ellipsis-vertical" class="more-button">
 
-          </FontAwesomeIcon>
-        </button>
+            </FontAwesomeIcon>
+          </template>
+          <template v-slot:menu>
+
+            <base-drop-down-list class="profile-menu" :list-items="[
+              {
+                text:'Edit',
+                link:{ name: 'edit-lesson' , params:{lessonId:lesson.id}},
+                icon:'pen'
+              },
+          ]">
+            </base-drop-down-list>
+          </template>
+        </base-drop-down>
       </article>
     </template>
   </base-card>
@@ -37,10 +50,12 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import {useStore} from "@/stores/index.js";
 import {BLANK_IMAGE_URL} from "@/constants.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import BaseDropDown from "@/components/ui/BaseDropDown.vue";
+import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
 
 export default {
   name: "LessonListItem",
-  components: {BaseCard, FontAwesomeIcon},
+  components: {BaseDropDown, BaseCard, FontAwesomeIcon, BaseDropDownList},
   props: {
     lesson: {
       type: Object,
@@ -83,7 +98,7 @@ article {
   justify-content: space-between;
 }
 
-.card-content {
+.item-content {
   display: flex;
   flex-direction: row;
   column-gap: 1rem;
@@ -97,6 +112,13 @@ article {
   /*border: 3px solid var(--primary-color-dark);*/
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-radius: 5px;
+}
+
+.title-subtitle {
+}
+
+.title-subtitle a {
+  width: min-content;
 }
 
 h4 {

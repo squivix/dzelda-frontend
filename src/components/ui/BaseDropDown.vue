@@ -11,7 +11,8 @@
            ref="dropdown-checkbox"
            :name="group"
            @change="onCheckboxChange">
-    <component :is="isPointy?'base-pointy-div':'div'" :class="{menu:true, 'pointy-menu':isPointy}">
+    <component :is="isPointy?'base-pointy-div':'div'" :class="{menu:true, 'pointy-menu':isPointy}"
+               :style="{left:centered?'50%':'100%'}">
       <slot name="menu">
       </slot>
     </component>
@@ -39,6 +40,11 @@ export default {
       type: String,
       required: false,
       default: "default-group",
+    },
+    centered: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   },
   methods: {
@@ -47,14 +53,14 @@ export default {
         const otherCheckboxes = document.querySelectorAll(`.dropdown-checkbox[name=${this.group}]:not([id=dropdown-checkbox-${this.label}])`)
         otherCheckboxes.forEach((checkbox) => {
           checkbox.checked = false
-          checkbox.dispatchEvent(new Event('change'));
+          checkbox.dispatchEvent(new Event("change"));
         });
       }
     }
   },
   watch: {
-    '$route.path'() {
-      this.$refs['dropdown-checkbox'].checked = false;
+    "$route.path"() {
+      this.$refs["dropdown-checkbox"].checked = false;
     }
   }
 }
@@ -67,7 +73,6 @@ export default {
 
 .menu {
   position: absolute;
-  top: 100%;
   left: 50%;
   transform: translate(-50%, 0px);
   text-align: center;

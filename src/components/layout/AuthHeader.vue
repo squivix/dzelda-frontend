@@ -36,7 +36,7 @@
             <ul class="language-grid">
               <li v-for="language in otherLanguages" :key="language.code">
                 <router-link :to="{ name: 'explore-lang' ,params:{learningLanguage:language.code}}">
-                  <!--suppress HtmlUnknownTarget -->
+                  <!--suppress JSUnresolvedVariable -->
                   <img :src="language.flagCircularImage" alt="Language Icon" class="language-icon">
                   <p>{{ language.name }}</p>
                 </router-link>
@@ -59,18 +59,19 @@
                     </span>
         </template>
         <template v-slot:menu>
-          <ul class="dropdown-menu add-menu">
-            <li>
-              <router-link :to="{ name: 'add-lesson' }">
-                Add Lesson
-              </router-link>
-            </li>
-            <li>
-              <router-link :to="{ name: 'add-course' }">
-                Add Course
-              </router-link>
-            </li>
-          </ul>
+          <base-drop-down-list class="add-menu"
+                               :list-items="[
+                        {
+                           text:'Add Lesson',
+                           link:{ name: 'add-lesson' }
+                        },{
+                           text:'Add Course',
+                           link:{ name: 'add-course' }
+                        }
+                      ]">
+          </base-drop-down-list>
+
+
         </template>
       </base-drop-down>
 
@@ -81,27 +82,23 @@
           <font-awesome-icon v-else icon="user" class="profile-picture"></font-awesome-icon>
         </template>
         <template v-slot:menu>
-          <ul class="dropdown-menu profile-menu">
-            <li>
-              <router-link :to="{ name: 'my-profile' }">
-                <font-awesome-icon icon="user"></font-awesome-icon>
-                My Profile
-              </router-link>
-            </li>
-            <li>
-              <router-link :to="{ name: 'settings' }">
-                <font-awesome-icon icon="gear"></font-awesome-icon>
-                Settings
-              </router-link>
-            </li>
-            <li>
-              <router-link :to="{ name: 'sign-out' }">
-                <font-awesome-icon icon="arrow-right-from-bracket"></font-awesome-icon>
-                Sign Out
-              </router-link>
-            </li>
-
-          </ul>
+          <base-drop-down-list class="profile-menu" :list-items="[
+              {
+                text:'My Profile',
+                link:{ name: 'my-profile' },
+                icon:'user'
+              },
+              {
+                text:'Settings',
+                link:{ name: 'settings' },
+                icon:'gear'
+              },
+              {
+                text:'Sign Out',
+                link:{ name: 'sign-out' },
+                icon:'arrow-right-from-bracket'
+              }
+          ]"></base-drop-down-list>
         </template>
       </base-drop-down>
     </div>
@@ -113,10 +110,11 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {useStore} from "@/stores/index.js";
 import {useLanguageStore} from "@/stores/language.js";
 import {useProfileStore} from "@/stores/profile.js";
+import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
 
 export default {
   name: "AuthHeader",
-  components: {BaseDropDown, FontAwesomeIcon},
+  components: {BaseDropDownList, BaseDropDown, FontAwesomeIcon},
   data() {
     return {
       userProfile: null,
@@ -241,29 +239,6 @@ nav > ul > li:hover {
   font-size: 1rem;
 }
 
-.dropdown-menu li {
-  padding: 0;
-}
-
-.dropdown-menu li a, .language-add-button a {
-  margin: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  color: black;
-  font-family: sans-serif;
-  font-size: 0.9rem;
-  padding: 0.5rem 0;
-}
-
-.dropdown-menu li:hover, .language-add-button a:hover {
-  cursor: pointer;
-  background-color: lightgray;
-}
-
-.dropdown-menu a:hover {
-  text-decoration: none;
-}
 
 .add-menu {
   width: 125px;
@@ -335,15 +310,6 @@ svg.profile-picture {
 .profile-menu {
   width: 10vw;
   max-width: 120px;
-}
-
-.profile-menu li a {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  column-gap: 0.5rem;
-  align-items: center;
-  padding: 1rem 0.5rem;
 }
 
 </style>
