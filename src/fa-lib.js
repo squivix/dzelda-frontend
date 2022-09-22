@@ -17,6 +17,8 @@ import {faUser} from "@fortawesome/free-solid-svg-icons";
 import {faGear} from "@fortawesome/free-solid-svg-icons";
 import {faArrowRightFromBracket} from "@fortawesome/free-solid-svg-icons";
 import {faUpload} from "@fortawesome/free-solid-svg-icons";
+import {faEllipsisV} from "@fortawesome/free-solid-svg-icons";
+
 
 library.add(faEye);
 library.add(faEyeSlash);
@@ -36,3 +38,4 @@ library.add(faUser);
 library.add(faGear);
 library.add(faArrowRightFromBracket);
 library.add(faUpload)
+library.add(faEllipsisV)

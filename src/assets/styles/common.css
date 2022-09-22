@@ -118,17 +118,21 @@ a:hover {
     /*noinspection CssUnknownProperty*/
     scrollbar-color: darkgray whitesmoke;
 }
+
 .styled-scrollbars::-webkit-scrollbar {
     width: 10px; /* Mostly for vertical scrollbars */
     height: 10px; /* Mostly for horizontal scrollbars */
 }
+
 .styled-scrollbars::-webkit-scrollbar-thumb { /* Foreground */
     background: lightgray;
     border-radius: 5px;
 }
+
 .styled-scrollbars::-webkit-scrollbar-thumb:active { /* Foreground */
     background: darkgray;
 }
+
 .styled-scrollbars::-webkit-scrollbar-track { /* Background */
     background: whitesmoke;
     border-radius: 5px;

@@ -1,24 +1,32 @@
 <template>
   <base-card>
     <template v-slot:all>
-      <article class="lesson-article">
-        <img :src="imageUrl" @error="setDefaultImage" alt="lesson image" class="lesson-image">
-        <div>
-          <router-link
-              :to="{name:'lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}">
-            <h4>{{ lesson.title }}</h4>
-          </router-link>
+      <article>
+        <div class="card-content">
+          <img :src="imageUrl" @error="setDefaultImage" alt="lesson image" class="lesson-image">
+          <div>
+            <router-link
+                :to="{name:'lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}"
+                class="link">
+              <h4>{{ lesson.title }}</h4>
+            </router-link>
 
-          <router-link v-if="showCourse"
-                       :to="{name:'course', params:{learningLanguage:$route.params.learningLanguage, courseId:lesson.course.id}}">
-            <p>{{ lesson.course.title }}</p>
-          </router-link>
-          <!--TODO:Only show link if user is authorized to edit lesson-->
-          <router-link
-              :to="{name:'edit-lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}">
-            <p>Edit</p>
-          </router-link>
+            <router-link v-if="showCourse"
+                         :to="{name:'course', params:{learningLanguage:$route.params.learningLanguage, courseId:lesson.course.id}}">
+              <p class="course-title">{{ lesson.course.title }}</p>
+            </router-link>
+            <!--TODO:Only show link if user is authorized to edit lesson-->
+            <router-link
+                :to="{name:'edit-lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}">
+              <p>Edit</p>
+            </router-link>
+          </div>
         </div>
+        <button class="more-button inv-button">
+          <FontAwesomeIcon icon="ellipsis-vertical">
+
+          </FontAwesomeIcon>
+        </button>
       </article>
     </template>
   </base-card>
@@ -28,10 +36,11 @@
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {useStore} from "@/stores/index.js";
 import {BLANK_IMAGE_URL} from "@/constants.js";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 export default {
   name: "LessonListItem",
-  components: {BaseCard},
+  components: {BaseCard, FontAwesomeIcon},
   props: {
     lesson: {
       type: Object,
@@ -69,7 +78,12 @@ export default {
   border-radius: 5px;
 }
 
-.lesson-article {
+article {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-content {
   display: flex;
   flex-direction: row;
   column-gap: 1rem;
@@ -89,5 +103,23 @@ h4 {
   font-size: 1.35rem;
   margin-top: 20px;
   margin-bottom: 5px;
+  color: black;
+}
+
+.course-title {
+  color: gray;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.more-button {
+  align-self: flex-start;
+  padding: 0.5rem;
+}
+
+.more-button:hover {
+  cursor: pointer;
 }
 </style>
