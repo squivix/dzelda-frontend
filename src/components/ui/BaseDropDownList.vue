@@ -1,15 +1,15 @@
 <template>
   <ul class="dropdown-list">
-    <li v-for="(item, index) in listItems" :key="index">
+    <li v-for="(item, index) in listItems" :key="index" :class="item.class??''">
 
       <router-link v-if="item.link" :to="item.link">
         <font-awesome-icon v-if="item.icon" :icon="item.icon"></font-awesome-icon>
-
-        {{ item.text }}
+        <img class="image-icon" v-else-if="item.image" :src="item.image.src" :alt="item.image.alt">
+        <span v-if="item.text">{{ item.text }}</span>
       </router-link>
       <template v-else>
         <font-awesome-icon v-if="item.icon" :icon="item.icon"></font-awesome-icon>
-        {{ item.text }}
+        <span v-if="item.text">{{ item.text }}</span>
       </template>
     </li>
   </ul>
@@ -24,33 +24,28 @@ export default {
       required: true
     }
   }
-}
+};
 </script>
 
 <style scoped>
-.dropdown-list {
-
-}
-
-.dropdown-list li {
-  padding: 0;
-}
-
 .dropdown-list li a {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  column-gap: 0.5rem;
+  align-items: center;
+
   margin: 0;
+  padding: 0.5rem 0.5rem;
   width: 100%;
   height: 100%;
   color: black;
   font-family: sans-serif;
   font-size: 0.9rem;
-  padding: 0.5rem 0;
+}
 
-
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  column-gap: 0.5rem;
-  align-items: center;
+.dropdown-list li a :only-child {
+  margin: auto auto;
 }
 
 .dropdown-list li:hover {
@@ -63,12 +58,9 @@ export default {
 }
 
 
-.profile-menu li a {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  column-gap: 0.5rem;
-  align-items: center;
-  padding: 1rem 0.5rem;
+.image-icon {
+  width: 25px;
+  height: 25px;
 }
+
 </style>

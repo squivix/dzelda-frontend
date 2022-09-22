@@ -32,23 +32,22 @@
                     </span>
         </template>
         <template v-slot:menu>
-          <div class="dropdown-menu">
-            <ul class="language-grid">
-              <li v-for="language in otherLanguages" :key="language.code">
-                <router-link :to="{ name: 'explore-lang' ,params:{learningLanguage:language.code}}">
-                  <!--suppress JSUnresolvedVariable -->
-                  <img :src="language.flagCircularImage" alt="Language Icon" class="language-icon">
-                  <p>{{ language.name }}</p>
-                </router-link>
-              </li>
-            </ul>
-            <div class="language-add-button">
-              <router-link :to="{ name: 'new-language' }">
-                <font-awesome-icon icon="circle-plus" class="language-icon">
-                </font-awesome-icon>
-              </router-link>
-            </div>
-          </div>
+          <!--suppress JSUnresolvedVariable -->
+          <base-drop-down-list is-grid class="language-grid" :list-items="
+            [...otherLanguages.map(language=>({
+                  text:language.name,
+                  image:{src:language.flagCircularImage, alt:'language flag'},
+                  link:{ name: 'explore-lang' ,params:{learningLanguage:language.code}}
+            })),
+            {
+                  text:undefined,
+                  icon:'circle-plus',
+                  link:{ name: 'new-language' },
+                  class:'language-add-button'
+            }
+            ]">
+
+          </base-drop-down-list>
         </template>
       </base-drop-down>
 
@@ -132,7 +131,7 @@ export default {
       return this.userLanguages ? this.userLanguages[0] : null;
     },
     otherLanguages() {
-      return this.userLanguages.filter(lang => lang.code !== this.currentLanguage.code)
+      return this.userLanguages.filter(lang => lang.code !== this.currentLanguage.code);
     },
   },
   methods: {
@@ -152,7 +151,7 @@ export default {
     this.languageStore = useLanguageStore();
     this.profileStore = useProfileStore();
   }
-}
+};
 </script>
 <style scoped>
 header {
@@ -240,35 +239,15 @@ nav > ul > li:hover {
 }
 
 
-.add-menu {
-  width: 125px;
-}
-
 .language-grid {
   display: grid;
-  width: 25vw;
+  width: 15vw;
   max-width: 250px;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
 }
 
-.language-grid li a {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  column-gap: 0.5rem;
-  text-align: center;
-}
-
-.language-icon {
-  width: 25px;
-  height: 25px;
-}
-
-.language-add-button {
-  grid-row: last;
-  grid-column: 1/last;
-
+:deep(.language-add-button) {
+  grid-column: 1/-1;
 }
 
 .current-language-icon {
@@ -309,7 +288,12 @@ svg.profile-picture {
 
 .profile-menu {
   width: 10vw;
-  max-width: 120px;
+  max-width: 100px;
+  min-width: 85px;
 }
 
+.add-menu {
+  width: 10vw;
+  max-width: 100px;
+}
 </style>

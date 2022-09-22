@@ -12,7 +12,7 @@
       <tbody>
       <tr v-for="language in userLanguages" :key="language.id">
         <td>{{ language.name }}</td>
-        <td>{{ language.time_added }}</td>
+        <td>{{ language.timeAdded }}</td>
         <td>
           <button class="inv-button link" @click="removeLanguage(language)">Remove</button>
           <button class="inv-button link" @click="resetLanguageProgress">Reset Progress</button>
