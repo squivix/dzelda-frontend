@@ -22,7 +22,8 @@
         <base-drop-down
             :label="`lesson-item-${lesson.id}`"
             group="lesson-items"
-            :centered="false">
+            :centered="false"
+            :round="false">
           <template v-slot:button>
             <FontAwesomeIcon icon="ellipsis-vertical" class="more-button">
 
@@ -81,7 +82,7 @@ export default {
   created() {
     this.store = useStore();
   }
-}
+};
 </script>
 
 <style scoped>
@@ -138,7 +139,7 @@ a:hover {
 
 .more-button {
   align-self: flex-start;
-  padding: 0.5rem;
+  padding: 0.2rem 0.5rem;
 }
 
 .more-button:hover {

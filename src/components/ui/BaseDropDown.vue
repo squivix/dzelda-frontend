@@ -11,8 +11,9 @@
            ref="dropdown-checkbox"
            :name="group"
            @change="onCheckboxChange">
-    <component :is="isPointy?'base-pointy-div':'div'" :class="{menu:true, 'pointy-menu':isPointy}"
-               :style="{left:centered?'50%':'100%'}">
+    <component :is="isPointy?'base-pointy-div':'div'"
+               :class="{menu:true, 'pointy-menu':isPointy, 'centered-menu':centered, 'round-menu':round}"
+    >
       <slot name="menu">
       </slot>
     </component>
@@ -45,14 +46,19 @@ export default {
       type: Boolean,
       required: false,
       default: true
+    },
+    round: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   },
   methods: {
     onCheckboxChange(event) {
       if (event.target.checked) {
-        const otherCheckboxes = document.querySelectorAll(`.dropdown-checkbox[name=${this.group}]:not([id=dropdown-checkbox-${this.label}])`)
+        const otherCheckboxes = document.querySelectorAll(`.dropdown-checkbox[name=${this.group}]:not([id=dropdown-checkbox-${this.label}])`);
         otherCheckboxes.forEach((checkbox) => {
-          checkbox.checked = false
+          checkbox.checked = false;
           checkbox.dispatchEvent(new Event("change"));
         });
       }
@@ -63,7 +69,7 @@ export default {
       this.$refs["dropdown-checkbox"].checked = false;
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -73,19 +79,26 @@ export default {
 
 .menu {
   position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0px);
   text-align: center;
-  border: 1px solid gray;
-  border-radius: 5px;
+  border: none;
   background-color: var(--on-primary-color);
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.4s linear, visibility 0s linear 0.4s;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+}
+
+.centered-menu {
+  left: 50%;
+  transform: translate(-50%, 0px);
+}
+
+.round-menu {
+  border-radius: 5px;
 }
 
 .pointy-menu {
-  transform: translate(-50%, 10px);
+  transform: translate(-50%, 15px);
 }
 
 .dropdown-checkbox {
