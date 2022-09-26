@@ -47,6 +47,7 @@ export const useStore = defineStore("main", {
                 if (response.status === 401) {
                     authStore.token = null;
                     delete localStorage.authToken;
+                    this.$router.push({name: "home"})
                 }
 
                 const responseData = await response.text();

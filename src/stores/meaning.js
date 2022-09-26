@@ -8,7 +8,7 @@ export const useMeaningStore = defineStore("meaning", {
             return await store.fetchCustom(
                 `${store.apiUrl}/meanings/`,
                 {
-                    method: 'POST',
+                    method: "POST",
                     body: JSON.stringify({
                         text: text,
                         vocabId: vocabId,
@@ -22,7 +22,7 @@ export const useMeaningStore = defineStore("meaning", {
             return await store.fetchCustom(
                 `${store.apiUrl}/users/me/meanings/`,
                 {
-                    method: 'POST',
+                    method: "POST",
                     body: JSON.stringify({
                         meaningId: meaningId,
                     }),

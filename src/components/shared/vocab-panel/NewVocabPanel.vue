@@ -60,23 +60,23 @@ export default {
   },
   methods: {
     async markWordAsKnown() {
-      await this.vocabStore.addVocabToUser(this.vocab.id);
+      await this.vocabStore.addVocabToUser({vocabId: this.vocab.id});
       await this.vocabStore.updateUserVocab({
         vocabId: this.vocab.id,
         level: ALL_VOCAB_LEVELS.KNOWN
       })
-      this.$emit('onVocabLevelSet', ALL_VOCAB_LEVELS.KNOWN);
+      this.$emit("onVocabLevelSet", ALL_VOCAB_LEVELS.KNOWN);
     },
     async markWordAsIgnored() {
-      await this.vocabStore.addVocabToUser(this.vocab.id);
+      await this.vocabStore.addVocabToUser({vocabId: this.vocab.id});
       await this.vocabStore.updateUserVocab({
         vocabId: this.vocab.id,
         level: ALL_VOCAB_LEVELS.IGNORED
       })
-      this.$emit('onVocabLevelSet', ALL_VOCAB_LEVELS.IGNORED);
+      this.$emit("onVocabLevelSet", ALL_VOCAB_LEVELS.IGNORED);
     },
     onMeaningAdded(vocab, meaning) {
-      this.$emit('onMeaningAdded', vocab, meaning);
+      this.$emit("onMeaningAdded", vocab, meaning);
     },
   },
   created() {

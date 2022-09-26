@@ -5,7 +5,7 @@
         <div class="item-content">
 
           <img :src="imageUrl" @error="setDefaultImage" alt="lesson image" class="lesson-image">
-          <div class="titles-stats">
+          <div class="title-stats">
             <div class="title-subtitle">
               <router-link
                   :to="{name:'lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}"
@@ -53,6 +53,10 @@
             <base-drop-down-list class="profile-menu" :list-items="[
               {
                 text:'Edit',
+                link:{ name: 'edit-lesson' , params:{lessonId:lesson.id}},
+                icon:'pen'
+              },{
+                text:'Details',
                 link:{ name: 'edit-lesson' , params:{lessonId:lesson.id}},
                 icon:'pen'
               },
@@ -157,10 +161,10 @@ article {
   border-radius: 5px;
 }
 
-.titles-stats {
+.title-stats {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  row-gap: 1.5rem;
   align-items: flex-start;
   height: 100%;
 }
