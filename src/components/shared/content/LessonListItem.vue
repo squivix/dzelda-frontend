@@ -3,22 +3,40 @@
     <template v-slot:all>
       <article>
         <div class="item-content">
+
           <img :src="imageUrl" @error="setDefaultImage" alt="lesson image" class="lesson-image">
-          <div class="title-subtitle">
-            <router-link
-                :to="{name:'lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}"
-                class="link">
-              <h4>{{ lesson.title }}</h4>
-            </router-link>
+          <div class="titles-stats">
+            <div class="title-subtitle">
+              <router-link
+                  :to="{name:'lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}"
+                  class="link">
+                <h4>{{ lesson.title }}</h4>
+              </router-link>
 
-            <router-link v-if="showCourse"
-                         :to="{name:'course', params:{learningLanguage:$route.params.learningLanguage, courseId:lesson.course.id}}">
-              <p class="course-title">{{ lesson.course.title }}</p>
-            </router-link>
-            <!--TODO:Only show link if user is authorized to edit lesson-->
+              <router-link v-if="showCourse"
+                           :to="{name:'course', params:{learningLanguage:$route.params.learningLanguage, courseId:lesson.course.id}}">
+                <p class="course-title">{{ lesson.course.title }}</p>
+              </router-link>
+            </div>
 
+            <div class="stats">
+              <div class="stats-count">
+                <span class="vocabs-indicator new-vocabs"></span>
+                <div>
+                  <span>{{ lesson.vocabsCount.new }} (</span>
+                  <span :class="newVocabsPercentageClass">{{ newVocabsPercentage }}%</span>
+                  <span>)</span>
+                </div>
+
+              </div>
+              <div class="stats-count">
+                <span class="vocabs-indicator saved-vocabs"></span>
+                <span>{{ savedVocabsCount }}</span>
+              </div>
+            </div>
           </div>
         </div>
+
         <base-drop-down
             :label="`lesson-item-${lesson.id}`"
             group="lesson-items"
@@ -31,6 +49,7 @@
           </template>
           <template v-slot:menu>
 
+            <!--TODO:Only show link if user is authorized to edit lesson-->
             <base-drop-down-list class="profile-menu" :list-items="[
               {
                 text:'Edit',
@@ -49,7 +68,7 @@
 <script>
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {useStore} from "@/stores/index.js";
-import {BLANK_IMAGE_URL} from "@/constants.js";
+import {BLANK_IMAGE_URL, NEW_VOCABS_PERCENTAGE_THRESH} from "@/constants.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
@@ -72,6 +91,29 @@ export default {
     imageUrl() {
       return this.lesson.image ?? this.lesson.course.image ?? BLANK_IMAGE_URL;
     },
+    newVocabsPercentage() {
+      const total = this.lesson.vocabsCount.new + this.savedVocabsCount;
+      const percentage = (this.lesson.vocabsCount.new / total) * 100;
+      return +percentage.toFixed(2);
+    },
+    newVocabsPercentageClass() {
+      const p = this.newVocabsPercentage;
+      if (p >= 0 && p <= NEW_VOCABS_PERCENTAGE_THRESH.easy)
+        return "easy";
+      else if (p <= NEW_VOCABS_PERCENTAGE_THRESH.medium)
+        return "medium";
+      else if (p <= NEW_VOCABS_PERCENTAGE_THRESH.hard)
+        return "hard";
+    },
+    savedVocabsCount() {
+      let count = 0;
+      for (let level in this.lesson.vocabsCount) {
+        if (level !== "new" && level !== "ignored") {
+          count += this.lesson.vocabsCount[level];
+        }
+      }
+      return count;
+    }
   },
   methods: {
     setDefaultImage(event) {
@@ -115,11 +157,49 @@ article {
   border-radius: 5px;
 }
 
+.titles-stats {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 100%;
+}
+
+.vocabs-indicator {
+  width: 15px;
+  height: 15px;
+}
+
+.new-vocabs {
+  background-color: #aee0f4;
+}
+
+.saved-vocabs {
+  background-color: #ffeda1;
+}
+
+.stats {
+  display: flex;
+  column-gap: 1rem;
+  align-items: center;
+}
+
+.stats-count {
+  display: flex;
+  flex-direction: row;
+  column-gap: 0.25rem;
+  align-items: center;
+}
+
 .title-subtitle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
 }
 
 .title-subtitle a {
-  width: min-content;
+  display: inline-block;
 }
 
 h4 {
@@ -144,5 +224,17 @@ a:hover {
 
 .more-button:hover {
   cursor: pointer;
+}
+
+.easy {
+  color: green;
+}
+
+.medium {
+  color: #E09134;
+}
+
+.hard {
+  color: red;
 }
 </style>

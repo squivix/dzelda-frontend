@@ -19,4 +19,10 @@ export const SAVED_VOCAB_LEVELS = {
     LEARNED: 5,
 };
 
+export const NEW_VOCABS_PERCENTAGE_THRESH = {
+    easy: 15,
+    medium: 50,
+    hard: 100,
+};
+
 export const GUIDED_USERNAME = "language_learner";
