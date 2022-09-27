@@ -11,16 +11,16 @@ import "@/fa-lib.js";
 import {createPinia} from "pinia";
 import QuerySynchronizer from "@oarepo/vue-query-synchronizer";
 
-const app = createApp(App)
+const app = createApp(App);
 
 //router
 app.use(router);
 
 //stores
-const pinia = createPinia()
+const pinia = createPinia();
 //use router in pina as plugin, from: https://stackoverflow.com/a/70905178/14200676
-pinia.use(({store}) => store.$router = markRaw(router))
-app.use(pinia)
+pinia.use(({store}) => store.$router = markRaw(router));
+app.use(pinia);
 
 //other libraries
 app.use(QuerySynchronizer, {
@@ -28,11 +28,12 @@ app.use(QuerySynchronizer, {
     debug: false,
     navigationOperation: "push",
 //TODO add array of numbers component see library github
-})
+});
+
 
 //global components
-app.component("font-awesome-icon", FontAwesomeIcon)
+app.component("font-awesome-icon", FontAwesomeIcon);
 app.component("base-card", BaseCard);
-app.component("base-password-input", BasePasswordInput)
+app.component("base-password-input", BasePasswordInput);
 
 app.mount("#app");

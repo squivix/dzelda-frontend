@@ -3,7 +3,7 @@ import ExplorePage from "@/views/ExplorePage.vue";
 import MyLibraryPage from "@/views/MyLibraryPage.vue";
 import MyVocabPage from "@/views/MyVocabPage.vue";
 import {ArrayDatatype} from "@oarepo/vue-query-synchronizer";
-import {SAVED_VOCAB_LEVELS} from "@/constants.js";
+import constants from "@/constants.js";
 import LessonReaderPage from "@/views/LessonReaderPage.vue";
 import LessonAddEditPage from "@/views/LessonAddEditPage.vue";
 import CourseAddPage from "@/views/CourseAddPage.vue";
@@ -78,7 +78,7 @@ export const privateRoutes = [
                 searchQuery: "string:",
                 level: {
                     datatype: ArrayDatatype,
-                    defaultValue: Object.values(SAVED_VOCAB_LEVELS),
+                    defaultValue: Object.values(constants.SAVED_VOCAB_LEVELS),
                 },
             }
         }
@@ -162,4 +162,4 @@ export const privateRoutes = [
             },
         ],
     },
-]
+];

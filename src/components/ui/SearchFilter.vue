@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import {SAVED_VOCAB_LEVELS} from "@/constants.js";
+import constants from "@/constants.js";
 
 export default {
   name: "SearchFilter",
@@ -29,12 +29,8 @@ export default {
     return {
       searchQuery: this.$query.searchQuery,
       isFiltersShown: false,
+      constants,
     };
-  },
-  computed: {
-    vocabLevels() {
-      return SAVED_VOCAB_LEVELS;
-    },
   },
   methods: {
     toggleFilters() {
@@ -45,13 +41,13 @@ export default {
         this.$query.searchQuery = this.searchQuery;
       else
         this.$query.searchQuery = undefined;
-      this.$emit("onSearchSubmitted")
+      this.$emit("onSearchSubmitted");
     },
     onFiltersApplied() {
       this.$emit("onFiltersApplied");
     }
   }
-}
+};
 </script>
 
 <style scoped>

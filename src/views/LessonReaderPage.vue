@@ -34,7 +34,7 @@
 <script>
 import TheLessonContent from "@/components/page/reader/TheLessonContent.vue";
 import TheMeaningPanel from "@/components/shared/vocab-panel/TheMeaningPanel.vue";
-import {ALL_VOCAB_LEVELS, BLANK_IMAGE_URL} from "@/constants.js";
+import constants from "@/constants.js";
 import {getTextElements} from "@/components/page/reader/shared.js";
 import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel.vue";
 import {useLessonStore} from "@/stores/lesson.js";
@@ -68,7 +68,7 @@ export default {
       return this.loadingLesson || this.loadingWords || this.parsingLesson;
     },
     imageUrl() {
-      return this.lesson.image ?? this.lesson.course.image ?? BLANK_IMAGE_URL;
+      return this.lesson.image ?? this.lesson.course.image ?? "";
     },
     vocab() {
       return {...this.words, ...this.phrases};
@@ -95,7 +95,7 @@ export default {
     selectNewPhrase(phraseText) {
       this.selectedVocab = {
         text: phraseText,
-        level: ALL_VOCAB_LEVELS.NEW,
+        level: constants.ALL_VOCAB_LEVELS.NEW,
         allMeanings: [],
         userMeanings: []
       };
@@ -111,8 +111,8 @@ export default {
     },
     onMeaningAdded(vocab, newMeaning) {
       const key = vocab.text.toLowerCase();
-      if (vocab.level === ALL_VOCAB_LEVELS.KNOWN || vocab.level === ALL_VOCAB_LEVELS.IGNORED)
-        vocab.level = ALL_VOCAB_LEVELS.LEVEL_1;
+      if (vocab.level === constants.ALL_VOCAB_LEVELS.KNOWN || vocab.level === constants.ALL_VOCAB_LEVELS.IGNORED)
+        vocab.level = constants.ALL_VOCAB_LEVELS.LEVEL_1;
       if (this.vocab[key] === undefined) {
         //only for new phrases
         this.phrases[key] = vocab;
@@ -129,11 +129,11 @@ export default {
 
       const key = vocab.text.toLowerCase();
       this.vocab[key].level = level;
-      if (level === ALL_VOCAB_LEVELS.IGNORED || level === ALL_VOCAB_LEVELS.KNOWN) {
+      if (level === constants.ALL_VOCAB_LEVELS.IGNORED || level === constants.ALL_VOCAB_LEVELS.KNOWN) {
         this.vocab[key].userMeanings = [];
         this.clearSelectedVocab();
-        if (level === ALL_VOCAB_LEVELS.IGNORED && this.phrases[key])
-          this.phrases[key] = ALL_VOCAB_LEVELS.NEW;
+        if (level === constants.ALL_VOCAB_LEVELS.IGNORED && this.phrases[key])
+          this.phrases[key] = constants.ALL_VOCAB_LEVELS.NEW;
       } else
         this.setSelectedVocab(vocab.text);
     },
@@ -141,7 +141,7 @@ export default {
       const index = word.userMeanings.findIndex((meaning) => meaning.id === deleted_meaning.id);
       word.userMeanings.splice(index, 1);
       if (word.userMeanings.length === 0)
-        this.onVocabLevelSet(word, ALL_VOCAB_LEVELS.NEW);
+        this.onVocabLevelSet(word, constants.ALL_VOCAB_LEVELS.NEW);
     },
     parseLesson() {
       this.parsingLesson = true;

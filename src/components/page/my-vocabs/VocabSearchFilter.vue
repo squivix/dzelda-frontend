@@ -7,28 +7,28 @@
         <div class="checkbox-label">
           <input id="filter-level-1-checkbox"
                  type="checkbox"
-                 :value="savedVocabLevels.LEVEL_1"
+                 :value="constants.SAVED_VOCAB_LEVELS.LEVEL_1"
                  v-model="filters.levels">
           <label for="filter-level-1-checkbox">Level 1</label>
         </div>
         <div class="checkbox-label">
           <input id="filter-level-2-checkbox"
                  type="checkbox"
-                 :value="savedVocabLevels.LEVEL_2"
+                 :value="constants.SAVED_VOCAB_LEVELS.LEVEL_2"
                  v-model="filters.levels">
           <label for="filter-level-2-checkbox">Level 2</label>
         </div>
         <div class="checkbox-label">
           <input id="filter-level-3-checkbox"
                  type="checkbox"
-                 :value="savedVocabLevels.LEVEL_3"
+                 :value="constants.SAVED_VOCAB_LEVELS.LEVEL_3"
                  v-model="filters.levels">
           <label for="filter-level-3-checkbox">Level 3</label>
         </div>
         <div class="checkbox-label">
           <input id="filter-level-4-checkbox"
                  type="checkbox"
-                 :value="savedVocabLevels.LEVEL_4"
+                 :value="constants.SAVED_VOCAB_LEVELS.LEVEL_4"
                  v-model="filters.levels">
           <label for="filter-level-4-checkbox">Level 4</label>
         </div>
@@ -36,7 +36,7 @@
         <div class="checkbox-label">
           <input id="filter-level-learned-checkbox"
                  type="checkbox"
-                 :value="savedVocabLevels.LEARNED"
+                 :value="constants.SAVED_VOCAB_LEVELS.LEARNED"
                  v-model="filters.levels">
           <label for="filter-level-learned-checkbox">Learned</label>
         </div>
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import {SAVED_VOCAB_LEVELS} from "@/constants.js";
+import constants from "@/constants.js";
 import SearchFilter from "@/components/ui/SearchFilter.vue";
 
 export default {
@@ -58,13 +58,8 @@ export default {
       filters: {
         levels: this.$query.level
       },
+      constants
     };
-  },
-
-  computed: {
-    savedVocabLevels() {
-      return SAVED_VOCAB_LEVELS;
-    },
   },
   methods: {
     onFiltersApplied() {

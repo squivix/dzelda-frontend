@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import {ALL_VOCAB_LEVELS} from "@/constants";
+import constants from "@/constants";
 import MeaningAddingControls from "@/components/shared/vocab-panel/MeaningAddingControls.vue";
 import DictionariesList from "@/components/shared/vocab-panel/DictionaryList.vue";
 import {useVocabStore} from "@/stores/vocab.js";
@@ -52,10 +52,10 @@ export default {
       return this.vocab.allMeanings.filter((meaning) => !this.vocab.userMeanings.some((m) => m.id === meaning.id)).slice(0, 3);
     },
     isLevelNew() {
-      return this.vocab.level === ALL_VOCAB_LEVELS.NEW;
+      return this.vocab.level === constants.ALL_VOCAB_LEVELS.NEW;
     },
     isLevelIgnored() {
-      return this.vocab.level === ALL_VOCAB_LEVELS.IGNORED;
+      return this.vocab.level === constants.ALL_VOCAB_LEVELS.IGNORED;
     }
   },
   methods: {
@@ -63,17 +63,17 @@ export default {
       await this.vocabStore.addVocabToUser({vocabId: this.vocab.id});
       await this.vocabStore.updateUserVocab({
         vocabId: this.vocab.id,
-        level: ALL_VOCAB_LEVELS.KNOWN
+        level: constants.ALL_VOCAB_LEVELS.KNOWN
       })
-      this.$emit("onVocabLevelSet", ALL_VOCAB_LEVELS.KNOWN);
+      this.$emit("onVocabLevelSet", constants.ALL_VOCAB_LEVELS.KNOWN);
     },
     async markWordAsIgnored() {
       await this.vocabStore.addVocabToUser({vocabId: this.vocab.id});
       await this.vocabStore.updateUserVocab({
         vocabId: this.vocab.id,
-        level: ALL_VOCAB_LEVELS.IGNORED
+        level: constants.ALL_VOCAB_LEVELS.IGNORED
       })
-      this.$emit("onVocabLevelSet", ALL_VOCAB_LEVELS.IGNORED);
+      this.$emit("onVocabLevelSet", constants.ALL_VOCAB_LEVELS.IGNORED);
     },
     onMeaningAdded(vocab, meaning) {
       this.$emit("onMeaningAdded", vocab, meaning);

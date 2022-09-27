@@ -2,7 +2,9 @@
   <base-card>
     <template v-slot:all>
       <article class="course-article">
-        <img :src="imageUrl" @error="setDefaultImage" alt="course image" class="course-image">
+        <BaseImage :image-url="this.course.image" :fall-back-url="constants.DEFAULT_COURSE_IMAGE_URL"
+                   alt-text="course image"></BaseImage>
+
         <div class="title-row">
           <router-link
               :to="{name:'course', params:{learningLanguage:$route.params.learningLanguage, courseId:course.id}}">
@@ -40,14 +42,21 @@
 
 <script>
 import {useStore} from "@/stores/index.js";
-import {BLANK_IMAGE_URL} from "@/constants.js";
+import {DEFAULT_COURSE_IMAGE_URL} from "@/constants.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
+import BaseImage from "@/components/ui/BaseImage.vue";
+import constants from "@/constants.js";
 
 export default {
   name: "CourseCard",
-  components: {FontAwesomeIcon, BaseDropDown, BaseDropDownList},
+  components: {BaseImage, FontAwesomeIcon, BaseDropDown, BaseDropDownList},
+  data() {
+    return {
+      constants: constants,
+    };
+  },
   props: {
     course: {
       type: Object,
@@ -56,16 +65,15 @@ export default {
   },
   computed: {
     imageUrl() {
-      if (this.course.image !== null)
-        return this.course.image;
-      else
-        return BLANK_IMAGE_URL;
+      return this.course.image;
     },
+    defaultImageUrl() {
+      return DEFAULT_COURSE_IMAGE_URL;
+    }
   },
   methods: {
-    setDefaultImage(event) {
-      if (event.target.src !== BLANK_IMAGE_URL)
-        event.target.src = BLANK_IMAGE_URL;
+    setDefaultImage() {
+      this.imageError = true;
     }
   },
   created() {
@@ -84,6 +92,7 @@ export default {
 .course-article {
   display: flex;
   flex-direction: column;
+  align-items: center;
   row-gap: 1rem;
 }
 
@@ -91,6 +100,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  width: 100%;
   align-items: center;
   margin-bottom: 15px;
   margin-top: 10px;

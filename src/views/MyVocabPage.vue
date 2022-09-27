@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import {ALL_VOCAB_LEVELS} from "@/constants";
+import constants from "@/constants";
 import TheMeaningPanel from "@/components/shared/vocab-panel/TheMeaningPanel.vue";
 import VocabTable from "@/components/page/my-vocabs/VocabTable.vue";
 import VocabSearchFilter from "@/components/page/my-vocabs/VocabSearchFilter.vue";
@@ -102,7 +102,7 @@ export default {
       vocab.userMeanings.push(meaning);
     },
     onVocabLevelSet(vocab, level) {
-      if (level === ALL_VOCAB_LEVELS.IGNORED) {
+      if (level === constants.ALL_VOCAB_LEVELS.IGNORED) {
         this.vocabs.splice(this.vocabs.findIndex((v) => v.text === vocab.text), 1);
         this.clearSelectedVocab();
       } else

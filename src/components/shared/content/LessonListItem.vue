@@ -3,12 +3,8 @@
     <template v-slot:all>
       <article>
         <div class="item-content">
+          <BaseImage :image-url="imageUrl" :fall-back-url="constants.DEFAULT_LESSON_IMAGE_URL" alt-text="lesson image"></BaseImage>
 
-          <img v-if="imageUrl&&!imageError" :src="imageUrl" @error="setDefaultImage" alt="lesson image"
-               class="lesson-image">
-          <div v-else class="lesson-image default-lesson-image">
-            <FontAwesomeIcon icon="book-open" @error="setDefaultImage" alt="Default lesson image"></FontAwesomeIcon>
-          </div>
           <div class="title-stats">
             <div class="title-subtitle">
               <router-link
@@ -76,17 +72,18 @@
 <script>
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {useStore} from "@/stores/index.js";
-import {NEW_VOCABS_PERCENTAGE_THRESH} from "@/constants.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
+import BaseImage from "@/components/ui/BaseImage.vue";
+import constants from "@/constants.js";
 
 export default {
   name: "LessonListItem",
-  components: {BaseDropDown, BaseCard, FontAwesomeIcon, BaseDropDownList},
+  components: {BaseImage, BaseDropDown, BaseCard, FontAwesomeIcon, BaseDropDownList},
   data() {
     return {
-      imageError: false
+      constants: constants,
     };
   },
   props: {
@@ -102,7 +99,7 @@ export default {
   },
   computed: {
     imageUrl() {
-      return this.lesson.image ?? this.lesson.course.image;
+      return this.lesson.image ?? this.lesson.course.image ?? "";
     },
     newVocabsPercentage() {
       const total = this.lesson.vocabsCount.new + this.savedVocabsCount;
@@ -111,11 +108,11 @@ export default {
     },
     newVocabsPercentageClass() {
       const p = this.newVocabsPercentage;
-      if (p >= 0 && p <= NEW_VOCABS_PERCENTAGE_THRESH.easy)
+      if (p >= 0 && p <= constants.NEW_VOCABS_PERCENTAGE_THRESH.easy)
         return "easy";
-      else if (p <= NEW_VOCABS_PERCENTAGE_THRESH.medium)
+      else if (p <= constants.NEW_VOCABS_PERCENTAGE_THRESH.medium)
         return "medium";
-      else if (p <= NEW_VOCABS_PERCENTAGE_THRESH.hard)
+      else
         return "hard";
     },
     savedVocabsCount() {
@@ -126,11 +123,6 @@ export default {
         }
       }
       return count;
-    }
-  },
-  methods: {
-    setDefaultImage(event) {
-      this.imageError = true;
     }
   },
   created() {
@@ -159,27 +151,6 @@ article {
   column-gap: 1rem;
   justify-content: flex-start;
   align-items: flex-start;
-}
-
-.lesson-image {
-  width: 200px;
-  height: 200px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border-radius: 5px;
-  flex-shrink: 0;
-}
-
-.default-lesson-image {
-  flex-shrink: 0;
-  background-color: var(--primary-color);
-  display: grid;
-  place-items: center;
-}
-
-.default-lesson-image svg {
-  color: var(--on-primary-color);
-  width: 120px;
-  height: 120px;
 }
 
 

@@ -4,7 +4,10 @@
 
       <form class="add-course-form" @submit.prevent="onSubmit">
         <div class="file-inputs-div">
-          <img :src="imageUrl" class="course-image" alt="course image">
+
+          <base-image :image-url="imageUrl" :fall-back-url="constants.DEFAULT_COURSE_IMAGE_URL"
+                      alt-text="course image"></base-image>
+
           <label for="image-input" class="file-input-label button-hollow">
             <FontAwesomeIcon icon="upload"></FontAwesomeIcon>
             Upload Image
@@ -37,18 +40,20 @@
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {useCourseStore} from "@/stores/course.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {BLANK_IMAGE_URL} from "@/constants.js";
+import constants from "@/constants.js";
+import BaseImage from "@/components/ui/BaseImage.vue";
 
 export default {
   name: "CourseAddPage",
-  components: {BaseCard, FontAwesomeIcon},
+  components: {BaseCard, FontAwesomeIcon, BaseImage},
   data() {
     return {
       title: null,
       description: null,
       isPublic: true,
       image: null,
-      imageUrl: BLANK_IMAGE_URL
+      constants,
+      imageUrl: "",
     };
   },
   methods: {
@@ -61,7 +66,7 @@ export default {
       const newCourse = await this.addCourse();
       //TODO move this somewhere more general
       if (this.$route.query["redir"])
-        await this.$router.push({path: this.$route.query["redir"]})
+        await this.$router.push({path: this.$route.query["redir"]});
       else
         await this.$router.push({
           name: "edit-course",
@@ -76,13 +81,13 @@ export default {
         description: this.description,
         isPublic: this.isPublic,
         image: this.image,
-      })
+      });
     }
   },
   created() {
     this.courseStore = useCourseStore();
   }
-}
+};
 </script>
 
 <style scoped>

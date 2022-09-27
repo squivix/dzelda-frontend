@@ -3,7 +3,8 @@
     <template v-slot:content>
       <form class="edit-course-form" @submit.prevent="onSubmit">
         <div class="file-inputs-div">
-          <img :src="imageUrl" class="course-image" alt="course image">
+          <base-image :image-url="imageUrl" :fall-back-url="constants.DEFAULT_COURSE_IMAGE_URL" class="course-image"
+                      alt-text="course image"></base-image>
           <label for="image-input" class="file-input-label button-hollow">
             <FontAwesomeIcon icon="upload"></FontAwesomeIcon>
             Upload Image
@@ -69,12 +70,14 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import {VueDraggableNext} from "vue-draggable-next";
 import {useCourseStore} from "@/stores/course.js";
 import {useLessonStore} from "@/stores/lesson.js";
-import {BLANK_IMAGE_URL} from "@/constants.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import BaseImage from "@/components/ui/BaseImage.vue";
+import constants from "@/constants.js";
 
 export default {
   name: "CourseEditPage",
   components: {
+    BaseImage,
     BaseCard,
     draggable: VueDraggableNext,
     FontAwesomeIcon
@@ -87,11 +90,11 @@ export default {
       lessons: null,
       selectedLessons: [],
       image: null,
-      imageUrl: BLANK_IMAGE_URL
+      imageUrl: "",
+      constants
     };
   },
   methods: {
-
     setImageFile(event) {
       this.image = event.target.files[0];
       // noinspection JSUnresolvedFunction
@@ -135,7 +138,7 @@ export default {
     this.title = course.title;
     this.description = course.description;
     this.isPublic = course.isPublic;
-    this.imageUrl = course.image;
+    this.imageUrl = course.image ?? "";
     this.lessons = await this.fetchCourseLessons();
   },
   created() {

@@ -9,14 +9,15 @@
 <script>
 import CourseCard from "@/components/shared/content/CourseCard.vue";
 import {useCourseStore} from "@/stores/course";
-import {GUIDED_USERNAME} from "@/constants.js";
+import constants from "@/constants.js";
 
 export default {
   name: "GuidedTab",
   components: {CourseCard},
   data() {
     return {
-      guidedCourses: null
+      guidedCourses: null,
+      constants
     };
   },
   methods: {

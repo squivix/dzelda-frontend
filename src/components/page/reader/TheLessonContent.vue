@@ -2,7 +2,9 @@
   <div @click="onBackgroundClicked">
 
     <div class="top-div">
-      <img :src="image" @error="setDefaultImage" alt="lesson image" class="lesson-image">
+      <!--      <img :src="image" @error="setDefaultImage" alt="lesson image" class="lesson-image">-->
+      <BaseImage :image-url="image" :fall-back-url="constants.DEFAULT_LESSON_IMAGE_URL"
+                 alt-text="lesson image" class="lesson-image"></BaseImage>
       <lesson-paragraph class="title"
                         :paragraph-elements="lessonElements.title"
                         :words="words"
@@ -37,12 +39,14 @@
 
 <script>
 import LessonParagraph from "@/components/page/reader/LessonParagraph.vue";
+import {DEFAULT_LESSON_IMAGE_URL} from "@/constants.js";
+import BaseImage from "@/components/ui/BaseImage.vue";
+import * as constants from "@/constants.js";
 
-import {BLANK_IMAGE_URL} from "@/constants.js";
 
 export default {
   name: "TheLessonContent",
-  components: {LessonParagraph},
+  components: {BaseImage, LessonParagraph},
   emits: ["onWordClicked", "onPhraseClicked", "onOverLappingPhrasesClicked", "onNewPhraseSelected", "onBackgroundClicked"],
   props: {
     title: {
@@ -77,12 +81,13 @@ export default {
   data() {
     return {
       dragStartWord: null,
+      constants: constants,
     };
   },
   methods: {
     setDefaultImage(event) {
-      if (event.target.src !== BLANK_IMAGE_URL)
-        event.target.src = BLANK_IMAGE_URL;
+      if (event.target.src !== DEFAULT_LESSON_IMAGE_URL)
+        event.target.src = DEFAULT_LESSON_IMAGE_URL;
     },
     onWordClicked(word) {
       this.$emit("onWordClicked", word);
@@ -150,9 +155,6 @@ export default {
 .lesson-image {
   width: 150px;
   height: 150px;
-  /*border: 3px solid var(--primary-color-dark);*/
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border-radius: 5px;
 }
 
 .title {

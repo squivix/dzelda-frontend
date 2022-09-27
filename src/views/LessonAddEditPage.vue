@@ -3,7 +3,8 @@
     <template v-slot:content>
       <form class="add-edit-lesson-form" @submit.prevent="onSubmit">
         <div class="file-inputs-div">
-          <img :src="imageUrl" class="course-image" alt="lesson image">
+          <base-image :image-url="imageUrl" :fall-back-url="constants.DEFAULT_LESSON_IMAGE_URL"></base-image>
+
           <label for="image-input" class="file-input-label button-hollow">
             <FontAwesomeIcon icon="upload"></FontAwesomeIcon>
             Upload Image
@@ -57,11 +58,12 @@ import {useLessonStore} from "@/stores/lesson.js";
 import {useProfileStore} from "@/stores/profile.js";
 import {useStore} from "@/stores/index.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {BLANK_IMAGE_URL} from "@/constants.js";
+import BaseImage from "@/components/ui/BaseImage.vue";
+import constants from "@/constants.js";
 
 export default {
   name: "LessonAddEditPage",
-  components: {BaseCard, FontAwesomeIcon},
+  components: {BaseImage, BaseCard, FontAwesomeIcon},
   computed: {
     pageTitle() {
       return this.$route.name !== "edit-lesson" ? "Add Lesson" : "Edit Lesson";
@@ -76,8 +78,9 @@ export default {
       text: "",
       image: null,
       audio: null,
-      imageUrl: BLANK_IMAGE_URL,
+      imageUrl: "",
       audioUrl: null,
+      constants
     };
   },
   watch: {
@@ -156,7 +159,7 @@ export default {
       this.selectedCourse = this.lesson.course.id;
       this.title = this.lesson.title;
       this.text = this.lesson.text;
-      this.imageUrl = this.lesson?.image ?? this.lesson?.course?.image ?? BLANK_IMAGE_URL;
+      this.imageUrl = this.lesson?.image ?? this.lesson?.course?.image ?? "";
       this.audioUrl = this.lesson?.audio ?? "";
     }
   },
