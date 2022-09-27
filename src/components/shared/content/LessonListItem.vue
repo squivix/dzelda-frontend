@@ -135,7 +135,7 @@ export default {
 .base-card {
   margin: 0;
   padding: 20px 2vw;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 0 5px 0, rgba(0, 0, 0, 0.1) 0 0 1px 0;
   border-color: lightgray;
   border-radius: 5px;
 }
@@ -156,7 +156,6 @@ article {
 .lesson-image {
   width: 200px;
   height: 200px;
-  /*border: 3px solid var(--primary-color-dark);*/
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-radius: 5px;
 }
@@ -211,6 +210,12 @@ h4 {
   margin-top: 20px;
   margin-bottom: 5px;
   color: black;
+  /*3 lines max*/
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .course-title {

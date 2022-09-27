@@ -66,7 +66,7 @@
 
 <script>
 import BaseCard from "@/components/ui/BaseCard.vue";
-import {VueDraggableNext} from "vue-draggable-next"
+import {VueDraggableNext} from "vue-draggable-next";
 import {useCourseStore} from "@/stores/course.js";
 import {useLessonStore} from "@/stores/lesson.js";
 import {BLANK_IMAGE_URL} from "@/constants.js";
@@ -99,7 +99,7 @@ export default {
     },
     onSubmit() {
       this.editCourse();
-      this.$router.push({name: "course", ...this.$route.params})
+      this.$router.push({name: "course", ...this.$route.params});
     },
     async editCourse() {
       await this.courseStore.updateCourse({
@@ -109,7 +109,7 @@ export default {
         isPublic: this.isPublic,
         lessonIds: this.lessons.map(lesson => lesson.id),
         image: this.image
-      })
+      });
     },
 
     selectAllLessons(event) {
@@ -142,7 +142,7 @@ export default {
     this.courseStore = useCourseStore();
     this.lessonStore = useLessonStore();
   }
-}
+};
 </script>
 
 <style scoped>
@@ -153,6 +153,7 @@ export default {
   row-gap: 1.25rem;
   justify-content: flex-start;
   align-items: stretch;
+  width: 70vw;
 }
 
 .edit-course-base-card:deep(header) {

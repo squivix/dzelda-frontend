@@ -53,6 +53,7 @@ export default {
         text: editedMeaning,
       })
       await this.meaningStore.addMeaningToUser({meaningId: newMeaning.id});
+      //TODO reflect this locally by some sort of event that sends newMeaning
     },
   },
   created() {

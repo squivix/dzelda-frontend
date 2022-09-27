@@ -229,6 +229,11 @@ audio {
   font-size: 1rem;
 }
 
+select {
+  width: 100%;
+  text-overflow: ellipsis;
+}
+
 #lesson-text {
   resize: none;
   height: 35vh;

@@ -33,7 +33,7 @@ export default {
     TheFooter,
   },
   created() {
-    this.authStore = useAuthStore()
+    this.authStore = useAuthStore();
   }
 };
 </script>
@@ -54,10 +54,6 @@ header {
   margin-bottom: 3rem;
 }
 
-main {
-  grid-column: 2 / 3;
-  justify-self: center;
-}
 
 .left-side {
   grid-column: 1 / 2;
@@ -65,6 +61,7 @@ main {
 
 main {
   grid-column: 2 / 3;
+  justify-self: center;
 }
 
 .right-side {
