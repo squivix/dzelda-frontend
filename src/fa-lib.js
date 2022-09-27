@@ -1,5 +1,5 @@
 import {library} from "@fortawesome/fontawesome-svg-core";
-import {faEye, faPen} from "@fortawesome/free-solid-svg-icons";
+import {faBookOpen, faEye, faPen} from "@fortawesome/free-solid-svg-icons";
 import {faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 import {faCheck} from "@fortawesome/free-solid-svg-icons";
 import {faBan} from "@fortawesome/free-solid-svg-icons";
@@ -37,6 +37,7 @@ library.add(faCirclePlus);
 library.add(faUser);
 library.add(faGear);
 library.add(faArrowRightFromBracket);
-library.add(faUpload)
-library.add(faEllipsisV)
-library.add(faPen)
+library.add(faUpload);
+library.add(faEllipsisV);
+library.add(faPen);
+library.add(faBookOpen);

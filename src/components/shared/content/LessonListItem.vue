@@ -4,7 +4,11 @@
       <article>
         <div class="item-content">
 
-          <img :src="imageUrl" @error="setDefaultImage" alt="lesson image" class="lesson-image">
+          <img v-if="imageUrl&&!imageError" :src="imageUrl" @error="setDefaultImage" alt="lesson image"
+               class="lesson-image">
+          <div v-else class="lesson-image default-lesson-image">
+            <FontAwesomeIcon icon="book-open" @error="setDefaultImage" alt="Default lesson image"></FontAwesomeIcon>
+          </div>
           <div class="title-stats">
             <div class="title-subtitle">
               <router-link
@@ -72,7 +76,7 @@
 <script>
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {useStore} from "@/stores/index.js";
-import {BLANK_IMAGE_URL, NEW_VOCABS_PERCENTAGE_THRESH} from "@/constants.js";
+import {NEW_VOCABS_PERCENTAGE_THRESH} from "@/constants.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
@@ -80,6 +84,11 @@ import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
 export default {
   name: "LessonListItem",
   components: {BaseDropDown, BaseCard, FontAwesomeIcon, BaseDropDownList},
+  data() {
+    return {
+      imageError: false
+    };
+  },
   props: {
     lesson: {
       type: Object,
@@ -93,7 +102,7 @@ export default {
   },
   computed: {
     imageUrl() {
-      return this.lesson.image ?? this.lesson.course.image ?? BLANK_IMAGE_URL;
+      return this.lesson.image ?? this.lesson.course.image;
     },
     newVocabsPercentage() {
       const total = this.lesson.vocabsCount.new + this.savedVocabsCount;
@@ -121,8 +130,7 @@ export default {
   },
   methods: {
     setDefaultImage(event) {
-      if (event.target.src !== BLANK_IMAGE_URL)
-        event.target.src = BLANK_IMAGE_URL;
+      this.imageError = true;
     }
   },
   created() {
@@ -158,7 +166,22 @@ article {
   height: 200px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-radius: 5px;
+  flex-shrink: 0;
 }
+
+.default-lesson-image {
+  flex-shrink: 0;
+  background-color: var(--primary-color);
+  display: grid;
+  place-items: center;
+}
+
+.default-lesson-image svg {
+  color: var(--on-primary-color);
+  width: 120px;
+  height: 120px;
+}
+
 
 .title-stats {
   display: flex;
