@@ -25,7 +25,7 @@
     </ol>
 </template>
 
-<script>
+<script lang="ts">
     export default {
         name: "BasePageSelector",
         emits: ['onPageClicked'],

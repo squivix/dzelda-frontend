@@ -15,8 +15,8 @@
   </ol>
 </template>
 
-<script>
-import {useMeaningStore} from "@/stores/meaning.js";
+<script lang="ts">
+import {useMeaningStore} from "@/stores/meaningStore.js";
 
 export default {
   name: "MeaningEditingControls",

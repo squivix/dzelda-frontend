@@ -19,7 +19,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import BasePageSelector from "@/components/ui/BasePageSelector.vue";
 
 export default {

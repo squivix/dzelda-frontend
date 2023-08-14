@@ -6,32 +6,40 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import LessonListItem from "@/components/shared/content/LessonListItem.vue";
-import {useLessonStore} from "@/stores/lesson";
+import {useLessonStore} from "@/stores/lessonStore.js";
+import {LessonSchema} from "dzelda-types";
+import {useQuery} from "@oarepo/vue-query-synchronizer";
 
 export default {
   name: "BrowseTab",
   components: {LessonListItem},
   emits: ["onPageFetched"],
   data() {
-    return {recommendedLessons: null};
+    return {recommendedLessons: null as LessonSchema[] | null};
   },
   methods: {
     async fetchRecommendedLessons() {
       const response = await this.lessonStore.fetchLessons({
-        languageCode: this.$route.params.learningLanguage,
-        sortBy: "best",
+        languageCode: this.$route.params.learningLanguage as string,
+        page: this.queryParams.page,
+        pageSize: this.queryParams.maxPerPage,
+        sortBy: "learnersCount",
+        sortOrder: "desc"
       });
-      this.recommendedLessons = response.results;
-      this.$emit("onPageFetched", Math.ceil(response.count / this.$query.maxPerPage));
+      this.recommendedLessons = response.data!;
+      this.$emit("onPageFetched", Math.ceil(response.pageCount!));
     }
   },
   async mounted() {
     await this.fetchRecommendedLessons();
   },
-  async created() {
-    this.lessonStore = useLessonStore();
+  setup() {
+    return {
+      lessonStore: useLessonStore(),
+      queryParams: useQuery()
+    };
   }
 }
 </script>

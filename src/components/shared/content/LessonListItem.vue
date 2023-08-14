@@ -3,7 +3,8 @@
     <template v-slot:all>
       <article>
         <div class="item-content">
-          <BaseImage :image-url="imageUrl" :fall-back-url="constants.DEFAULT_LESSON_IMAGE_URL" alt-text="lesson image"></BaseImage>
+          <BaseImage :image-url="imageUrl" :fall-back-url="assets.lessonBlank"
+                     alt-text="lesson image"></BaseImage>
 
           <div class="title-stats">
             <div class="title-subtitle">
@@ -23,7 +24,7 @@
               <div class="stats-count">
                 <span class="vocabs-indicator new-vocabs"></span>
                 <div>
-                  <span>{{ lesson.vocabsCount.new }} (</span>
+                  <span>{{ lesson.vocabsByLevel![VocabLevelSchema.NEW] }} (</span>
                   <span :class="newVocabsPercentageClass">{{ newVocabsPercentage }}%</span>
                   <span>)</span>
                 </div>
@@ -69,26 +70,24 @@
   </base-card>
 </template>
 
-<script>
+<script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
-import {useStore} from "@/stores/index.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
+import {LessonSchema, VocabLevelSchema, VocabsByLevelSchema} from "dzelda-types";
+import {PropType} from "vue";
+import {useStore} from "@/stores/rootStore.js";
+import lessonBlank from "@/assets/images/lesson-blank.svg"
 import constants from "@/constants.js";
 
 export default {
   name: "LessonListItem",
   components: {BaseImage, BaseDropDown, BaseCard, FontAwesomeIcon, BaseDropDownList},
-  data() {
-    return {
-      constants: constants,
-    };
-  },
   props: {
     lesson: {
-      type: Object,
+      type: Object as PropType<LessonSchema>,
       required: true
     },
     showCourse: {
@@ -98,12 +97,18 @@ export default {
     }
   },
   computed: {
+    VocabLevelSchema() {
+      return VocabLevelSchema
+    },
     imageUrl() {
-      return this.lesson.image ?? this.lesson.course.image ?? "";
+      const imagePath = this.lesson.image || this.lesson.course.image;
+      if (imagePath)
+        return `${this.store.resourceUrl}/${imagePath}`
+      return "";
     },
     newVocabsPercentage() {
-      const total = this.lesson.vocabsCount.new + this.savedVocabsCount;
-      const percentage = (this.lesson.vocabsCount.new / total) * 100;
+      const total = this.lesson.vocabsByLevel![VocabLevelSchema.NEW] + this.savedVocabsCount;
+      const percentage = (this.lesson.vocabsByLevel![VocabLevelSchema.NEW] / total) * 100;
       return +percentage.toFixed(2);
     },
     newVocabsPercentageClass() {
@@ -117,16 +122,21 @@ export default {
     },
     savedVocabsCount() {
       let count = 0;
-      for (let level in this.lesson.vocabsCount) {
-        if (level !== "new" && level !== "ignored") {
-          count += this.lesson.vocabsCount[level];
+      let level: keyof VocabsByLevelSchema;   //typescript is acting up :/
+      for (level in this.lesson.vocabsByLevel!) {
+        if (Number(level) !== VocabLevelSchema.NEW && Number(level) !== VocabLevelSchema.IGNORED) {
+          count += this.lesson.vocabsByLevel![level];
         }
       }
       return count;
     }
   },
-  created() {
-    this.store = useStore();
+  setup() {
+    return {
+      store: useStore(),
+      assets: {lessonBlank},
+      VocabLevelSchema
+    }
   }
 };
 </script>

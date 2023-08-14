@@ -1,5 +1,5 @@
 <template>
-  <base-card v-if="!loading">
+  <base-card v-if="!loading && lesson">
     <template v-slot:all>
       <the-lesson-content
           :title="lesson.title"
@@ -31,14 +31,16 @@
     </template>
   </base-card>
 </template>
-<script>
+<script lang="ts">
 import TheLessonContent from "@/components/page/reader/TheLessonContent.vue";
 import TheMeaningPanel from "@/components/shared/vocab-panel/TheMeaningPanel.vue";
 import constants from "@/constants.js";
 import {getTextElements} from "@/components/page/reader/shared.js";
 import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel.vue";
-import {useLessonStore} from "@/stores/lesson.js";
-import {useVocabStore} from "@/stores/vocab.js";
+import {useLessonStore} from "@/stores/lessonStore.js";
+import {useVocabStore} from "@/stores/vocabStore.js";
+import {LessonSchema} from "dzelda-types";
+import {useStore} from "@/stores/rootStore.js";
 
 export default {
   name: "LessonReaderPage",
@@ -48,7 +50,7 @@ export default {
       loadingLesson: true,
       loadingWords: true,
       parsingLesson: true,
-      lesson: null,
+      lesson: null as LessonSchema | null,
       words: {},
       phrases: {},
       selectedVocab: null,
@@ -58,7 +60,7 @@ export default {
     };
   },
   async mounted() {
-    await this.lessonStore.addLessonToUser({lessonId: this.$route.params.lessonId});
+    await this.lessonStore.addLessonToUser({lessonId: Number(this.$route.params.lessonId as string)});
     await this.fetchLesson();
     await this.fetchWordsLevels();
     this.parseLesson();
@@ -68,7 +70,10 @@ export default {
       return this.loadingLesson || this.loadingWords || this.parsingLesson;
     },
     imageUrl() {
-      return this.lesson.image ?? this.lesson.course.image ?? "";
+      const imagePath = this.lesson!.image || this.lesson!.course.image;
+      if (imagePath)
+        return `${this.store.resourceUrl}/${imagePath}`
+      return "";
     },
     vocab() {
       return {...this.words, ...this.phrases};
@@ -77,17 +82,19 @@ export default {
   methods: {
     async fetchLesson() {
       this.loadingLesson = true;
-      this.lesson = await this.lessonStore.fetchLesson({lessonId: this.$route.params.lessonId});
+      this.lesson = await this.lessonStore.fetchLesson({lessonId: Number(this.$route.params.lessonId as string)});
       this.lesson.text = this.lesson.text.replace(/[\r\n]{3,}/g, "\n\n");
       this.loadingLesson = false;
     },
     async fetchWordsLevels() {
       this.loadingWords = true;
-      this.words = await this.vocabStore.fetchLessonWords({lessonId: this.$route.params.lessonId});
-      this.phrases = await this.vocabStore.fetchLessonPhrases({lessonId: this.$route.params.lessonId});
+      const lessonVocabs = await this.vocabStore.fetchLessonVocabs({lessonId: Number(this.$route.params.lessonId as string)}, {});
+
+      this.words = lessonVocabs.filter(v => !v.isPhrase).reduce((obj, w) => ({...obj, [w.text]: w}), {});
+      this.phrases = lessonVocabs.filter(v => v.isPhrase).reduce((obj, p) => ({...obj, [p.text]: p}), {});
       this.loadingWords = false;
     },
-    setSelectedVocab(vocabText) {
+    setSelectedVocab(vocabText: string) {
       this.selectedVocab = {text: vocabText, ...this.vocab[vocabText.toLowerCase()]};
       this.selectedIsPhrase = !!this.phrases[vocabText.toLowerCase()];
       this.selectedOverLappingPhrases = null;
@@ -96,8 +103,8 @@ export default {
       this.selectedVocab = {
         text: phraseText,
         level: constants.ALL_VOCAB_LEVELS.NEW,
-        allMeanings: [],
-        userMeanings: []
+        meanings: [],
+        learnerMeanings: []
       };
       this.selectedIsPhrase = true;
       this.selectedOverLappingPhrases = null;
@@ -121,7 +128,7 @@ export default {
         this.onVocabLevelSet(vocab, vocab.level);
       } else
         this.onVocabLevelSet(vocab, vocab.level);
-      this.vocab[key].userMeanings.push(newMeaning);
+      this.vocab[key].learnerMeanings.push(newMeaning);
       this.vocab[key].id = vocab.id;
       this.setSelectedVocab(vocab.text);
     },
@@ -130,7 +137,7 @@ export default {
       const key = vocab.text.toLowerCase();
       this.vocab[key].level = level;
       if (level === constants.ALL_VOCAB_LEVELS.IGNORED || level === constants.ALL_VOCAB_LEVELS.KNOWN) {
-        this.vocab[key].userMeanings = [];
+        this.vocab[key].learnerMeanings = [];
         this.clearSelectedVocab();
         if (level === constants.ALL_VOCAB_LEVELS.IGNORED && this.phrases[key])
           this.phrases[key] = constants.ALL_VOCAB_LEVELS.NEW;
@@ -138,9 +145,9 @@ export default {
         this.setSelectedVocab(vocab.text);
     },
     onMeaningDeleted(word, deleted_meaning) {
-      const index = word.userMeanings.findIndex((meaning) => meaning.id === deleted_meaning.id);
-      word.userMeanings.splice(index, 1);
-      if (word.userMeanings.length === 0)
+      const index = word.learnerMeanings.findIndex((meaning) => meaning.id === deleted_meaning.id);
+      word.learnerMeanings.splice(index, 1);
+      if (word.learnerMeanings.length === 0)
         this.onVocabLevelSet(word, constants.ALL_VOCAB_LEVELS.NEW);
     },
     parseLesson() {
@@ -151,7 +158,7 @@ export default {
       };
       this.parsingLesson = false;
     },
-    parseStringToElements(texts) {
+    parseStringToElements(texts: string[]) {
       let paragraphList = [];
 
       const phrases = Object.keys(this.phrases);
@@ -192,9 +199,12 @@ export default {
       return text.split(/\s\s+/g);
     },
   },
-  created() {
-    this.lessonStore = useLessonStore();
-    this.vocabStore = useVocabStore();
+  setup() {
+    return {
+      store: useStore(),
+      lessonStore: useLessonStore(),
+      vocabStore: useVocabStore()
+    }
   }
 };
 </script>

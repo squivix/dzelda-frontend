@@ -3,7 +3,7 @@
     <template v-slot:content>
       <form class="add-edit-lesson-form" @submit.prevent="onSubmit">
         <div class="file-inputs-div">
-          <base-image :image-url="imageUrl" :fall-back-url="constants.DEFAULT_LESSON_IMAGE_URL"></base-image>
+          <base-image :image-url="imageUrl" :fall-back-url="assets.lessonBlank"></base-image>
 
           <label for="image-input" class="file-input-label button-hollow">
             <FontAwesomeIcon icon="upload"></FontAwesomeIcon>
@@ -51,15 +51,16 @@
   </base-card>
 </template>
 
-<script>
+<script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
-import {useCourseStore} from "@/stores/course.js";
-import {useLessonStore} from "@/stores/lesson.js";
-import {useProfileStore} from "@/stores/profile.js";
-import {useStore} from "@/stores/index.js";
+import {useCourseStore} from "@/stores/courseStore.js";
+import {useLessonStore} from "@/stores/lessonStore.js";
+import {useProfileStore} from "@/stores/profileStore.js";
+import {useStore} from "@/stores/rootStore.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import constants from "@/constants.js";
+import {LessonSchema} from "dzelda-types";
+import lessonBlank from "@/assets/images/lesson-blank.svg"
 
 export default {
   name: "LessonAddEditPage",
@@ -71,16 +72,15 @@ export default {
   },
   data() {
     return {
-      lesson: null,
+      lesson: null as LessonSchema | null,
       editableCourses: null,
-      selectedCourse: "",
+      selectedCourse: "" as "" | number,
       title: "",
       text: "",
-      image: null,
-      audio: null,
+      image: null as File | null,
+      audio: null as File | null,
       imageUrl: "",
-      audioUrl: null,
-      constants
+      audioUrl: null as string | null,
     };
   },
   watch: {
@@ -92,12 +92,10 @@ export default {
   methods: {
     setImageFile(event) {
       this.image = event.target.files[0];
-      // noinspection JSUnresolvedFunction
       this.imageUrl = URL.createObjectURL(this.image);
     },
     setAudioFile(event) {
       this.audio = event.target.files[0];
-      // noinspection JSUnresolvedFunction
       this.audioUrl = URL.createObjectURL(this.audio);
 
       this.$refs.audio.load();
@@ -105,9 +103,9 @@ export default {
     async fetchEditableCourses() {
       const response = await this.courseStore.fetchCourses({
         languageCode: this.$route.params.learningLanguage,
-        editableBy: (await this.profileStore.fetchUserProfile()).username,
+        addedBy: (await this.profileStore.fetchUserProfile()).username,
       });
-      this.editableCourses = response.results;
+      this.editableCourses = response.data;
     },
     async onSubmit(event) {
       if (this.lesson == null)
@@ -129,7 +127,7 @@ export default {
     },
     async addLesson() {
       this.lesson = await this.lessonStore.createLesson({
-        courseId: this.selectedCourse,
+        courseId: this.selectedCourse as number,
         title: this.title,
         text: this.text,
         image: this.image,
@@ -139,8 +137,7 @@ export default {
     },
 
     async editLesson() {
-      await this.lessonStore.updateLesson({
-        lessonId: this.$route.params.lessonId,
+      await this.lessonStore.updateLesson({lessonId: this.$route.params.lessonId,}, {
         courseId: this.selectedCourse,
         title: this.title,
         text: this.text,
@@ -163,11 +160,14 @@ export default {
       this.audioUrl = this.lesson?.audio ?? "";
     }
   },
-  created() {
-    this.store = useStore();
-    this.courseStore = useCourseStore();
-    this.lessonStore = useLessonStore();
-    this.profileStore = useProfileStore();
+  setup() {
+    return {
+      store: useStore(),
+      courseStore: useCourseStore(),
+      lessonStore: useLessonStore(),
+      profileStore: useProfileStore(),
+      assets: {lessonBlank: lessonBlank}
+    }
   }
 };
 

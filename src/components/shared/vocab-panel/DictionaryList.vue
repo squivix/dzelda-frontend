@@ -5,8 +5,8 @@
   </ol>
 </template>
 
-<script>
-import {useDictionaryStore} from "@/stores/dictionary.js";
+<script lang="ts">
+import {useDictionaryStore} from "@/stores/dictionaryStore.js";
 
 export default {
   name: "DictionaryList",

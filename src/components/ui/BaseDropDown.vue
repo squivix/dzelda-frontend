@@ -20,7 +20,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 
 import BasePointyDiv from "@/components/ui/BasePointyDiv.vue";
 

@@ -1,6 +1,6 @@
 import {createApp, markRaw} from "vue";
 import App from "@/App.vue";
-import router from "@/router";
+import {router} from "@/router/router.js";
 
 import BaseCard from "@/components/ui/BaseCard.vue";
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
@@ -18,8 +18,9 @@ app.use(router);
 
 //stores
 const pinia = createPinia();
-//use router in pina as plugin, from: https://stackoverflow.com/a/70905178/14200676
-pinia.use(({store}) => store.$router = markRaw(router));
+pinia.use(({store}) => {
+    store.router = markRaw(router)
+})
 app.use(pinia);
 
 //other libraries

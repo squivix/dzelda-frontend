@@ -14,11 +14,11 @@
     <the-footer v-if="$route.meta.showFooter"></the-footer>
   </div>
 </template>
-<script>
+<script lang="ts">
 import GuestHeader from "@/components/layout/GuestHeader.vue";
 import TheFooter from "@/components/layout/TheFooter.vue";
 import AuthHeader from "@/components/layout/AuthHeader.vue";
-import {useAuthStore} from "@/stores/auth";
+import {useAuthStore} from "@/stores/authStore.js";
 
 
 export default {
@@ -32,8 +32,8 @@ export default {
     AuthHeader,
     TheFooter,
   },
-  created() {
-    this.authStore = useAuthStore();
+  setup() {
+    return {authStore: useAuthStore()};
   }
 };
 </script>

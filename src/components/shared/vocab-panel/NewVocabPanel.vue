@@ -23,11 +23,13 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import constants from "@/constants";
 import MeaningAddingControls from "@/components/shared/vocab-panel/MeaningAddingControls.vue";
 import DictionariesList from "@/components/shared/vocab-panel/DictionaryList.vue";
-import {useVocabStore} from "@/stores/vocab.js";
+import {useVocabStore} from "@/stores/vocabStore.js";
+import {PropType} from "vue";
+import {LearnerVocabSchema} from "dzelda-types"
 
 export default {
   name: "NewVocabPanel",
@@ -35,7 +37,7 @@ export default {
   emits: ["onMeaningAdded", "onVocabLevelSet"],
   props: {
     vocab: {
-      type: Object,
+      type: Object as PropType<LearnerVocabSchema>,
       required: true,
     },
     isPhrase: {
@@ -49,7 +51,7 @@ export default {
   computed: {
     suggestedMeanings() {
       //TODO add button to show all meanings
-      return this.vocab.allMeanings.filter((meaning) => !this.vocab.userMeanings.some((m) => m.id === meaning.id)).slice(0, 3);
+      return this.vocab.meanings.filter((meaning) => !this.vocab.learnerMeanings.some((m) => m.id === meaning.id)).slice(0, 3);
     },
     isLevelNew() {
       return this.vocab.level === constants.ALL_VOCAB_LEVELS.NEW;
@@ -61,26 +63,26 @@ export default {
   methods: {
     async markWordAsKnown() {
       await this.vocabStore.addVocabToUser({vocabId: this.vocab.id});
-      await this.vocabStore.updateUserVocab({
-        vocabId: this.vocab.id,
-        level: constants.ALL_VOCAB_LEVELS.KNOWN
-      })
+      await this.vocabStore.updateUserVocab(
+          {vocabId: this.vocab.id},
+          {level: constants.ALL_VOCAB_LEVELS.KNOWN}
+      )
       this.$emit("onVocabLevelSet", constants.ALL_VOCAB_LEVELS.KNOWN);
     },
     async markWordAsIgnored() {
       await this.vocabStore.addVocabToUser({vocabId: this.vocab.id});
-      await this.vocabStore.updateUserVocab({
-        vocabId: this.vocab.id,
-        level: constants.ALL_VOCAB_LEVELS.IGNORED
-      })
+      await this.vocabStore.updateUserVocab(
+          {vocabId: this.vocab.id},
+          {level: constants.ALL_VOCAB_LEVELS.IGNORED}
+      )
       this.$emit("onVocabLevelSet", constants.ALL_VOCAB_LEVELS.IGNORED);
     },
     onMeaningAdded(vocab, meaning) {
       this.$emit("onMeaningAdded", vocab, meaning);
     },
   },
-  created() {
-    this.vocabStore = useVocabStore();
+  setup() {
+    return {vocabStore: useVocabStore()};
   }
 }
 </script>

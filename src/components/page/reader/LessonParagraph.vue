@@ -24,9 +24,7 @@
   </component>
 </template>
 
-<script>
-import {isEmptyObject} from "@/utils";
-import {getTextElements} from "@/components/page/reader/shared";
+<script lang="ts">
 
 export default {
   name: "LessonParagraph",
@@ -111,7 +109,7 @@ export default {
       return `word-wrapper ${this.getPhrasePositionClass(element)} ${this.getPhraseLevelClass(element)}`;
     },
     getPhraseLevelClass(element) {
-      if (isEmptyObject(element.phrases))
+      if (Object.keys(element.phrases).length === 0)
         return "";
       switch (this.phrases[Object.keys(element.phrases)[0].toLowerCase()].level) {
         case 0:
@@ -133,7 +131,7 @@ export default {
       }
     },
     getPhrasePositionClass(element) {
-      if (isEmptyObject(element.phrases))
+      if (Object.keys(element.phrases).length === 0)
         return "";
       let allStartWord = true, allEndWord = true;
       for (let phrase of Object.keys(element.phrases)) {

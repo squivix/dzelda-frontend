@@ -26,7 +26,7 @@
   </base-card>
 </template>
 
-<script>
+<script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 
 export default {

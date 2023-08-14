@@ -7,7 +7,7 @@
   </search-filter>
 </template>
 
-<script>
+<script lang="ts">
 import SearchFilter from "@/components/ui/SearchFilter.vue";
 
 export default {

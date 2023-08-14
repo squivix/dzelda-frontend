@@ -3,7 +3,7 @@
         <meaning-editing-controls
                 @onMeaningDeleted="onMeaningDeleted"
                 :vocab-id="vocab.id"
-                :saved-meanings="vocab.userMeanings"
+                :saved-meanings="vocab.learnerMeanings"
         >
         </meaning-editing-controls>
 
@@ -25,7 +25,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import VocabLevelPicker from "@/components/shared/vocab-panel/VocabLevelPicker.vue";
 import MeaningEditingControls from "@/components/shared/vocab-panel/MeaningEditingControls.vue";
 

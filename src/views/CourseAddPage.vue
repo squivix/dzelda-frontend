@@ -5,7 +5,7 @@
       <form class="add-course-form" @submit.prevent="onSubmit">
         <div class="file-inputs-div">
 
-          <base-image :image-url="imageUrl" :fall-back-url="constants.DEFAULT_COURSE_IMAGE_URL"
+          <base-image :image-url="imageUrl" :fall-back-url="assets.courseBlank"
                       alt-text="course image"></base-image>
 
           <label for="image-input" class="file-input-label button-hollow">
@@ -36,28 +36,27 @@
   </base-card>
 </template>
 
-<script>
+<script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
-import {useCourseStore} from "@/stores/course.js";
+import {useCourseStore} from "@/stores/courseStore.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import constants from "@/constants.js";
 import BaseImage from "@/components/ui/BaseImage.vue";
+import courseBlank from "@/assets/images/course-blank.svg"
 
 export default {
   name: "CourseAddPage",
   components: {BaseCard, FontAwesomeIcon, BaseImage},
   data() {
     return {
-      title: null,
-      description: null,
+      title: "",
+      description: "",
       isPublic: true,
-      image: null,
-      constants,
+      image: null as File | null,
       imageUrl: "",
     };
   },
   methods: {
-    setImageFile(event) {
+    setImageFile(event: Event) {
       this.image = event.target.files[0];
       // noinspection JSUnresolvedFunction
       this.imageUrl = URL.createObjectURL(this.image);
@@ -75,8 +74,8 @@ export default {
     },
 
     async addCourse() {
-      return await this.courseStore.createCourse({
-        languageCode: this.$route.params.learningLanguage,
+      return this.courseStore.createCourse({
+        languageCode: this.$route.params.learningLanguage as string,
         title: this.title,
         description: this.description,
         isPublic: this.isPublic,
@@ -84,8 +83,11 @@ export default {
       });
     }
   },
-  created() {
-    this.courseStore = useCourseStore();
+  setup() {
+    return {
+      courseStore: useCourseStore(),
+      assets: {courseBlank}
+    };
   }
 };
 </script>

@@ -28,8 +28,8 @@
   </div>
 </template>
 
-<script>
-import constants from "@/constants.js";
+<script lang="ts">
+import constants from "@/constants.ts";
 import NewVocabPanel from "@/components/shared/vocab-panel/NewVocabPanel.vue";
 import ExistingVocabPanel from "@/components/shared/vocab-panel/ExistingVocabPanel.vue";
 

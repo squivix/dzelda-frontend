@@ -3,8 +3,8 @@
   <p v-if="profile">Signed in as {{ profile.username }}</p>
 </template>
 
-<script>
-import {useProfileStore} from "@/stores/profile.js";
+<script lang="ts">
+import {useProfileStore} from "@/stores/profileStore.js";
 
 export default {
   name: "MyProfilePage",

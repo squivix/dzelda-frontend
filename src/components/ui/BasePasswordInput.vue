@@ -15,7 +15,7 @@
         </button>
     </div>
 </template>
-<script>
+<script lang="ts">
     import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
     export default {

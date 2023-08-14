@@ -18,8 +18,8 @@
   </form>
 </template>
 
-<script>
-import constants from "@/constants.js";
+<script lang="ts">
+import constants from "@/constants.ts";
 
 export default {
   name: "SearchFilter",

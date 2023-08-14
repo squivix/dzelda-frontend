@@ -9,7 +9,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
     import {ALL_VOCAB_LEVELS} from "@/constants";
 
     export default {

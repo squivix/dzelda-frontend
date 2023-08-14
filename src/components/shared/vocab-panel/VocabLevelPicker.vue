@@ -29,9 +29,9 @@
 
 </template>
 
-<script>
-import constants from "@/constants.js";
-import {useVocabStore} from "@/stores/vocab.js";
+<script lang="ts">
+import constants from "@/constants.ts";
+import {useVocabStore} from "@/stores/vocabStore.js";
 
 export default {
   name: "VocabLevelPicker",
@@ -52,15 +52,15 @@ export default {
   },
   methods: {
     async setVocabLevel(level) {
-      await this.vocabStore.updateUserVocab({
-        vocabId: this.vocabId,
-        level: level
-      });
+      await this.vocabStore.updateUserVocab(
+          {vocabId: this.vocabId},
+          {level: level}
+      );
       this.$emit("onVocabLevelSet", level);
     },
   },
-  created() {
-    this.vocabStore = useVocabStore();
+  setup() {
+    return {vocabStore: useVocabStore()};
   }
 };
 </script>

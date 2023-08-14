@@ -25,7 +25,7 @@
       <base-drop-down v-if="currentLanguage" class="language-dropdown" label="language">
         <template v-slot:button>
           <!--suppress HtmlUnknownTarget, JSUnresolvedVariable -->
-          <img :src="currentLanguage.flagCircularImage" alt="Current Language Icon"
+          <img :src="currentLanguage.flagCircular??''" alt="Current Language Icon"
                class="language-icon current-language-icon">
           <span class="language-menu-arrow">
                         <font-awesome-icon icon="chevron-down"></font-awesome-icon>
@@ -36,7 +36,7 @@
           <base-drop-down-list is-grid class="language-grid" :list-items="
             [...otherLanguages.map(language=>({
                   text:language.name,
-                  image:{src:language.flagCircularImage, alt:'language flag'},
+                  image:{src:language.flagCircular, alt:'language flag'},
                   link:{ name: 'explore-lang' ,params:{learningLanguage:language.code}}
             })),
             {
@@ -76,7 +76,7 @@
 
       <base-drop-down :is-pointy="true" label="profile-menu">
         <template v-slot:button>
-          <img v-if="userProfile&&profilePicture" :src="profilePicture" alt="profile picture"
+          <img v-if="userAccount&&profilePicture" :src="profilePicture" alt="profile picture"
                class="profile-picture">
           <font-awesome-icon v-else icon="user" class="profile-picture"></font-awesome-icon>
         </template>
@@ -103,27 +103,28 @@
     </div>
   </header>
 </template>
-<script>
+<script lang="ts">
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {useStore} from "@/stores/index.js";
-import {useLanguageStore} from "@/stores/language.js";
-import {useProfileStore} from "@/stores/profile.js";
+import {useStore} from "@/stores/rootStore.js";
+import {useLanguageStore} from "@/stores/languageStore.js";
+import {useProfileStore} from "@/stores/profileStore.js";
 import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
+import {UserSchema, LearnerLanguageSchema} from "dzelda-types";
 
 export default {
   name: "AuthHeader",
   components: {BaseDropDownList, BaseDropDown, FontAwesomeIcon},
   data() {
     return {
-      userProfile: null,
-      userLanguages: null,
+      userAccount: null as UserSchema | null,
+      userLanguages: null as LearnerLanguageSchema[] | null,
     };
   },
   computed: {
     profilePicture() {
-      if (this.userProfile.profilePicture !== null)
-        return `${this.store.baseUrl}${this.userProfile.profilePicture}`;
+      if (this.userAccount!.profile.profilePicture)
+        return `${this.store.baseUrl}${this.userAccount!.profile.profilePicture}`;
       else
         return null;
     },
@@ -131,25 +132,20 @@ export default {
       return this.userLanguages ? this.userLanguages[0] : null;
     },
     otherLanguages() {
-      return this.userLanguages.filter(lang => lang.code !== this.currentLanguage.code);
+      return this.userLanguages ? this.userLanguages!.filter(lang => lang.code !== this.currentLanguage!.code) : [];
     },
   },
-  methods: {
-    async fetchUserProfile() {
-      return await this.profileStore.fetchUserProfile();
-    },
-    async fetchUserLanguages() {
-      return await this.languageStore.fetchUserLanguages();
-    }
-  },
+  methods: {},
   async mounted() {
-    this.userProfile = await this.fetchUserProfile();
-    this.userLanguages = await this.fetchUserLanguages();
+    this.userAccount = await this.profileStore.fetchUserProfile();
+    this.userLanguages = await this.languageStore.fetchUserLanguages();
   },
-  async created() {
-    this.store = useStore();
-    this.languageStore = useLanguageStore();
-    this.profileStore = useProfileStore();
+  setup() {
+    return {
+      store: useStore(),
+      languageStore: useLanguageStore(),
+      profileStore: useProfileStore()
+    }
   }
 };
 </script>

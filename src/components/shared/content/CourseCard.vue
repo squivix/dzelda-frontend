@@ -2,7 +2,7 @@
   <base-card>
     <template v-slot:all>
       <article class="course-article">
-        <BaseImage :image-url="this.course.image" :fall-back-url="constants.DEFAULT_COURSE_IMAGE_URL"
+        <BaseImage :image-url="imageUrl" :fall-back-url="assets.courseBlank"
                    alt-text="course image"></BaseImage>
 
         <div class="title-row">
@@ -40,44 +40,39 @@
   </base-card>
 </template>
 
-<script>
-import {useStore} from "@/stores/index.js";
-import {DEFAULT_COURSE_IMAGE_URL} from "@/constants.js";
+<script lang="ts">
+import {useStore} from "@/stores/rootStore.js";
+import constants from "@/constants.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import constants from "@/constants.js";
+import {PropType} from "vue";
+import {CourseSchema} from "dzelda-types";
+import courseBlank from "@/assets/images/course-blank.svg"
 
 export default {
   name: "CourseCard",
   components: {BaseImage, FontAwesomeIcon, BaseDropDown, BaseDropDownList},
   data() {
-    return {
-      constants: constants,
-    };
+    return {};
   },
   props: {
     course: {
-      type: Object,
+      type: Object as PropType<CourseSchema>,
       required: true,
     }
   },
   computed: {
     imageUrl() {
-      return this.course.image;
+      return this.course.image ? `${this.store.resourceUrl}/${this.course.image}` : "";
     },
-    defaultImageUrl() {
-      return DEFAULT_COURSE_IMAGE_URL;
-    }
   },
-  methods: {
-    setDefaultImage() {
-      this.imageError = true;
+  setup() {
+    return {
+      store: useStore(),
+      assets: {courseBlank}
     }
-  },
-  created() {
-    this.store = useStore();
   }
 };
 </script>

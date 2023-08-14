@@ -7,7 +7,7 @@
     </td>
     <td>
       <ul>
-        <li v-for="meaning in vocab.userMeanings"
+        <li v-for="meaning in vocab.learnerMeanings"
             :key="meaning.id">
           {{ meaning.text }}
         </li>
@@ -23,7 +23,7 @@
   </tr>
 </template>
 
-<script>
+<script lang="ts">
 import VocabLevelPicker from "@/components/shared/vocab-panel/VocabLevelPicker.vue";
 
 export default {

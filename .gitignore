@@ -26,3 +26,7 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+.directory
+.run
+*.env
+!example.env

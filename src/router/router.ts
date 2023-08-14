@@ -1,10 +1,10 @@
 import {createRouter, createWebHistory} from "vue-router";
-import {useAuthStore} from "@/stores/auth.js";
-import {useLanguageStore} from "@/stores/language.js";
-import {privateRoutes} from "@/router/private/index.js";
-import {publicRoutes} from "@/router/public/index.js";
+import {useAuthStore} from "@/stores/authStore.js";
+import {useLanguageStore} from "@/stores/languageStore.js";
+import {privateRoutes} from "@/router/private/privateRoutes.js";
+import {publicRoutes} from "@/router/public/publicRoutes.js";
 
-const router = createRouter({
+export const router = createRouter({
     routes: [
         ...privateRoutes,
         ...publicRoutes,
@@ -35,9 +35,6 @@ router.beforeEach(async (to, from) => {
     }
 
     if (to.params.learningLanguage && from.params.learningLanguage !== to.params.learningLanguage)
-        await languageStore.updateLanguageLastOpened({languageCode: to.params.learningLanguage});
+        await languageStore.updateLanguageLastOpened({languageCode: to.params.learningLanguage as string});
 });
-
-
-export default router;
 

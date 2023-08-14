@@ -46,8 +46,8 @@
 
 </template>
 
-<script>
-import constants from "@/constants.js";
+<script lang="ts">
+import constants from "@/constants.ts";
 import SearchFilter from "@/components/ui/SearchFilter.vue";
 
 export default {

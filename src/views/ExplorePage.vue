@@ -4,12 +4,12 @@
       <h2>Explore</h2>
       <nav class="tab-bar">
         <ul class="tab-labels">
-          <li :class="{'tab-label':true, 'current-tab':currentTab==='Browse'}"
-              @click="setCurrentTab('Browse')">
+          <li :class="{'tab-label':true, 'current-tab':currentTab === ExplorePageTab.BROWSE}"
+              @click="setCurrentTab(ExplorePageTab.BROWSE)">
             Browse
           </li>
-          <li :class="{'tab-label':true, 'current-tab':currentTab==='Guided'}"
-              @click="setCurrentTab('Guided')">
+          <li :class="{'tab-label':true, 'current-tab':currentTab === ExplorePageTab.GUIDED}"
+              @click="setCurrentTab(ExplorePageTab.GUIDED)">
             Guided
           </li>
         </ul>
@@ -29,30 +29,39 @@
   </base-card>
 </template>
 
-<script>
+<script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import BrowseTab from "@/components/page/explore/BrowseTab.vue";
 import GuidedTab from "@/components/page/explore/GuidedTab.vue";
 import PaginationControls from "@/components/ui/PaginationControls.vue";
+import {defineComponent} from "vue";
 
-export default {
+enum ExplorePageTab {
+  BROWSE = "Browse",
+  GUIDED = "Guided",
+}
+
+export default defineComponent({
   name: "ExplorePage",
   components: {PaginationControls, BaseCard, BrowseTab, GuidedTab},
   data() {
     return {
-      currentTab: "Browse",
+      currentTab: ExplorePageTab.BROWSE as ExplorePageTab,
       pageCount: 0,
     };
   },
   methods: {
-    setCurrentTab(tab) {
+    setCurrentTab(tab: ExplorePageTab) {
       this.currentTab = tab;
     },
-    onPageFetched(pageCount) {
+    onPageFetched(pageCount: number) {
       this.pageCount = pageCount;
     }
-  }
-};
+  },
+  setup() {
+    return {ExplorePageTab}
+  },
+});
 </script>
 
 <style scoped>
@@ -86,8 +95,4 @@ h2 {
   border-bottom: 3px solid var(--secondary-color);
 }
 
-.tab-content {
-  border-top: none;
-  border-radius: 3px;
-}
 </style>

@@ -12,7 +12,7 @@
       <tbody>
       <tr v-for="language in userLanguages" :key="language.id">
         <td>{{ language.name }}</td>
-        <td>{{ language.timeAdded }}</td>
+        <td>{{ language.addedOn }}</td>
         <td>
           <button class="inv-button link" @click="removeLanguage(language)">Remove</button>
           <button class="inv-button link" @click="resetLanguageProgress">Reset Progress</button>
@@ -36,15 +36,16 @@
   </div>
 </template>
 
-<script>
-import {useLanguageStore} from "@/stores/language";
+<script lang="ts">
+import {useLanguageStore} from "@/stores/languageStore.js";
+import {LanguageSchema, LearnerLanguageSchema} from "dzelda-types";
 
 export default {
   name: "LanguagesTab",
   data() {
     return {
-      allLanguages: null,
-      userLanguages: null,
+      allLanguages: null as LanguageSchema[] | null,
+      userLanguages: null as LearnerLanguageSchema[] | null,
     };
   },
 
@@ -63,7 +64,7 @@ export default {
     async fetchUserLanguages() {
       return await this.languageStore.fetchUserLanguages();
     },
-    async removeLanguage(language) {
+    async removeLanguage(language: LanguageSchema) {
       //TODO move to modal dialogue
       if (confirm("Are you sure you want to delete this language?")) {
         await this.languageStore.deleteLanguageFromUser({
@@ -79,8 +80,8 @@ export default {
     this.allLanguages = await this.fetchAllLanguages();
     this.userLanguages = await this.fetchUserLanguages()
   },
-  created() {
-    this.languageStore = useLanguageStore();
+  setup() {
+    return {languageStore: useLanguageStore()};
   }
 }
 </script>

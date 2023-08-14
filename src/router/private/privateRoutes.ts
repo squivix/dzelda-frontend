@@ -15,8 +15,9 @@ import SettingsPage from "@/views/user/SettingsPage.vue";
 import AccountTab from "@/components/page/settings/AccountTab.vue";
 import LanguagesTab from "@/components/page/settings/LanguagesTab.vue";
 import NotificationsTab from "@/components/page/settings/NotificationsTab.vue";
+import {RouteRecordRaw} from "vue-router";
 
-export const privateRoutes = [
+export const privateRoutes: Readonly<RouteRecordRaw[]> = [
     {
         path: "/sign-out", component: UserSignOut, name: "sign-out", meta: {requiresAuth: true, showFooter: true}
     },

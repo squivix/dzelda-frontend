@@ -1,8 +1,8 @@
 <template>
-  <BaseCard v-if="!loading" :title="course.title" class="course-base-card">
+  <BaseCard v-if="!loading && course" :title="course.title" class="course-base-card">
     <template v-slot:content>
       <ol class="lesson-list">
-        <li v-for="lesson in lessons" :key="lesson.id" class="lesson">
+        <li v-for="lesson in course.lessons" :key="lesson.id" class="lesson">
           <lesson-list-item :lesson="{...lesson, course}" :show-course="false">
           </lesson-list-item>
         </li>
@@ -11,39 +11,37 @@
   </BaseCard>
 </template>
 
-<script>
+<script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import LessonListItem from "@/components/shared/content/LessonListItem.vue";
-import {useCourseStore} from "@/stores/course.js";
-import {useLessonStore} from "@/stores/lesson.js";
+import {useCourseStore} from "@/stores/courseStore.js";
+import {useLessonStore} from "@/stores/lessonStore.js";
+import {CourseSchema} from "dzelda-types";
 
 export default {
   name: "CoursePage",
   components: {LessonListItem, BaseCard},
   data() {
     return {
-      course: null,
-      lessons: null,
+      course: null as CourseSchema | null,
       loading: true,
     };
   },
   async mounted() {
     this.loading = true;
     await this.fetchCourse();
-    await this.fetchCourseLessons();
     this.loading = false;
   },
   methods: {
     async fetchCourse() {
-      this.course = await this.courseStore.fetchCourse({courseId: this.$route.params.courseId});
+      this.course = await this.courseStore.fetchCourse({courseId: Number(this.$route.params.courseId as string)});
     },
-    async fetchCourseLessons() {
-      this.lessons = await this.lessonStore.fetchCourseLessons({courseId: this.$route.params.courseId});
-    }
   },
-  created() {
-    this.courseStore = useCourseStore();
-    this.lessonStore = useLessonStore();
+  setup() {
+    return {
+      courseStore: useCourseStore(),
+      lessonStore: useLessonStore()
+    }
   }
 }
 </script>

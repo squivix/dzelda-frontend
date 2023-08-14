@@ -20,9 +20,9 @@
   </form>
 </template>
 
-<script>
-import {useMeaningStore} from "@/stores/meaning.js";
-import {useVocabStore} from "@/stores/vocab.js";
+<script lang="ts">
+import {useMeaningStore} from "@/stores/meaningStore.js";
+import {useVocabStore} from "@/stores/vocabStore.js";
 
 export default {
   name: "MeaningAddingControls",
@@ -87,9 +87,11 @@ export default {
       });
     },
   },
-  created() {
-    this.vocabStore = useVocabStore();
-    this.meaningStore = useMeaningStore();
+  setup() {
+    return {
+      vocabStore: useVocabStore(),
+      meaningStore: useMeaningStore()
+    };
   }
 }
 </script>

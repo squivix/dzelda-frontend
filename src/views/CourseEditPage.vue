@@ -3,7 +3,7 @@
     <template v-slot:content>
       <form class="edit-course-form" @submit.prevent="onSubmit">
         <div class="file-inputs-div">
-          <base-image :image-url="imageUrl" :fall-back-url="constants.DEFAULT_COURSE_IMAGE_URL" class="course-image"
+          <base-image :image-url="imageUrl" :fall-back-url="assets.courseBlank" class="course-image"
                       alt-text="course image"></base-image>
           <label for="image-input" class="file-input-label button-hollow">
             <FontAwesomeIcon icon="upload"></FontAwesomeIcon>
@@ -65,14 +65,14 @@
   </base-card>
 </template>
 
-<script>
+<script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {VueDraggableNext} from "vue-draggable-next";
-import {useCourseStore} from "@/stores/course.js";
-import {useLessonStore} from "@/stores/lesson.js";
+import {useCourseStore} from "@/stores/courseStore.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import constants from "@/constants.js";
+import courseBlank from "@/assets/images/course-blank.svg"
+import {LessonSchema} from "dzelda-types";
 
 export default {
   name: "CourseEditPage",
@@ -84,18 +84,17 @@ export default {
   },
   data() {
     return {
-      title: null,
-      description: null,
+      title: null as string | null,
+      description: null as string | null,
       isPublic: true,
-      lessons: null,
+      lessons: null as LessonSchema[] | null,
       selectedLessons: [],
-      image: null,
+      image: null as File | null,
       imageUrl: "",
-      constants
     };
   },
   methods: {
-    setImageFile(event) {
+    setImageFile(event: Event) {
       this.image = event.target.files[0];
       // noinspection JSUnresolvedFunction
       this.imageUrl = URL.createObjectURL(this.image);
@@ -105,14 +104,16 @@ export default {
       this.$router.push({name: "course", ...this.$route.params});
     },
     async editCourse() {
-      await this.courseStore.updateCourse({
-        id: this.$route.params.courseId,
-        title: this.title,
-        description: this.description,
-        isPublic: this.isPublic,
-        lessonIds: this.lessons.map(lesson => lesson.id),
-        image: this.image
-      });
+      await this.courseStore.updateCourse(
+          {courseId: Number(this.$route.params.courseId as string)},
+          {
+            title: this.title,
+            description: this.description,
+            isPublic: this.isPublic,
+            lessonsOrder: this.lessons.map(lesson => lesson.id),
+            image: this.image
+          }
+      );
     },
 
     selectAllLessons(event) {
@@ -126,11 +127,6 @@ export default {
         courseId: this.$route.params.courseId,
       });
     },
-    async fetchCourseLessons() {
-      return await this.lessonStore.fetchCourseLessons({
-        courseId: this.$route.params.courseId,
-      });
-    }
 
   },
   async mounted() {
@@ -139,11 +135,13 @@ export default {
     this.description = course.description;
     this.isPublic = course.isPublic;
     this.imageUrl = course.image ?? "";
-    this.lessons = await this.fetchCourseLessons();
+    this.lessons = course.lessons;
   },
-  created() {
-    this.courseStore = useCourseStore();
-    this.lessonStore = useLessonStore();
+  setup() {
+    return {
+      courseStore: useCourseStore(),
+      assets: {courseBlank}
+    };
   }
 };
 </script>

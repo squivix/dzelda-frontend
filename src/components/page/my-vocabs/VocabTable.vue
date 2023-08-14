@@ -19,7 +19,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
     import VocabTableRow from "@/components/page/my-vocabs/VocabTableRow.vue";
 
     export default {

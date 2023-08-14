@@ -3,7 +3,7 @@
 
     <div class="top-div">
       <!--      <img :src="image" @error="setDefaultImage" alt="lesson image" class="lesson-image">-->
-      <BaseImage :image-url="image" :fall-back-url="constants.DEFAULT_LESSON_IMAGE_URL"
+      <BaseImage :image-url="image" :fall-back-url="assets.lessonBlank"
                  alt-text="lesson image" class="lesson-image"></BaseImage>
       <lesson-paragraph class="title"
                         :paragraph-elements="lessonElements.title"
@@ -37,12 +37,10 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import LessonParagraph from "@/components/page/reader/LessonParagraph.vue";
-import {DEFAULT_LESSON_IMAGE_URL} from "@/constants.js";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import * as constants from "@/constants.js";
-
+import lessonBlank from "@/assets/images/lesson-blank.svg";
 
 export default {
   name: "TheLessonContent",
@@ -81,14 +79,9 @@ export default {
   data() {
     return {
       dragStartWord: null,
-      constants: constants,
     };
   },
   methods: {
-    setDefaultImage(event) {
-      if (event.target.src !== DEFAULT_LESSON_IMAGE_URL)
-        event.target.src = DEFAULT_LESSON_IMAGE_URL;
-    },
     onWordClicked(word) {
       this.$emit("onWordClicked", word);
     },
@@ -134,6 +127,9 @@ export default {
     document.body.addEventListener("drop", this.wrapperDrop);
     document.body.addEventListener("dragover", e => e.preventDefault());
     document.body.addEventListener("dragenter", e => e.preventDefault());
+  },
+  setup() {
+    return {assets: {lessonBlank}}
   }
 }
 ;

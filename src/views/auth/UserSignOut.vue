@@ -2,8 +2,8 @@
     <h1>Signing out...</h1>
 </template>
 
-<script>
-    import {useAuthStore} from "@/stores/auth";
+<script lang="ts">
+    import {useAuthStore} from "@/stores/authStore.js";
 
     export default {
         name: "UserSignOut",

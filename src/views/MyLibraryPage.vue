@@ -16,7 +16,7 @@
       <div v-if="loading">
 
       </div>
-      <ol class="lesson-list" v-else-if="showListOf==='Lessons'">
+      <ol class="lesson-list" v-else-if="showListOf===MyLibraryPageTab.LESSONS">
         <li v-for="lesson in lessons" :key="lesson.id">
           <lesson-list-item
               :lesson="lesson">
@@ -24,7 +24,7 @@
         </li>
       </ol>
 
-      <ol class="course-list" v-else>
+      <ol class="course-list" v-else-if="showListOf===MyLibraryPageTab.COURSES">
         <li v-for="course in courses" :key="course.id">
           <course-card
               :course="course">
@@ -35,31 +35,39 @@
       <pagination-controls
           v-if="pageCount"
           :page-count="pageCount"
-          :current-page="$query.page"
-          :maxPerPage="$query.maxPerPage"
+          :current-page="queryParams.page"
+          :maxPerPage="queryParams.maxPerPage"
           :per-page-select-label="`${showListOf} Per Page`"
           :per-page-select-options="PER_PAGE_SELECT_OPTIONS">
       </pagination-controls>
     </template>
   </base-card>
 </template>
-<script>
+<script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import LessonListItem from "@/components/shared/content/LessonListItem.vue";
 import CourseCard from "@/components/shared/content/CourseCard.vue";
-import {useLessonStore} from "@/stores/lesson.js";
-import {useCourseStore} from "@/stores/course.js";
+import {useLessonStore} from "@/stores/lessonStore.js";
+import {useCourseStore} from "@/stores/courseStore.js";
 import PaginationControls from "@/components/ui/PaginationControls.vue";
 import LibrarySearchFilter from "@/components/page/reader/LibrarySearchFilter.vue";
+import {defineComponent} from "vue";
+import type {WatchStopHandle} from "vue"
+import {useQuery} from "@oarepo/vue-query-synchronizer";
 
-export default {
+enum MyLibraryPageTab {
+  LESSONS = "Lessons",
+  COURSES = "Courses",
+}
+
+export default defineComponent({
   name: "MyLibraryPage",
   components: {LessonListItem, PaginationControls, LibrarySearchFilter, CourseCard, BaseCard},
   data() {
     return {
-      lessons: null,
-      courses: null,
-      showListOf: "Lessons",
+      lessons: null as object[] | null,
+      courses: null as object[] | null,
+      showListOf: MyLibraryPageTab.LESSONS,
       searchQuery: null,
       pageCount: 0,
       loading: true,
@@ -74,23 +82,23 @@ export default {
   async mounted() {
     await this.fetchContent();
     this.unwatchesOnRouteExit = [
-      this.$watch("$query.page", this.fetchContent),
-      this.$watch("$query.maxPerPage", this.refetchPage),
-      this.$watch("$query.searchQuery", this.refetchPage)
+      this.$watch("queryParams.page", this.fetchContent),
+      this.$watch("queryParams.maxPerPage", this.refetchPage),
+      this.$watch("queryParams.searchQuery", this.refetchPage)
     ];
   },
   methods: {
     refetchPage() {
-      if (!this.$query.page || this.$query.page === 1)
+      if (!this.queryParams.page || this.queryParams.page === 1)
         this.fetchContent();
       else
-        this.$query.page = 1;
+        this.queryParams.page = 1;
     },
     async fetchContent() {
       this.loading = true;
-      if (this.showListOf === "Lessons")
+      if (this.showListOf === MyLibraryPageTab.LESSONS)
         await this.fetchLessons();
-      else if (this.showListOf === "Courses")
+      else if (this.showListOf === MyLibraryPageTab.COURSES)
         await this.fetchSavedCourses();
       this.loading = false;
     },
@@ -98,32 +106,38 @@ export default {
       const response = await this.lessonStore.fetchLibraryLessons(
           {
             languageCode: this.$route.params.learningLanguage,
-            page: this.$query.page,
-            maxPerPage: this.$query.maxPerPage,
-            searchQuery: this.$query.searchQuery,
+            page: this.queryParams.page,
+            pageSize: this.queryParams.maxPerPage,
+            searchQuery: this.queryParams.searchQuery,
           });
-      this.lessons = response.results;
-      this.pageCount = Math.ceil(response.count / this.$query.maxPerPage);
+      this.lessons = response.data;
+      this.pageCount = response.pageCount;
     },
     async fetchSavedCourses() {
       const response = await this.courseStore.fetchLibraryCourses({
-        languageCode: this.$route.params.learningLanguage,
-        page: this.$query.page,
-        maxPerPage: this.$query.maxPerPage,
-        searchQuery: this.$query.searchQuery,
+        languageCode: this.$route.params.learningLanguage as string,
+        page: this.queryParams.page,
+        pageSize: this.queryParams.maxPerPage,
+        searchQuery: this.queryParams.searchQuery,
       });
-      this.courses = response.results;
-      this.pageCount = Math.ceil(response.count / this.$query.maxPerPage);
+      this.courses = response.data;
+      this.pageCount =response.pageCount;
     }
-  }, beforeRouteLeave() {
-    while (this.unwatchesOnRouteExit.length)
-      (this.unwatchesOnRouteExit.pop())();
   },
-  created() {
-    this.courseStore = useCourseStore();
-    this.lessonStore = useLessonStore();
+  beforeRouteLeave() {
+    while (this.unwatchesOnRouteExit.length)
+      (this.unwatchesOnRouteExit.pop())!();
+  },
+  setup() {
+    return {
+      courseStore: useCourseStore(),
+      lessonStore: useLessonStore(),
+      queryParams: useQuery(),
+      unwatchesOnRouteExit: [] as WatchStopHandle[],
+      MyLibraryPageTab
+    }
   }
-};
+});
 </script>
 
 <style scoped>

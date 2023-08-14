@@ -31,10 +31,10 @@
         </template>
     </base-card>
 </template>
-<script>
-import * as utils from '../../utils.js';
+<script lang="ts">
+import * as utils from '@/utils.js';
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
-import {useAuthStore} from "@/stores/auth";
+import {useAuthStore} from "@/stores/authStore.js";
 
 export default {
         name: "UserLogin",

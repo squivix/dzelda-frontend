@@ -40,13 +40,15 @@
   </base-card>
 </template>
 
-<script>
+<script lang="ts">
 import constants from "@/constants";
 import TheMeaningPanel from "@/components/shared/vocab-panel/TheMeaningPanel.vue";
 import VocabTable from "@/components/page/my-vocabs/VocabTable.vue";
 import VocabSearchFilter from "@/components/page/my-vocabs/VocabSearchFilter.vue";
 import PaginationControls from "@/components/ui/PaginationControls.vue";
-import {useVocabStore} from "@/stores/vocab.js";
+import {useVocabStore} from "@/stores/vocabStore.js";
+import {useQuery} from "@oarepo/vue-query-synchronizer";
+import {WatchStopHandle} from "vue";
 
 export default {
   name: "MyVocabPage",
@@ -65,10 +67,10 @@ export default {
     await this.fetchVocabsPage();
     // TODO fix bug where going from ?page=2 then pressing back button does not trigger this refetch
     this.unwatchesOnRouteExit = [
-      this.$watch("$query.page", this.fetchVocabsPage),
-      this.$watch("$query.maxPerPage", this.refetchPage),
-      this.$watch("$query.searchQuery", this.refetchPage),
-      this.$watch("$query.level", this.refetchPage)
+      this.$watch("queryParams.page", this.fetchVocabsPage),
+      this.$watch("queryParams.maxPerPage", this.refetchPage),
+      this.$watch("queryParams.searchQuery", this.refetchPage),
+      this.$watch("queryParams.level", this.refetchPage)
     ];
   },
   methods: {
@@ -76,21 +78,21 @@ export default {
       this.clearSelectedVocab();
       this.loadingVocabs = true;
       const response = await this.vocabStore.fetchUserVocabs({
-        language: this.$route.params.learningLanguage,
-        searchQuery: this.$query.searchQuery,
-        levels: [...this.$query.level],
-        page: this.$query.page,
-        vocabsPerPage: this.$query.maxPerPage,
+        languageCode: this.$route.params.learningLanguage,
+        searchQuery: this.queryParams.searchQuery,
+        level: [...this.queryParams.level],
+        page: this.queryParams.page,
+        vocabsPerPage: this.queryParams.maxPerPage,
       });
-      this.vocabs = response.results;
-      this.pageCount = Math.ceil(response.count / this.$query.maxPerPage);
+      this.vocabs = response.data;
+      this.pageCount = response.pageCount;
       this.loadingVocabs = false;
     },
     refetchPage() {
-      if (!this.$query.page || this.$query.page === 1)
+      if (!this.queryParams.page || this.queryParams.page === 1)
         this.fetchVocabsPage();
       else
-        this.$query.page = 1;
+        this.queryParams.page = 1;
     },
     setSelectedVocab(vocab) {
       this.selectedVocab = vocab;
@@ -99,7 +101,7 @@ export default {
       this.selectedVocab = null;
     },
     onMeaningAdded(vocab, meaning) {
-      vocab.userMeanings.push(meaning);
+      vocab.learnerMeanings.push(meaning);
     },
     onVocabLevelSet(vocab, level) {
       if (level === constants.ALL_VOCAB_LEVELS.IGNORED) {
@@ -109,19 +111,22 @@ export default {
         vocab.level = level;
     },
     onMeaningDeleted(vocab, meaning) {
-      const index = vocab.userMeanings.findIndex((v) => v.text === meaning.text);
+      const index = vocab.learnerMeanings.findIndex((v) => v.text === meaning.text);
       if (index !== -1)
-        vocab.userMeanings.splice(index, 1);
+        vocab.learnerMeanings.splice(index, 1);
     }
   },
   beforeRouteLeave() {
     while (this.unwatchesOnRouteExit.length)
-      (this.unwatchesOnRouteExit.pop())();
+      (this.unwatchesOnRouteExit.pop())!();
   },
-  created() {
-    this.vocabStore = useVocabStore();
+  setup() {
+    return {
+      vocabStore: useVocabStore(),
+      queryParams: useQuery(),
+      unwatchesOnRouteExit: [] as WatchStopHandle[]
+    }
   }
-
 };
 </script>
 

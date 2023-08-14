@@ -15,7 +15,7 @@
         </div>
     </header>
 </template>
-<script>
+<script lang="ts">
     export default {
         name: "GuestHeader",
         components: {},
