@@ -40,10 +40,8 @@ router.beforeEach(async (to, from) => {
 
 
     if (to.name !== from.name) {
-        console.log(from.name)
-        console.log(to.name)
-        // const messageBarStore = useMessageBarStore()
-        // messageBarStore.clearMessages();
+        const messageBarStore = useMessageBarStore()
+        messageBarStore.clearMessages();
     }
 });
 

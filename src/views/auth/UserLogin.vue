@@ -71,7 +71,8 @@ export default {
           password: this.password,
         });
       } catch (error) {
-        this.error = error.message ?? "An unknown error ocurred";
+        if (error.code == 401)
+          this.error = error.message ?? "An unknown error ocurred";
         return;
       }
       await this.$router.push({name: 'explore'});

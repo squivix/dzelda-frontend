@@ -35,7 +35,7 @@ export const useAuthStore = defineStore("auth", {
             const response = await store.fetchCustom((api) => api.sessions.postSessions({
                 username: body.username,
                 password: body.password,
-            }));
+            }), {ignore401: true});
 
             if (response.status == 401) {
                 const messageBarStore = useMessageBarStore();

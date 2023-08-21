@@ -89,6 +89,10 @@ export default defineComponent({
   padding: 0 0.5rem;
 }
 
+.dismiss-button:hover {
+  cursor: pointer;
+}
+
 .dismiss-button svg {
   width: 15px;
   height: 15px;
