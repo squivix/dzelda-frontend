@@ -14,8 +14,8 @@
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import LessonListItem from "@/components/shared/content/LessonListItem.vue";
-import {useCourseStore} from "@/stores/courseStore.js";
-import {useLessonStore} from "@/stores/lessonStore.js";
+import {useCourseStore} from "@/stores/backend/courseStore.js";
+import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {CourseSchema} from "dzelda-types";
 
 export default {

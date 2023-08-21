@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
-import {useStore} from "@/stores/rootStore.js";
+import {useStore} from "@/stores/backend/rootStore.js";
+import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export const useAuthStore = defineStore("auth", {
     state() {
@@ -29,15 +30,18 @@ export const useAuthStore = defineStore("auth", {
 
             return response.data;
         },
-        async login(body: { email: string, username: string, password: string }) {
+        async login(body: { username: string, password: string }) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.sessions.postSessions({
                 username: body.username,
                 password: body.password,
             }));
 
-            // handle your 4XX errors as you may
-            //...
+            if (response.status == 401) {
+                const messageBarStore = useMessageBarStore();
+                messageBarStore.addMessage({text: response.error.message!, type: MessageType.ERROR})
+                throw response.error;
+            }
 
             localStorage.authToken = response.data.authToken;
             this.token = response.data.authToken;

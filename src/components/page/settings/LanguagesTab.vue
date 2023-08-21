@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import {useLanguageStore} from "@/stores/languageStore.js";
+import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {LanguageSchema, LearnerLanguageSchema} from "dzelda-types";
 
 export default {

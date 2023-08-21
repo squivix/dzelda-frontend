@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
-import {useAuthStore} from "@/stores/authStore.js";
+import {useAuthStore} from "@/stores/backend/authStore.js";
 import {ApiClient, HttpResponse} from "dzelda-types";
+import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 
 
 export const useStore = defineStore("main", {
@@ -32,10 +33,14 @@ export const useStore = defineStore("main", {
                     if (doCache && cacheStore && cacheKey)
                         cacheStore[cacheKey] = response.data;
                 } else if (response.status >= 500) {
-                    throw new Error("Something went wrong server-side");
+                    const message = "Something went wrong server-side";
+                    const messageBarStore = useMessageBarStore();
+                    messageBarStore.addMessage({text: message, type: MessageType.ERROR})
+                    throw new Error(message);
                 } else if (response.status == 401) {
                     authStore.token = null;
                     delete localStorage.authToken;
+                    //TODO don't redirect for failed login, but do for any other auth problems
                     this.router.push({name: "home"})
                 }
                 return response;

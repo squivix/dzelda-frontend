@@ -3,6 +3,9 @@
     <component
         :is="isAuthenticated ? 'auth-header' : 'guest-header'">
     </component>
+
+    <the-message-bar-queue class="message-bar-queue"></the-message-bar-queue>
+
     <aside class="left-side"></aside>
 
     <main>
@@ -18,7 +21,8 @@
 import GuestHeader from "@/components/layout/GuestHeader.vue";
 import TheFooter from "@/components/layout/TheFooter.vue";
 import AuthHeader from "@/components/layout/AuthHeader.vue";
-import {useAuthStore} from "@/stores/authStore.js";
+import {useAuthStore} from "@/stores/backend/authStore.js";
+import TheMessageBarQueue from "@/components/layout/TheMessageBarQueue.vue";
 
 
 export default {
@@ -28,6 +32,7 @@ export default {
     },
   },
   components: {
+    TheMessageBarQueue,
     GuestHeader,
     AuthHeader,
     TheFooter,
@@ -45,15 +50,18 @@ export default {
 <style scoped>
 #the-root {
   display: grid;
-  grid-template: auto 1fr auto / auto 1fr auto;
+  grid-template: auto auto 1fr auto / auto 1fr auto;
   height: 100%;
 }
 
 header {
   grid-column: 1 / 4;
-  margin-bottom: 3rem;
 }
 
+.message-bar-queue {
+  grid-column: 2 / 2;
+  margin-bottom: 3rem;
+}
 
 .left-side {
   grid-column: 1 / 2;

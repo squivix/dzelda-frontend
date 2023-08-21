@@ -4,7 +4,7 @@
 </template>
 
 <script lang="ts">
-import {useProfileStore} from "@/stores/profileStore.js";
+import {useProfileStore} from "@/stores/backend/profileStore.js";
 
 export default {
   name: "MyProfilePage",

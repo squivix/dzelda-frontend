@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import {useDictionaryStore} from "@/stores/dictionaryStore.js";
+import {useDictionaryStore} from "@/stores/backend/dictionaryStore.js";
 
 export default {
   name: "DictionaryList",

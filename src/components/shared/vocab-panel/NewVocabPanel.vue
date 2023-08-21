@@ -27,7 +27,7 @@
 import constants from "@/constants";
 import MeaningAddingControls from "@/components/shared/vocab-panel/MeaningAddingControls.vue";
 import DictionariesList from "@/components/shared/vocab-panel/DictionaryList.vue";
-import {useVocabStore} from "@/stores/vocabStore.js";
+import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {PropType} from "vue";
 import {LearnerVocabSchema} from "dzelda-types"
 

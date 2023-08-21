@@ -23,7 +23,7 @@
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {useLanguageStore} from "@/stores/languageStore.js";
+import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {LanguageSchema} from "dzelda-types";
 
 export default {

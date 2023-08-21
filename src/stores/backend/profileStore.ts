@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {useStore} from "@/stores/rootStore.js";
+import {useStore} from "@/stores/backend/rootStore.js";
 import {UserSchema} from "dzelda-types"
 
 export const useProfileStore = defineStore("profile", {
