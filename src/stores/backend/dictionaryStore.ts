@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {useStore} from "@/stores/rootStore.js";
+import {useStore} from "@/stores/backend/rootStore.js";
 
 export const useDictionaryStore = defineStore("dictionary", {
     actions: {

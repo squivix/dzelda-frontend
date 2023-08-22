@@ -38,7 +38,7 @@
 
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
-import {useCourseStore} from "@/stores/courseStore.js";
+import {useCourseStore} from "@/stores/backend/courseStore.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import courseBlank from "@/assets/images/course-blank.svg"

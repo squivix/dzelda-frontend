@@ -78,7 +78,7 @@ import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {LessonSchema, VocabLevelSchema, VocabsByLevelSchema} from "dzelda-types";
 import {PropType} from "vue";
-import {useStore} from "@/stores/rootStore.js";
+import {useStore} from "@/stores/backend/rootStore.js";
 import lessonBlank from "@/assets/images/lesson-blank.svg"
 import constants from "@/constants.js";
 

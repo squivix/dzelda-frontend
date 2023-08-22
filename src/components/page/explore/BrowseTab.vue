@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import LessonListItem from "@/components/shared/content/LessonListItem.vue";
-import {useLessonStore} from "@/stores/lessonStore.js";
+import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {LessonSchema} from "dzelda-types";
 import {useQuery} from "@oarepo/vue-query-synchronizer";
 

@@ -37,10 +37,10 @@ import TheMeaningPanel from "@/components/shared/vocab-panel/TheMeaningPanel.vue
 import constants from "@/constants.js";
 import {getTextElements} from "@/components/page/reader/shared.js";
 import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel.vue";
-import {useLessonStore} from "@/stores/lessonStore.js";
-import {useVocabStore} from "@/stores/vocabStore.js";
+import {useLessonStore} from "@/stores/backend/lessonStore.js";
+import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {LessonSchema} from "dzelda-types";
-import {useStore} from "@/stores/rootStore.js";
+import {useStore} from "@/stores/backend/rootStore.js";
 
 export default {
   name: "LessonReaderPage",

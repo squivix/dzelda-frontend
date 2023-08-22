@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
-import {useAuthStore} from "@/stores/authStore.js";
+import {useAuthStore} from "@/stores/backend/authStore.js";
 import {ApiClient, HttpResponse} from "dzelda-types";
+import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 
 
 export const useStore = defineStore("main", {
@@ -19,21 +20,16 @@ export const useStore = defineStore("main", {
             };
         },
         actions: {
-            async fetchCustom<T, E>(endpoint: (api: ApiClient<string>) => Promise<HttpResponse<T, E>>, doCache = false, cacheStore?: Record<string, any>, cacheKey?: string): Promise<HttpResponse<T, E>> {
-                if (doCache && cacheStore && cacheKey) {
-                    const hit = cacheStore[cacheKey];
-                    if (hit)
-                        return hit;
-                }
+            async fetchCustom<T, E>(endpoint: (api: ApiClient<string>) => Promise<HttpResponse<T, E>>, options?: { ignore401?: boolean }): Promise<HttpResponse<T, E>> {
                 const authStore = useAuthStore();
                 this.apiClient.setSecurityData(authStore.authToken);
                 const response = await endpoint(this.apiClient as ApiClient<string>);   //for some reason this.apiClient is any :/
-                if (response.ok && response.status !== 204) {
-                    if (doCache && cacheStore && cacheKey)
-                        cacheStore[cacheKey] = response.data;
-                } else if (response.status >= 500) {
-                    throw new Error("Something went wrong server-side");
-                } else if (response.status == 401) {
+                if (response.status >= 500) {
+                    const message = "Something went wrong server-side, please come back later";
+                    const messageBarStore = useMessageBarStore();
+                    messageBarStore.addMessage({text: message, type: MessageType.ERROR})
+                    throw new Error(response.errorMessage as string);
+                } else if (response.status == 401 && !options?.ignore401) {
                     authStore.token = null;
                     delete localStorage.authToken;
                     this.router.push({name: "home"})

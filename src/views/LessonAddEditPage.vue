@@ -53,10 +53,10 @@
 
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
-import {useCourseStore} from "@/stores/courseStore.js";
-import {useLessonStore} from "@/stores/lessonStore.js";
-import {useProfileStore} from "@/stores/profileStore.js";
-import {useStore} from "@/stores/rootStore.js";
+import {useCourseStore} from "@/stores/backend/courseStore.js";
+import {useLessonStore} from "@/stores/backend/lessonStore.js";
+import {useProfileStore} from "@/stores/backend/profileStore.js";
+import {useStore} from "@/stores/backend/rootStore.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {LessonSchema} from "dzelda-types";

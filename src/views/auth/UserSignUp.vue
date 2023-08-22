@@ -32,8 +32,8 @@
   </base-card>
 </template>
 <script lang="ts">
-import {useAuthStore} from "@/stores/authStore.js";
-import {useLanguageStore} from "@/stores/languageStore.js";
+import {useAuthStore} from "@/stores/backend/authStore.js";
+import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {LanguageSchema} from "dzelda-types";
 
 export default {

@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-    import {useAuthStore} from "@/stores/authStore.js";
+import {useAuthStore} from "@/stores/backend/authStore.js";
 
     export default {
         name: "UserSignOut",

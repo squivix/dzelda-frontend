@@ -1,8 +1,9 @@
 import {createRouter, createWebHistory} from "vue-router";
-import {useAuthStore} from "@/stores/authStore.js";
-import {useLanguageStore} from "@/stores/languageStore.js";
+import {useAuthStore} from "@/stores/backend/authStore.js";
+import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {privateRoutes} from "@/router/private/privateRoutes.js";
 import {publicRoutes} from "@/router/public/publicRoutes.js";
+import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export const router = createRouter({
     routes: [
@@ -36,5 +37,11 @@ router.beforeEach(async (to, from) => {
 
     if (to.params.learningLanguage && from.params.learningLanguage !== to.params.learningLanguage)
         await languageStore.updateLanguageLastOpened({languageCode: to.params.learningLanguage as string});
+
+
+    if (to.name !== from.name) {
+        const messageBarStore = useMessageBarStore()
+        messageBarStore.clearMessages();
+    }
 });
 

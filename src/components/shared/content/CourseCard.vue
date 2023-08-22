@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import {useStore} from "@/stores/rootStore.js";
+import {useStore} from "@/stores/backend/rootStore.js";
 import constants from "@/constants.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";

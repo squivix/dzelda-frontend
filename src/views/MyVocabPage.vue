@@ -46,7 +46,7 @@ import TheMeaningPanel from "@/components/shared/vocab-panel/TheMeaningPanel.vue
 import VocabTable from "@/components/page/my-vocabs/VocabTable.vue";
 import VocabSearchFilter from "@/components/page/my-vocabs/VocabSearchFilter.vue";
 import PaginationControls from "@/components/ui/PaginationControls.vue";
-import {useVocabStore} from "@/stores/vocabStore.js";
+import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {useQuery} from "@oarepo/vue-query-synchronizer";
 import {WatchStopHandle} from "vue";
 

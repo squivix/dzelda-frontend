@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import constants from "@/constants.ts";
-import {useVocabStore} from "@/stores/vocabStore.js";
+import {useVocabStore} from "@/stores/backend/vocabStore.js";
 
 export default {
   name: "VocabLevelPicker",

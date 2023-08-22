@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import CourseCard from "@/components/shared/content/CourseCard.vue";
-import {useCourseStore} from "@/stores/courseStore.js";
+import {useCourseStore} from "@/stores/backend/courseStore.js";
 import constants from "@/constants.js";
 
 export default {

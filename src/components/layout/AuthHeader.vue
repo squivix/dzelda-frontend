@@ -106,9 +106,9 @@
 <script lang="ts">
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {useStore} from "@/stores/rootStore.js";
-import {useLanguageStore} from "@/stores/languageStore.js";
-import {useProfileStore} from "@/stores/profileStore.js";
+import {useStore} from "@/stores/backend/rootStore.js";
+import {useLanguageStore} from "@/stores/backend/languageStore.js";
+import {useProfileStore} from "@/stores/backend/profileStore.js";
 import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
 import {UserSchema, LearnerLanguageSchema} from "dzelda-types";
 
