@@ -37,14 +37,12 @@ export const useAuthStore = defineStore("auth", {
                 password: body.password,
             }), {ignore401: true});
 
-            if (response.status == 401) {
-                const messageBarStore = useMessageBarStore();
-                messageBarStore.addMessage({text: response.error.message!, type: MessageType.ERROR})
-                throw response.error;
-            }
+            if (!response.ok)
+                return response.error;
 
             localStorage.authToken = response.data.authToken;
             this.token = response.data.authToken;
+            return
         },
 
         async signOut() {

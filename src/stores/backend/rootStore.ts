@@ -28,7 +28,7 @@ export const useStore = defineStore("main", {
                     const message = "Something went wrong server-side, please come back later";
                     const messageBarStore = useMessageBarStore();
                     messageBarStore.addMessage({text: message, type: MessageType.ERROR})
-                    throw new Error(response.error as string);
+                    throw new Error(response.errorMessage as string);
                 } else if (response.status == 401 && !options?.ignore401) {
                     authStore.token = null;
                     delete localStorage.authToken;

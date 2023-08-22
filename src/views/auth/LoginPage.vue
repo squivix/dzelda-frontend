@@ -9,19 +9,18 @@
             required
             v-model="username"
             autocomplete="username"
-            :class="{'error-input': !!error}"/>
+            :class="{'error-input': errorFields.includes('username')}"/>
         <label for="current-password">Password</label>
         <base-password-input
             v-model="password"
             id="current-password"
             autocomplete="current-password"
             required
-            :class="{'error-input': !!error}">
+            :class="{'error-input': errorFields.includes('password')}">
         </base-password-input>
         <router-link to="forgot-password" id="forgot-password-link" class="link">
           Forgot Password?
         </router-link>
-        <!--TODO fix unrelated error messages showing here-->
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
         <button id="login-button" class="primary-button" type="submit">
@@ -34,52 +33,43 @@
 <script lang="ts">
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
 import {useAuthStore} from "@/stores/backend/authStore.js";
+import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export default {
-  name: "UserLogin",
+  name: "LoginPage",
   components: {BasePasswordInput},
   data() {
     return {
       username: '',
       password: '',
-      error: null,
+      errorMessage: "",
+      errorFields: [] as Array<"username" | "password">
     };
   },
-  computed: {
-    errorMessage() {
-      // if (!this.error) return null;
-      // if (this.error === 'Failed to fetch')
-      //   return 'Connection issue: failed to fetch from server';
-      // const JSONMessage = utils.isJsonString(this.error);
-      // if (
-      //     JSONMessage &&
-      //     JSONMessage.non_field_errors.includes(
-      //         'Unable to log in with provided credentials.'
-      //     )
-      // )
-      //   return 'Username or password is incorrect';
-      // else
-      return this.error;
-    },
-  },
+  computed: {},
   methods: {
     async submitForm() {
-      this.error = null;
-      try {
-        await this.authStore.login({
-          username: this.username,
-          password: this.password,
-        });
-      } catch (error) {
-        if (error.code == 401)
-          this.error = error.message ?? "An unknown error ocurred";
-        return;
-      }
-      await this.$router.push({name: 'explore'});
+      this.errorMessage = "";
+      const error = await this.authStore.login({
+        username: this.username,
+        password: this.password,
+      });
+      if (error !== undefined) {
+        this.messageBarStore.addMessage({text: error.message, type: MessageType.ERROR})
+        this.errorMessage = error.message;
+        if ("fields" in error && error.fields !== undefined)
+          this.errorFields = Object.keys(error.fields) as Array<"username" | "password">
+        else
+          this.errorFields = ["username", "password"]
+      } else
+        await this.$router.push({name: 'explore'});
     },
   },
   setup() {
-    return {authStore: useAuthStore()};
+    return {
+      authStore: useAuthStore(),
+      messageBarStore: useMessageBarStore()
+    };
   }
 };
 </script>
@@ -123,16 +113,23 @@ input,
   margin-top: 1rem;
 }
 
+#forgot-password-link {
+  align-self: flex-start;
+  margin-top: 0.1rem;
+  color: black;
+}
+
 .error-input,
 .base-password-div >>> .error-input {
   border: none;
-  outline: 2px solid red;
+  outline: 1px solid red;
+  background-color: #FFEEEE;
 }
 
 .error-input:focus-visible,
 .base-password-div >>> .error-input:focus-visible {
   outline: 1px solid red;
-  box-shadow: 0px 0px 3px 2px red;
+  box-shadow: 0 0 2px 1px red;
 }
 
 .error-message {
