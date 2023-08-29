@@ -21,7 +21,7 @@
         <router-link to="forgot-password" id="forgot-password-link" class="link">
           Forgot Password?
         </router-link>
-        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+        <p class="error-message">{{ errorMessage }}</p>
 
         <button id="login-button" class="primary-button" type="submit">
           Login
@@ -134,5 +134,6 @@ input,
 
 .error-message {
   color: red;
+  min-height: 1lh;
 }
 </style>

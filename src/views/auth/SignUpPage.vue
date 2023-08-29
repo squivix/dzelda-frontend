@@ -37,7 +37,7 @@ import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {LanguageSchema} from "dzelda-types";
 
 export default {
-  name: "UserSignUp",
+  name: "SignUpPage",
   data() {
     return {
       allLanguages: [] as LanguageSchema[],

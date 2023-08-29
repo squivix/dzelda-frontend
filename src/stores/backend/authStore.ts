@@ -52,5 +52,13 @@ export const useAuthStore = defineStore("auth", {
             this.token = null;
             //TODO clear local pinia store data (like languages learning, profile etc)
         },
+
+        async requestPasswordReset(body: { username: string, email: string }) {
+            const store = useStore();
+            await store.fetchCustom((api) => api.passwordResetTokens.postPasswordResetTokens({
+                username: body.username,
+                email: body.email
+            }));
+        },
     }
 })
