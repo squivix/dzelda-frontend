@@ -18,7 +18,7 @@
             required
             :class="{'error-input': errorFields.includes('password')}">
         </base-password-input>
-        <router-link to="forgot-password" id="forgot-password-link" class="link">
+        <router-link :to="{name:'reset-password'}" id="forgot-password-link" class="link">
           Forgot Password?
         </router-link>
         <p class="error-message">{{ errorMessage }}</p>

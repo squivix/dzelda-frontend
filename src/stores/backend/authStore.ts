@@ -60,5 +60,18 @@ export const useAuthStore = defineStore("auth", {
                 email: body.email
             }));
         },
+        async validatePasswordResetToken(body: { token: string }) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.passwordResetTokens.postPasswordResetTokensValidate({token: body.token}), {ignore401: true});
+            return response.ok;
+        },
+        async resetPassword(body: { token: string, newPassword: string }) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.users.postUsersMePasswords({
+                token: body.token,
+                newPassword: body.newPassword
+            }));
+            return response.ok;
+        }
     }
 })
