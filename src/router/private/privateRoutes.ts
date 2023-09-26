@@ -18,7 +18,8 @@ import SignOutPage from "@/pages/auth/SignOutPage.vue";
 import {RouteRecordRaw} from "vue-router";
 import ConfirmEmailPage from "@/pages/auth/ConfirmEmailPage.vue";
 import {setDefaultRouteMeta} from "@/router/routerUtils.js";
-import CreateProfilePage from "@/pages/auth/CreateProfilePage.vue";
+import ConfirmEmailSentPage from "@/pages/auth/ConfirmEmailSentPage.vue";
+import ResendConfirmEmailPage from "@/pages/auth/ResendConfirmEmailPage.vue";
 
 export const privateRoutes: RouteRecordRaw[] = [
     {
@@ -35,7 +36,6 @@ export const privateRoutes: RouteRecordRaw[] = [
         name: "explore-lang",
         component: ExplorePage,
         meta: {
-
             query: {
                 page: "int:1",
                 maxPerPage: "int:25",
@@ -171,14 +171,32 @@ export const privateRoutes: RouteRecordRaw[] = [
         name: "confirm-email",
         path: "/confirm-email",
         component: ConfirmEmailPage,
-        meta: {requiresEmailConfirmed: false, showFooter: true},
+        meta: {
+            requiresEmailConfirmed: false,
+            showFooter: true,
+            query: {
+                token: "string"
+            }
+        },
     },
     {
-        name: "create-profile",
-        path: "/create-profile",
-        component: CreateProfilePage,
-        meta: {showFooter: true},
-    }
+        name: "confirm-email-sent",
+        path: "/confirm-email-sent",
+        component: ConfirmEmailSentPage,
+        meta: {
+            requiresEmailConfirmed: false,
+            showFooter: true,
+        },
+    },
+    {
+        name: "resend-confirm-email",
+        path: "/resend-confirm-email",
+        component: ResendConfirmEmailPage,
+        meta: {
+            requiresEmailConfirmed: false,
+            showFooter: true,
+        },
+    },
 ];
 setDefaultRouteMeta(privateRoutes, {
     requiresAuth: true,

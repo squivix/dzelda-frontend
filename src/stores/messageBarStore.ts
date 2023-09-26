@@ -4,6 +4,7 @@ export enum MessageType {
     INFO = "info",
     ERROR = "error",
     WARNING = "warning",
+    SUCCESS = "success"
 }
 
 export interface Message {
@@ -20,21 +21,21 @@ export const useMessageBarStore = defineStore("messageBar", {
     actions: {
         addMessage(newMessage: Message) {
             if (this.messageQueue.length >= 3)
-                this.removeEarliestMessage()
+                this.removeEarliestMessage();
 
             if (this.messageQueue.find((m) => m.text == newMessage.text && m.type == newMessage.type))
-                return
-            this.messageQueue.unshift(newMessage)
+                return;
+            this.messageQueue.unshift(newMessage);
         },
         removeEarliestMessage() {
-            this.messageQueue.pop()
+            this.messageQueue.pop();
         },
         removeMessage(index: number) {
-            this.messageQueue.splice(index, 1)
+            this.messageQueue.splice(index, 1);
         },
         clearMessages() {
             this.messageQueue = [];
         }
     }
 
-})
+});

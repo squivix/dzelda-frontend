@@ -36,6 +36,8 @@ export default defineComponent({
         return "info-message";
       else if (this.type == MessageType.WARNING)
         return "warning-message";
+      else if (this.type == MessageType.SUCCESS)
+        return "success-message";
       else
         return "";
     }
@@ -46,9 +48,9 @@ export default defineComponent({
     }
   },
   setup() {
-    return {MessageType}
+    return {MessageType};
   }
-})
+});
 </script>
 <style scoped>
 .message-box {
@@ -82,6 +84,11 @@ export default defineComponent({
 .warning-message {
   background-color: #FFF6DC;
   color: #907117;
+}
+
+.success-message {
+  background-color: #CBFFC0;
+  color: #144F14;
 }
 
 .dismiss-button {
