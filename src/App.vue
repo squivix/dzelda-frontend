@@ -1,20 +1,22 @@
 <template>
   <div id="the-root">
-    <component
-        :is="isAuthenticated ? 'auth-header' : 'guest-header'">
-    </component>
+    <template v-if="userStore.userAccount||!authStore.isAuthenticated">
+      <component
+          :is="authStore.isAuthenticated ? 'auth-header' : 'guest-header'">
+      </component>
 
-    <the-message-bar-queue class="message-bar-queue"></the-message-bar-queue>
+      <the-message-bar-queue class="message-bar-queue"></the-message-bar-queue>
 
-    <aside class="left-side"></aside>
+      <aside class="left-side"></aside>
 
-    <main>
-      <router-view></router-view>
-    </main>
+      <main>
+        <router-view></router-view>
+      </main>
 
-    <aside class="right-side"></aside>
+      <aside class="right-side"></aside>
 
-    <the-footer v-if="$route.meta.showFooter"></the-footer>
+      <the-footer v-if="$route.meta.showFooter"></the-footer>
+    </template>
   </div>
 </template>
 <script lang="ts">
@@ -23,14 +25,11 @@ import TheFooter from "@/components/layout/TheFooter.vue";
 import AuthHeader from "@/components/layout/AuthHeader.vue";
 import {useAuthStore} from "@/stores/backend/authStore.js";
 import TheMessageBarQueue from "@/components/layout/TheMessageBarQueue.vue";
+import {useUserStore} from "@/stores/backend/userStore.js";
 
 
 export default {
-  computed: {
-    isAuthenticated() {
-      return this.authStore.isAuthenticated;
-    },
-  },
+  computed: {},
   components: {
     TheMessageBarQueue,
     GuestHeader,
@@ -38,7 +37,7 @@ export default {
     TheFooter,
   },
   setup() {
-    return {authStore: useAuthStore()};
+    return {authStore: useAuthStore(), userStore: useUserStore()};
   }
 };
 </script>

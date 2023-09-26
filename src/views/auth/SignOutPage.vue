@@ -6,7 +6,7 @@
 import {useAuthStore} from "@/stores/backend/authStore.js";
 
     export default {
-        name: "UserSignOut",
+        name: "SignOutPage",
         async created() {
             const authStore = useAuthStore();
             await authStore.signOut();

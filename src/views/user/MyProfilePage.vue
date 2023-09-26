@@ -4,7 +4,7 @@
 </template>
 
 <script lang="ts">
-import {useProfileStore} from "@/stores/backend/profileStore.js";
+import {useUserStore} from "@/stores/backend/userStore.js";
 
 export default {
   name: "MyProfilePage",
@@ -23,7 +23,7 @@ export default {
     }
   },
   created() {
-    this.profileStore = useProfileStore()
+    this.profileStore = useUserStore()
   },
 }
 </script>

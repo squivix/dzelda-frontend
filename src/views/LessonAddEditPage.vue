@@ -55,7 +55,7 @@
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
-import {useProfileStore} from "@/stores/backend/profileStore.js";
+import {useUserStore} from "@/stores/backend/userStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseImage from "@/components/ui/BaseImage.vue";
@@ -103,7 +103,7 @@ export default {
     async fetchEditableCourses() {
       const response = await this.courseStore.fetchCourses({
         languageCode: this.$route.params.learningLanguage,
-        addedBy: (await this.profileStore.fetchUserProfile()).username,
+        addedBy: (await this.profileStore.fetchUserAccount()).username,
       });
       this.editableCourses = response.data;
     },
@@ -165,7 +165,7 @@ export default {
       store: useStore(),
       courseStore: useCourseStore(),
       lessonStore: useLessonStore(),
-      profileStore: useProfileStore(),
+      profileStore: useUserStore(),
       assets: {lessonBlank: lessonBlank}
     }
   }

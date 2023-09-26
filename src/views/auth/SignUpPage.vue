@@ -2,17 +2,6 @@
   <base-card title="Sign Up" id="signup-card">
     <template v-slot:content>
       <form @submit.prevent="submitForm">
-        <label for="language">I want to learn</label>
-        <select id="language" v-model="selectedLanguage" required>
-          <option value="" selected disabled>Select a Language</option>
-          <option
-              v-for="language in allLanguages"
-              :key="language.code"
-              :value="language.code"
-          >
-            {{ language.name }}
-          </option>
-        </select>
         <label for="email">Email</label>
         <input id="email" type="email" required v-model="email"/>
         <label for="username">Username</label>
@@ -34,42 +23,34 @@
 <script lang="ts">
 import {useAuthStore} from "@/stores/backend/authStore.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
-import {LanguageSchema} from "dzelda-types";
 
 export default {
   name: "SignUpPage",
   data() {
     return {
-      allLanguages: [] as LanguageSchema[],
-      selectedLanguage: '',
-      email: '',
-      username: '',
-      password: '',
+      email: "",
+      username: "",
+      password: "",
     };
   },
 
   methods: {
-    submitForm() {
-      this.authStore.signUp({
-        email: this.email,
+    async submitForm() {
+      await this.authStore.signUp({
         username: this.username,
-        password: this.password,
-        initialLanguage: this.selectedLanguage,
+        email: this.email,
+        password: this.password
       });
-    },
-
-    async fetchLanguages() {
-      this.allLanguages = await this.languageStore.fetchLanguages({isSupported: true});
+      this.$router.push({name: "confirm-email"});
     },
   },
   mounted() {
-    this.fetchLanguages();
   },
   setup() {
     return {
       authStore: useAuthStore(),
       languageStore: useLanguageStore()
-    }
+    };
   }
 };
 </script>

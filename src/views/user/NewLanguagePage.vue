@@ -1,5 +1,5 @@
 <template>
-  <base-card title="New Language">
+  <base-card title="New Language" class="new-language-card">
     <template v-slot:content>
       <div class="content">
         <p>Select a new language to learn from our list of supported languages</p>
@@ -7,7 +7,7 @@
           <li v-for="language in supportedLanguages" :key="language.code" @click="addNewLanguage(language)">
             <font-awesome-icon v-if="language.isLearning" icon="check"
                                class="is-learning-check"></font-awesome-icon>
-            <img :src="language.flagCircular" :alt="`${language.code} language flag`"
+            <img :src="language.flagCircular!" :alt="`${language.code} language flag`"
                  class="language-flag">
             <div class="title-learners">
               <h4>{{ language.name }}</h4>
@@ -31,41 +31,44 @@ export default {
   components: {BaseCard, FontAwesomeIcon},
   data() {
     return {
-      supportedLanguages: null as LanguageSchema[] | null
+      supportedLanguages: null as (LanguageSchema & { isLearning: boolean })[] | null
     };
   },
   methods: {
     async fetchSupportedLanguages() {
       return await this.languageStore.fetchLanguages({isSupported: true});
     },
-    async addNewLanguage(language) {
+    async addNewLanguage(language: LanguageSchema & { isLearning: boolean }) {
       //TODO move to custom dialog
       if (language.isLearning)
         alert(`You are already learning ${language.name}`);
       else if (confirm(`Start learning ${language.name}?`)) {
         await this.languageStore.addLanguageToUser({languageCode: language.code});
-        await this.$router.push({name: 'explore', params: {learningLanguage: language.code}})
+        await this.$router.push({name: "explore", params: {learningLanguage: language.code}});
       }
     }
   },
   async mounted() {
     const supportedLanguages = await this.fetchSupportedLanguages();
-    await this.languageStore.fetchUserLanguages();
+    const userLanguages = await this.languageStore.fetchUserLanguages();
 
-    this.supportedLanguages = supportedLanguages.map((lang) => {
-      return {
-        ...lang,
-        isLearning: this.languageStore.userLanguages.findIndex(l => l.code === lang.code) !== -1
-      }
-    });
+    this.supportedLanguages = supportedLanguages.map((lang) => ({
+      ...lang,
+      isLearning: userLanguages.findIndex(l => l.code === lang.code) !== -1
+    }));
   },
   setup() {
     return {languageStore: useLanguageStore()};
   }
-}
+};
 </script>
 
 <style scoped>
+.new-language-card {
+  width: 85vw;
+  max-width: 900px;
+}
+
 .content {
   display: flex;
   flex-direction: column;
@@ -74,7 +77,7 @@ export default {
 
 .languages {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   row-gap: 1rem;
   column-gap: 1rem;
   flex-grow: 1;

@@ -4,30 +4,25 @@ import LoginPage from "@/views/auth/LoginPage.vue";
 import {RouteRecordRaw} from "vue-router";
 import ResetPasswordRequestPage from "@/views/auth/ResetPasswordRequestPage.vue";
 import ResetPasswordPage from "@/views/auth/ResetPasswordPage.vue";
+import {setDefaultRouteMeta} from "@/router/routerUtils.js";
+import {privateRoutes} from "@/router/private/privateRoutes.js";
 
 export const publicRoutes: Readonly<RouteRecordRaw[]> = [
-    {path: "/", redirect: {name: "home"}, name: "root", meta: {requiresAuth: false, showFooter: true}},
-    {path: "/home", component: HomePage, name: "home", meta: {requiresAuth: false, showFooter: true}},
-    {path: "/login", component: LoginPage, name: "login", meta: {requiresAuth: false, showFooter: true}},
-
-    {path: "/sign-up", component: SignUpPage, name: "sign-up", meta: {requiresAuth: false, showFooter: true}},
+    {path: "/", redirect: {name: "home"}, name: "root", meta: {}},
+    {path: "/home", component: HomePage, name: "home", meta: {}},
+    {path: "/login", component: LoginPage, name: "login", meta: {}},
+    {path: "/sign-up", component: SignUpPage, name: "sign-up", meta: {}},
     {
         path: "/reset-password-request",
         component: ResetPasswordRequestPage,
         name: "reset-password-request",
-        meta: {
-            requiresAuth: false, showFooter: true,
-            query: {
-                'token': 'string'
-            }
-        }
+        meta: {query: {"token": "string"}}
     },
-    {
-        path: "/reset-password",
-        component: ResetPasswordPage,
-        name: "reset-password",
-        meta: {requiresAuth: false, showFooter: true}
-    },
+    {path: "/reset-password", component: ResetPasswordPage, name: "reset-password", meta: {}},
+];
 
-
-]
+setDefaultRouteMeta(privateRoutes, {
+    requiresAuth: false,
+    requiresEmailConfirmed: false,
+    showFooter: true
+});

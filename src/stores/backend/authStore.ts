@@ -1,6 +1,5 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
-import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export const useAuthStore = defineStore("auth", {
     state() {
@@ -17,13 +16,12 @@ export const useAuthStore = defineStore("auth", {
         },
     },
     actions: {
-        async signUp(body: { email: string, username: string, password: string, initialLanguage: string }) {
+        async signUp(body: { email: string, username: string, password: string }) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.postUsers({
                 email: body.email,
                 username: body.username,
-                password: body.password,
-                initialLanguage: body.initialLanguage
+                password: body.password
             }));
             // handle your 4XX errors as you may
             //...
@@ -42,9 +40,8 @@ export const useAuthStore = defineStore("auth", {
 
             localStorage.authToken = response.data.authToken;
             this.token = response.data.authToken;
-            return
+            return;
         },
-
         async signOut() {
             const store = useStore();
             await store.fetchCustom((api) => api.sessions.deleteSessions());
@@ -52,7 +49,10 @@ export const useAuthStore = defineStore("auth", {
             this.token = null;
             //TODO clear local pinia store data (like languages learning, profile etc)
         },
-
+        async requestEmailConfirmToken(body: { email?: string }) {
+            const store = useStore();
+            await store.fetchCustom((api) => api.emailConfirmTokens.postEmailResetTokens({email: body.email}));
+        },
         async requestPasswordReset(body: { username: string, email: string }) {
             const store = useStore();
             await store.fetchCustom((api) => api.passwordResetTokens.postPasswordResetTokens({
@@ -72,6 +72,28 @@ export const useAuthStore = defineStore("auth", {
                 newPassword: body.newPassword
             }));
             return response.ok;
-        }
+        },
+        async confirmEmail(body: { token: string }) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.users.postUsersMeEmailConfirm({
+                token: body.token
+            }), {ignore401: true});
+            return response.ok;
+        },
+        async changeEmail(body: { newEmail: string }) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.users.putUsersMeEmail({
+                newEmail: body.newEmail
+            }));
+            return response.ok;
+        },
+        async changePassword(body: { oldPassword: string, newPassword: string, }) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.users.putUsersMePassword({
+                oldPassword: body.oldPassword,
+                newPassword: body.newPassword
+            }));
+            return response.ok;
+        },
     }
-})
+});

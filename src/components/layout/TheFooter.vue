@@ -43,5 +43,10 @@ footer {
 .social-links img {
   width: 25px;
   height: 25px;
+  opacity: 0.75;
+}
+
+.social-links img:hover {
+  opacity: 1;
 }
 </style>

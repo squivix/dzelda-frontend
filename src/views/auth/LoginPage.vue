@@ -40,8 +40,8 @@ export default {
   components: {BasePasswordInput},
   data() {
     return {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
       errorMessage: "",
       errorFields: [] as Array<"username" | "password">
     };
@@ -55,14 +55,14 @@ export default {
         password: this.password,
       });
       if (error !== undefined) {
-        this.messageBarStore.addMessage({text: error.message, type: MessageType.ERROR})
+        this.messageBarStore.addMessage({text: error.message, type: MessageType.ERROR});
         this.errorMessage = error.message;
         if ("fields" in error && error.fields !== undefined)
-          this.errorFields = Object.keys(error.fields) as Array<"username" | "password">
+          this.errorFields = Object.keys(error.fields) as Array<"username" | "password">;
         else
-          this.errorFields = ["username", "password"]
+          this.errorFields = ["username", "password"];
       } else
-        await this.$router.push({name: 'explore'});
+        await this.$router.push({name: "explore"});
     },
   },
   setup() {
@@ -70,6 +70,11 @@ export default {
       authStore: useAuthStore(),
       messageBarStore: useMessageBarStore()
     };
+  },
+  beforeRouteEnter() {
+    const authStore = useAuthStore();
+    if (authStore.isAuthenticated)
+      return {name: "explore"};
   }
 };
 </script>
@@ -120,14 +125,14 @@ input,
 }
 
 .error-input,
-.base-password-div >>> .error-input {
+.base-password-div :deep(.error-input) {
   border: none;
   outline: 1px solid red;
   background-color: #FFEEEE;
 }
 
 .error-input:focus-visible,
-.base-password-div >>> .error-input:focus-visible {
+.base-password-div :deep(.error-input:focus-visible) {
   outline: 1px solid red;
   box-shadow: 0 0 2px 1px red;
 }
