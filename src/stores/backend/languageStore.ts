@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
-import {LearnerLanguageSchema} from "dzelda-types"
+import {LearnerLanguageSchema} from "dzelda-types";
 
 export const useLanguageStore = defineStore("language", {
     state() {
@@ -14,22 +14,24 @@ export const useLanguageStore = defineStore("language", {
     actions: {
         async fetchLanguages(queryParams: { isSupported?: boolean } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.languages.getLanguages(queryParams))
+            const response = await store.fetchCustom((api) => api.languages.getLanguages(queryParams));
 
             // handle your 4XX errors as you may
             //...
 
             return response.data;
         },
-        async fetchUserLanguages(queryParams: {
-            sortBy?: "name" | "learnersCount" | "lastOpened",
-            sortOrder?: "asc" | "desc"
-        } = {sortBy: "lastOpened", sortOrder: "desc"}) {
+        async fetchUserLanguages({queryParams = {sortBy: "lastOpened", sortOrder: "desc"}, ignoreCache = false}: {
+            queryParams?: {
+                sortBy?: "name" | "learnersCount" | "lastOpened",
+                sortOrder?: "asc" | "desc"
+            }, ignoreCache?: boolean
+        } = {}) {
             //TODO make caching depend on request params
-            if (this.userLanguages !== null)
+            if (!ignoreCache && this.userLanguages !== null)
                 return this.userLanguages;
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.getUsersUsernameLanguages("me", queryParams))
+            const response = await store.fetchCustom((api) => api.users.getUsersUsernameLanguages("me", queryParams));
 
             // handle your 4XX errors as you may
             //...
@@ -40,17 +42,12 @@ export const useLanguageStore = defineStore("language", {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.postUsersUsernameLanguages("me", {
                 languageCode: body.languageCode
-            }))
-
-            // handle your 4XX errors as you may
-            //...
-            if (this.userLanguages !== null)
-                this.userLanguages.unshift(response.data);
-            return response.data
+            }));
+            return response.data;
         },
         async deleteLanguageFromUser(pathParams: { languageCode: string }) {
             const store = useStore();
-            await store.fetchCustom((api) => api.users.deleteUsersUsernameLanguagesLanguageCode("me", pathParams.languageCode))
+            await store.fetchCustom((api) => api.users.deleteUsersUsernameLanguagesLanguageCode("me", pathParams.languageCode));
             // handle your 4XX errors as you may
             //...
             if (this.userLanguages) {
@@ -61,7 +58,7 @@ export const useLanguageStore = defineStore("language", {
         },
         async updateLanguageLastOpened(pathParams: { languageCode: string }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.patchUsersUsernameLanguagesLanguageCode("me", pathParams.languageCode, {lastOpened: "now"}))
+            const response = await store.fetchCustom((api) => api.users.patchUsersUsernameLanguagesLanguageCode("me", pathParams.languageCode, {lastOpened: "now"}));
             // handle your 4XX errors as you may
             //...
             this.setLastOpenedLanguage(pathParams.languageCode);
@@ -78,4 +75,4 @@ export const useLanguageStore = defineStore("language", {
             }
         },
     }
-})
+});

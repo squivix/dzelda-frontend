@@ -4,7 +4,7 @@
       <router-link :to="{ name: 'home'}" style="text-decoration: none; color: inherit">
         <h1 class="unselectable">Dzelda</h1>
       </router-link>
-      <nav v-if="userAccount?.isEmailConfirmed">
+      <nav v-if="userAccount?.isEmailConfirmed && userLanguages && userLanguages.length > 0">
         <ul>
           <router-link :to="{ name: 'explore' }" style="text-decoration: none; color: inherit">
             <li>Explore</li>
@@ -48,7 +48,7 @@
           </base-drop-down-list>
         </template>
       </base-drop-down>
-      <base-drop-down :is-pointy="true" label="add-menu">
+      <base-drop-down v-if="userLanguages && userLanguages.length > 0" :is-pointy="true" label="add-menu">
         <template v-slot:button>
                     <span class="add-button">
                         <font-awesome-icon icon="plus"></font-awesome-icon>
@@ -121,7 +121,6 @@ export default defineComponent({
   data() {
     return {
       userAccount: null as UserSchema | null,
-      userLanguages: null as LearnerLanguageSchema[] | null,
     };
   },
   computed: {
@@ -130,6 +129,9 @@ export default defineComponent({
         return `${this.store.baseUrl}${this.userAccount!.profile.profilePicture}`;
       else
         return null;
+    },
+    userLanguages(){
+      return this.languageStore.userLanguages
     },
     currentLanguage() {
       return this.userLanguages ? this.userLanguages[0] : null;
