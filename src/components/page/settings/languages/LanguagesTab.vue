@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="settings-tab">
     <h2>Languages</h2>
     <table class="languages">
       <thead>

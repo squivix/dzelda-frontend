@@ -16,7 +16,7 @@ export const publicRoutes: Readonly<RouteRecordRaw[]> = [
         path: "/reset-password-request",
         component: ResetPasswordRequestPage,
         name: "reset-password-request",
-        meta: {query: {"token": "string"}}
+        meta: {query: {"token": "string:"}}
     },
     {path: "/reset-password", component: ResetPasswordPage, name: "reset-password", meta: {}},
 ];

@@ -11,8 +11,8 @@ import CourseEditPage from "@/pages/CourseEditPage.vue";
 import NewLanguagePage from "@/pages/user/NewLanguagePage.vue";
 import MyProfilePage from "@/pages/user/MyProfilePage.vue";
 import SettingsPage from "@/pages/user/SettingsPage.vue";
-import AccountTab from "@/components/page/settings/AccountTab.vue";
-import LanguagesTab from "@/components/page/settings/LanguagesTab.vue";
+import AccountTab from "@/components/page/settings/account/AccountTab.vue";
+import LanguagesTab from "@/components/page/settings/languages/LanguagesTab.vue";
 import NotificationsTab from "@/components/page/settings/NotificationsTab.vue";
 import SignOutPage from "@/pages/auth/SignOutPage.vue";
 import {RouteRecordRaw} from "vue-router";
@@ -175,7 +175,7 @@ export const privateRoutes: RouteRecordRaw[] = [
             requiresEmailConfirmed: false,
             showFooter: true,
             query: {
-                token: "string"
+                token: "string:"
             }
         },
     },

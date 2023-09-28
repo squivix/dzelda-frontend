@@ -118,20 +118,18 @@ import {defineComponent} from "vue";
 export default defineComponent({
   name: "AuthHeader",
   components: {BaseDropDownList, BaseDropDown, FontAwesomeIcon},
-  data() {
-    return {
-      userAccount: null as UserSchema | null,
-    };
-  },
   computed: {
+    userAccount() {
+      return this.userStore.userAccount;
+    },
+    userLanguages() {
+      return this.languageStore.userLanguages;
+    },
     profilePicture() {
       if (this.userAccount!.profile.profilePicture)
         return `${this.store.baseUrl}${this.userAccount!.profile.profilePicture}`;
       else
         return null;
-    },
-    userLanguages(){
-      return this.languageStore.userLanguages
     },
     currentLanguage() {
       return this.userLanguages ? this.userLanguages[0] : null;
@@ -142,9 +140,9 @@ export default defineComponent({
   },
   methods: {},
   async mounted() {
-    this.userAccount = await this.userStore.fetchUserAccount();
+    await this.userStore.fetchUserAccount();
     if (this.userAccount?.profile)
-      this.userLanguages = await this.languageStore.fetchUserLanguages();
+      await this.languageStore.fetchUserLanguages();
   },
   setup() {
     return {

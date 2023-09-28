@@ -67,7 +67,7 @@ export const useAuthStore = defineStore("auth", {
         },
         async resetPassword(body: { token: string, newPassword: string }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.postUsersMePasswords({
+            const response = await store.fetchCustom((api) => api.users.postUsersMePasswordReset({
                 token: body.token,
                 newPassword: body.newPassword
             }));
@@ -83,17 +83,31 @@ export const useAuthStore = defineStore("auth", {
         async changeEmail(body: { newEmail: string }) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.putUsersMeEmail({
-                newEmail: body.newEmail
-            }));
-            return response.ok;
+                    newEmail: body.newEmail
+                },
+                {format: "json"}   //workaround, see https://github.com/acacode/swagger-typescript-api/issues/536#issuecomment-1737274548
+            ));
+            if (!response.ok)
+                return response.error;
+            return;
         },
         async changePassword(body: { oldPassword: string, newPassword: string, }) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.putUsersMePassword({
                 oldPassword: body.oldPassword,
                 newPassword: body.newPassword
-            }));
-            return response.ok;
+            }, {format: "json"}));
+            if (!response.ok)
+                return response.error;
         },
+        async deleteAccount() {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.users.deleteUsersMe());
+            if (response.ok) {
+                delete localStorage.authToken;
+                this.token = null;
+            }
+            return response.ok;
+        }
     }
 });

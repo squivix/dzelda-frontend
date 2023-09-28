@@ -1,6 +1,6 @@
 <template>
   <p class="submit-message">
-    Confirming...
+    Confirming Email...
     <br><br>
     You will be redirected shortly.
   </p>
@@ -8,7 +8,6 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import BaseChangeableInput from "@/components/ui/BaseChangeableInput.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {useAuthStore} from "@/stores/backend/authStore.js";
 import {useQuery} from "@oarepo/vue-query-synchronizer";
@@ -16,20 +15,22 @@ import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export default defineComponent({
   name: "ConfirmEmailPage",
-  components: {BaseChangeableInput},
+  components: {},
   data() {
     return {};
   },
 
-  beforeRouteEnter() {
+  beforeRouteEnter(to) {
     const userStore = useUserStore();
-    if (userStore.userAccount!.isEmailConfirmed)
-      return {name: "explore"};
+    // if (userStore.userAccount!.isEmailConfirmed && !to.query.token)
+    //   return {name: "explore"};
   },
   async mounted() {
-    if (typeof this.queryParams.token !== "string" || this.queryParams.token === "")
+    if (typeof this.queryParams.token !== "string" || this.queryParams.token === "") {
       this.queryParams.token = undefined;
-    else {
+      this.messageBarStore.addMessage({type: MessageType.ERROR, text: "No email token provided"});
+      this.$router.push({name: "home"});
+    } else {
       const isConfirmSuccessful = await this.authStore.confirmEmail({token: this.queryParams.token});
       if (isConfirmSuccessful) {
         await this.userStore.fetchUserAccount(true);

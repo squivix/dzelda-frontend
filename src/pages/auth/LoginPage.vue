@@ -124,21 +124,4 @@ input,
   color: black;
 }
 
-.error-input,
-.base-password-div :deep(.error-input) {
-  border: none;
-  outline: 1px solid red;
-  background-color: #FFEEEE;
-}
-
-.error-input:focus-visible,
-.base-password-div :deep(.error-input:focus-visible) {
-  outline: 1px solid red;
-  box-shadow: 0 0 2px 1px red;
-}
-
-.error-message {
-  color: red;
-  min-height: 1lh;
-}
 </style>

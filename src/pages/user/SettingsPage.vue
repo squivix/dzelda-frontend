@@ -65,7 +65,6 @@ export default {
   background-color: lightgray;
 }
 
-
 .settings-tab {
   flex: 4;
 }

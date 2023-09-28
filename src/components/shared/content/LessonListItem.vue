@@ -79,7 +79,7 @@ import BaseImage from "@/components/ui/BaseImage.vue";
 import {LessonSchema, VocabLevelSchema, VocabsByLevelSchema} from "dzelda-types";
 import {PropType} from "vue";
 import {useStore} from "@/stores/backend/rootStore.js";
-import lessonBlank from "@/assets/images/lesson-blank.svg"
+import lessonBlank from "@/assets/images/lesson-blank.svg";
 import constants from "@/constants.js";
 
 export default {
@@ -98,18 +98,20 @@ export default {
   },
   computed: {
     VocabLevelSchema() {
-      return VocabLevelSchema
+      return VocabLevelSchema;
     },
     imageUrl() {
       const imagePath = this.lesson.image || this.lesson.course.image;
       if (imagePath)
-        return `${this.store.resourceUrl}/${imagePath}`
+        return `${this.store.resourceUrl}/${imagePath}`;
       return "";
     },
     newVocabsPercentage() {
       const total = this.lesson.vocabsByLevel![VocabLevelSchema.NEW] + this.savedVocabsCount;
+      if (total == 0) //prevent NaN% from dividing 0/0
+        return 0.00;
       const percentage = (this.lesson.vocabsByLevel![VocabLevelSchema.NEW] / total) * 100;
-      return +percentage.toFixed(2);
+      return Number(percentage.toFixed(2));
     },
     newVocabsPercentageClass() {
       const p = this.newVocabsPercentage;
@@ -136,7 +138,7 @@ export default {
       store: useStore(),
       assets: {lessonBlank},
       VocabLevelSchema
-    }
+    };
   }
 };
 </script>

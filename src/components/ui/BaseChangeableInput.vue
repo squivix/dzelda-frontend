@@ -8,7 +8,8 @@
         :disabled="!changed"
         @input="onInput"
     />
-    <button type="button" @click="toggleChangeInput" class="inv-button" v-if="!changed">
+    <button type="button" @click="toggleChangeInput" class="inv-button" v-if="!changed"
+            v-bind="buttonAttrs">
       Change
     </button>
   </div>
@@ -19,16 +20,18 @@ import {defineComponent} from "vue";
 
 export default defineComponent({
   name: "BaseChangeableInput",
-  data() {
-    return {
-      changed: false
-    };
-  },
+  inheritAttrs: false,
   props: {
     modelValue: String,
-    clearOnChange: {type: Boolean, required: false, default: true}
+    clearOnChange: {type: Boolean, required: false, default: true},
+    buttonAttrs: Object
   },
   emits: ["update:modelValue", "onChange"],
+  data() {
+    return {
+      changed: false,
+    };
+  },
   methods: {
     toggleChangeInput() {
       this.changed = true;
@@ -46,6 +49,8 @@ export default defineComponent({
 <style scoped>
 div {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 input {
