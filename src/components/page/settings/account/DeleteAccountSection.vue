@@ -16,6 +16,7 @@ export default defineComponent({
       //TODO replace with modal dialog
       if (confirm("Are you sure you want to delete your account?\n\n(This action cannot be undone)")) {
         await this.authStore.deleteAccount();
+
       }
     }
   },

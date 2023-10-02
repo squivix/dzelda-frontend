@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
+import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export const useAuthStore = defineStore("auth", {
     state() {
@@ -106,6 +107,9 @@ export const useAuthStore = defineStore("auth", {
             if (response.ok) {
                 delete localStorage.authToken;
                 this.token = null;
+                const messageBarStore = useMessageBarStore();
+                messageBarStore.addMessage({text: "Account deleted.", type: MessageType.INFO});
+                this.router.push({name: "home"});
             }
             return response.ok;
         }
