@@ -1,27 +1,31 @@
 <template>
   <div>
-    <ul v-if="recommendedLessons" class="lessons-list">
-      <lesson-list-item v-for="lesson in recommendedLessons" :key="lesson.id" :lesson="lesson"></lesson-list-item>
+    <ul v-if="lessons" class="lessons-list">
+      <lesson-list-item v-for="lesson in lessons" :key="lesson.id" :lesson="lesson"/>
     </ul>
+    <pagination-controls :page-count="pageCount"></pagination-controls>
   </div>
 </template>
 
 <script lang="ts">
-import LessonListItem from "@/components/shared/content/LessonListItem.vue";
+import {defineComponent} from 'vue'
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
-import {LessonSchema} from "dzelda-types";
 import {useQuery} from "@oarepo/vue-query-synchronizer";
-import {defineComponent} from "vue";
+import {LessonSchema} from "dzelda-types";
+import LessonListItem from "@/components/shared/content/LessonListItem.vue";
+import PaginationControls from "@/components/ui/PaginationControls.vue";
 
 export default defineComponent({
-  name: "BrowseTab",
-  components: {LessonListItem},
-  emits: ["onPageFetched"],
+  name: "PopularLessonsTab",
+  components: {PaginationControls, LessonListItem},
   data() {
-    return {recommendedLessons: null as LessonSchema[] | null};
+    return {
+      lessons: [] as LessonSchema[],
+      pageCount: 0,
+    }
   },
   methods: {
-    async fetchRecommendedLessons() {
+    async fetchLessons() {
       const response = await this.lessonStore.fetchLessons({
         languageCode: this.$route.params.learningLanguage as string,
         page: this.queryParams.page,
@@ -29,12 +33,12 @@ export default defineComponent({
         sortBy: "learnersCount",
         sortOrder: "desc"
       });
-      this.recommendedLessons = response.data!;
-      this.$emit("onPageFetched", Math.ceil(response.pageCount!));
+      this.lessons = response.data!;
+      this.pageCount = response.pageCount!;
     }
   },
   async mounted() {
-    await this.fetchRecommendedLessons();
+    await this.fetchLessons();
   },
   setup() {
     return {
@@ -42,7 +46,7 @@ export default defineComponent({
       queryParams: useQuery()
     };
   }
-});
+})
 </script>
 
 <style scoped>

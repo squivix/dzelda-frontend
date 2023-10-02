@@ -225,7 +225,7 @@ h4 {
 }
 
 .course-title {
-  color: gray;
+  color: grey;
 }
 
 a:hover {

@@ -59,6 +59,7 @@ h2 {
 .tab-labels {
   display: flex;
   flex-direction: row;
+  margin-bottom: 1rem;
 }
 
 .tab-labels .tab-label {

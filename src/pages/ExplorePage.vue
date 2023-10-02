@@ -3,17 +3,14 @@
     <template v-slot:all>
       <h2>Explore</h2>
       <base-tabbed-view
-          :tabs="[{id:ExplorePageTab.BROWSE, label:'Browse'},{id:ExplorePageTab.GUIDED, label:'Guided'}]">
-        <template v-slot:[ExplorePageTab.BROWSE]>
-          <browse-tab/>
+          :tabs="[{id:ExplorePageTab.RECENT, label:'Recent'},{id:ExplorePageTab.POPULAR, label:'Popular'}]">
+        <template v-slot:[ExplorePageTab.RECENT]>
+          <recent-lessons-tab/>
         </template>
-        <template v-slot:[ExplorePageTab.GUIDED]>
-          <guided-tab/>
+        <template v-slot:[ExplorePageTab.POPULAR]>
+          <popular-lessons-tab/>
         </template>
       </base-tabbed-view>
-      <pagination-controls v-if="pageCount"
-                           :page-count="pageCount">
-      </pagination-controls>
     </template>
 
   </base-card>
@@ -21,32 +18,23 @@
 
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
-import BrowseTab from "@/components/page/explore/BrowseTab.vue";
-import GuidedTab from "@/components/page/explore/GuidedTab.vue";
-import PaginationControls from "@/components/ui/PaginationControls.vue";
 import {defineComponent} from "vue";
 import BaseTabbedView from "@/components/ui/BaseTabbedView.vue";
+import PopularLessonsTab from "@/components/page/explore/PopularLessonsTab.vue";
+import RecentLessonsTab from "@/components/page/explore/RecentLessonsTab.vue";
 
 enum ExplorePageTab {
-  BROWSE = "Browse",
-  GUIDED = "Guided",
+  RECENT = "Recent",
+  POPULAR = "Popular",
 }
 
 export default defineComponent({
   name: "ExplorePage",
-  components: {BaseTabbedView, PaginationControls, BaseCard, BrowseTab, GuidedTab},
+  components: {RecentLessonsTab, PopularLessonsTab, BaseTabbedView, BaseCard},
   data() {
     return {
       pageCount: 0,
     };
-  },
-  methods: {
-    setCurrentTab(tab: ExplorePageTab) {
-      this.currentTab = tab;
-    },
-    onPageFetched(pageCount: number) {
-      this.pageCount = pageCount;
-    }
   },
   setup() {
     return {ExplorePageTab}
