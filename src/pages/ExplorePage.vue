@@ -2,25 +2,15 @@
   <base-card class="explore-base-card">
     <template v-slot:all>
       <h2>Explore</h2>
-      <nav class="tab-bar">
-        <ul class="tab-labels">
-          <li :class="{'tab-label':true, 'current-tab':currentTab === ExplorePageTab.BROWSE}"
-              @click="setCurrentTab(ExplorePageTab.BROWSE)">
-            Browse
-          </li>
-          <li :class="{'tab-label':true, 'current-tab':currentTab === ExplorePageTab.GUIDED}"
-              @click="setCurrentTab(ExplorePageTab.GUIDED)">
-            Guided
-          </li>
-        </ul>
-      </nav>
-
-      <browse-tab v-if="currentTab==='Browse'" @onPageFetched="onPageFetched">
-
-      </browse-tab>
-      <guided-tab v-else>
-
-      </guided-tab>
+      <base-tabbed-view
+          :tabs="[{id:ExplorePageTab.BROWSE, label:'Browse'},{id:ExplorePageTab.GUIDED, label:'Guided'}]">
+        <template v-slot:[ExplorePageTab.BROWSE]>
+          <browse-tab/>
+        </template>
+        <template v-slot:[ExplorePageTab.GUIDED]>
+          <guided-tab/>
+        </template>
+      </base-tabbed-view>
       <pagination-controls v-if="pageCount"
                            :page-count="pageCount">
       </pagination-controls>
@@ -35,6 +25,7 @@ import BrowseTab from "@/components/page/explore/BrowseTab.vue";
 import GuidedTab from "@/components/page/explore/GuidedTab.vue";
 import PaginationControls from "@/components/ui/PaginationControls.vue";
 import {defineComponent} from "vue";
+import BaseTabbedView from "@/components/ui/BaseTabbedView.vue";
 
 enum ExplorePageTab {
   BROWSE = "Browse",
@@ -43,10 +34,9 @@ enum ExplorePageTab {
 
 export default defineComponent({
   name: "ExplorePage",
-  components: {PaginationControls, BaseCard, BrowseTab, GuidedTab},
+  components: {BaseTabbedView, PaginationControls, BaseCard, BrowseTab, GuidedTab},
   data() {
     return {
-      currentTab: ExplorePageTab.BROWSE as ExplorePageTab,
       pageCount: 0,
     };
   },
@@ -77,22 +67,5 @@ h2 {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-.tab-labels {
-  display: flex;
-  flex-direction: row;
-}
-
-.tab-labels .tab-label {
-  font-size: 1.2rem;
-  padding: 1rem 1rem;
-}
-
-.tab-labels .tab-label:hover {
-  cursor: pointer;
-}
-
-.tab-labels .tab-label.current-tab {
-  border-bottom: 3px solid var(--secondary-color);
-}
 
 </style>

@@ -11,8 +11,9 @@ import LessonListItem from "@/components/shared/content/LessonListItem.vue";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {LessonSchema} from "dzelda-types";
 import {useQuery} from "@oarepo/vue-query-synchronizer";
+import {defineComponent} from "vue";
 
-export default {
+export default defineComponent({
   name: "BrowseTab",
   components: {LessonListItem},
   emits: ["onPageFetched"],
@@ -41,7 +42,7 @@ export default {
       queryParams: useQuery()
     };
   }
-}
+});
 </script>
 
 <style scoped>
