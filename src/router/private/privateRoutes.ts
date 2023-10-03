@@ -17,7 +17,7 @@ import NotificationsTab from "@/components/page/settings/NotificationsTab.vue";
 import SignOutPage from "@/pages/auth/SignOutPage.vue";
 import {RouteRecordRaw} from "vue-router";
 import ConfirmEmailPage from "@/pages/auth/ConfirmEmailPage.vue";
-import {setDefaultRouteMeta, transformQueryParams} from "@/router/routerUtils.js";
+import {setDefaultRouteMeta} from "@/router/routerUtils.js";
 import ConfirmEmailSentPage from "@/pages/auth/ConfirmEmailSentPage.vue";
 import ResendConfirmEmailPage from "@/pages/auth/ResendConfirmEmailPage.vue";
 import {z} from "zod";
@@ -39,16 +39,16 @@ export const privateRoutes: RouteRecordRaw[] = [
         meta: {
             queryParamsSchema: z.object({
                 page: z.string().regex(/^[1-9][0-9]*$/).optional().catch(undefined),
-                pageSize: z.string().regex(/25|50|100|150|200/).optional().catch(undefined),
+                pageSize: z.string().regex(/5|10|25|50|100|150|200/).optional().catch(undefined),
                 searchQuery: z.string().optional().default("").optional().catch(undefined),
             }),
         },
-        props: (route) => ({
-            queryParams: transformQueryParams(route.query, {
-                page: (p: string) => p != undefined ? Number(p) : 1,
-                pageSize: (p: string) => p != undefined ? Number(p) : 25,
-                searchQuery: (s: string) => s != undefined ? s : "",
-            })
+        props: ({query: q}) => ({
+            queryParams: {
+                page: Number(q.page) || 1,
+                pageSize: Number(q.pageSize) || 25,
+                searchQuery: q.searchQuery ?? "",
+            }
         })
     },
     {

@@ -23,6 +23,7 @@ import BasePageSelector from "@/components/ui/BasePageSelector.vue";
 export default {
   name: "PaginationControls",
   components: {BasePageSelector},
+  emits: ["onPaginationChanged"],
   props: {
     page: {
       type: Number,
@@ -36,7 +37,7 @@ export default {
       type: Array,
       required: false,
       default() {
-        return [25, 50, 100, 150, 200];
+        return [5, 10, 25, 50, 100, 150, 200];
       },
     },
     perPageSelectLabel: {
@@ -48,6 +49,17 @@ export default {
       type: Number,
       required: true,
     },
+  },
+  watch: {
+    page() {
+      this.$emit("onPaginationChanged");
+    },
+    pageSize() {
+      if (this.page != 1)
+        this.$router.push({query: {...this.$route.query, page: 1}});
+      else
+        this.$emit("onPaginationChanged");
+    }
   },
   methods: {
     setPageSize(pageSize: string) {
