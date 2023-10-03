@@ -17,9 +17,10 @@ import NotificationsTab from "@/components/page/settings/NotificationsTab.vue";
 import SignOutPage from "@/pages/auth/SignOutPage.vue";
 import {RouteRecordRaw} from "vue-router";
 import ConfirmEmailPage from "@/pages/auth/ConfirmEmailPage.vue";
-import {setDefaultRouteMeta} from "@/router/routerUtils.js";
+import {setDefaultRouteMeta, transformQueryParams} from "@/router/routerUtils.js";
 import ConfirmEmailSentPage from "@/pages/auth/ConfirmEmailSentPage.vue";
 import ResendConfirmEmailPage from "@/pages/auth/ResendConfirmEmailPage.vue";
+import {z} from "zod";
 
 export const privateRoutes: RouteRecordRaw[] = [
     {
@@ -36,12 +37,19 @@ export const privateRoutes: RouteRecordRaw[] = [
         name: "explore-lang",
         component: ExplorePage,
         meta: {
-            query: {
-                page: "int:1",
-                maxPerPage: "int:25",
-                searchQuery: "string:",
-            }
-        }
+            queryParamsSchema: z.object({
+                page: z.string().regex(/^[1-9][0-9]*$/).optional().catch(undefined),
+                pageSize: z.string().regex(/25|50|100|150|200/).optional().catch(undefined),
+                searchQuery: z.string().optional().default("").optional().catch(undefined),
+            }),
+        },
+        props: (route) => ({
+            queryParams: transformQueryParams(route.query, {
+                page: (p: string) => p != undefined ? Number(p) : 1,
+                pageSize: (p: string) => p != undefined ? Number(p) : 25,
+                searchQuery: (s: string) => s != undefined ? s : "",
+            })
+        })
     },
     {
         path: "/my-library",
@@ -101,6 +109,7 @@ export const privateRoutes: RouteRecordRaw[] = [
     },
     {
         path: "/learn/:learningLanguage/lessons/add",
+        name: "add-lesson-lang",
         component: LessonAddEditPage,
         meta: {}
     },
@@ -118,6 +127,7 @@ export const privateRoutes: RouteRecordRaw[] = [
     },
     {
         path: "/learn/:learningLanguage/courses/add",
+        name: "add-course-lang",
         component: CourseAddPage,
         meta: {}
     },

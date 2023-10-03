@@ -3,12 +3,12 @@
     <ul v-if="lessons" class="lessons-list">
       <lesson-list-item v-for="lesson in lessons" :key="lesson.id" :lesson="lesson"/>
     </ul>
-    <pagination-controls :page-count="pageCount"></pagination-controls>
+    <pagination-controls :page="page" :page-size="pageSize" :page-count="pageCount"></pagination-controls>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent} from "vue";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {useQuery} from "@oarepo/vue-query-synchronizer";
 import {LessonSchema} from "dzelda-types";
@@ -22,7 +22,17 @@ export default defineComponent({
     return {
       lessons: [] as LessonSchema[],
       pageCount: 0,
-    }
+    };
+  },
+  props: {
+    page: {
+      type: Number,
+      required: true,
+    },
+    pageSize: {
+      type: Number,
+      required: true,
+    },
   },
   methods: {
     async fetchLessons() {
@@ -46,7 +56,7 @@ export default defineComponent({
       queryParams: useQuery()
     };
   }
-})
+});
 </script>
 
 <style scoped>

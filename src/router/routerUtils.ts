@@ -1,4 +1,4 @@
-import {RouteMeta, RouteRecordRaw} from "vue-router";
+import {NavigationGuardWithThis, RouteMeta, RouteRecordRaw} from "vue-router";
 
 export function setDefaultRouteMeta(routes: RouteRecordRaw[], defaultMeta: RouteMeta) {
     for (const route of routes) {
@@ -15,3 +15,13 @@ export function setDefaultRouteMeta(routes: RouteRecordRaw[], defaultMeta: Route
             setDefaultRouteMeta(route.children, defaultMeta);
     }
 }
+
+export function transformQueryParams(queryParams: { [key: string]: any }, transformers: { [key: string]: (oldVal: any) => any; }) {
+    const newQuery = {...queryParams};
+    for (const key in transformers) {
+        if (transformers[key] !== undefined)
+            newQuery[key] = transformers[key](queryParams[key]);
+    }
+    return newQuery;
+}
+

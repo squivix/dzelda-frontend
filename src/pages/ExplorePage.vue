@@ -5,7 +5,7 @@
       <base-tabbed-view
           :tabs="[{id:ExplorePageTab.RECENT, label:'Recent'},{id:ExplorePageTab.POPULAR, label:'Popular'}]">
         <template v-slot:[ExplorePageTab.RECENT]>
-          <recent-lessons-tab/>
+          <recent-lessons-tab :page="queryParams.page" :page-size="queryParams.pageSize"/>
         </template>
         <template v-slot:[ExplorePageTab.POPULAR]>
           <popular-lessons-tab/>
@@ -18,10 +18,11 @@
 
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
-import {defineComponent} from "vue";
+import {defineComponent, PropType} from "vue";
 import BaseTabbedView from "@/components/ui/BaseTabbedView.vue";
 import PopularLessonsTab from "@/components/page/explore/PopularLessonsTab.vue";
 import RecentLessonsTab from "@/components/page/explore/RecentLessonsTab.vue";
+import PaginationControls from "@/components/ui/PaginationControls.vue";
 
 enum ExplorePageTab {
   RECENT = "Recent",
@@ -30,14 +31,20 @@ enum ExplorePageTab {
 
 export default defineComponent({
   name: "ExplorePage",
-  components: {RecentLessonsTab, PopularLessonsTab, BaseTabbedView, BaseCard},
+  components: {PaginationControls, RecentLessonsTab, PopularLessonsTab, BaseTabbedView, BaseCard},
+  props: {
+    queryParams: {
+      type: Object as PropType<{ page: number, pageSize: number }>,
+      required: true
+    },
+  },
   data() {
     return {
       pageCount: 0,
     };
   },
   setup() {
-    return {ExplorePageTab}
+    return {ExplorePageTab};
   },
 });
 </script>

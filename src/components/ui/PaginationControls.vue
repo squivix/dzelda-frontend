@@ -2,16 +2,14 @@
   <div class="pagination-div">
     <form id="per-page-form">
       <label for="per-page-select" v-if="perPageSelectLabel">{{ perPageSelectLabel }}</label>
-      <!--suppress JSUnresolvedVariable-->
       <select id="per-page-select"
-              :value="$query.maxPerPage"
-              @change="setMaxPerPage($event.target.value)">
+              :value="pageSize"
+              @change="setPageSize($event.target!.value)">
         <option v-for="option in perPageSelectOptions" :key="option" :value="option">{{ option }}</option>
       </select>
     </form>
-    <!--suppress JSUnresolvedVariable -->
     <base-page-selector v-if="!!pageCount"
-                        :current-page="$query.page??1"
+                        :current-page="page"
                         :pageCount="pageCount"
                         :shown-count="Math.min(5,pageCount)"
                         @onPageClicked="goToPage">
@@ -26,11 +24,19 @@ export default {
   name: "PaginationControls",
   components: {BasePageSelector},
   props: {
+    page: {
+      type: Number,
+      required: true,
+    },
+    pageSize: {
+      type: Number,
+      required: true,
+    },
     perPageSelectOptions: {
       type: Array,
       required: false,
       default() {
-        return [25, 50, 100, 150, 200]
+        return [25, 50, 100, 150, 200];
       },
     },
     perPageSelectLabel: {
@@ -44,14 +50,14 @@ export default {
     },
   },
   methods: {
-    setMaxPerPage(value) {
-      this.$query.maxPerPage = Number(value);
+    setPageSize(pageSize: string) {
+      this.$router.push({query: {...this.$route.query, pageSize: pageSize}});
     },
-    goToPage(page) {
-      this.$query.page = page;
+    goToPage(page: string) {
+      this.$router.push({query: {...this.$route.query, page: page}});
     },
   }
-}
+};
 </script>
 
 <style scoped>

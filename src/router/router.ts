@@ -7,6 +7,7 @@ import {requiresEmailConfirmedGuard} from "@/router/beforeEachGuards/requiresEma
 import {fetchUserDataGuard} from "@/router/beforeEachGuards/fetchUserDataGuard.js";
 import {redirToLangSpecificGuard} from "@/router/beforeEachGuards/redirToLangSpecificGuard.js";
 import {updateLanguageLastOpenedGuard} from "@/router/beforeEachGuards/updateLanguageLastOpenedGuard.js";
+import {validateQueryParamsGuard} from "@/router/beforeEachGuards/validateQueryParamsGuard.js";
 
 export const router = createRouter({
     routes: [
@@ -20,6 +21,7 @@ router.beforeEach(requiresAuthGuard);
 router.beforeEach(fetchUserDataGuard);
 router.beforeEach(requiresEmailConfirmedGuard);
 router.beforeEach(redirToLangSpecificGuard);
+router.beforeEach(validateQueryParamsGuard);
 router.beforeEach(updateLanguageLastOpenedGuard);
 router.beforeEach(clearMessageBarGuard);
 
