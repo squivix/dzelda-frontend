@@ -36,7 +36,7 @@
   </base-card>
 </template>
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent, PropType} from "vue";
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
 import {useAuthStore} from "@/stores/backend/authStore.js";
 import {useQuery} from "@oarepo/vue-query-synchronizer";
@@ -44,6 +44,12 @@ import {useQuery} from "@oarepo/vue-query-synchronizer";
 export default defineComponent({
   name: "ResetPasswordPage",
   components: {BasePasswordInput},
+  props: {
+    queryParams: {
+      type: Object as PropType<{ token: string }>,
+      required: true
+    }
+  },
   data() {
     return {
       newPassword: "",
@@ -56,7 +62,7 @@ export default defineComponent({
   },
   methods: {
     async validateToken() {
-      if (typeof this.queryParams.token !== 'string' || this.queryParams.token === "") {
+      if (this.queryParams.token === "") {
         this.$router.push({name: "reset-password-request"})
         return
       }
@@ -83,7 +89,6 @@ export default defineComponent({
   setup() {
     return {
       authStore: useAuthStore(),
-      queryParams: useQuery()
     }
   },
   async mounted() {
