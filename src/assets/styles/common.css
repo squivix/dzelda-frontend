@@ -95,6 +95,16 @@ a:hover {
     cursor: pointer;
 }
 
+.inv-link {
+    color: black;
+    text-decoration: none;
+}
+
+.inv-link:hover {
+    text-decoration: none;
+    cursor: pointer;
+}
+
 .unselectable {
     user-select: none;
 }

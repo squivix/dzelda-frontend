@@ -23,7 +23,8 @@
 import {defineComponent, PropType} from "vue";
 
 export default defineComponent({
-  name: "BaseTabbedView",
+  name: "TabbedView",
+  emits: ["onTabChanged"],
   props: {
     tabs: {
       type: Array as PropType<Array<{ id: string, label: string }>>,
@@ -36,21 +37,17 @@ export default defineComponent({
     };
   },
   methods: {
-    setCurrentTab(tab) {
-      this.currentTab = tab;
+    setCurrentTab(tab: { id: string, label: string }) {
+      if (tab.id != this.currentTab.id) {
+        this.$emit("onTabChanged");
+        this.currentTab = tab;
+      }
     },
   },
 });
 </script>
 
 <style scoped>
-.tabbed-page-base-card {
-  display: flex;
-  flex-direction: column;
-  row-gap: 1rem;
-  width: 70vw;
-}
-
 h2 {
   font-size: 2rem;
   font-family: Verdana, Geneva, Tahoma, sans-serif;

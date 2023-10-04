@@ -21,6 +21,8 @@ import {setDefaultRouteMeta} from "@/router/routerUtils.js";
 import ConfirmEmailSentPage from "@/pages/auth/ConfirmEmailSentPage.vue";
 import ResendConfirmEmailPage from "@/pages/auth/ResendConfirmEmailPage.vue";
 import {z} from "zod";
+import RecentLessonsTab from "@/components/page/explore/RecentLessonsTab.vue";
+import PopularLessonsTab from "@/components/page/explore/PopularLessonsTab.vue";
 
 export const privateRoutes: RouteRecordRaw[] = [
     {
@@ -30,12 +32,13 @@ export const privateRoutes: RouteRecordRaw[] = [
         path: "/explore",
         component: ExplorePage,
         name: "explore",
-        meta: {redirToLanguageSpecific: true}
+        meta: {redirToLanguageSpecific: true},
     },
     {
         path: "/learn/:learningLanguage/explore",
         name: "explore-lang",
         component: ExplorePage,
+        redirect: {name: "explore-recent-lessons"},
         meta: {
             queryParamsSchema: z.object({
                 page: z.string().regex(/^[1-9][0-9]*$/).optional().catch(undefined),
@@ -49,7 +52,19 @@ export const privateRoutes: RouteRecordRaw[] = [
                 pageSize: Number(q.pageSize) || 25,
                 searchQuery: q.searchQuery ?? "",
             }
-        })
+        }),
+        children: [
+            {
+                path: "/learn/:learningLanguage/explore/lessons/recent",
+                component: RecentLessonsTab,
+                name: "explore-recent-lessons",
+            },
+            {
+                path: "/learn/:learningLanguage/explore/lessons/popular",
+                component: PopularLessonsTab,
+                name: "explore-popular-lessons",
+            }
+        ]
     },
     {
         path: "/my-library",
