@@ -19,17 +19,15 @@
 </template>
 
 <script lang="ts">
-import constants from "@/constants.ts";
 
 export default {
   name: "SearchFilter",
   emits: ["onSearchSubmitted", "onFiltersApplied"],
-  props: {},
+  props: {initialSearchQuery: {type: String, required: true}},
   data() {
     return {
-      searchQuery: this.$query.searchQuery,
+      searchQuery: this.initialSearchQuery,
       isFiltersShown: false,
-      constants,
     };
   },
   methods: {
@@ -37,11 +35,8 @@ export default {
       this.isFiltersShown = !this.isFiltersShown;
     },
     onSearchSubmitted() {
-      if (this.searchQuery)
-        this.$query.searchQuery = this.searchQuery;
-      else
-        this.$query.searchQuery = undefined;
-      this.$emit("onSearchSubmitted");
+      this.$router.push({query: {...this.$route.query, searchQuery: this.searchQuery || undefined, page: undefined}});
+      this.$emit("onSearchSubmitted", this.searchQuery);
     },
     onFiltersApplied() {
       this.$emit("onFiltersApplied");
@@ -78,7 +73,7 @@ export default {
 }
 
 .filter-button {
-  border: 2px solid gray;
+  border: 2px solid grey;
   border-radius: 5px;
   height: 30px;
 }
@@ -92,7 +87,7 @@ export default {
   flex-direction: column;
   row-gap: 0.5rem;
   align-self: flex-end;
-  border: 1px solid gray;
+  border: 1px solid grey;
   border-radius: 5px;
   padding: 1rem;
   transition-property: max-height, border-color, padding;

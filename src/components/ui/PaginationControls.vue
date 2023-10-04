@@ -56,7 +56,7 @@ export default {
     },
     pageSize() {
       if (this.page != 1)
-        this.$router.push({query: {...this.$route.query, page: 1}});
+        this.$router.push({query: {...this.$route.query, page: undefined}});
       else
         this.$emit("onPaginationChanged");
     }

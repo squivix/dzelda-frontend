@@ -3,18 +3,16 @@
     <ul v-if="lessons" class="lessons-list">
       <lesson-list-item v-for="lesson in lessons" :key="lesson.id" :lesson="lesson"/>
     </ul>
-    <pagination-controls :page="queryParams.page" :page-size="queryParams.pageSize" :page-count="pageCount"
-                         @on-pagination-changed="fetchLessons"/>
+    <pagination-controls :page="queryParams.page" :page-size="queryParams.pageSize" :page-count="pageCount"/>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent, PropType} from "vue";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {LessonSchema} from "dzelda-types";
 import LessonListItem from "@/components/shared/content/LessonListItem.vue";
 import PaginationControls from "@/components/ui/PaginationControls.vue";
-import {PropType} from "vue/dist/vue.js";
 
 export default defineComponent({
   name: "RecentLessonsTab",
@@ -31,7 +29,11 @@ export default defineComponent({
       required: true
     },
   },
-  watch: {},
+  watch: {
+    queryParams() {
+      this.fetchLessons()
+    }
+  },
   methods: {
     async fetchLessons() {
       const response = await this.lessonStore.fetchLessons({

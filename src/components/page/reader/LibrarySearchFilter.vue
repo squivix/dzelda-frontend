@@ -1,6 +1,5 @@
 <template>
-  <search-filter @onSearchSubmitted="onSearchSubmitted"
-                 @onFiltersApplied="onFiltersApplied">
+  <search-filter :initial-search-query="searchQuery">
     <template v-slot:filters>
 
     </template>
@@ -13,15 +12,13 @@ import SearchFilter from "@/components/ui/SearchFilter.vue";
 export default {
   name: "LibrarySearchFilter",
   components: {SearchFilter},
-  emits: ["onSearchSubmitted", "onFiltersApplied"],
-  methods: {
-    onSearchSubmitted() {
-      this.$emit("onSearchSubmitted");
-    }, onFiltersApplied() {
-      this.$emit("onFiltersApplied");
-    },
-  }
-
+  props: {
+    searchQuery: {
+      type: String,
+      required: true
+    }
+  },
+  methods: {}
 };
 </script>
 

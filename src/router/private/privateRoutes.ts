@@ -20,9 +20,9 @@ import ConfirmEmailPage from "@/pages/auth/ConfirmEmailPage.vue";
 import {setDefaultRouteMeta} from "@/router/routerUtils.js";
 import ConfirmEmailSentPage from "@/pages/auth/ConfirmEmailSentPage.vue";
 import ResendConfirmEmailPage from "@/pages/auth/ResendConfirmEmailPage.vue";
-import {z} from "zod";
 import RecentLessonsTab from "@/components/page/explore/RecentLessonsTab.vue";
 import PopularLessonsTab from "@/components/page/explore/PopularLessonsTab.vue";
+import {z} from "zod";
 
 export const privateRoutes: RouteRecordRaw[] = [
     {
@@ -77,14 +77,20 @@ export const privateRoutes: RouteRecordRaw[] = [
         component: MyLibraryPage,
         name: "language-my-library",
         meta: {
-
-
-            query: {
-                page: "int:1",
-                maxPerPage: "int:10",
-                searchQuery: "string:",
+            queryParamsSchema: z.object({
+                page: z.string().regex(/^[1-9][0-9]*$/).optional().catch(undefined),
+                pageSize: z.string().regex(/5|10|25|50|100|150|200/).optional().catch(undefined),
+                searchQuery: z.string().optional().default("").optional().catch(undefined),
+            }),
+        },
+        props: ({query: q, params: p}) => ({
+            pathParams: {learningLanguage: p.learningLanguage},
+            queryParams: {
+                page: Number(q.page) || 1,
+                pageSize: Number(q.pageSize) || 25,
+                searchQuery: q.searchQuery ?? "",
             }
-        }
+        }),
     },
     {
         path: "/my-vocab",
