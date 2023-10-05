@@ -3,13 +3,13 @@
 </template>
 
 <script lang="ts">
-import {useAuthStore} from "@/stores/backend/authStore.js";
+import {useUserStore} from "@/stores/backend/userStore.js";
 
 export default {
   name: "HomePage",
   components: {},
   beforeRouteEnter() {
-    const authStore = useAuthStore();
+    const authStore = useUserStore();
     if (authStore.isAuthenticated)
       return {name: "explore"};
   }

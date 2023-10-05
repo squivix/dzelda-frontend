@@ -110,10 +110,9 @@ import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
-import {useUserStore} from "@/stores/backend/userStore.js";
 import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
-import {UserSchema, LearnerLanguageSchema} from "dzelda-types";
 import {defineComponent} from "vue";
+import {useUserStore} from "@/stores/backend/userStore.js";
 
 export default defineComponent({
   name: "AuthHeader",

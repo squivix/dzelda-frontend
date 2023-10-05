@@ -44,7 +44,6 @@
 import {defineComponent} from "vue";
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
-import {useAuthStore} from "@/stores/backend/authStore.js";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export default defineComponent({
@@ -66,7 +65,7 @@ export default defineComponent({
         this.errorMessage = "Passwords do not match";
         return;
       }
-      const error = await this.authStore.changePassword({
+      const error = await this.userStore.changePassword({
         oldPassword: this.oldPassword,
         newPassword: this.newPassword,
       });
@@ -84,7 +83,6 @@ export default defineComponent({
   setup() {
     return {
       userStore: useUserStore(),
-      authStore: useAuthStore(),
       messageBarStore: useMessageBarStore()
     };
   }

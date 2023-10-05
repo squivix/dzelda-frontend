@@ -113,17 +113,15 @@ export const privateRoutes: RouteRecordRaw[] = [
                 ]).optional().catch(undefined)
             }),
         },
-        props: ({query: q, params: p}) => {
-            return ({
-                pathParams: {learningLanguage: p.learningLanguage},
-                queryParams: {
-                    page: Number(q.page) || 1,
-                    pageSize: Number(q.pageSize) || 25,
-                    searchQuery: q.searchQuery ?? "",
-                    level: q.level ? (Array.isArray(q.level) ? q.level : [q.level]) : Object.values(constants.ALL_VOCAB_LEVELS)
-                }
-            });
-        },
+        props: ({query: q, params: p}) => ({
+            pathParams: {learningLanguage: p.learningLanguage},
+            queryParams: {
+                page: Number(q.page) || 1,
+                pageSize: Number(q.pageSize) || 25,
+                searchQuery: q.searchQuery ?? "",
+                level: q.level ? (Array.isArray(q.level) ? q.level : [q.level]) : Object.values(constants.ALL_VOCAB_LEVELS)
+            }
+        }),
     },
     {
         path: "/learn/:learningLanguage/lessons/:lessonId",
@@ -214,10 +212,9 @@ export const privateRoutes: RouteRecordRaw[] = [
         meta: {
             requiresEmailConfirmed: false,
             showFooter: true,
-            query: {
-                token: "string:"
-            }
+            queryParamsSchema: z.object({token: z.string().min(1).optional().catch(undefined)}),
         },
+        props: ({query: q}) => ({queryParams: {token: q.token}}),
     },
     {
         name: "confirm-email-sent",

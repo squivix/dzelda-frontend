@@ -32,7 +32,7 @@
 </template>
 <script lang="ts">
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
-import {useAuthStore} from "@/stores/backend/authStore.js";
+import {useUserStore} from "@/stores/backend/userStore.js";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export default {
@@ -67,12 +67,12 @@ export default {
   },
   setup() {
     return {
-      authStore: useAuthStore(),
+      authStore: useUserStore(),
       messageBarStore: useMessageBarStore()
     };
   },
   beforeRouteEnter() {
-    const authStore = useAuthStore();
+    const authStore = useUserStore();
     if (authStore.isAuthenticated)
       return {name: "explore"};
   }

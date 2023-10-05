@@ -22,8 +22,8 @@ export default {
       return await this.profileStore.fetchUserProfile();
     }
   },
-  created() {
-    this.profileStore = useUserStore()
+  setup() {
+    return {profileStore: useUserStore()}
   },
 }
 </script>

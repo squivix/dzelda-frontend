@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {useAuthStore} from "@/stores/backend/authStore.js";
+import {useUserStore} from "@/stores/backend/userStore.js";
 import {ApiClient, HttpResponse} from "dzelda-types";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 
@@ -23,7 +23,7 @@ export const useStore = defineStore("main", {
             async fetchCustom<T, E>(endpoint: (api: ApiClient<string>) => Promise<HttpResponse<T, E>>, options?: {
                 ignore401?: boolean
             }): Promise<HttpResponse<T, E>> {
-                const authStore = useAuthStore();
+                const authStore = useUserStore();
                 this.apiClient.setSecurityData(authStore.authToken);
                 const response = await endpoint(this.apiClient as ApiClient<string>);   //for some reason this.apiClient is any :/
                 if (response.status >= 500) {

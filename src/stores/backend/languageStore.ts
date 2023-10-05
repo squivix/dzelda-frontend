@@ -74,5 +74,8 @@ export const useLanguageStore = defineStore("language", {
                     [this.userLanguages[i], this.userLanguages[0]] = [this.userLanguages[0], this.userLanguages[i]];
             }
         },
+        clearUserData() {
+            this.userLanguages = null;
+        }
     }
 });

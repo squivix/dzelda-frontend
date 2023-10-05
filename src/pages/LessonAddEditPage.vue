@@ -55,7 +55,6 @@
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
-import {useUserStore} from "@/stores/backend/userStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseImage from "@/components/ui/BaseImage.vue";
@@ -165,7 +164,7 @@ export default {
       store: useStore(),
       courseStore: useCourseStore(),
       lessonStore: useLessonStore(),
-      profileStore: useUserStore(),
+      profileStore: useAuthStore(),
       assets: {lessonBlank: lessonBlank}
     }
   }

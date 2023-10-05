@@ -24,7 +24,6 @@
 import {defineComponent} from "vue";
 import BaseChangeableInput from "@/components/ui/BaseChangeableInput.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
-import {useAuthStore} from "@/stores/backend/authStore.js";
 
 export default defineComponent({
   name: "ResendConfirmEmailPage",
@@ -42,10 +41,14 @@ export default defineComponent({
       this.$router.push({name: "confirm-email-sent"});
     }
   },
+  beforeRouteEnter() {
+    const userStore = useUserStore();
+    if (userStore.userAccount!.isEmailConfirmed)
+      return {name: "home"};
+  },
   setup() {
     return {
       userStore: useUserStore(),
-      authStore: useAuthStore()
     };
   }
 });

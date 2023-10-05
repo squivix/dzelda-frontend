@@ -48,8 +48,6 @@ import {useCourseStore} from "@/stores/backend/courseStore.js";
 import PaginationControls from "@/components/ui/PaginationControls.vue";
 import LibrarySearchFilter from "@/components/page/reader/LibrarySearchFilter.vue";
 import {defineComponent, PropType} from "vue";
-import type {WatchStopHandle} from "vue"
-import {useQuery} from "@oarepo/vue-query-synchronizer";
 import {CourseSchema, LessonSchema} from "dzelda-types";
 
 enum MyLibraryPageTab {

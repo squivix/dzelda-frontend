@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import {useAuthStore} from "@/stores/backend/authStore.js";
+import {useUserStore} from "@/stores/backend/userStore.js";
 
 export default defineComponent({
   name: "DeleteAccountSection",
@@ -22,7 +22,7 @@ export default defineComponent({
   },
   setup() {
     return {
-      authStore: useAuthStore()
+      authStore: useUserStore()
     };
   }
 });

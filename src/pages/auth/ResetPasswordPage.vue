@@ -38,8 +38,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
-import {useAuthStore} from "@/stores/backend/authStore.js";
-import {useQuery} from "@oarepo/vue-query-synchronizer";
+import {useUserStore} from "@/stores/backend/userStore.js";
 
 export default defineComponent({
   name: "ResetPasswordPage",
@@ -88,7 +87,7 @@ export default defineComponent({
   },
   setup() {
     return {
-      authStore: useAuthStore(),
+      authStore: useUserStore(),
     }
   },
   async mounted() {

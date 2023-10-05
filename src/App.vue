@@ -1,8 +1,8 @@
 <template>
   <div id="the-root">
-    <template v-if="userStore.userAccount||!authStore.isAuthenticated">
+    <template v-if="userStore.userAccount||!userStore.isAuthenticated">
       <component
-          :is="authStore.isAuthenticated ? 'auth-header' : 'guest-header'">
+          :is="userStore.isAuthenticated ? 'auth-header' : 'guest-header'">
       </component>
 
       <the-message-bar-queue class="message-bar-queue"></the-message-bar-queue>
@@ -23,9 +23,8 @@
 import GuestHeader from "@/components/layout/GuestHeader.vue";
 import TheFooter from "@/components/layout/TheFooter.vue";
 import AuthHeader from "@/components/layout/AuthHeader.vue";
-import {useAuthStore} from "@/stores/backend/authStore.js";
-import TheMessageBarQueue from "@/components/layout/TheMessageBarQueue.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
+import TheMessageBarQueue from "@/components/layout/TheMessageBarQueue.vue";
 
 
 export default {
@@ -37,7 +36,7 @@ export default {
     TheFooter,
   },
   setup() {
-    return {authStore: useAuthStore(), userStore: useUserStore()};
+    return {userStore: useUserStore()};
   }
 };
 </script>

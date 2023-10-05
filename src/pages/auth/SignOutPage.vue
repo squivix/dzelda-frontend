@@ -3,12 +3,12 @@
 </template>
 
 <script lang="ts">
-import {useAuthStore} from "@/stores/backend/authStore.js";
+import {useUserStore} from "@/stores/backend/userStore.js";
 
     export default {
         name: "SignOutPage",
         async created() {
-            const authStore = useAuthStore();
+          const authStore = useUserStore();
             await authStore.signOut();
             await this.$router.push({name: 'home'});
         },

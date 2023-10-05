@@ -9,9 +9,15 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
+import {useUserStore} from "@/stores/backend/userStore.js";
 
 export default defineComponent({
-  name: "ConfirmEmailSentPage"
+  name: "ConfirmEmailSentPage",
+  beforeRouteEnter() {
+    const userStore = useUserStore();
+    if (userStore.userAccount!.isEmailConfirmed)
+      return {name: "home"};
+  },
 });
 </script>
 

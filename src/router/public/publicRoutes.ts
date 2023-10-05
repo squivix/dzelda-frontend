@@ -24,7 +24,7 @@ export const publicRoutes: Readonly<RouteRecordRaw[]> = [
     {
         path: "/reset-password", component: ResetPasswordPage, name: "reset-password",
         meta: {
-            queryParamsSchema: z.object({token: z.string().min(1).optional().catch(undefined)}),
+            queryParamsSchema: z.object({token: z.string().min(1).optional().catch(undefined)})
         },
         props: ({query: q}) => ({queryParams: {token: q.token ?? ""}}),
     },

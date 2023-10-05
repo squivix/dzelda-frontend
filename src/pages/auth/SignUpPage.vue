@@ -21,7 +21,7 @@
   </base-card>
 </template>
 <script lang="ts">
-import {useAuthStore} from "@/stores/backend/authStore.js";
+import {useUserStore} from "@/stores/backend/userStore.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 export default {
@@ -48,7 +48,7 @@ export default {
   },
   setup() {
     return {
-      authStore: useAuthStore(),
+      authStore: useUserStore(),
       languageStore: useLanguageStore()
     };
   }

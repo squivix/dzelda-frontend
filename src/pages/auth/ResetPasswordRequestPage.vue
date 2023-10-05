@@ -30,7 +30,7 @@
 </template>
 <script lang="ts">
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
-import {useAuthStore} from "@/stores/backend/authStore.js";
+import {useUserStore} from "@/stores/backend/userStore.js";
 
 export default {
   name: "ResetPasswordRequestPage",
@@ -53,7 +53,7 @@ export default {
   },
   setup() {
     return {
-      authStore: useAuthStore()
+      authStore: useUserStore()
     };
   }
 }

@@ -7,36 +7,34 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent, PropType} from "vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
-import {useAuthStore} from "@/stores/backend/authStore.js";
-import {useQuery} from "@oarepo/vue-query-synchronizer";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export default defineComponent({
   name: "ConfirmEmailPage",
   components: {},
+  props: {queryParams: {type: Object as PropType<{ token: string }>, required: true}},
   data() {
     return {};
   },
-
-  beforeRouteEnter(to) {
+  beforeRouteEnter() {
     const userStore = useUserStore();
-    // if (userStore.userAccount!.isEmailConfirmed && !to.query.token)
-    //   return {name: "explore"};
+    if (userStore.userAccount!.isEmailConfirmed)
+      return {name: "home"};
   },
   async mounted() {
-    if (typeof this.queryParams.token !== "string" || this.queryParams.token === "") {
-      this.queryParams.token = undefined;
+    if (!this.queryParams.token) {
       this.messageBarStore.addMessage({type: MessageType.ERROR, text: "No email token provided"});
       this.$router.push({name: "home"});
     } else {
-      const isConfirmSuccessful = await this.authStore.confirmEmail({token: this.queryParams.token});
+      const isConfirmSuccessful = await this.userStore.confirmEmail({token: this.queryParams.token});
       if (isConfirmSuccessful) {
         await this.userStore.fetchUserAccount(true);
         this.messageBarStore.addMessage({type: MessageType.SUCCESS, text: "Email confirmed"});
         this.$router.push({name: "explore"});
       } else {
+        this.$router.push({query: {...this.$route.query, token: undefined}})
         this.queryParams.token = undefined;
         this.messageBarStore.addMessage({type: MessageType.ERROR, text: "Email reset token is invalid or expired"});
       }
@@ -45,9 +43,7 @@ export default defineComponent({
   setup() {
     return {
       userStore: useUserStore(),
-      authStore: useAuthStore(),
-      messageBarStore: useMessageBarStore(),
-      queryParams: useQuery()
+      messageBarStore: useMessageBarStore()
     };
   }
 });
