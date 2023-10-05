@@ -1,8 +1,7 @@
 import ExplorePage from "@/pages/ExplorePage.vue";
 import MyLibraryPage from "@/pages/MyLibraryPage.vue";
 import MyVocabPage from "@/pages/MyVocabPage.vue";
-import {ArrayDatatype} from "@oarepo/vue-query-synchronizer";
-import constants from "@/constants.js";
+import constants, {ALL_VOCAB_LEVELS} from "@/constants.js";
 import LessonReaderPage from "@/pages/LessonReaderPage.vue";
 import LessonAddEditPage from "@/pages/LessonAddEditPage.vue";
 import CourseAddPage from "@/pages/CourseAddPage.vue";
@@ -22,7 +21,8 @@ import ConfirmEmailSentPage from "@/pages/auth/ConfirmEmailSentPage.vue";
 import ResendConfirmEmailPage from "@/pages/auth/ResendConfirmEmailPage.vue";
 import RecentLessonsTab from "@/components/page/explore/RecentLessonsTab.vue";
 import PopularLessonsTab from "@/components/page/explore/PopularLessonsTab.vue";
-import {z} from "zod";
+import {EnumLike, z} from "zod";
+import {VocabLevelSchema} from "dzelda-types";
 
 export const privateRoutes: RouteRecordRaw[] = [
     {
@@ -103,18 +103,27 @@ export const privateRoutes: RouteRecordRaw[] = [
         component: MyVocabPage,
         name: "language-my-vocab",
         meta: {
-
-
-            query: {
-                page: "int:1",
-                maxPerPage: "int:25",
-                searchQuery: "string:",
-                level: {
-                    datatype: ArrayDatatype,
-                    defaultValue: Object.values(constants.SAVED_VOCAB_LEVELS),
-                },
-            }
-        }
+            queryParamsSchema: z.object({
+                page: z.string().regex(/^[1-9][0-9]*$/).optional().catch(undefined),
+                pageSize: z.string().regex(/5|10|25|50|100|150|200/).optional().catch(undefined),
+                searchQuery: z.string().optional().default("").optional().catch(undefined),
+                level: z.union([
+                    z.string().regex(new RegExp(Object.values(constants.ALL_VOCAB_LEVELS).map(String).join("|"))),
+                    z.array(z.string().regex(new RegExp(Object.values(constants.ALL_VOCAB_LEVELS).map(String).join("|"))))
+                ]).optional().catch(undefined)
+            }),
+        },
+        props: ({query: q, params: p}) => {
+            return ({
+                pathParams: {learningLanguage: p.learningLanguage},
+                queryParams: {
+                    page: Number(q.page) || 1,
+                    pageSize: Number(q.pageSize) || 25,
+                    searchQuery: q.searchQuery ?? "",
+                    level: q.level ? (Array.isArray(q.level) ? q.level : [q.level]) : Object.values(constants.ALL_VOCAB_LEVELS)
+                }
+            });
+        },
     },
     {
         path: "/learn/:learningLanguage/lessons/:lessonId",

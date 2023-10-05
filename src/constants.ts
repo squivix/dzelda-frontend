@@ -23,11 +23,9 @@ const NEW_VOCABS_PERCENTAGE_THRESH = {
     hard: 100,
 };
 
-const GUIDED_USERNAME = "language_learner";
 
 export default Object.freeze({
     ALL_VOCAB_LEVELS,
     SAVED_VOCAB_LEVELS,
     NEW_VOCABS_PERCENTAGE_THRESH,
-    GUIDED_USERNAME
 });

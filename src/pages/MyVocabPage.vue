@@ -3,8 +3,7 @@
     <template v-slot:content>
       <section class="main-content" @click="clearSelectedVocab">
         <div class="bar-table-wrapper">
-          <vocab-search-filter>
-          </vocab-search-filter>
+          <vocab-search-filter :initial-levels="queryParams.level" :initial-search-query="queryParams.searchQuery"/>
 
           <p v-if="loadingVocabs">Loading...</p>
           <vocab-table v-else-if="vocabs&&vocabs.length>0"
@@ -30,11 +29,11 @@
           </the-meaning-panel>
         </div>
       </section>
-      <!--suppress JSUnresolvedVariable-->
       <pagination-controls v-if="pageCount"
                            :page-count="pageCount"
-                           per-page-select-label="Vocabs Per Page"
-                           :per-page-select-options="PER_PAGE_SELECT_OPTIONS">
+                           :page="queryParams.page"
+                           :page-size="queryParams.pageSize"
+                           per-page-select-label="Vocabs Per Page">
       </pagination-controls>
     </template>
   </base-card>
@@ -47,84 +46,80 @@ import VocabTable from "@/components/page/my-vocabs/VocabTable.vue";
 import VocabSearchFilter from "@/components/page/my-vocabs/VocabSearchFilter.vue";
 import PaginationControls from "@/components/ui/PaginationControls.vue";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
-import {useQuery} from "@oarepo/vue-query-synchronizer";
-import {WatchStopHandle} from "vue";
+import {PropType} from "vue";
+import {LearnerVocabSchema, VocabLevelSchema, MeaningSchema} from "dzelda-types";
 
 export default {
   name: "MyVocabPage",
   components: {VocabSearchFilter, VocabTable, PaginationControls, TheMeaningPanel},
+  props: {
+    pathParams: {
+      type: Object as PropType<{
+        learningLanguage: string
+      }>,
+      required: true
+    },
+    queryParams: {
+      type: Object as PropType<{ page: number, pageSize: number, searchQuery: string, level: VocabLevelSchema[] }>,
+      required: true,
+    },
+  },
   data() {
     return {
       loadingVocabs: true,
-      vocabs: null,
-      selectedVocab: null,
+      vocabs: null as LearnerVocabSchema[] | null,
+      selectedVocab: null as LearnerVocabSchema | null,
       pageCount: 0,
-      PER_PAGE_SELECT_OPTIONS: [25, 50, 100, 150, 200]
     };
   },
-  watch: {},
+  watch: {
+    queryParams() {
+      this.fetchVocabsPage();
+    }
+  },
   async mounted() {
     await this.fetchVocabsPage();
-    // TODO fix bug where going from ?page=2 then pressing back button does not trigger this refetch
-    this.unwatchesOnRouteExit = [
-      this.$watch("queryParams.page", this.fetchVocabsPage),
-      this.$watch("queryParams.maxPerPage", this.refetchPage),
-      this.$watch("queryParams.searchQuery", this.refetchPage),
-      this.$watch("queryParams.level", this.refetchPage)
-    ];
   },
   methods: {
     async fetchVocabsPage() {
       this.clearSelectedVocab();
       this.loadingVocabs = true;
       const response = await this.vocabStore.fetchUserVocabs({
-        languageCode: this.$route.params.learningLanguage,
-        searchQuery: this.queryParams.searchQuery,
+        languageCode: this.pathParams.learningLanguage,
+        searchQuery: this.queryParams.searchQuery || undefined,
         level: [...this.queryParams.level],
         page: this.queryParams.page,
-        vocabsPerPage: this.queryParams.maxPerPage,
+        pageSize: this.queryParams.pageSize,
       });
-      this.vocabs = response.data;
-      this.pageCount = response.pageCount;
+      this.vocabs = response.data!;
+      this.pageCount = response.pageCount!;
       this.loadingVocabs = false;
     },
-    refetchPage() {
-      if (!this.queryParams.page || this.queryParams.page === 1)
-        this.fetchVocabsPage();
-      else
-        this.queryParams.page = 1;
-    },
-    setSelectedVocab(vocab) {
+    setSelectedVocab(vocab: LearnerVocabSchema) {
       this.selectedVocab = vocab;
     },
     clearSelectedVocab() {
       this.selectedVocab = null;
     },
-    onMeaningAdded(vocab, meaning) {
+    onMeaningAdded(vocab: LearnerVocabSchema, meaning: MeaningSchema) {
       vocab.learnerMeanings.push(meaning);
     },
-    onVocabLevelSet(vocab, level) {
+    onVocabLevelSet(vocab: LearnerVocabSchema, level: VocabLevelSchema) {
       if (level === constants.ALL_VOCAB_LEVELS.IGNORED) {
-        this.vocabs.splice(this.vocabs.findIndex((v) => v.text === vocab.text), 1);
+        this.vocabs!.splice(this.vocabs!.findIndex((v) => v.text === vocab.text), 1);
         this.clearSelectedVocab();
       } else
         vocab.level = level;
     },
-    onMeaningDeleted(vocab, meaning) {
+    onMeaningDeleted(vocab: LearnerVocabSchema, meaning: MeaningSchema) {
       const index = vocab.learnerMeanings.findIndex((v) => v.text === meaning.text);
       if (index !== -1)
         vocab.learnerMeanings.splice(index, 1);
     }
   },
-  beforeRouteLeave() {
-    while (this.unwatchesOnRouteExit.length)
-      (this.unwatchesOnRouteExit.pop())!();
-  },
   setup() {
     return {
       vocabStore: useVocabStore(),
-      queryParams: useQuery(),
-      unwatchesOnRouteExit: [] as WatchStopHandle[]
     }
   }
 };

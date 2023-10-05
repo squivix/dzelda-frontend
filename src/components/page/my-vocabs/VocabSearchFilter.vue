@@ -1,6 +1,8 @@
 <template>
   <search-filter
-      @onFiltersApplied="onFiltersApplied">
+      :initial-search-query="initialSearchQuery"
+      @onFiltersApplied="onFiltersApplied"
+  >
     <template v-slot:filters>
       <label class="filter-label">Level</label>
       <fieldset class="filter-levels">
@@ -47,25 +49,35 @@
 </template>
 
 <script lang="ts">
-import constants from "@/constants.ts";
+import constants from "@/constants";
 import SearchFilter from "@/components/ui/SearchFilter.vue";
+import {PropType} from "vue";
+import {VocabLevelSchema} from "dzelda-types";
 
 export default {
   name: "VocabSearchFilter",
   components: {SearchFilter},
-  props: {}, data() {
+  props: {
+    initialLevels: {type: Array as PropType<VocabLevelSchema[]>, required: true},
+    initialSearchQuery: {type: String, required: true}
+  },
+  data() {
     return {
       filters: {
-        levels: this.$query.level
+        levels: this.initialLevels
       },
-      constants
     };
   },
   methods: {
     onFiltersApplied() {
-      this.$query.level = this.filters.levels;
+      this.$router.push({query: {...this.$route.query, level: this.filters.levels, page: undefined}})
     },
   },
+  setup() {
+    return {
+      constants
+    }
+  }
 };
 </script>
 
