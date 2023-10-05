@@ -1,16 +1,16 @@
 <template>
-    <h1>Signing out...</h1>
+  <h1>Signing out...</h1>
 </template>
 
 <script lang="ts">
 import {useUserStore} from "@/stores/backend/userStore.js";
 
-    export default {
-        name: "SignOutPage",
-        async created() {
-          const authStore = useUserStore();
-            await authStore.signOut();
-            await this.$router.push({name: 'home'});
-        },
-    };
+export default {
+  name: "SignOutPage",
+  async created() {
+    const userStore = useUserStore();
+    await userStore.signOut();
+    await this.$router.push({name: 'home'});
+  },
+};
 </script>

@@ -15,14 +15,14 @@ export default defineComponent({
     async submitDeleteAccount() {
       //TODO replace with modal dialog
       if (confirm("Are you sure you want to delete your account?\n\n(This action cannot be undone)")) {
-        await this.authStore.deleteAccount();
+        await this.userStore.deleteAccount();
 
       }
     }
   },
   setup() {
     return {
-      authStore: useUserStore()
+      userStore: useUserStore()
     };
   }
 });

@@ -40,10 +40,9 @@ export const useUserStore = defineStore("auth", {
                 username: body.username,
                 password: body.password
             }));
-            // handle your 4XX errors as you may
-            //...
-
-            return response.data;
+            if (!response.ok)
+                return response.error;
+            return;
         },
         async login(body: {
             username: string,

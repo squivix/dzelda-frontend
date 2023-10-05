@@ -22,7 +22,6 @@
           Forgot Password?
         </router-link>
         <p class="error-message">{{ errorMessage }}</p>
-
         <button id="login-button" class="primary-button" type="submit">
           Login
         </button>
@@ -50,7 +49,7 @@ export default {
   methods: {
     async submitForm() {
       this.errorMessage = "";
-      const error = await this.authStore.login({
+      const error = await this.userStore.login({
         username: this.username,
         password: this.password,
       });
@@ -67,14 +66,14 @@ export default {
   },
   setup() {
     return {
-      authStore: useUserStore(),
+      userStore: useUserStore(),
       messageBarStore: useMessageBarStore()
     };
   },
   beforeRouteEnter() {
-    const authStore = useUserStore();
-    if (authStore.isAuthenticated)
-      return {name: "explore"};
+    const userStore = useUserStore();
+    if (userStore.isAuthenticated)
+      return {name: "home"};
   }
 };
 </script>

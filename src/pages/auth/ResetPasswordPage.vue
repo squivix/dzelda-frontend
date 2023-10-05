@@ -65,7 +65,7 @@ export default defineComponent({
         this.$router.push({name: "reset-password-request"})
         return
       }
-      const isValid = await this.authStore.validatePasswordResetToken({token: this.queryParams.token});
+      const isValid = await this.userStore.validatePasswordResetToken({token: this.queryParams.token});
       if (!isValid)
         this.tokenIsValid = false;
     },
@@ -78,7 +78,7 @@ export default defineComponent({
         this.errorMessage = "Passwords do not match";
         return
       }
-      this.resetSuccessful = await this.authStore.resetPassword({
+      this.resetSuccessful = await this.userStore.resetPassword({
         token: this.queryParams.token,
         newPassword: this.newPassword,
       })
@@ -87,7 +87,7 @@ export default defineComponent({
   },
   setup() {
     return {
-      authStore: useUserStore(),
+      userStore: useUserStore(),
     }
   },
   async mounted() {

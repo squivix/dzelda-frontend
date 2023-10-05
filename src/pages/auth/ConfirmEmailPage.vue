@@ -1,8 +1,13 @@
 <template>
-  <p class="submit-message">
+  <p class="submit-message" v-if="!tokenInvalid">
     Confirming Email...
     <br><br>
     You will be redirected shortly.
+  </p>
+  <p v-else>
+    Confirmation link is invalid or expired
+    <br><br>
+    <router-link :to="{name:'resend-confirm-email'}">Click here to send another</router-link>
   </p>
 </template>
 
@@ -16,7 +21,7 @@ export default defineComponent({
   components: {},
   props: {queryParams: {type: Object as PropType<{ token: string }>, required: true}},
   data() {
-    return {};
+    return {tokenInvalid: false};
   },
   beforeRouteEnter() {
     const userStore = useUserStore();
@@ -26,17 +31,16 @@ export default defineComponent({
   async mounted() {
     if (!this.queryParams.token) {
       this.messageBarStore.addMessage({type: MessageType.ERROR, text: "No email token provided"});
-      this.$router.push({name: "home"});
+      this.$router.push({name: "confirm-email-sent"});
     } else {
       const isConfirmSuccessful = await this.userStore.confirmEmail({token: this.queryParams.token});
       if (isConfirmSuccessful) {
         await this.userStore.fetchUserAccount(true);
         this.messageBarStore.addMessage({type: MessageType.SUCCESS, text: "Email confirmed"});
-        this.$router.push({name: "explore"});
+        this.$router.push({name: "home"});
       } else {
-        this.$router.push({query: {...this.$route.query, token: undefined}})
-        this.queryParams.token = undefined;
-        this.messageBarStore.addMessage({type: MessageType.ERROR, text: "Email reset token is invalid or expired"});
+        this.messageBarStore.addMessage({type: MessageType.ERROR, text: "Email confirm token is invalid or expired"});
+        this.tokenInvalid = true;
       }
     }
   },
@@ -50,11 +54,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
-#confirm-email-card {
-  width: 80vw;
-  max-width: 800px;
-  display: block;
-  margin: auto;
+p {
+  text-align: center;
 }
 </style>

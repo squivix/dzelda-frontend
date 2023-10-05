@@ -3,16 +3,19 @@
     <template v-slot:content>
       <form @submit.prevent="submitForm">
         <label for="email">Email</label>
-        <input id="email" type="email" required v-model="email"/>
+        <input id="email" type="email" required v-model="email"
+               :class="{'error-input': errorFields.includes('email')}"/>
         <label for="username">Username</label>
-        <input id="username" type="text" required v-model="username"/>
+        <input id="username" type="text" required v-model="username"
+               :class="{'error-input': errorFields.includes('username')}"/>
         <label for="new-password">Password</label>
         <base-password-input
             id="new-password"
+            :class="{'error-input': errorFields.includes('password')}"
             autocomplete="new-password"
             :required="true"
-            v-model="password"
-        ></base-password-input>
+            v-model="password"/>
+        <p class="error-message">{{ errorMessage }}</p>
         <button id="signup-button" class="primary-button" type="submit">
           Sign Up
         </button>
@@ -23,6 +26,7 @@
 <script lang="ts">
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
+import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export default {
   name: "SignUpPage",
@@ -31,25 +35,33 @@ export default {
       email: "",
       username: "",
       password: "",
+      errorFields: [] as Array<"email" | "username" | "password">,
+      errorMessage: "",
     };
   },
 
   methods: {
     async submitForm() {
-      await this.authStore.signUp({
+      const error = await this.userStore.signUp({
         username: this.username,
         email: this.email,
         password: this.password
       });
-      this.$router.push({name: "confirm-email"});
+      if (error) {
+        this.messageBarStore.addMessage({type: MessageType.ERROR, text: error.message!})
+        this.errorMessage = error.message;
+        this.errorFields = Object.keys(error.fields!) as Array<"email" | "username" | "password">;
+      } else
+        this.$router.push({name: "confirm-email"});
     },
   },
   mounted() {
   },
   setup() {
     return {
-      authStore: useUserStore(),
-      languageStore: useLanguageStore()
+      userStore: useUserStore(),
+      languageStore: useLanguageStore(),
+      messageBarStore: useMessageBarStore()
     };
   }
 };
@@ -74,8 +86,7 @@ label {
   font-size: 1.2rem;
 }
 
-input,
-.base-password-input,
+input, .base-password-div,
 select {
   margin-bottom: 1.5rem;
 }

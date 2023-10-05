@@ -37,7 +37,7 @@ export default defineComponent({
   },
   methods: {
     async submitResendForm() {
-      await this.authStore.requestEmailConfirmToken({email: this.emailChanged ? this.email : undefined});
+      await this.userStore.requestEmailConfirmToken({email: this.emailChanged ? this.email : undefined});
       this.$router.push({name: "confirm-email-sent"});
     }
   },

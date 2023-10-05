@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     async submitForm() {
-      await this.authStore.requestPasswordReset({
+      await this.userStore.requestPasswordReset({
         username: this.username,
         email: this.email
       });
@@ -53,7 +53,7 @@ export default {
   },
   setup() {
     return {
-      authStore: useUserStore()
+      userStore: useUserStore()
     };
   }
 }

@@ -9,8 +9,8 @@ export default {
   name: "HomePage",
   components: {},
   beforeRouteEnter() {
-    const authStore = useUserStore();
-    if (authStore.isAuthenticated)
+    const userStore = useUserStore();
+    if (userStore.isAuthenticated)
       return {name: "explore"};
   }
 };

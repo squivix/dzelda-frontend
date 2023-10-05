@@ -60,6 +60,7 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {LessonSchema} from "dzelda-types";
 import lessonBlank from "@/assets/images/lesson-blank.svg"
+import {useUserStore} from "@/stores/backend/userStore.js";
 
 export default {
   name: "LessonAddEditPage",
@@ -102,7 +103,7 @@ export default {
     async fetchEditableCourses() {
       const response = await this.courseStore.fetchCourses({
         languageCode: this.$route.params.learningLanguage,
-        addedBy: (await this.profileStore.fetchUserAccount()).username,
+        addedBy: (await this.userStore.fetchUserAccount()).username,
       });
       this.editableCourses = response.data;
     },
@@ -164,7 +165,7 @@ export default {
       store: useStore(),
       courseStore: useCourseStore(),
       lessonStore: useLessonStore(),
-      profileStore: useAuthStore(),
+      userStore: useUserStore(),
       assets: {lessonBlank: lessonBlank}
     }
   }
