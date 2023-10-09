@@ -21,8 +21,7 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import {defineComponent, PropType} from "vue";
 import PopularLessonsTab from "@/components/page/explore/PopularLessonsTab.vue";
 import RecentLessonsTab from "@/components/page/explore/RecentLessonsTab.vue";
-import PaginationControls from "@/components/ui/PaginationControls.vue";
-import BaseTabBar from "@/components/ui/BaseTabBar.vue";
+import PaginationControls from "@/components/shared/PaginationControls.vue";
 
 enum ExplorePageTab {
   RECENT = "Recent",
@@ -31,7 +30,7 @@ enum ExplorePageTab {
 
 export default defineComponent({
   name: "ExplorePage",
-  components: {BaseTabBar, PaginationControls, RecentLessonsTab, PopularLessonsTab, BaseCard},
+  components: {PaginationControls, RecentLessonsTab, PopularLessonsTab, BaseCard},
   props: {
     queryParams: {
       type: Object as PropType<{ page: number, pageSize: number }>,

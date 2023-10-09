@@ -21,8 +21,7 @@
 import BaseCard from "@/components/ui/BaseCard.vue";
 import LessonListItem from "@/components/shared/content/LessonListItem.vue";
 import CourseCard from "@/components/shared/content/CourseCard.vue";
-import PaginationControls from "@/components/ui/PaginationControls.vue";
-import LibrarySearchFilter from "@/components/page/reader/LibrarySearchFilter.vue";
+import PaginationControls from "@/components/shared/PaginationControls.vue";
 import {defineComponent, PropType} from "vue";
 
 
@@ -34,7 +33,7 @@ enum MyLibraryPageTab {
 
 export default defineComponent({
   name: "MyLibraryPage",
-  components: {LessonListItem, PaginationControls, LibrarySearchFilter, CourseCard, BaseCard},
+  components: {LessonListItem, PaginationControls, CourseCard, BaseCard},
   props: {
     pathParams: {
       type: Object as PropType<{
@@ -88,7 +87,6 @@ export default defineComponent({
 .tab-labels {
   display: flex;
   flex-direction: row;
-  margin-bottom: 1rem;
 }
 
 .tab-labels .tab-label {
@@ -118,14 +116,5 @@ export default defineComponent({
   row-gap: 1rem;
 }
 
-.course-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
-  grid-row-gap: 1rem;
-  grid-column-gap: 0.75rem;
-}
 
-.course-list li {
-  max-width: 400px;
-}
 </style>

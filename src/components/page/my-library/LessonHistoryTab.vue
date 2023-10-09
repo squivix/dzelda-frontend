@@ -12,7 +12,7 @@ import {defineComponent, PropType} from "vue";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {LessonSchema} from "dzelda-types";
 import LessonListItem from "@/components/shared/content/LessonListItem.vue";
-import PaginationControls from "@/components/ui/PaginationControls.vue";
+import PaginationControls from "@/components/shared/PaginationControls.vue";
 
 export default defineComponent({
   name: "LessonHistoryTab",

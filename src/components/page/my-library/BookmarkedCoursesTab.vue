@@ -1,8 +1,17 @@
 <template>
-  <div>
+  <div class="tab-wrapper">
+    <div class="top-bar">
+      <search-bar :initial-search-query="queryParams.searchQuery"/>
+      <button class="filter-button" @click.stop="toggleFilters" :disabled="filtersAnimating">
+        <font-awesome-icon icon="filter"/>
+      </button>
+    </div>
+
+    <course-filters :is-shown="isFiltersShown"/>
+
     <div v-if="loading">
     </div>
-    <ol class="course-list">
+    <ol class="course-grid">
       <li v-for="course in courses" :key="course.id">
         <course-card
             :course="course">
@@ -23,12 +32,15 @@
 import {defineComponent, PropType} from "vue";
 import {CourseSchema} from "dzelda-types";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
-import PaginationControls from "@/components/ui/PaginationControls.vue";
+import PaginationControls from "@/components/shared/PaginationControls.vue";
 import CourseCard from "@/components/shared/content/CourseCard.vue";
+import SearchBar from "@/components/ui/SearchBar.vue";
+import BaseCollapsableDiv from "@/components/ui/BaseCollapsableDiv.vue";
+import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
 
 export default defineComponent({
   name: "BookmarkedCoursesTab",
-  components: {CourseCard, PaginationControls},
+  components: {CourseFilters, BaseCollapsableDiv, SearchBar, CourseCard, PaginationControls},
   props: {
     pathParams: {
       type: Object as PropType<{
@@ -50,6 +62,7 @@ export default defineComponent({
       courses: null as CourseSchema[] | null,
       pageCount: 0,
       loading: true,
+      isFiltersShown: false
     };
   },
   watch: {
@@ -72,6 +85,9 @@ export default defineComponent({
       this.courses = response.data;
       this.pageCount = response.pageCount;
       this.loading = false;
+    },
+    toggleFilters() {
+      this.isFiltersShown = !this.isFiltersShown;
     }
   },
   setup() {
@@ -83,5 +99,36 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.tab-wrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
 
+.top-bar {
+  display: flex;
+  justify-content: flex-end;
+  column-gap: 0.25rem;
+}
+
+.filter-button {
+  border: 2px solid grey;
+  border-radius: 5px;
+  height: 30px;
+}
+
+.filter-button:hover {
+  cursor: pointer;
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
+  grid-row-gap: 1rem;
+  grid-column-gap: 0.75rem;
+}
+
+.course-grid li {
+  max-width: 300px;
+}
 </style>

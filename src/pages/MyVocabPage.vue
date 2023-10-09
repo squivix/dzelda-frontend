@@ -3,7 +3,7 @@
     <template v-slot:content>
       <section class="main-content" @click="clearSelectedVocab">
         <div class="bar-table-wrapper">
-          <vocab-search-filter :initial-levels="queryParams.level" :initial-search-query="queryParams.searchQuery"/>
+          <!--          <vocab-search-filter :initial-levels="queryParams.level" :initial-search-query="queryParams.searchQuery"/>-->
 
           <p v-if="loadingVocabs">Loading...</p>
           <vocab-table v-else-if="vocabs&&vocabs.length>0"
@@ -44,7 +44,7 @@ import constants from "@/constants";
 import TheMeaningPanel from "@/components/shared/vocab-panel/TheMeaningPanel.vue";
 import VocabTable from "@/components/page/my-vocabs/VocabTable.vue";
 import VocabSearchFilter from "@/components/page/my-vocabs/VocabSearchFilter.vue";
-import PaginationControls from "@/components/ui/PaginationControls.vue";
+import PaginationControls from "@/components/shared/PaginationControls.vue";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {PropType} from "vue";
 import {LearnerVocabSchema, VocabLevelSchema, MeaningSchema} from "dzelda-types";

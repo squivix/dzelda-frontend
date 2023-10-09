@@ -23,7 +23,7 @@
 import {defineComponent, PropType} from "vue";
 import {CourseSchema} from "dzelda-types";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
-import PaginationControls from "@/components/ui/PaginationControls.vue";
+import PaginationControls from "@/components/shared/PaginationControls.vue";
 import CourseCard from "@/components/shared/content/CourseCard.vue";
 
 export default defineComponent({

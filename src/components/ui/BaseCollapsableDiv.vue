@@ -2,7 +2,7 @@
   <div :class="{'collapsable-div':true, 'is-hidden':!isShown}"
        @transitionstart="onTransitionChanged(true)"
        @transitionend="onTransitionChanged(false)">
-    <slot class="contents">
+    <slot>
 
     </slot>
   </div>
@@ -31,15 +31,12 @@ export default defineComponent({
 .collapsable-div {
   max-height: 1000px;
   overflow: hidden;
-  padding: 1rem;
-  transition-property: max-height, padding;
+  transition-property: max-height;
   transition-duration: 0.5s;
 }
 
 .collapsable-div.is-hidden {
   max-height: 0;
-  padding-top: 0;
-  padding-bottom: 0;
 }
 
 .collapsable-div.is-hidden :deep(*) {

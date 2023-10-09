@@ -50,13 +50,12 @@
 
 <script lang="ts">
 import constants from "@/constants";
-import SearchFilter from "@/components/ui/SearchFilter.vue";
 import {PropType} from "vue";
 import {VocabLevelSchema} from "dzelda-types";
 
 export default {
   name: "VocabSearchFilter",
-  components: {SearchFilter},
+  components: {},
   props: {
     initialLevels: {type: Array as PropType<VocabLevelSchema[]>, required: true},
     initialSearchQuery: {type: String, required: true}

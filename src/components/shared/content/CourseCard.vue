@@ -81,7 +81,7 @@ export default {
 .base-card {
   margin: 0;
   height: 100%;
-  padding: 2vh 2rem;
+  padding: 20px 2vw;
 }
 
 .course-article {
