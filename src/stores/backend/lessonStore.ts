@@ -18,7 +18,7 @@ export const useLessonStore = defineStore("lesson", {
             return response.data;
         },
         async fetchLessonsInHistory(queryParams: {
-            languageCode?: string, sortBy?: "title" | "createdDate" | "pastViewersCount", searchQuery?: string, pageSize?: number, page?: number
+            languageCode?: string, sortBy?: "title" | "createdDate" | "pastViewersCount", sortOrder?: "asc" | "desc", searchQuery?: string, pageSize?: number, page?: number
         } = {}) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.getUsersMeLessonsHistory(queryParams));

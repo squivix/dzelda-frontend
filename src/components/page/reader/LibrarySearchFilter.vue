@@ -1,22 +1,26 @@
 <template>
-  <search-filter :initial-search-query="searchQuery">
-    <template v-slot:filters>
+  <base-collapsable-div :is-shown="isShown" @on-transition-changed="()=>isTransitioning=!isTransitioning">
+    <div>
 
-    </template>
-  </search-filter>
+    </div>
+  </base-collapsable-div>
 </template>
 
 <script lang="ts">
 import SearchFilter from "@/components/ui/SearchFilter.vue";
+import BaseCollapsableDiv from "@/components/ui/BaseCollapsableDiv.vue";
 
 export default {
   name: "LibrarySearchFilter",
-  components: {SearchFilter},
+  components: {BaseCollapsableDiv, SearchFilter},
   props: {
     searchQuery: {
       type: String,
       required: true
     }
+  },
+  data() {
+    return {isShown: true, isTransitioning: false};
   },
   methods: {}
 };

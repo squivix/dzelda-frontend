@@ -1,7 +1,7 @@
 import ExplorePage from "@/pages/ExplorePage.vue";
 import MyLibraryPage from "@/pages/MyLibraryPage.vue";
 import MyVocabPage from "@/pages/MyVocabPage.vue";
-import constants, {ALL_VOCAB_LEVELS} from "@/constants.js";
+import constants from "@/constants.js";
 import LessonReaderPage from "@/pages/LessonReaderPage.vue";
 import LessonAddEditPage from "@/pages/LessonAddEditPage.vue";
 import CourseAddPage from "@/pages/CourseAddPage.vue";
@@ -21,8 +21,10 @@ import ConfirmEmailSentPage from "@/pages/auth/ConfirmEmailSentPage.vue";
 import ResendConfirmEmailPage from "@/pages/auth/ResendConfirmEmailPage.vue";
 import RecentLessonsTab from "@/components/page/explore/RecentLessonsTab.vue";
 import PopularLessonsTab from "@/components/page/explore/PopularLessonsTab.vue";
-import {EnumLike, z} from "zod";
-import {VocabLevelSchema} from "dzelda-types";
+import {z} from "zod";
+import BookmarkedCoursesTab from "@/components/page/my-library/BookmarkedCoursesTab.vue";
+import ImportedCoursesTab from "@/components/page/my-library/ImportedCoursesTab.vue";
+import LessonHistoryTab from "@/components/page/my-library/LessonHistoryTab.vue";
 
 export const privateRoutes: RouteRecordRaw[] = [
     {
@@ -75,6 +77,7 @@ export const privateRoutes: RouteRecordRaw[] = [
     {
         path: "/learn/:learningLanguage/my-library",
         component: MyLibraryPage,
+        redirect: {name: "my-library-bookmarked-courses"},
         name: "language-my-library",
         meta: {
             queryParamsSchema: z.object({
@@ -91,7 +94,25 @@ export const privateRoutes: RouteRecordRaw[] = [
                 searchQuery: q.searchQuery ?? "",
             }
         }),
+        children: [
+            {
+                path: "/learn/:learningLanguage/my-library/bookmarks",
+                component: BookmarkedCoursesTab,
+                name: "my-library-bookmarked-courses",
+            },
+            {
+                path: "/learn/:learningLanguage/my-library/imported",
+                component: ImportedCoursesTab,
+                name: "my-library-imported-courses",
+            },
+            {
+                path: "/learn/:learningLanguage/my-library/history",
+                component: LessonHistoryTab,
+                name: "my-library-lesson-history",
+            }
+        ]
     },
+
     {
         path: "/my-vocab",
         component: MyVocabPage,

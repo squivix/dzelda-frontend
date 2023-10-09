@@ -1,42 +1,36 @@
 <template>
   <base-card title="My Library" class="library-base-card">
     <template v-slot:content>
-      <div class="top-bar">
-        <div class="search-filter-wrapper">
-          <library-search-filter :search-query="queryParams.searchQuery"
-          />
-        </div>
-      </div>
-      <div v-if="loading">
-
-      </div>
-
-      <ol class="course-list">
-        <li v-for="course in courses" :key="course.id">
-          <course-card
-              :course="course">
-          </course-card>
+      <ul class="tab-labels">
+        <li :class="['tab-label', { 'current-tab': currentTab === MyLibraryPageTab.BOOKMARKS }]">
+          <router-link :to="{name:'my-library-bookmarked-courses'}" class="inv-link">Bookmarks</router-link>
         </li>
-      </ol>
-      <pagination-controls
-          v-if="pageCount"
-          :page-count="pageCount"
-          :page="queryParams.page"
-          :page-size="queryParams.pageSize"
-          :per-page-select-label="`Courses Per Page`">
-      </pagination-controls>
+        <li :class="['tab-label', { 'current-tab': currentTab === MyLibraryPageTab.IMPORTED }]">
+          <router-link :to="{name:'my-library-imported-courses'}" class="inv-link">Imported</router-link>
+        </li>
+        <li :class="['tab-label', { 'current-tab': currentTab === MyLibraryPageTab.HISTORY }]">
+          <router-link :to="{name:'my-library-lesson-history'}" class="inv-link">History</router-link>
+        </li>
+      </ul>
+      <router-view :queryParams="queryParams" :pathParams="pathParams"/>
     </template>
   </base-card>
 </template>
+
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import LessonListItem from "@/components/shared/content/LessonListItem.vue";
 import CourseCard from "@/components/shared/content/CourseCard.vue";
-import {useCourseStore} from "@/stores/backend/courseStore.js";
 import PaginationControls from "@/components/ui/PaginationControls.vue";
 import LibrarySearchFilter from "@/components/page/reader/LibrarySearchFilter.vue";
 import {defineComponent, PropType} from "vue";
-import {CourseSchema, LessonSchema} from "dzelda-types";
+
+
+enum MyLibraryPageTab {
+  BOOKMARKS = "Bookmarks",
+  IMPORTED = "Imported",
+  HISTORY = "History",
+}
 
 export default defineComponent({
   name: "MyLibraryPage",
@@ -57,39 +51,21 @@ export default defineComponent({
       required: true
     },
   },
-  data() {
-    return {
-      lessons: null as LessonSchema[] | null,
-      courses: null as CourseSchema[] | null,
-      pageCount: 0,
-      loading: true,
-    };
-  },
-  watch: {
-    queryParams() {
-      this.fetchSavedCourses();
-    }
-  },
-  async mounted() {
-    await this.fetchSavedCourses();
-  },
-  methods: {
-    async fetchSavedCourses() {
-      this.loading = true;
-      const response = await this.courseStore.fetchUserBookmarkedCourses({
-        languageCode: this.$route.params.learningLanguage as string,
-        page: this.queryParams.page,
-        pageSize: this.queryParams.pageSize,
-        searchQuery: this.queryParams.searchQuery || undefined,
-      });
-      this.courses = response.data;
-      this.pageCount = response.pageCount;
-      this.loading = false;
+  computed: {
+    currentTab() {
+      if (this.$route.name == "my-library-bookmarked-courses")
+        return MyLibraryPageTab.BOOKMARKS;
+      else if (this.$route.name == "my-library-imported-courses")
+        return MyLibraryPageTab.IMPORTED;
+      else if (this.$route.name == "my-library-lesson-history")
+        return MyLibraryPageTab.HISTORY;
+      else
+        return null;
     }
   },
   setup() {
     return {
-      courseStore: useCourseStore(),
+      MyLibraryPageTab
     };
   }
 });
@@ -107,6 +83,25 @@ export default defineComponent({
 
 .library-base-card:deep(header) {
   margin-bottom: 1rem;
+}
+
+.tab-labels {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1rem;
+}
+
+.tab-labels .tab-label {
+  font-size: 1.2rem;
+  padding: 1rem 1rem;
+}
+
+.tab-labels .tab-label:hover {
+  cursor: pointer;
+}
+
+.tab-labels .tab-label.current-tab {
+  border-bottom: 3px solid var(--secondary-color);
 }
 
 .top-bar {

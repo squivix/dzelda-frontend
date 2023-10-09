@@ -10,7 +10,7 @@
           <router-link :to="{name:'explore-popular-lessons'}" class="inv-link">Popular</router-link>
         </li>
       </ul>
-      <router-view :queryParams="queryParams"></router-view>
+      <router-view :queryParams="queryParams"/>
     </template>
 
   </base-card>

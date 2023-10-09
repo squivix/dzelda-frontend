@@ -7,10 +7,13 @@ export const useCourseStore = defineStore("course", {
             languageCode?: string,
             addedBy?: string,
             sortBy?: "title" | "createdDate" | "avgPastViewersCountPerLesson",
-            sortOrder?: "asc" | "desc"
-        } = {}) {
+            sortOrder?: "asc" | "desc",
+            searchQuery?: string,
+            page?: number,
+            pageSize?: number,
+        } = {}, {secure = false}: { secure?: boolean } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.courses.getCourses(queryParams));
+            const response = await store.fetchCustom((api) => api.courses.getCourses(queryParams, {secure: secure}));
 
             // handle your 4XX errors as you may
             //...
