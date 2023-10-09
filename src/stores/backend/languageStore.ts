@@ -40,14 +40,14 @@ export const useLanguageStore = defineStore("language", {
         },
         async addLanguageToUser(body: { languageCode: string }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.postUsersUsernameLanguages("me", {
+            const response = await store.fetchCustom((api) => api.users.postUsersUsernameLanguages({
                 languageCode: body.languageCode
             }));
             return response.data;
         },
         async deleteLanguageFromUser(pathParams: { languageCode: string }) {
             const store = useStore();
-            await store.fetchCustom((api) => api.users.deleteUsersUsernameLanguagesLanguageCode("me", pathParams.languageCode));
+            await store.fetchCustom((api) => api.users.deleteUsersMeLanguagesLanguageCode(pathParams.languageCode));
             // handle your 4XX errors as you may
             //...
             if (this.userLanguages) {
@@ -58,7 +58,7 @@ export const useLanguageStore = defineStore("language", {
         },
         async updateLanguageLastOpened(pathParams: { languageCode: string }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.patchUsersUsernameLanguagesLanguageCode("me", pathParams.languageCode, {lastOpened: "now"}));
+            const response = await store.fetchCustom((api) => api.users.patchUsersMeLanguagesLanguageCode(pathParams.languageCode, {lastOpened: "now"}));
             // handle your 4XX errors as you may
             //...
             this.setLastOpenedLanguage(pathParams.languageCode);

@@ -40,7 +40,7 @@ export default defineComponent({
         languageCode: this.$route.params.learningLanguage as string,
         page: this.queryParams.page,
         pageSize: this.queryParams.pageSize,
-        sortBy: "learnersCount",
+        sortBy: "pastViewersCount",
         sortOrder: "desc"
       });
       this.lessons = response.data!;

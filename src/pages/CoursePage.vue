@@ -1,6 +1,15 @@
 <template>
   <BaseCard v-if="!loading && course" :title="course.title" class="course-base-card">
-    <template v-slot:content>
+    <template v-slot:all>
+      <header>
+        <h1>{{ course.title }}</h1>
+        <button class="bookmark-button inv-button" @click="toggleCourseIsBookmarked">
+          <font-awesome-icon :icon="[course.isBookmarked?'fas':'far', 'bookmark']"
+                             :class="{'bookmarked':course!.isBookmarked}"/>
+        </button>
+      </header>
+      <p>{{ course.description }}</p>
+      <h2>Lessons</h2>
       <ol class="lesson-list">
         <li v-for="lesson in course.lessons" :key="lesson.id" class="lesson">
           <lesson-list-item :lesson="{...lesson, course}" :show-course="false">
@@ -17,10 +26,11 @@ import LessonListItem from "@/components/shared/content/LessonListItem.vue";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {CourseSchema} from "dzelda-types";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 export default {
   name: "CoursePage",
-  components: {LessonListItem, BaseCard},
+  components: {FontAwesomeIcon, LessonListItem, BaseCard},
   data() {
     return {
       course: null as CourseSchema | null,
@@ -36,28 +46,62 @@ export default {
     async fetchCourse() {
       this.course = await this.courseStore.fetchCourse({courseId: Number(this.$route.params.courseId as string)});
     },
+    async toggleCourseIsBookmarked() {
+      if (this.course!.isBookmarked)
+        await this.courseStore.removeCourseFromUserBookmarks({courseId: this.course!.id});
+      else
+        await this.courseStore.addCourseToUserBookmarks({courseId: this.course!.id});
+      this.course!.isBookmarked = !this.course!.isBookmarked;
+    },
   },
   setup() {
     return {
       courseStore: useCourseStore(),
       lessonStore: useLessonStore()
-    }
+    };
   }
-}
+};
 </script>
 
 <style scoped>
 .course-base-card {
   display: flex;
   flex-direction: column;
-  row-gap: 1.25rem;
+  row-gap: 1rem;
   justify-content: flex-start;
   align-items: stretch;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.bookmark-button:hover {
+  cursor: pointer;
+}
+
+.bookmark-button svg {
+  width: 20px;
+  height: 20px;
+  color: var(--primary-color)
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
 }
 
 .lesson-list {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
+}
+
+.bookmarked {
+
 }
 </style>

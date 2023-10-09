@@ -1,24 +1,29 @@
 import {library} from "@fortawesome/fontawesome-svg-core";
-import {faBookOpen, faEye, faPen} from "@fortawesome/free-solid-svg-icons";
-import {faEyeSlash} from "@fortawesome/free-solid-svg-icons";
-import {faCheck} from "@fortawesome/free-solid-svg-icons";
-import {faBan} from "@fortawesome/free-solid-svg-icons";
-import {faPlus} from "@fortawesome/free-solid-svg-icons";
-import {faX} from "@fortawesome/free-solid-svg-icons";
-import {faFilter} from "@fortawesome/free-solid-svg-icons";
-import {faFilterCircleXmark} from "@fortawesome/free-solid-svg-icons";
-import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
-import {faGripLines} from "@fortawesome/free-solid-svg-icons";
-import {faAngleLeft} from "@fortawesome/free-solid-svg-icons";
-import {faAngleRight} from "@fortawesome/free-solid-svg-icons";
-import {faChevronDown} from "@fortawesome/free-solid-svg-icons";
-import {faCirclePlus} from "@fortawesome/free-solid-svg-icons";
-import {faUser} from "@fortawesome/free-solid-svg-icons";
-import {faGear} from "@fortawesome/free-solid-svg-icons";
-import {faArrowRightFromBracket} from "@fortawesome/free-solid-svg-icons";
-import {faUpload} from "@fortawesome/free-solid-svg-icons";
-import {faEllipsisV} from "@fortawesome/free-solid-svg-icons";
-
+import {
+    faAngleLeft,
+    faAngleRight,
+    faArrowRightFromBracket,
+    faBan,
+    faBookmark,
+    faBookOpen,
+    faCheck,
+    faChevronDown,
+    faCirclePlus,
+    faEllipsisV,
+    faEye,
+    faEyeSlash,
+    faFilter,
+    faFilterCircleXmark,
+    faGear,
+    faGripLines,
+    faMagnifyingGlass,
+    faPen,
+    faPlus,
+    faUpload,
+    faUser,
+    faX
+} from "@fortawesome/free-solid-svg-icons";
+import {faBookmark as faBookmarkRegular} from "@fortawesome/free-regular-svg-icons";
 
 library.add(faEye);
 library.add(faEyeSlash);
@@ -41,3 +46,5 @@ library.add(faUpload);
 library.add(faEllipsisV);
 library.add(faPen);
 library.add(faBookOpen);
+library.add(faBookmark);
+library.add(faBookmarkRegular);

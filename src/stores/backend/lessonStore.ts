@@ -5,7 +5,7 @@ export const useLessonStore = defineStore("lesson", {
     actions: {
         async fetchLessons(queryParams: {
             languageCode?: string,
-            sortBy?: "title" | "createdDate" | "learnersCount",
+            sortBy?: "title" | "createdDate" | "pastViewersCount",
             sortOrder?: "asc" | "desc",
             pageSize?: number,
             page?: number
@@ -17,9 +17,11 @@ export const useLessonStore = defineStore("lesson", {
             //...
             return response.data;
         },
-        async fetchLibraryLessons(queryParams: { languageCode?: string, searchQuery?: string, pageSize?: number, page?: number } = {}) {
+        async fetchLessonsInHistory(queryParams: {
+            languageCode?: string, sortBy?: "title" | "createdDate" | "pastViewersCount", searchQuery?: string, pageSize?: number, page?: number
+        } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.getUsersUsernameLessons("me", queryParams));
+            const response = await store.fetchCustom((api) => api.users.getUsersMeLessonsHistory(queryParams));
 
             // handle your 4XX errors as you may
             //...
@@ -39,15 +41,13 @@ export const useLessonStore = defineStore("lesson", {
 
             // handle your 4XX errors as you may
             //...
-            const newLesson = response.data;
-            await this.addLessonToUser({lessonId: newLesson.id});
-            return newLesson;
+            return response.data;
         },
-        async addLessonToUser(body: { lessonId: number }) {
+        async addLessonToUserHistory(body: { lessonId: number }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.postUsersUsernameLessons("me", {
+            const response = await store.fetchCustom((api) => api.users.postUsersMeLessonsHistory({
                 lessonId: body.lessonId
-            }))
+            }));
 
             // handle your 4XX errors as you may
             //...
@@ -55,8 +55,8 @@ export const useLessonStore = defineStore("lesson", {
             return response.data;
         },
         async fetchLesson(pathParams: { lessonId: number }) {
-            const store = useStore()
-            const response = await store.fetchCustom((api) => api.lessons.getLessonsLessonId(pathParams.lessonId))
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.lessons.getLessonsLessonId(pathParams.lessonId));
 
             // handle your 4XX errors as you may
             //...
@@ -73,7 +73,7 @@ export const useLessonStore = defineStore("lesson", {
                 },
                 image: body.image,
                 audio: body.audio,
-            }))
+            }));
 
             // handle your 4XX errors as you may
             //...

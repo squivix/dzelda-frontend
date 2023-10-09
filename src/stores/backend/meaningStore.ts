@@ -9,7 +9,7 @@ export const useMeaningStore = defineStore("meaning", {
                 text: body.text,
                 vocabId: body.vocabId,
                 languageCode: body.languageCode
-            }))
+            }));
 
             // handle your 4XX errors as you may
             //...
@@ -18,9 +18,9 @@ export const useMeaningStore = defineStore("meaning", {
         },
         async addMeaningToUser(body: { meaningId: number }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.postUsersUsernameMeanings("me", {
+            const response = await store.fetchCustom((api) => api.users.postUsersMeMeanings({
                 meaningId: body.meaningId
-            }))
+            }));
             // handle your 4XX errors as you may
             //...
 
@@ -28,9 +28,9 @@ export const useMeaningStore = defineStore("meaning", {
         },
         async deleteMeaningFromUser(pathParams: { meaningId: number }) {
             const store = useStore();
-            await store.fetchCustom((api) => api.users.deleteUsersUsernameMeaningsMeaningId("me", pathParams.meaningId))
+            await store.fetchCustom((api) => api.users.deleteUsersMeMeaningsMeaningId(pathParams.meaningId));
             // handle your 4XX errors as you may
             //...
         },
     }
-})
+});

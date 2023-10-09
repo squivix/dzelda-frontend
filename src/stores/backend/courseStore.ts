@@ -6,25 +6,25 @@ export const useCourseStore = defineStore("course", {
         async fetchCourses(queryParams: {
             languageCode?: string,
             addedBy?: string,
-            sortBy?: "title" | "createdDate" | "learnersCount",
+            sortBy?: "title" | "createdDate" | "avgPastViewersCountPerLesson",
             sortOrder?: "asc" | "desc"
         } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.courses.getCourses(queryParams))
+            const response = await store.fetchCustom((api) => api.courses.getCourses(queryParams));
 
             // handle your 4XX errors as you may
             //...
 
             return response.data;
         },
-        async fetchLibraryCourses(queryParams: {
+        async fetchUserBookmarkedCourses(queryParams: {
             languageCode?: string,
             searchQuery?: string,
             pageSize?: number,
             page?: number
         } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.getUsersUsernameCourses("me", queryParams))
+            const response = await store.fetchCustom((api) => api.users.getUsersMeCoursesBookmarked(queryParams));
 
             // handle your 4XX errors as you may
             //...
@@ -46,7 +46,7 @@ export const useCourseStore = defineStore("course", {
                     isPublic: body.isPublic
                 },
                 image: body.image ?? ""
-            }))
+            }));
             // handle your 4XX errors as you may
             //...
             return response.data;
@@ -84,5 +84,15 @@ export const useCourseStore = defineStore("course", {
             //...
             return response.data;
         },
+        async addCourseToUserBookmarks(body: { courseId: number }) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.users.postUsersMeCoursesBookmarked({courseId: body.courseId}));
+            return response.data;
+        },
+        async removeCourseFromUserBookmarks(pathParams: { courseId: number }) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.users.deleteUsersMeCoursesBookmarkedCourseId(pathParams.courseId));
+            return response.data;
+        }
     }
 });

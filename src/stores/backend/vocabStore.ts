@@ -5,7 +5,7 @@ export const useVocabStore = defineStore("vocab", {
     actions: {
         async fetchUserVocabs(queryParams: { languageCode?: string, level?: (-1 | 0 | 1 | 2 | 3 | 4 | 5 | 6)[], searchQuery?: string, pageSize?: number, page?: number } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.getUsersUsernameVocabs("me", queryParams))
+            const response = await store.fetchCustom((api) => api.users.getUsersMeVocabs(queryParams));
 
             // handle your 4XX errors as you may
             //...
@@ -18,7 +18,7 @@ export const useVocabStore = defineStore("vocab", {
                 text: body.text,
                 languageCode: body.languageCode,
                 isPhrase: body.isPhrase
-            }))
+            }));
 
             // handle your 4XX errors as you may
             //...
@@ -27,7 +27,7 @@ export const useVocabStore = defineStore("vocab", {
         },
         async addVocabToUser(body: { vocabId: number }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.postUsersUsernameVocabs("me", {
+            const response = await store.fetchCustom((api) => api.users.postUsersMeVocabs({
                 vocabId: body.vocabId
             }));
 
@@ -38,7 +38,7 @@ export const useVocabStore = defineStore("vocab", {
         },
         async updateUserVocab(pathParams: { vocabId: number }, body: { level: (-1 | 0 | 1 | 2 | 3 | 4 | 5 | 6) }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.patchUsersUsernameVocabs("me", pathParams.vocabId, {
+            const response = await store.fetchCustom((api) => api.users.patchUsersMeVocabs(pathParams.vocabId, {
                 level: body.level
             }));
 
@@ -49,7 +49,7 @@ export const useVocabStore = defineStore("vocab", {
         },
         async fetchLessonVocabs(pathParams: { lessonId: number }, queryParams: {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.lessons.getLessonsLessonIdVocabs(pathParams.lessonId, queryParams))
+            const response = await store.fetchCustom((api) => api.lessons.getLessonsLessonIdVocabs(pathParams.lessonId, queryParams));
 
             // handle your 4XX errors as you may
             //...
@@ -57,4 +57,4 @@ export const useVocabStore = defineStore("vocab", {
             return response.data;
         }
     }
-})
+});
