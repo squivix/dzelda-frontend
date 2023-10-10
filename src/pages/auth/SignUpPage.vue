@@ -16,7 +16,7 @@
             :required="true"
             v-model="password"/>
         <p class="error-message">{{ errorMessage }}</p>
-        <button id="signup-button" class="primary-button" type="submit">
+        <button id="signup-button" class="primary-filled-button capsule-button" type="submit">
           Sign Up
         </button>
       </form>

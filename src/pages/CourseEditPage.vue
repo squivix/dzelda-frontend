@@ -58,7 +58,7 @@
             <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
             Public
           </label>
-          <button id="save-button" type="submit" class="primary-button">Save</button>
+          <button id="save-button" type="submit" class="primary-filled-button capsule-button">Save</button>
         </div>
       </form>
     </template>
@@ -71,7 +71,7 @@ import {VueDraggableNext} from "vue-draggable-next";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import courseBlank from "@/assets/images/course-blank.svg"
+import courseBlank from "@/assets/images/course-blank.svg";
 import {LessonSchema} from "dzelda-types";
 
 export default {

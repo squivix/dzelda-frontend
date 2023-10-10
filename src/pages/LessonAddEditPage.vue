@@ -42,7 +42,8 @@
 
           <div class="buttons-div">
             <button id="save-button" type="submit" class="button-hollow">Save</button>
-            <button id="save-and-open-button" type="submit" class="primary-button">Save & open</button>
+            <button id="save-and-open-button" type="submit" class="primary-filled-button capsule-button">Save & open
+            </button>
           </div>
         </div>
       </form>
@@ -59,7 +60,7 @@ import {useStore} from "@/stores/backend/rootStore.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {LessonSchema} from "dzelda-types";
-import lessonBlank from "@/assets/images/lesson-blank.svg"
+import lessonBlank from "@/assets/images/lesson-blank.svg";
 import {useUserStore} from "@/stores/backend/userStore.js";
 
 export default {
@@ -167,7 +168,7 @@ export default {
       lessonStore: useLessonStore(),
       userStore: useUserStore(),
       assets: {lessonBlank: lessonBlank}
-    }
+    };
   }
 };
 

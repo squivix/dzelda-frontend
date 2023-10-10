@@ -22,7 +22,7 @@
         </base-password-input>
         <p class="error-message">{{ errorMessage }}</p>
 
-        <button id="reset-password-button" class="primary-button" type="submit">
+        <button id="reset-password-button" class="primary-filled-button capsule-button" type="submit">
           Reset Password
         </button>
 

@@ -8,7 +8,7 @@
                                :clear-on-change="true" @on-change="()=>emailChanged=true"
                                :class="{'error-input': errorFields.includes('newEmail')}">
         </base-changeable-input>
-        <button type="submit" v-if="emailChanged" class="change-email-button primary-button">
+        <button type="submit" v-if="emailChanged" class="change-email-button primary-filled-button capsule-button">
           Change Email
         </button>
       </div>

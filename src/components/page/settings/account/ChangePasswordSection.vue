@@ -34,7 +34,7 @@
           autocomplete="new-password"
           required>
       </base-password-input>
-      <button class="change-password-button primary-button">Change Password</button>
+      <button class="change-password-button primary-filled-button capsule-button">Change Password</button>
     </form>
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
   </section>

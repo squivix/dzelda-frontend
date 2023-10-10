@@ -22,7 +22,7 @@
           Forgot Password?
         </router-link>
         <p class="error-message">{{ errorMessage }}</p>
-        <button id="login-button" class="primary-button" type="submit">
+        <button id="login-button" class="primary-filled-button capsule-button" type="submit">
           Login
         </button>
       </form>

@@ -2,7 +2,7 @@
   <div class="tab-wrapper">
     <div class="top-bar">
       <search-bar :initial-search-query="queryParams.searchQuery"/>
-      <button class="filter-button" @click.stop="toggleFilters" :disabled="filtersAnimating">
+      <button class="filter-button" @click.stop="toggleFilters" >
         <font-awesome-icon icon="filter"/>
       </button>
     </div>
@@ -35,12 +35,11 @@ import {useCourseStore} from "@/stores/backend/courseStore.js";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
 import CourseCard from "@/components/shared/content/CourseCard.vue";
 import SearchBar from "@/components/ui/SearchBar.vue";
-import BaseCollapsableDiv from "@/components/ui/BaseCollapsableDiv.vue";
 import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
 
 export default defineComponent({
   name: "BookmarkedCoursesTab",
-  components: {CourseFilters, BaseCollapsableDiv, SearchBar, CourseCard, PaginationControls},
+  components: {CourseFilters, SearchBar, CourseCard, PaginationControls},
   props: {
     pathParams: {
       type: Object as PropType<{

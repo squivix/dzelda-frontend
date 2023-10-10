@@ -28,7 +28,7 @@
             <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
             Public
           </label>
-          <button id="save-button" type="submit" class="primary-button">Save</button>
+          <button id="save-button" type="submit" class="primary-filled-button capsule-button">Save</button>
         </div>
       </form>
 

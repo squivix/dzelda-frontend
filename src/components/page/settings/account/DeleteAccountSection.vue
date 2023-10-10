@@ -1,7 +1,9 @@
 <template>
   <section>
     <h3>Delete Account</h3>
-    <button class="delete-account-button primary-button" @click="submitDeleteAccount">Delete Account</button>
+    <button class="delete-account-button primary-filled-button capsule-button" @click="submitDeleteAccount">Delete
+      Account
+    </button>
   </section>
 </template>
 
@@ -31,6 +33,7 @@ export default defineComponent({
 <style scoped>
 .delete-account-button {
   background-color: #CA0B00;
+  border-color: #CA0B00;
   align-self: flex-start;
 }
 </style>

@@ -17,6 +17,15 @@ const SAVED_VOCAB_LEVELS = {
     LEARNED: 5,
 };
 
+export const LANGUAGE_LEVELS = {
+    BEGINNER_1: "beginner1",
+    BEGINNER_2: "beginner2",
+    INTERMEDIATE_1: "intermediate1",
+    INTERMEDIATE_2: "intermediate2",
+    ADVANCED_1: "advanced1",
+    ADVANCED_2: "advanced2",
+};
+
 const NEW_VOCABS_PERCENTAGE_THRESH = {
     easy: 15,
     medium: 50,
@@ -27,5 +36,6 @@ const NEW_VOCABS_PERCENTAGE_THRESH = {
 export default Object.freeze({
     ALL_VOCAB_LEVELS,
     SAVED_VOCAB_LEVELS,
+    LANGUAGE_LEVELS,
     NEW_VOCABS_PERCENTAGE_THRESH,
 });

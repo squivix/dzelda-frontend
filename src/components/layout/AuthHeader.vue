@@ -100,7 +100,7 @@
 
     <div v-else>
       <router-link :to="{ name: 'sign-out' }">
-        <button class="button-hollow link">Sign Out</button>
+        <button class="hollow-button capsule-button link">Sign Out</button>
       </router-link>
     </div>
   </header>

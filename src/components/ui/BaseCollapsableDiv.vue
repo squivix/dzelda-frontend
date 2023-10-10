@@ -29,13 +29,16 @@ export default defineComponent({
 <style scoped>
 
 .collapsable-div {
-  max-height: 1000px;
+  max-height: 300px;
   overflow: hidden;
-  transition-property: max-height;
+  padding: 5px;
+  transition-property: max-height, padding;
   transition-duration: 0.5s;
 }
 
 .collapsable-div.is-hidden {
+  padding-top:0;
+  padding-bottom:0;
   max-height: 0;
 }
 

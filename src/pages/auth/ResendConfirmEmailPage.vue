@@ -11,7 +11,7 @@
                                @onChange="()=>emailChanged=true">
         </base-changeable-input>
 
-        <button id="confirm-email-button" class="primary-button" type="submit">
+        <button id="confirm-email-button" class="primary-filled-button capsule-button" type="submit">
           Resend Confirmation Email
         </button>
 
