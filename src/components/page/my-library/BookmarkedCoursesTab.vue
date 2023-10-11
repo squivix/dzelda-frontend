@@ -2,12 +2,14 @@
   <div class="tab-wrapper">
     <div class="top-bar">
       <search-bar :initial-search-query="queryParams.searchQuery"/>
-      <button class="filter-button" @click.stop="toggleFilters" >
+      <button class="filter-button" @click.stop="toggleFilters">
         <font-awesome-icon icon="filter"/>
       </button>
     </div>
 
-    <course-filters :is-shown="isFiltersShown"/>
+    <course-filters :is-shown="isFiltersShown"
+                    @on-filters-cleared="() => isFiltersShown=false"
+                    @on-filters-applied="() => isFiltersShown=false"/>
 
     <div v-if="loading">
     </div>
@@ -51,7 +53,8 @@ export default defineComponent({
       type: Object as PropType<{
         page: number,
         pageSize: number,
-        searchQuery: string
+        searchQuery: string,
+        level: string[]
       }>,
       required: true
     },

@@ -1,4 +1,4 @@
-import {NavigationGuardWithThis, RouteMeta, RouteRecordRaw} from "vue-router";
+import {NavigationGuardWithThis, RouteLocationNormalized, RouteMeta, RouteRecordRaw} from "vue-router";
 import {EnumLike} from "zod";
 
 export function setDefaultRouteMeta(routes: RouteRecordRaw[], defaultMeta: RouteMeta) {
@@ -33,3 +33,5 @@ export function queryParamsEqual(object1: Record<string, any>, object2: Record<s
     }
     return true;
 }
+
+export const routeToProps = ({query: q, params: p}: RouteLocationNormalized) => ({pathParams: p, queryParams: q});

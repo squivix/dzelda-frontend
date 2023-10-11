@@ -1,5 +1,4 @@
-import {LocationQueryValue} from "vue-router";
-import {ZodObject, ZodSchema} from "zod";
+import {QueryParamDef} from "@/router/queryParams.js";
 
 export {};
 
@@ -8,6 +7,6 @@ declare module "vue-router" {
         requiresAuth?: boolean;
         requiresEmailConfirmed?: boolean;
         showFooter?: boolean;
-        queryParamsSchema?: ZodObject;
+        queryParams?: { [key: string]: QueryParamDef };
     }
 }

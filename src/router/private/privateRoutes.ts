@@ -1,7 +1,6 @@
 import ExplorePage from "@/pages/ExplorePage.vue";
 import MyLibraryPage from "@/pages/MyLibraryPage.vue";
 import MyVocabPage from "@/pages/MyVocabPage.vue";
-import constants from "@/constants.js";
 import LessonReaderPage from "@/pages/LessonReaderPage.vue";
 import LessonAddEditPage from "@/pages/LessonAddEditPage.vue";
 import CourseAddPage from "@/pages/CourseAddPage.vue";
@@ -16,15 +15,16 @@ import NotificationsTab from "@/components/page/settings/NotificationsTab.vue";
 import SignOutPage from "@/pages/auth/SignOutPage.vue";
 import {RouteRecordRaw} from "vue-router";
 import ConfirmEmailPage from "@/pages/auth/ConfirmEmailPage.vue";
-import {setDefaultRouteMeta} from "@/router/routerUtils.js";
+import {routeToProps, setDefaultRouteMeta} from "@/router/routerUtils.js";
 import ConfirmEmailSentPage from "@/pages/auth/ConfirmEmailSentPage.vue";
 import ResendConfirmEmailPage from "@/pages/auth/ResendConfirmEmailPage.vue";
 import RecentLessonsTab from "@/components/page/explore/RecentLessonsTab.vue";
 import PopularLessonsTab from "@/components/page/explore/PopularLessonsTab.vue";
-import {z} from "zod";
 import BookmarkedCoursesTab from "@/components/page/my-library/BookmarkedCoursesTab.vue";
 import ImportedCoursesTab from "@/components/page/my-library/ImportedCoursesTab.vue";
 import LessonHistoryTab from "@/components/page/my-library/LessonHistoryTab.vue";
+import * as queryParams from "@/router/queryParams.js";
+import {courseFiltersQueryParams, lessonFiltersQueryParams, paginationQueryParams, vocabFiltersQueryParams} from "@/router/queryParams.js";
 
 export const privateRoutes: RouteRecordRaw[] = [
     {
@@ -42,19 +42,12 @@ export const privateRoutes: RouteRecordRaw[] = [
         component: ExplorePage,
         redirect: {name: "explore-recent-lessons"},
         meta: {
-            queryParamsSchema: z.object({
-                page: z.string().regex(/^[1-9][0-9]*$/).optional().catch(undefined),
-                pageSize: z.string().regex(/5|10|25|50|100|150|200/).optional().catch(undefined),
-                searchQuery: z.string().optional().default("").optional().catch(undefined),
-            }),
-        },
-        props: ({query: q}) => ({
             queryParams: {
-                page: Number(q.page) || 1,
-                pageSize: Number(q.pageSize) || 25,
-                searchQuery: q.searchQuery ?? "",
+                ...paginationQueryParams,
+                ...lessonFiltersQueryParams,
+                searchQuery: queryParams.searchQuery
             }
-        }),
+        },
         children: [
             {
                 path: "/learn/:learningLanguage/explore/lessons/recent",
@@ -79,36 +72,45 @@ export const privateRoutes: RouteRecordRaw[] = [
         component: MyLibraryPage,
         redirect: {name: "my-library-bookmarked-courses"},
         name: "language-my-library",
-        meta: {
-            queryParamsSchema: z.object({
-                page: z.string().regex(/^[1-9][0-9]*$/).optional().catch(undefined),
-                pageSize: z.string().regex(/5|10|25|50|100|150|200/).optional().catch(undefined),
-                searchQuery: z.string().optional().default("").optional().catch(undefined),
-            }),
-        },
-        props: ({query: q, params: p}) => ({
-            pathParams: {learningLanguage: p.learningLanguage},
-            queryParams: {
-                page: Number(q.page) || 1,
-                pageSize: Number(q.pageSize) || 25,
-                searchQuery: q.searchQuery ?? "",
-            }
-        }),
         children: [
             {
                 path: "/learn/:learningLanguage/my-library/bookmarks",
                 component: BookmarkedCoursesTab,
                 name: "my-library-bookmarked-courses",
+                meta: {
+                    queryParams: {
+                        ...paginationQueryParams([5, 10, 25, 50, 100]),
+                        ...courseFiltersQueryParams,
+                        searchQuery: queryParams.searchQuery
+                    }
+                },
+                props: routeToProps,
             },
             {
                 path: "/learn/:learningLanguage/my-library/imported",
                 component: ImportedCoursesTab,
                 name: "my-library-imported-courses",
+                meta: {
+                    queryParams: {
+                        ...paginationQueryParams([5, 10, 25, 50, 100]),
+                        ...courseFiltersQueryParams,
+                        searchQuery: queryParams.searchQuery
+                    }
+                },
+                props: routeToProps,
             },
             {
                 path: "/learn/:learningLanguage/my-library/history",
                 component: LessonHistoryTab,
                 name: "my-library-lesson-history",
+                meta: {
+                    queryParams: {
+                        ...paginationQueryParams([5, 10, 25, 50, 100]),
+                        ...lessonFiltersQueryParams,
+                        searchQuery: queryParams.searchQuery
+                    }
+                },
+                props: routeToProps,
             }
         ]
     },
@@ -124,25 +126,13 @@ export const privateRoutes: RouteRecordRaw[] = [
         component: MyVocabPage,
         name: "language-my-vocab",
         meta: {
-            queryParamsSchema: z.object({
-                page: z.string().regex(/^[1-9][0-9]*$/).optional().catch(undefined),
-                pageSize: z.string().regex(/5|10|25|50|100|150|200/).optional().catch(undefined),
-                searchQuery: z.string().optional().default("").optional().catch(undefined),
-                level: z.union([
-                    z.string().regex(new RegExp(Object.values(constants.ALL_VOCAB_LEVELS).map(String).join("|"))),
-                    z.array(z.string().regex(new RegExp(Object.values(constants.ALL_VOCAB_LEVELS).map(String).join("|"))))
-                ]).optional().catch(undefined)
-            }),
-        },
-        props: ({query: q, params: p}) => ({
-            pathParams: {learningLanguage: p.learningLanguage},
             queryParams: {
-                page: Number(q.page) || 1,
-                pageSize: Number(q.pageSize) || 25,
-                searchQuery: q.searchQuery ?? "",
-                level: q.level ? (Array.isArray(q.level) ? q.level : [q.level]) : Object.values(constants.ALL_VOCAB_LEVELS)
+                ...paginationQueryParams([5, 10, 25, 50, 100, 150, 200]),
+                ...vocabFiltersQueryParams,
+                searchQuery: queryParams.searchQuery
             }
-        }),
+        },
+        props: routeToProps,
     },
     {
         path: "/learn/:learningLanguage/lessons/:lessonId",
@@ -233,9 +223,9 @@ export const privateRoutes: RouteRecordRaw[] = [
         meta: {
             requiresEmailConfirmed: false,
             showFooter: true,
-            queryParamsSchema: z.object({token: z.string().min(1).optional().catch(undefined)}),
+            queryParams: {token: queryParams.token}
         },
-        props: ({query: q}) => ({queryParams: {token: q.token}}),
+        props: routeToProps,
     },
     {
         name: "confirm-email-sent",

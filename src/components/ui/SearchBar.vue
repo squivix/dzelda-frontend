@@ -13,7 +13,7 @@ import {defineComponent} from 'vue'
 export default defineComponent({
   name: "SearchBar",
   emits: ["onSearchSubmitted"],
-  props: {initialSearchQuery: {type: String, required: true}},
+  props: {initialSearchQuery: {type: String, required: false, default: ""}},
   data() {
     return {
       searchQuery: this.initialSearchQuery,

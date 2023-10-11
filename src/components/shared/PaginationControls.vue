@@ -27,11 +27,13 @@ export default {
   props: {
     page: {
       type: Number,
-      required: true,
+      required: false,
+      default: 1
     },
     pageSize: {
       type: Number,
-      required: true,
+      required: false,
+      default: 5,
     },
     perPageSelectOptions: {
       type: Array,
@@ -50,23 +52,13 @@ export default {
       required: true,
     },
   },
-  watch: {
-    page() {
-      this.$emit("onPaginationChanged");
-    },
-    pageSize() {
-      if (this.page != 1)
-        this.$router.push({query: {...this.$route.query, page: undefined}});
-      else
-        this.$emit("onPaginationChanged");
-    }
-  },
   methods: {
     setPageSize(pageSize: string) {
-      this.$router.push({query: {...this.$route.query, pageSize: pageSize}});
+      console.log(this.$route.query)
+      this.$router.push({query: {...this.$route.query, pageSize, page: undefined}});
     },
     goToPage(page: string) {
-      this.$router.push({query: {...this.$route.query, page: page}});
+      this.$router.push({query: {...this.$route.query, page}});
     },
   }
 };

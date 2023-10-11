@@ -12,7 +12,7 @@
           <router-link :to="{name:'my-library-lesson-history'}" class="inv-link">History</router-link>
         </li>
       </ul>
-      <router-view :queryParams="queryParams" :pathParams="pathParams"/>
+      <router-view/>
     </template>
   </base-card>
 </template>
@@ -21,8 +21,7 @@
 import BaseCard from "@/components/ui/BaseCard.vue";
 import LessonListItem from "@/components/shared/content/LessonListItem.vue";
 import CourseCard from "@/components/shared/content/CourseCard.vue";
-import PaginationControls from "@/components/shared/PaginationControls.vue";
-import {defineComponent, PropType} from "vue";
+import {defineComponent} from "vue";
 
 
 enum MyLibraryPageTab {
@@ -33,23 +32,7 @@ enum MyLibraryPageTab {
 
 export default defineComponent({
   name: "MyLibraryPage",
-  components: {LessonListItem, PaginationControls, CourseCard, BaseCard},
-  props: {
-    pathParams: {
-      type: Object as PropType<{
-        learningLanguage: string
-      }>,
-      required: true
-    },
-    queryParams: {
-      type: Object as PropType<{
-        page: number,
-        pageSize: number,
-        searchQuery: string
-      }>,
-      required: true
-    },
-  },
+  components: {LessonListItem, CourseCard, BaseCard},
   computed: {
     currentTab() {
       if (this.$route.name == "my-library-bookmarked-courses")

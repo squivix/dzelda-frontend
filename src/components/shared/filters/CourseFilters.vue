@@ -2,7 +2,7 @@
   <base-collapsable-div :is-shown="isShown">
     <base-filters-card class="card">
       <h4>Filters</h4>
-      <form @submit.prevent="applyFilters" @reset="resetFilters">
+      <form @submit.prevent="applyFilters" @reset="clearFilters">
         <div class="filters-wrapper">
           <h5 class="filter-label">Level</h5>
           <fieldset class="filter-levels">
@@ -70,6 +70,7 @@ import constants from "@/constants.js";
 export default defineComponent({
   name: "CourseFilters",
   components: {BaseFiltersCard, BaseCollapsableDiv},
+  emits: ["onFiltersApplied", "onFiltersCleared"],
   props: {isShown: {type: Boolean, required: true}},
   data() {
     return {
@@ -87,9 +88,9 @@ export default defineComponent({
           page: undefined
         }
       });
+      this.$emit("onFiltersApplied");
     },
-    resetFilters() {
-      console.log("Helooo");
+    clearFilters() {
       this.levels = [];
       this.addedBy = "";
       this.$router.push({
@@ -100,6 +101,7 @@ export default defineComponent({
           page: undefined
         }
       });
+      this.$emit("onFiltersCleared");
     }
   },
   setup() {
@@ -130,7 +132,7 @@ form {
 .filters-wrapper {
   display: flex;
   flex-direction: column;
-  row-gap: 0.25rem;
+  row-gap: 0.5rem;
   align-items: flex-start;
 }
 
@@ -156,6 +158,7 @@ form {
 }
 
 .buttons-wrapper button {
-  padding: 10px 20px;
+  padding: 5px 20px;
+  font-size: 0.9rem;
 }
 </style>
