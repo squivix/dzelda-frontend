@@ -1,5 +1,6 @@
 <template>
-  <div class="tab-wrapper">
+  <LoadingScreen v-if="loading"/>
+  <div class="tab-wrapper" v-else>
     <div class="top-bar">
       <search-bar :initial-search-query="queryParams.searchQuery"/>
       <button class="filter-button" @click.stop="toggleFilters">
@@ -11,9 +12,6 @@
                     :exclude="{addedBy:true}"
                     @on-filters-cleared="() => isFiltersShown=false"
                     @on-filters-applied="() => isFiltersShown=false"/>
-
-    <div v-if="loading">
-    </div>
     <ol class="course-grid">
       <li v-for="course in courses" :key="course.id">
         <course-card
@@ -39,10 +37,11 @@ import PaginationControls from "@/components/shared/PaginationControls.vue";
 import CourseCard from "@/components/shared/content/CourseCard.vue";
 import SearchBar from "@/components/ui/SearchBar.vue";
 import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
+import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 
 export default defineComponent({
   name: "ImportedCoursesTab",
-  components: {CourseFilters, SearchBar, CourseCard, PaginationControls},
+  components: {LoadingScreen, CourseFilters, SearchBar, LoadingScreen, CourseCard, PaginationControls},
   props: {
     pathParams: {
       type: Object as PropType<{
@@ -129,7 +128,7 @@ export default defineComponent({
 
 .course-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
   grid-row-gap: 1rem;
   grid-column-gap: 0.75rem;
 }

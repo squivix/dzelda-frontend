@@ -237,7 +237,7 @@ nav > ul > li:hover {
   display: grid;
   width: 15vw;
   max-width: 250px;
-  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
 }
 
 :deep(.language-add-button) {

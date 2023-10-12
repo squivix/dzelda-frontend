@@ -112,7 +112,7 @@ a:hover {
 }
 
 h4 {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   max-lines: 2;
   color: black;
   /*3 lines max*/

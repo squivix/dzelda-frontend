@@ -1,5 +1,6 @@
 <template>
-  <div class="tab-wrapper">
+  <LoadingScreen v-if="loading"/>
+  <div class="tab-wrapper" v-else>
     <ul v-if="lessons" class="lessons-list">
       <lesson-list-item v-for="lesson in lessons" :key="lesson.id" :lesson="lesson"/>
     </ul>
@@ -14,14 +15,16 @@ import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {LessonSchema} from "dzelda-types";
 import LessonListItem from "@/components/shared/content/LessonListItem.vue";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
+import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 
 export default defineComponent({
   name: "RecentLessonsTab",
-  components: {PaginationControls, LessonListItem},
+  components: {LoadingScreen, PaginationControls, LessonListItem},
   data() {
     return {
       lessons: [] as LessonSchema[],
       pageCount: 0,
+      loading: false,
     };
   },
   props: {
@@ -37,6 +40,7 @@ export default defineComponent({
   },
   methods: {
     async fetchLessons() {
+      this.loading = true;
       const response = await this.lessonStore.fetchLessons({
         languageCode: this.$route.params.learningLanguage as string,
         page: this.queryParams.page,
@@ -46,6 +50,7 @@ export default defineComponent({
       });
       this.lessons = response.data!;
       this.pageCount = response.pageCount!;
+      this.loading = false;
     }
   },
   async mounted() {

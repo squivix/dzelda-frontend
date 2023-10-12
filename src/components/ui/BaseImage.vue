@@ -1,7 +1,7 @@
 <template>
   <img v-if="imageUrl&&!imageError" :src="imageUrl" @error="imageError=true" :alt="altText"
        class="image">
-  <div v-else class="image fallback-image">
+  <div v-else-if="fallBackUrl" class="image fallback-image">
     <inline-svg :src="fallBackUrl"></inline-svg>
   </div>
 </template>
@@ -24,7 +24,7 @@ export default {
     },
     fallBackUrl: {
       type: String,
-      required: true,
+      required: false,
     },
     altText: {
       type: String,

@@ -70,6 +70,7 @@ export default {
   row-gap: 1rem;
   justify-content: flex-start;
   align-items: stretch;
+  width: 70vw;
 }
 
 header {

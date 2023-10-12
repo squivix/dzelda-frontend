@@ -78,7 +78,7 @@ export default {
 
 .languages {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   row-gap: 1rem;
   column-gap: 1rem;
   flex-grow: 1;

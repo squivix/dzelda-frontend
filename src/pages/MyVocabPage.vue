@@ -1,7 +1,8 @@
 <template>
   <base-card title="My Vocabulary" class="my-vocab-base-card">
     <template v-slot:content>
-      <section class="main-content" @click="clearSelectedVocab">
+      <LoadingScreen v-if="loading"/>
+      <section class="main-content" @click="clearSelectedVocab" v-else>
         <div class="bar-table-wrapper">
           <div class="top-bar">
             <search-bar :initial-search-query="queryParams.searchQuery"/>
@@ -15,7 +16,7 @@
                          @on-filters-applied="() => isFiltersShown=false"/>
 
 
-          <p v-if="loadingVocabs">Loading...</p>
+          <p v-if="loading">Loading...</p>
           <vocab-table v-else-if="vocabs&&vocabs.length>0"
                        :vocabs="vocabs"
                        @onVocabClicked="setSelectedVocab"
@@ -61,10 +62,11 @@ import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-types"
 import SearchBar from "@/components/ui/SearchBar.vue";
 import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
 import VocabFilters from "@/components/shared/filters/VocabFilters.vue";
+import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 
 export default {
   name: "MyVocabPage",
-  components: {CourseFilters, SearchBar, VocabFilters, VocabTable, PaginationControls, TheMeaningPanel},
+  components: {LoadingScreen, CourseFilters, SearchBar, VocabFilters, VocabTable, PaginationControls, TheMeaningPanel},
   props: {
     pathParams: {
       type: Object as PropType<{
@@ -79,7 +81,7 @@ export default {
   },
   data() {
     return {
-      loadingVocabs: true,
+      loading: true,
       vocabs: null as LearnerVocabSchema[] | null,
       selectedVocab: null as LearnerVocabSchema | null,
       pageCount: 0,
@@ -97,7 +99,7 @@ export default {
   methods: {
     async fetchVocabsPage() {
       this.clearSelectedVocab();
-      this.loadingVocabs = true;
+      this.loading = true;
       const response = await this.vocabStore.fetchUserVocabs({
         languageCode: this.pathParams.learningLanguage,
         searchQuery: this.queryParams.searchQuery || undefined,
@@ -107,7 +109,7 @@ export default {
       });
       this.vocabs = response.data!;
       this.pageCount = response.pageCount!;
-      this.loadingVocabs = false;
+      this.loading = false;
     },
     setSelectedVocab(vocab: LearnerVocabSchema) {
       this.selectedVocab = vocab;
@@ -170,6 +172,16 @@ export default {
   column-gap: 0.25rem;
   align-self: flex-end;
 
+}
+
+.filter-button {
+  border: 2px solid grey;
+  border-radius: 5px;
+  height: 30px;
+}
+
+.filter-button:hover {
+  cursor: pointer;
 }
 
 .meaning-panel-wrapper {
