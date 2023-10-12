@@ -1,28 +1,28 @@
 <template>
-    <div class="existing-vocab-panel">
-        <meaning-editing-controls
-                @onMeaningDeleted="onMeaningDeleted"
-                :vocab-id="vocab.id"
-                :saved-meanings="vocab.learnerMeanings"
-        >
-        </meaning-editing-controls>
+  <div class="existing-vocab-panel">
+    <meaning-editing-controls
+        @onMeaningDeleted="onMeaningDeleted"
+        :vocab-id="vocab.id"
+        :saved-meanings="vocab.learnerMeanings"
+    >
+    </meaning-editing-controls>
 
-        <button class="button-hollow add-meaning-button" @click="addMeaning">
-            <font-awesome-icon icon="plus"></font-awesome-icon>
-        </button>
+    <button class="capsule-button add-meaning-button" @click="addMeaning">
+      <font-awesome-icon icon="plus"/>
+    </button>
 
-        <h5>Set Level</h5>
-        <vocab-level-picker
-                :vocab-id="vocab.id"
-                :level="vocab.level"
-                @onVocabLevelSet="onVocabLevelSet">
-        </vocab-level-picker>
+    <h5>Set Level</h5>
+    <vocab-level-picker
+        :vocab-id="vocab.id"
+        :level="vocab.level"
+        @onVocabLevelSet="onVocabLevelSet">
+    </vocab-level-picker>
 
-        <textarea class="notes"
-                  placeholder="Notes"></textarea>
-        <!--        TODO: Encounters with vocab button-->
-        <!--        <button>View Encounters with this vocab</button>-->
-    </div>
+    <textarea class="notes"
+              placeholder="Notes"></textarea>
+    <!--        TODO: Encounters with vocab button-->
+    <!--        <button>View Encounters with this vocab</button>-->
+  </div>
 </template>
 
 <script lang="ts">
@@ -30,57 +30,57 @@ import VocabLevelPicker from "@/components/shared/vocab-panel/VocabLevelPicker.v
 import MeaningEditingControls from "@/components/shared/vocab-panel/MeaningEditingControls.vue";
 
 export default {
-        name: "ExistingVocabPanel",
-        components: {MeaningEditingControls, VocabLevelPicker},
-        emits: ["onAddMoreMeaningsClicked", "onMeaningDeleted", "onVocabLevelSet"],
-        props: {
-            vocab: {
-                type: Object,
-                required: true,
+  name: "ExistingVocabPanel",
+  components: {MeaningEditingControls, VocabLevelPicker},
+  emits: ["onAddMoreMeaningsClicked", "onMeaningDeleted", "onVocabLevelSet"],
+  props: {
+    vocab: {
+      type: Object,
+      required: true,
 
-            },
-        },
-        data() {
-            return {};
-        },
-        computed: {},
+    },
+  },
+  data() {
+    return {};
+  },
+  computed: {},
 
-        methods: {
-            addMeaning() {
-                this.$emit("onAddMoreMeaningsClicked");
-            },
-            onMeaningDeleted(meaning) {
-                this.$emit("onMeaningDeleted", meaning);
-            },
-            onVocabLevelSet(level) {
-                this.$emit("onVocabLevelSet", level);
-            }
-        },
-
+  methods: {
+    addMeaning() {
+      this.$emit("onAddMoreMeaningsClicked");
+    },
+    onMeaningDeleted(meaning) {
+      this.$emit("onMeaningDeleted", meaning);
+    },
+    onVocabLevelSet(level) {
+      this.$emit("onVocabLevelSet", level);
     }
+  },
+
+}
 </script>
 
 <style scoped>
-    .existing-vocab-panel {
-        display: flex;
-        flex-direction: column;
-        row-gap: 1rem;
-    }
+.existing-vocab-panel {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
 
-    .notes {
-        resize: none;
-        overflow: auto;
-        height: 150px;
-    }
+.notes {
+  resize: none;
+  overflow: auto;
+  height: 150px;
+}
 
-    .add-meaning-button {
-        padding-top: 0.3rem;
-        padding-bottom: 0.3rem;
-        background-color: #FFD263;
-        border: 1px solid #FFD263;
-    }
+.add-meaning-button {
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  background-color: #FFD263;
+  border: 1px solid #FFD263;
+}
 
-    .add-meaning-button svg {
-        color: black;
-    }
+.add-meaning-button svg {
+  color: black;
+}
 </style>

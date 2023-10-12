@@ -223,7 +223,7 @@ body {
   column-gap: 2rem;
   border-radius: 20px;
   max-width: 1150px;
-  padding: 40px min(5vw, 20px);
+  padding: 40px min(5vw, 20px) 0px min(5vw, 20px);
 }
 
 .lesson-content {

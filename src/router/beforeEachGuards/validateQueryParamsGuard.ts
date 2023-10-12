@@ -10,10 +10,12 @@ export const validateQueryParamsGuard: NavigationGuardWithThis<undefined> = asyn
             if (to.meta.queryParams[key])
                 parsedQueryParams[key] = to.meta.queryParams[key].schema.catch(undefined).parse(to.query[key])
         }
-
         if (!queryParamsEqual(parsedQueryParams, to.query)) //if invalid redirect to clean
+        {
+            if (import.meta.env.DEV)
+                console.warn(`Received unexpected or invalid query params ${JSON.stringify(to.query)}, redirecting to ${JSON.stringify(parsedQueryParams)}`)
             return {...to, query: parsedQueryParams};
-        else { //if valid post process
+        } else { //if valid post process
             for (const key in parsedQueryParams) {
                 const queryParamDef = to.meta.queryParams[key];
                 if (queryParamDef.postProcess)

@@ -3,7 +3,17 @@
     <template v-slot:content>
       <section class="main-content" @click="clearSelectedVocab">
         <div class="bar-table-wrapper">
-          <!--          <vocab-search-filter :initial-levels="queryParams.level" :initial-search-query="queryParams.searchQuery"/>-->
+          <div class="top-bar">
+            <search-bar :initial-search-query="queryParams.searchQuery"/>
+            <button class="filter-button" @click.stop="toggleFilters">
+              <font-awesome-icon icon="filter"/>
+            </button>
+          </div>
+
+          <vocab-filters :is-shown="isFiltersShown"
+                         @on-filters-cleared="() => isFiltersShown=false"
+                         @on-filters-applied="() => isFiltersShown=false"/>
+
 
           <p v-if="loadingVocabs">Loading...</p>
           <vocab-table v-else-if="vocabs&&vocabs.length>0"
@@ -33,6 +43,7 @@
                            :page-count="pageCount"
                            :page="queryParams.page"
                            :page-size="queryParams.pageSize"
+                           :per-page-select-options="[25, 50, 100, 150, 200]"
                            per-page-select-label="Vocabs Per Page">
       </pagination-controls>
     </template>
@@ -43,15 +54,17 @@
 import constants from "@/constants";
 import TheMeaningPanel from "@/components/shared/vocab-panel/TheMeaningPanel.vue";
 import VocabTable from "@/components/page/my-vocabs/VocabTable.vue";
-import VocabSearchFilter from "@/components/page/my-vocabs/VocabSearchFilter.vue";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {PropType} from "vue";
-import {LearnerVocabSchema, VocabLevelSchema, MeaningSchema} from "dzelda-types";
+import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-types";
+import SearchBar from "@/components/ui/SearchBar.vue";
+import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
+import VocabFilters from "@/components/shared/filters/VocabFilters.vue";
 
 export default {
   name: "MyVocabPage",
-  components: {VocabSearchFilter, VocabTable, PaginationControls, TheMeaningPanel},
+  components: {CourseFilters, SearchBar, VocabFilters, VocabTable, PaginationControls, TheMeaningPanel},
   props: {
     pathParams: {
       type: Object as PropType<{
@@ -70,6 +83,7 @@ export default {
       vocabs: null as LearnerVocabSchema[] | null,
       selectedVocab: null as LearnerVocabSchema | null,
       pageCount: 0,
+      isFiltersShown: false
     };
   },
   watch: {
@@ -87,7 +101,7 @@ export default {
       const response = await this.vocabStore.fetchUserVocabs({
         languageCode: this.pathParams.learningLanguage,
         searchQuery: this.queryParams.searchQuery || undefined,
-        level: [...this.queryParams.level],
+        level: this.queryParams.level,
         page: this.queryParams.page,
         pageSize: this.queryParams.pageSize,
       });
@@ -115,6 +129,9 @@ export default {
       const index = vocab.learnerMeanings.findIndex((v) => v.text === meaning.text);
       if (index !== -1)
         vocab.learnerMeanings.splice(index, 1);
+    },
+    toggleFilters() {
+      this.isFiltersShown = !this.isFiltersShown;
     }
   },
   setup() {
@@ -146,6 +163,13 @@ export default {
   row-gap: 1rem;
   padding-right: 0.5rem;
   margin-bottom: 1rem;
+}
+
+.top-bar {
+  display: flex;
+  column-gap: 0.25rem;
+  align-self: flex-end;
+
 }
 
 .meaning-panel-wrapper {

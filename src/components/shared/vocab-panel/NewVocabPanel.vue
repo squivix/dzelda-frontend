@@ -14,10 +14,10 @@
         :vocab-text="vocab.text">
     </dictionaries-list>
     <div class="mark-buttons-div" v-if="!isPhrase && isLevelNew || isLevelIgnored">
-      <button class="button-hollow know-button" @click="markWordAsKnown">Mark as
+      <button class="square-button hollow-button know-button" @click="markWordAsKnown">Mark as
         known
       </button>
-      <button class="button-hollow ignore-button" @click="markWordAsIgnored">Ignore
+      <button class="square-button hollow-button ignore-button" @click="markWordAsIgnored">Ignore
       </button>
     </div>
   </div>
@@ -101,7 +101,7 @@ export default {
 }
 
 .ignore-button {
-  color: gray;
+  color: grey;
   border: none;
   flex-grow: 1;
 }

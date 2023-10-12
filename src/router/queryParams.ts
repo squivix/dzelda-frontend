@@ -2,15 +2,7 @@ import {z, ZodType} from "zod";
 import constants from "@/constants.js";
 
 export type QueryParamDef = { schema: ZodType, postProcess?: (param: string | string[]) => any }
-
-const vocabLevel: QueryParamDef = {
-    schema: z.union([
-        z.string().regex(new RegExp(Object.values(constants.ALL_VOCAB_LEVELS).map(String).join("|"))),
-        z.array(z.string().regex(new RegExp(Object.values(constants.ALL_VOCAB_LEVELS).map(String).join("|"))))
-    ]).optional()
-};
-
-export const paginationQueryParams = (pageSizes: number[]) => {
+export const generatePaginationQueryParams = (pageSizes: number[]) => {
     return {
         page: {schema: z.string().regex(/^[1-9][0-9]*$/).optional(), postProcess: Number},
         pageSize: {
@@ -29,7 +21,14 @@ export const courseFiltersQueryParams = {
     },
     addedBy: {schema: z.string().min(1).optional()}
 };
-export const vocabFiltersQueryParams = {level: vocabLevel};
+export const vocabFiltersQueryParams = {
+    level: {
+        schema: z.union([
+            z.string().regex(new RegExp(Object.values(constants.ALL_VOCAB_LEVELS).map(String).join("|"))),
+            z.array(z.string().regex(new RegExp(Object.values(constants.ALL_VOCAB_LEVELS).map(String).join("|"))))
+        ]).optional()
+    }
+};
 
 export const searchQuery: QueryParamDef = {schema: z.string().min(1).optional()};
 export const token: QueryParamDef = {schema: z.string().min(1).optional()}

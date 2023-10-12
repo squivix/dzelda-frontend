@@ -24,7 +24,7 @@ import BookmarkedCoursesTab from "@/components/page/my-library/BookmarkedCourses
 import ImportedCoursesTab from "@/components/page/my-library/ImportedCoursesTab.vue";
 import LessonHistoryTab from "@/components/page/my-library/LessonHistoryTab.vue";
 import * as queryParams from "@/router/queryParams.js";
-import {courseFiltersQueryParams, lessonFiltersQueryParams, paginationQueryParams, vocabFiltersQueryParams} from "@/router/queryParams.js";
+import {courseFiltersQueryParams, lessonFiltersQueryParams, generatePaginationQueryParams, vocabFiltersQueryParams} from "@/router/queryParams.js";
 import {excludeProperties} from "@/utils.js";
 
 export const privateRoutes: RouteRecordRaw[] = [
@@ -42,9 +42,10 @@ export const privateRoutes: RouteRecordRaw[] = [
         name: "explore-lang",
         component: ExplorePage,
         redirect: {name: "explore-recent-lessons"},
+        props: routeToProps,
         meta: {
             queryParams: {
-                ...paginationQueryParams,
+                ...generatePaginationQueryParams([5, 10, 25, 50, 100]),
                 ...lessonFiltersQueryParams,
                 searchQuery: queryParams.searchQuery
             }
@@ -80,7 +81,7 @@ export const privateRoutes: RouteRecordRaw[] = [
                 name: "my-library-bookmarked-courses",
                 meta: {
                     queryParams: {
-                        ...paginationQueryParams([5, 10, 25, 50, 100]),
+                        ...generatePaginationQueryParams([5, 10, 25, 50, 100]),
                         ...courseFiltersQueryParams,
                         searchQuery: queryParams.searchQuery
                     }
@@ -93,7 +94,7 @@ export const privateRoutes: RouteRecordRaw[] = [
                 name: "my-library-imported-courses",
                 meta: {
                     queryParams: {
-                        ...paginationQueryParams([5, 10, 25, 50, 100]),
+                        ...generatePaginationQueryParams([5, 10, 25, 50, 100]),
                         ...excludeProperties(courseFiltersQueryParams, ["addedBy"]),
                         searchQuery: queryParams.searchQuery
                     }
@@ -106,7 +107,7 @@ export const privateRoutes: RouteRecordRaw[] = [
                 name: "my-library-lesson-history",
                 meta: {
                     queryParams: {
-                        ...paginationQueryParams([5, 10, 25, 50, 100]),
+                        ...generatePaginationQueryParams([5, 10, 25, 50, 100]),
                         ...lessonFiltersQueryParams,
                         searchQuery: queryParams.searchQuery
                     }
@@ -115,7 +116,6 @@ export const privateRoutes: RouteRecordRaw[] = [
             }
         ]
     },
-
     {
         path: "/my-vocab",
         component: MyVocabPage,
@@ -128,7 +128,7 @@ export const privateRoutes: RouteRecordRaw[] = [
         name: "language-my-vocab",
         meta: {
             queryParams: {
-                ...paginationQueryParams([5, 10, 25, 50, 100, 150, 200]),
+                ...generatePaginationQueryParams([25, 50, 100, 150, 200]),
                 ...vocabFiltersQueryParams,
                 searchQuery: queryParams.searchQuery
             }

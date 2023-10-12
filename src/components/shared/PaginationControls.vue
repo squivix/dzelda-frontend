@@ -3,7 +3,7 @@
     <form id="per-page-form">
       <label for="per-page-select" v-if="perPageSelectLabel">{{ perPageSelectLabel }}</label>
       <select id="per-page-select"
-              :value="pageSize"
+              :value="pageSize??perPageSelectOptions[0]"
               @change="setPageSize($event.target!.value)">
         <option v-for="option in perPageSelectOptions" :key="option" :value="option">{{ option }}</option>
       </select>
@@ -33,13 +33,12 @@ export default {
     pageSize: {
       type: Number,
       required: false,
-      default: 5,
     },
     perPageSelectOptions: {
       type: Array,
       required: false,
       default() {
-        return [5, 10, 25, 50, 100, 150, 200];
+        return [5, 10, 25, 50, 100];
       },
     },
     perPageSelectLabel: {
@@ -53,11 +52,10 @@ export default {
     },
   },
   methods: {
-    setPageSize(pageSize: string) {
-      console.log(this.$route.query)
+    setPageSize(pageSize: number) {
       this.$router.push({query: {...this.$route.query, pageSize, page: undefined}});
     },
-    goToPage(page: string) {
+    goToPage(page: number) {
       this.$router.push({query: {...this.$route.query, page}});
     },
   }
