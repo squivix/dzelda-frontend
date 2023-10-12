@@ -25,6 +25,7 @@ import ImportedCoursesTab from "@/components/page/my-library/ImportedCoursesTab.
 import LessonHistoryTab from "@/components/page/my-library/LessonHistoryTab.vue";
 import * as queryParams from "@/router/queryParams.js";
 import {courseFiltersQueryParams, lessonFiltersQueryParams, paginationQueryParams, vocabFiltersQueryParams} from "@/router/queryParams.js";
+import {excludeProperties} from "@/utils.js";
 
 export const privateRoutes: RouteRecordRaw[] = [
     {
@@ -93,7 +94,7 @@ export const privateRoutes: RouteRecordRaw[] = [
                 meta: {
                     queryParams: {
                         ...paginationQueryParams([5, 10, 25, 50, 100]),
-                        ...courseFiltersQueryParams,
+                        ...excludeProperties(courseFiltersQueryParams, ["addedBy"]),
                         searchQuery: queryParams.searchQuery
                     }
                 },

@@ -5,7 +5,7 @@
       <form @submit.prevent="applyFilters" @reset="clearFilters">
         <div class="filters-wrapper">
           <h5 class="filter-label">Level</h5>
-          <fieldset class="filter-levels">
+          <fieldset class="filter-levels" v-if="!exclude.levels">
             <div class="checkbox-label">
               <input id="filter-beginner-1-checkbox"
                      type="checkbox"
@@ -49,8 +49,10 @@
               <label for="filter-advanced-2-checkbox">Advanced 2</label>
             </div>
           </fieldset>
-          <label for="author-input" class="filter-label">Course Author</label>
-          <input id="author-input" type="text" v-model="addedBy">
+          <template v-if="!exclude.addedBy">
+            <label for="author-input" class="filter-label">Course Author</label>
+            <input id="author-input" type="text" v-model="addedBy">
+          </template>
         </div>
         <div class="buttons-wrapper">
           <button type="reset" class="primary-hollow-button square-button">Clear</button>
@@ -62,7 +64,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent, PropType} from "vue";
 import BaseCollapsableDiv from "@/components/ui/BaseCollapsableDiv.vue";
 import BaseFiltersCard from "@/components/ui/BaseFiltersCard.vue";
 import constants from "@/constants.js";
@@ -71,7 +73,10 @@ export default defineComponent({
   name: "CourseFilters",
   components: {BaseFiltersCard, BaseCollapsableDiv},
   emits: ["onFiltersApplied", "onFiltersCleared"],
-  props: {isShown: {type: Boolean, required: true}},
+  props: {
+    isShown: {type: Boolean, required: true},
+    exclude: {type: Object as PropType<{ [k in "levels" | "addedBy"]?: boolean }>, required: false, default: []}
+  },
   data() {
     return {
       levels: [],
@@ -83,7 +88,7 @@ export default defineComponent({
       this.$router.push({
         query: {
           ...this.$route.query,
-          level: this.levels,
+          level: this.levels.length == 0 ? undefined : this.levels,
           addedBy: this.addedBy || undefined,
           page: undefined
         }
@@ -96,7 +101,7 @@ export default defineComponent({
       this.$router.push({
         query: {
           ...this.$route.query,
-          level: [],
+          level: undefined,
           addedBy: undefined,
           page: undefined
         }

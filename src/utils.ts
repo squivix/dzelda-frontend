@@ -9,3 +9,13 @@ export function isEmptyObject(obj: object) {
     }
     return true;
 }
+
+export function excludeProperties<T, K extends keyof T>(obj: T, keysToOmit: K[]): Omit<T, K> {
+    const result = {...obj};
+
+    for (const key of keysToOmit) {
+        delete result[key];
+    }
+
+    return result as Omit<T, K>;
+}

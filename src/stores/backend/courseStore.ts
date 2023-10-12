@@ -23,6 +23,8 @@ export const useCourseStore = defineStore("course", {
         async fetchUserBookmarkedCourses(queryParams: {
             languageCode?: string,
             searchQuery?: string,
+            addedBy?: string,
+            level?: string[],
             pageSize?: number,
             page?: number
         } = {}) {

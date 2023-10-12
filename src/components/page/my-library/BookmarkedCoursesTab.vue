@@ -51,10 +51,11 @@ export default defineComponent({
     },
     queryParams: {
       type: Object as PropType<{
-        page: number,
-        pageSize: number,
-        searchQuery: string,
-        level: string[]
+        page?: number,
+        pageSize?: number,
+        searchQuery?: string,
+        addedBy?: string,
+        level?: string[]
       }>,
       required: true
     },
@@ -80,6 +81,8 @@ export default defineComponent({
       this.loading = true;
       const response = await this.courseStore.fetchUserBookmarkedCourses({
         languageCode: this.$route.params.learningLanguage as string,
+        level: this.queryParams.level,
+        addedBy: this.queryParams.addedBy,
         page: this.queryParams.page,
         pageSize: this.queryParams.pageSize,
         searchQuery: this.queryParams.searchQuery || undefined,
