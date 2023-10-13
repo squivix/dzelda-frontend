@@ -9,10 +9,29 @@
     </div>
 
     <course-filters :is-shown="isFiltersShown"
-                    :exclude="{addedBy:true}"
                     @on-filters-cleared="() => isFiltersShown=false"
-                    @on-filters-applied="() => isFiltersShown=false"/>
-    <ol class="course-grid">
+                    @on-filters-applied="() => isFiltersShown=false" :exclude="{addedBy:true}"/>
+    <EmptyScreen v-if="!courses||courses.length==0" :has-filters="hasFilters">
+      <template v-slot:no-filters>
+        <div class="empty-screen">
+          <router-link :to="{name:'add-course'}" class="inv-link add-course-button">
+            <font-awesome-icon icon="circle-plus" class="empty-icon"/>
+            Add courses and<br>they will appear here
+          </router-link>
+        </div>
+      </template>
+      <template v-slot:with-filters>
+        <div class="empty-screen">
+          <font-awesome-icon icon="magnifying-glass" class="empty-icon"/>
+          <p>No courses match your query</p>
+
+          <button @click="clearFilters" class="clear-filters-button square-button hollow-button link">Clear filters
+            <font-awesome-icon :icon="['fas', 'filter-circle-xmark']"/>
+          </button>
+        </div>
+      </template>
+    </EmptyScreen>
+    <ol class="course-grid" v-else>
       <li v-for="course in courses" :key="course.id">
         <course-card
             :course="course">
@@ -38,10 +57,12 @@ import CourseCard from "@/components/shared/content/CourseCard.vue";
 import SearchBar from "@/components/ui/SearchBar.vue";
 import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
+import EmptyScreen from "@/components/shared/EmptyScreen.vue";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 export default defineComponent({
-  name: "ImportedCoursesTab",
-  components: {LoadingScreen, CourseFilters, SearchBar, LoadingScreen, CourseCard, PaginationControls},
+  name: "BookmarkedCoursesTab",
+  components: {FontAwesomeIcon, EmptyScreen, LoadingScreen, CourseFilters, SearchBar, CourseCard, PaginationControls},
   props: {
     pathParams: {
       type: Object as PropType<{
@@ -65,8 +86,13 @@ export default defineComponent({
       courses: null as CourseSchema[] | null,
       pageCount: 0,
       loading: true,
-      isFiltersShown: false
+      isFiltersShown: false,
     };
+  },
+  computed: {
+    hasFilters() {
+      return !!this.queryParams.addedBy || !!this.queryParams.searchQuery || !!this.queryParams.level;
+    }
   },
   watch: {
     queryParams() {
@@ -79,20 +105,30 @@ export default defineComponent({
   methods: {
     async fetchImportedCourses() {
       this.loading = true;
-      const response = await this.courseStore.fetchUserBookmarkedCourses({
+      const response = await this.courseStore.fetchCourses({
         languageCode: this.$route.params.learningLanguage as string,
         level: this.queryParams.level,
         addedBy: "me",
+        sortBy: "createdDate",
+        sortOrder: "desc",
         page: this.queryParams.page,
         pageSize: this.queryParams.pageSize,
         searchQuery: this.queryParams.searchQuery || undefined,
-      });
+      }, {secure: true});
       this.courses = response.data;
       this.pageCount = response.pageCount;
       this.loading = false;
     },
     toggleFilters() {
       this.isFiltersShown = !this.isFiltersShown;
+    },
+    clearFilters() {
+      this.$router.push({
+        query: {
+          ...this.$route.query, level: undefined, addedBy: undefined, page: undefined, searchQuery: undefined
+        }
+      });
+      this.isFiltersShown = false;
     }
   },
   setup() {
@@ -128,12 +164,36 @@ export default defineComponent({
 
 .course-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-row-gap: 1rem;
   grid-column-gap: 0.75rem;
 }
 
-.course-grid li {
-  max-width: 300px;
+.empty-screen {
+  color: grey;
+}
+
+.empty-screen .empty-icon {
+  color: lightgrey;
+  width: 80px;
+  height: 80px;
+}
+
+.empty-screen button {
+  color: grey;
+}
+
+.add-course-button {
+  display: flex;
+  color: grey;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1rem;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  row-gap: 0.5rem;
+}
+
+.add-course-button:hover, .add-course-button:hover svg {
+  color: #183153;
 }
 </style>

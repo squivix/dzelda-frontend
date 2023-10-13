@@ -15,8 +15,8 @@ export const lessonFiltersQueryParams = {};
 export const courseFiltersQueryParams = {
     level: {
         schema: z.union([
-            z.enum(["beginner1", "beginner2", "intermediate1", "intermediate1", "advanced1", "advanced2"]),
-            z.array(z.enum(["beginner1", "beginner2", "intermediate1", "intermediate1", "advanced1", "advanced2"]))
+            z.enum(["beginner1", "beginner2", "intermediate1", "intermediate2", "advanced1", "advanced2"]),
+            z.array(z.enum(["beginner1", "beginner2", "intermediate1", "intermediate2", "advanced1", "advanced2"]))
         ]).optional(),
     },
     addedBy: {schema: z.string().min(1).optional()}

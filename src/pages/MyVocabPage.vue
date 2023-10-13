@@ -63,7 +63,7 @@ import SearchBar from "@/components/ui/SearchBar.vue";
 import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
 import VocabFilters from "@/components/shared/filters/VocabFilters.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
-
+//TODO stop showing ignored vocabs
 export default {
   name: "MyVocabPage",
   components: {LoadingScreen, CourseFilters, SearchBar, VocabFilters, VocabTable, PaginationControls, TheMeaningPanel},

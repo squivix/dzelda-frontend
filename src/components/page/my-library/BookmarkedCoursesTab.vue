@@ -11,7 +11,27 @@
     <course-filters :is-shown="isFiltersShown"
                     @on-filters-cleared="() => isFiltersShown=false"
                     @on-filters-applied="() => isFiltersShown=false"/>
-    <ol class="course-grid">
+    <EmptyScreen v-if="!courses||courses.length==0" :has-filters="hasFilters">
+      <template v-slot:no-filters>
+        <div class="empty-screen">
+          <font-awesome-icon icon="book-bookmark" class="empty-icon"/>
+          <p>Courses you bookmark
+            <br>
+            will appear here</p>
+        </div>
+      </template>
+      <template v-slot:with-filters>
+        <div class="empty-screen">
+          <font-awesome-icon icon="magnifying-glass" class="empty-icon"/>
+          <p>No courses match your query</p>
+
+          <button @click="clearFilters" class="clear-filters-button square-button hollow-button link">Clear filters
+            <font-awesome-icon :icon="['fas', 'filter-circle-xmark']"/>
+          </button>
+        </div>
+      </template>
+    </EmptyScreen>
+    <ol class="course-grid" v-else>
       <li v-for="course in courses" :key="course.id">
         <course-card
             :course="course">
@@ -37,10 +57,12 @@ import CourseCard from "@/components/shared/content/CourseCard.vue";
 import SearchBar from "@/components/ui/SearchBar.vue";
 import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
+import EmptyScreen from "@/components/shared/EmptyScreen.vue";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 export default defineComponent({
   name: "BookmarkedCoursesTab",
-  components: {LoadingScreen, CourseFilters, SearchBar, CourseCard, PaginationControls},
+  components: {FontAwesomeIcon, EmptyScreen, LoadingScreen, CourseFilters, SearchBar, CourseCard, PaginationControls},
   props: {
     pathParams: {
       type: Object as PropType<{
@@ -64,8 +86,13 @@ export default defineComponent({
       courses: null as CourseSchema[] | null,
       pageCount: 0,
       loading: true,
-      isFiltersShown: false
+      isFiltersShown: false,
     };
+  },
+  computed: {
+    hasFilters() {
+      return !!this.queryParams.addedBy || !!this.queryParams.searchQuery || !!this.queryParams.level;
+    }
   },
   watch: {
     queryParams() {
@@ -92,6 +119,12 @@ export default defineComponent({
     },
     toggleFilters() {
       this.isFiltersShown = !this.isFiltersShown;
+    },
+    clearFilters() {
+      this.$router.push({
+        query: {...this.$route.query, level: undefined, addedBy: undefined, page: undefined, searchQuery: undefined}
+      });
+      this.isFiltersShown = false;
     }
   },
   setup() {
@@ -132,6 +165,24 @@ export default defineComponent({
   grid-column-gap: 0.75rem;
 }
 
-.course-grid li {
+.empty-screen {
+  color: grey;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+  align-items: center;
 }
+
+.empty-screen .empty-icon {
+  color: lightgrey;
+  width: 80px;
+  height: 80px;
+}
+
+.empty-screen button {
+  color: grey;
+  font-size: 1rem;
+}
+
 </style>

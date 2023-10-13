@@ -7,7 +7,7 @@ import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 export const useStore = defineStore("main", {
         state() {
             const baseUrl = import.meta.env._BACKEND_URL;
-            const resourceUrl = `${baseUrl}/public`;
+            const resourceUrl = `${baseUrl}`;
             const apiUrl = `${baseUrl}/api/v1`;
             return {
                 baseUrl,

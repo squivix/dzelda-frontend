@@ -4,6 +4,7 @@ import {
     faAngleRight,
     faArrowRightFromBracket,
     faBan,
+    faBookBookmark,
     faBookmark,
     faBookOpen,
     faCheck,
@@ -18,7 +19,7 @@ import {
     faGripLines,
     faMagnifyingGlass,
     faPen,
-    faPlus,
+    faPlus, faSquareXmark,
     faUpload,
     faUser,
     faX
@@ -48,3 +49,5 @@ library.add(faPen);
 library.add(faBookOpen);
 library.add(faBookmark);
 library.add(faBookmarkRegular);
+library.add(faBookBookmark);
+library.add(faSquareXmark);
