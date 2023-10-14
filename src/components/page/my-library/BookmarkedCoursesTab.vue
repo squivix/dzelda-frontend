@@ -122,7 +122,7 @@ export default defineComponent({
     },
     clearFilters() {
       this.$router.push({
-        query: {...this.$route.query, level: undefined, addedBy: undefined, page: undefined, searchQuery: undefined}
+        query: {...this.$route.query, level: undefined, addedBy: undefined, searchQuery: undefined, page: undefined}
       });
       this.isFiltersShown = false;
     }
@@ -176,8 +176,8 @@ export default defineComponent({
 
 .empty-screen .empty-icon {
   color: lightgrey;
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
 }
 
 .empty-screen button {

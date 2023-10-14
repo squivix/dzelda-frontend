@@ -175,8 +175,8 @@ export default defineComponent({
 
 .empty-screen .empty-icon {
   color: lightgrey;
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
 }
 
 .empty-screen button {

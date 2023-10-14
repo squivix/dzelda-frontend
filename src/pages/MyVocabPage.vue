@@ -10,26 +10,40 @@
               <font-awesome-icon icon="filter"/>
             </button>
           </div>
-
           <vocab-filters :is-shown="isFiltersShown"
                          @on-filters-cleared="() => isFiltersShown=false"
                          @on-filters-applied="() => isFiltersShown=false"/>
+          <EmptyScreen v-if="!vocabs||vocabs.length==0" :has-filters="hasFilters">
+            <template v-slot:no-filters>
+              <div class="empty-screen">
+                <font-awesome-icon icon="rectangle-list" class="empty-icon"/>
+                <p>Vocabs you lookup
+                  <br>
+                  will appear here</p>
+              </div>
+            </template>
+            <template v-slot:with-filters>
+              <div class="empty-screen">
+                <font-awesome-icon icon="magnifying-glass" class="empty-icon"/>
+                <p>No vocabs match your query</p>
 
-
-          <p v-if="loading">Loading...</p>
-          <vocab-table v-else-if="vocabs&&vocabs.length>0"
+                <button @click="clearFilters" class="clear-filters-button square-button hollow-button link">Clear
+                  filters
+                  <font-awesome-icon :icon="['fas', 'filter-circle-xmark']"/>
+                </button>
+              </div>
+            </template>
+          </EmptyScreen>
+          <vocab-table v-else
                        :vocabs="vocabs"
                        @onVocabClicked="setSelectedVocab"
                        @onVocabLevelSet="onVocabLevelSet">
-
           </vocab-table>
-          <div v-else>
-            <p>No vocabs added yet...</p>
-          </div>
         </div>
         <div class="meaning-panel-wrapper">
           <the-meaning-panel
-              :vocab="selectedVocab"
+              :vocab="selectedVocab!"
+              @click.stop
               @onMeaningAdded="onMeaningAdded"
               @onVocabLevelSet="onVocabLevelSet"
               @onMeaningDeleted="onMeaningDeleted"
@@ -63,10 +77,14 @@ import SearchBar from "@/components/ui/SearchBar.vue";
 import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
 import VocabFilters from "@/components/shared/filters/VocabFilters.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
+import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 //TODO stop showing ignored vocabs
 export default {
   name: "MyVocabPage",
-  components: {LoadingScreen, CourseFilters, SearchBar, VocabFilters, VocabTable, PaginationControls, TheMeaningPanel},
+  components: {
+    EmptyScreen,
+    LoadingScreen, CourseFilters, SearchBar, VocabFilters, VocabTable, PaginationControls, TheMeaningPanel
+  },
   props: {
     pathParams: {
       type: Object as PropType<{
@@ -87,6 +105,11 @@ export default {
       pageCount: 0,
       isFiltersShown: false
     };
+  },
+  computed: {
+    hasFilters() {
+      return !!this.queryParams.searchQuery || !!this.queryParams.level;
+    }
   },
   watch: {
     queryParams() {
@@ -134,6 +157,12 @@ export default {
     },
     toggleFilters() {
       this.isFiltersShown = !this.isFiltersShown;
+    },
+    clearFilters() {
+      this.$router.push({
+        query: {...this.$route.query, level: undefined, searchQuery: undefined, page: undefined}
+      });
+      this.isFiltersShown = false;
     }
   },
   setup() {
@@ -160,7 +189,6 @@ export default {
 .bar-table-wrapper {
   display: flex;
   flex-direction: column;
-
   flex-grow: 3;
   row-gap: 1rem;
   padding-right: 0.5rem;
@@ -195,7 +223,27 @@ export default {
   border: 1px solid lightgray;
   padding: 0.5rem;
   border-radius: 5px;
-  /*position: fixed;*/
+}
+
+
+.empty-screen {
+  color: grey;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+  align-items: center;
+}
+
+.empty-screen .empty-icon {
+  color: lightgrey;
+  width: 60px;
+  height: 60px;
+}
+
+.empty-screen button {
+  color: grey;
+  font-size: 1rem;
 }
 
 </style>

@@ -1,10 +1,24 @@
 <template>
   <LoadingScreen v-if="loading"/>
-  <div v-else>
+  <div class="tab-wrapper" v-else>
+
+    <EmptyScreen v-if="!lessons||lessons.length==0" :has-filters="false">
+      <template v-slot:no-filters>
+        <div class="empty-screen">
+          <font-awesome-icon icon="clock-rotate-left" class="empty-icon"/>
+          <p>No lessons in history</p>
+        </div>
+      </template>
+    </EmptyScreen>
     <ul v-if="lessons" class="lessons-list">
       <lesson-list-item v-for="lesson in lessons" :key="lesson.id" :lesson="lesson"/>
     </ul>
-    <pagination-controls :page="queryParams.page" :page-size="queryParams.pageSize" :page-count="pageCount"/>
+    <pagination-controls
+        v-if="pageCount"
+        :page="queryParams.page"
+        :page-size="queryParams.pageSize"
+        :page-count="pageCount"
+        per-page-select-label="Lessons Per Page"/>
   </div>
 </template>
 
@@ -15,10 +29,12 @@ import {LessonSchema} from "dzelda-types";
 import LessonListItem from "@/components/shared/content/LessonListItem.vue";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
+import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
+import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 
 export default defineComponent({
   name: "LessonHistoryTab",
-  components: {LoadingScreen, PaginationControls, LessonListItem},
+  components: {EmptyScreen, CourseFilters, LoadingScreen, PaginationControls, LessonListItem},
   data() {
     return {
       lessons: [] as LessonSchema[],
@@ -64,9 +80,35 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.tab-wrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
 .lessons-list {
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
+}
+
+.empty-screen {
+  color: grey;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+  align-items: center;
+}
+
+.empty-screen .empty-icon {
+  color: lightgrey;
+  width: 60px;
+  height: 60px;
+}
+
+.empty-screen button {
+  color: grey;
+  font-size: 1rem;
 }
 </style>
