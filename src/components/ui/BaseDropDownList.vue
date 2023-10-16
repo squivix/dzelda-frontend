@@ -16,11 +16,21 @@
 </template>
 
 <script lang="ts">
+import {PropType} from "vue";
+import {RouteLocationRaw} from "vue-router";
+
 export default {
   name: "BaseDropDownList",
   props: {
     listItems: {
-      type: Array,
+      // TODO replace with slots
+      type: Array as PropType<Array<{
+        text?: string,
+        link: RouteLocationRaw,
+        class?: string,
+        image?: { src: string, alt: String },
+        icon?: string
+      }>>,
       required: true
     }
   }
@@ -51,16 +61,16 @@ export default {
 .dropdown-list li:hover {
   cursor: pointer;
   background-color: lightgray;
+  border-radius: 3px;
 }
 
 .dropdown-list a:hover {
   text-decoration: none;
 }
 
-
 .image-icon {
-  width: 25px;
-  height: 25px;
+  width: 15px;
+  height: 15px;
 }
 
 </style>

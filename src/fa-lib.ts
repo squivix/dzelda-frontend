@@ -29,7 +29,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {faBookmark as faBookmarkRegular} from "@fortawesome/free-regular-svg-icons";
 
-library.add(faEye,
+library.add(
+    faEye,
     faEyeSlash,
     faCheck,
     faBan,
@@ -49,7 +50,6 @@ library.add(faEye,
     faUpload,
     faEllipsisV,
     faPen,
-    faBookOpen,
     faBookmark,
     faBookmarkRegular,
     faBookBookmark,

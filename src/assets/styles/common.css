@@ -189,3 +189,13 @@ a:hover {
     color: red;
     min-height: 1lh;
 }
+
+svg {
+    width: 15px;
+    height: 15px;
+}
+
+.icon-wrapper {
+    display: grid;
+    place-items: center;
+}

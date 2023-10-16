@@ -22,19 +22,17 @@
     <div class="right-side-div" v-if="userAccount?.isEmailConfirmed">
       <base-drop-down v-if="currentLanguage" class="language-dropdown" label="language">
         <template v-slot:button>
-          <!--suppress HtmlUnknownTarget, JSUnresolvedVariable -->
           <img :src="currentLanguage.flagCircular??''" alt="Current Language Icon"
                class="language-icon current-language-icon">
-          <span class="language-menu-arrow">
-                        <font-awesome-icon icon="chevron-down"></font-awesome-icon>
-                    </span>
+          <span class="icon-wrapper language-menu-arrow">
+            <inline-svg :src="assets.arrowDown"/>
+          </span>
         </template>
         <template v-slot:menu>
-          <!--suppress JSUnresolvedVariable -->
           <base-drop-down-list is-grid class="language-grid" :list-items="
             [...otherLanguages.map(language=>({
                   text:language.name,
-                  image:{src:language.flagCircular, alt:'language flag'},
+                  image:{src:language.flagCircular!, alt:'language flag'},
                   link:{ name: 'explore-lang' ,params:{learningLanguage:language.code}}
             })),
             {
@@ -50,8 +48,8 @@
       </base-drop-down>
       <base-drop-down v-if="userLanguages && userLanguages.length > 0" :is-pointy="true" label="add-menu">
         <template v-slot:button>
-                    <span class="add-button">
-                        <font-awesome-icon icon="plus"></font-awesome-icon>
+                    <span class="add-button icon-wrapper">
+                      <inline-svg :src="assets.plus"/>
                     </span>
         </template>
         <template v-slot:menu>
@@ -72,16 +70,16 @@
       </base-drop-down>
       <base-drop-down :is-pointy="true" label="profile-menu">
         <template v-slot:button>
-          <img v-if="profilePicture" :src="profilePicture" alt="profile picture"
-               class="profile-picture">
-          <font-awesome-icon v-else icon="user" class="profile-picture"></font-awesome-icon>
+          <base-image :image-url="userAccount.profile.profilePicture"
+                      :fall-back-url="assets.userProfile" class="profile-picture"
+                      alt="profile picture"/>
         </template>
         <template v-slot:menu>
           <base-drop-down-list class="profile-menu" :list-items="[
               {
                 text:'My Profile',
                 link:{ name: 'my-profile' },
-                icon:'user'
+                image:{src:assets.userProfile, alt:'my profile icon'}
               },
               {
                 text:'Settings',
@@ -107,28 +105,26 @@
 </template>
 <script lang="ts">
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
 import {defineComponent} from "vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
+import BaseImage from "@/components/ui/BaseImage.vue";
+import userProfile from "@/assets/images/user-profile.svg"
+import arrowDown from "@/assets/images/arrow-down.svg"
+import plus from "@/assets/images/plus.svg"
+import InlineSvg from "vue-inline-svg";
 
 export default defineComponent({
   name: "AuthHeader",
-  components: {BaseDropDownList, BaseDropDown, FontAwesomeIcon},
+  components: {BaseImage, BaseDropDownList, BaseDropDown, InlineSvg},
   computed: {
     userAccount() {
       return this.userStore.userAccount;
     },
     userLanguages() {
       return this.languageStore.userLanguages;
-    },
-    profilePicture() {
-      if (this.userAccount!.profile.profilePicture)
-        return `${this.store.baseUrl}${this.userAccount!.profile.profilePicture}`;
-      else
-        return null;
     },
     currentLanguage() {
       return this.userLanguages ? this.userLanguages[0] : null;
@@ -145,6 +141,7 @@ export default defineComponent({
   },
   setup() {
     return {
+      assets: {userProfile, arrowDown, plus},
       store: useStore(),
       userStore: useUserStore(),
       languageStore: useLanguageStore(),
@@ -220,24 +217,22 @@ nav > ul > li:hover {
 
 .add-button {
   background-color: var(--secondary-color);
-  height: 30px;
-  width: 30px;
-  padding: 5px;
   border: 1px solid var(--on-secondary-color);
+  padding: 8px;
   border-radius: 8px;
 }
 
 .add-button svg {
-  color: var(--on-secondary-color);
-  font-size: 1rem;
+  fill: var(--on-secondary-color);
 }
 
 
 .language-grid {
   display: grid;
   width: 15vw;
-  max-width: 250px;
-  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  min-width: 120px;
+  max-width: 240px;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
 }
 
 :deep(.language-add-button) {
@@ -254,7 +249,7 @@ nav > ul > li:hover {
 
 .language-menu-arrow {
   background-color: var(--on-primary-color);
-  padding: 0.2rem;
+  padding: 0.25rem;
   border-start-end-radius: 5px;
   border-end-end-radius: 5px;
   margin-inline-start: -3px;
@@ -273,11 +268,10 @@ nav > ul > li:hover {
   background-color: var(--on-primary-color);
 }
 
-svg.profile-picture {
-  width: 20px;
-  height: 20px;
-  padding: 0.5rem;
-  color: var(--primary-color);
+.profile-picture:deep(svg) {
+  width: 24px;
+  height: 24px;
+  fill: var(--primary-color);
 }
 
 .profile-menu {
@@ -291,8 +285,4 @@ svg.profile-picture {
   max-width: 100px;
 }
 
-.button-hollow {
-  color: var(--on-primary-color);
-  border-color: var(--on-secondary-color);
-}
 </style>

@@ -3,8 +3,8 @@
   <div class="tab-wrapper" v-else>
     <div class="top-bar">
       <search-bar :initial-search-query="queryParams.searchQuery"/>
-      <button class="filter-button" @click.stop="toggleFilters">
-        <font-awesome-icon icon="filter"/>
+      <button class="filter-button icon-wrapper" @click.stop="toggleFilters">
+        <inline-svg :src="assets.filter"/>
       </button>
     </div>
 
@@ -59,10 +59,12 @@ import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import filter from "@/assets/images/filter.svg"
+import InlineSvg from "vue-inline-svg";
 
 export default defineComponent({
   name: "BookmarkedCoursesTab",
-  components: {FontAwesomeIcon, EmptyScreen, LoadingScreen, CourseFilters, SearchBar, CourseCard, PaginationControls},
+  components: {FontAwesomeIcon, EmptyScreen, LoadingScreen, CourseFilters, SearchBar, CourseCard, PaginationControls, InlineSvg},
   props: {
     pathParams: {
       type: Object as PropType<{
@@ -129,6 +131,7 @@ export default defineComponent({
   },
   setup() {
     return {
+      assets: {filter},
       courseStore: useCourseStore()
     };
   }
@@ -145,12 +148,14 @@ export default defineComponent({
 .top-bar {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   column-gap: 0.25rem;
 }
 
 .filter-button {
   border: 2px solid grey;
   border-radius: 5px;
+  width: 30px;
   height: 30px;
 }
 

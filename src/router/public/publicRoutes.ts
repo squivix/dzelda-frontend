@@ -5,16 +5,13 @@ import {RouteRecordRaw} from "vue-router";
 import ResetPasswordRequestPage from "@/pages/auth/ResetPasswordRequestPage.vue";
 import ResetPasswordPage from "@/pages/auth/ResetPasswordPage.vue";
 import {setDefaultRouteMeta} from "@/router/routerUtils.js";
-import {privateRoutes} from "@/router/private/privateRoutes.js";
 import {z} from "zod";
-import {VocabLevelSchema} from "dzelda-types";
-import constants from "@/constants.js";
 
-export const publicRoutes: Readonly<RouteRecordRaw[]> = [
-    {path: "/", redirect: {name: "home"}, name: "root", meta: {}},
-    {path: "/home", component: HomePage, name: "home", meta: {}},
-    {path: "/login", component: LoginPage, name: "login", meta: {}},
-    {path: "/sign-up", component: SignUpPage, name: "sign-up", meta: {}},
+export const publicRoutes: RouteRecordRaw[] = [
+    {path: "/", redirect: {name: "home"}, name: "root"},
+    {path: "/home", component: HomePage, name: "home"},
+    {path: "/login", component: LoginPage, name: "login"},
+    {path: "/sign-up", component: SignUpPage, name: "sign-up"},
     {
         path: "/reset-password-request",
         component: ResetPasswordRequestPage,
@@ -30,7 +27,7 @@ export const publicRoutes: Readonly<RouteRecordRaw[]> = [
     },
 ];
 
-setDefaultRouteMeta(privateRoutes, {
+setDefaultRouteMeta(publicRoutes, {
     requiresAuth: false,
     requiresEmailConfirmed: false,
     showFooter: true
