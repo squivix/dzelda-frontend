@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="empty-screen-wrapper">
     <slot name="with-filters" v-if="hasFilters">
       <div class="empty-screen">
         <p v-if="!!message">{{ message }}</p>
@@ -31,7 +31,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.wrapper {
+.empty-screen-wrapper {
   height: 45vh;
   display: grid;
   place-items: center;

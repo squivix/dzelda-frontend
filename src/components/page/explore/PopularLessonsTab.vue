@@ -1,36 +1,27 @@
 <template>
-  <LoadingScreen v-if="loading"/>
-  <div class="tab-wrapper" v-else>
-    <EmptyScreen v-if="!lessons||lessons.length==0" message="No lessons found in this language"/>
-    <ul v-if="lessons" class="lessons-list">
-      <lesson-list-item v-for="lesson in lessons" :key="lesson.id" :lesson="lesson"/>
-    </ul>
-
-    <pagination-controls v-if="pageCount"
-                         :page="queryParams.page"
-                         :page-size="queryParams.pageSize"
-                         :page-count="pageCount"
-                         perPageSelectLabel="Lessons Per Page"/>
-  </div>
+  <LessonList :page-count="pageCount"
+              :page-size="queryParams.pageSize"
+              :page="queryParams.page"
+              :is-loading="isLoading"
+              :lessons="lessons"
+              empty-message="No lessons found in this language"
+  />
 </template>
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {LessonSchema} from "dzelda-types";
-import LessonListItem from "@/components/shared/content/LessonListItem.vue";
-import PaginationControls from "@/components/shared/PaginationControls.vue";
-import LoadingScreen from "@/components/shared/LoadingScreen.vue";
-import EmptyScreen from "@/components/shared/EmptyScreen.vue";
+import LessonList from "@/components/shared/content/LessonList.vue";
 
 export default defineComponent({
   name: "RecentLessonsTab",
-  components: {EmptyScreen, LoadingScreen, PaginationControls, LessonListItem},
+  components: {LessonList},
   data() {
     return {
       lessons: [] as LessonSchema[],
       pageCount: 0,
-      loading: false,
+      isLoading: false,
     };
   },
   props: {
@@ -46,7 +37,7 @@ export default defineComponent({
   },
   methods: {
     async fetchLessons() {
-      this.loading = true;
+      this.isLoading = true;
       const response = await this.lessonStore.fetchLessons({
         languageCode: this.$route.params.learningLanguage as string,
         page: this.queryParams.page,
@@ -56,7 +47,7 @@ export default defineComponent({
       });
       this.lessons = response.data!;
       this.pageCount = response.pageCount!;
-      this.loading = false;
+      this.isLoading = false;
     }
   },
   async mounted() {
@@ -71,15 +62,4 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.tab-wrapper {
-  display: flex;
-  flex-direction: column;
-  row-gap: 1rem;
-}
-
-.lessons-list {
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.5rem;
-}
 </style>
