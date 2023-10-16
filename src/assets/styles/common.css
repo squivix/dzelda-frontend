@@ -199,3 +199,9 @@ svg {
     display: grid;
     place-items: center;
 }
+
+.empty-icon {
+    color: lightgrey;
+    width: 60px;
+    height: 60px;
+}

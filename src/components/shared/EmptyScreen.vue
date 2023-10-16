@@ -37,11 +37,20 @@ export default defineComponent({
   place-items: center;
   text-align: center
 }
+</style>
 
-
+<style>
 .empty-screen {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
   color: grey;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
+.empty-screen button {
+  color: grey;
+}
 </style>
