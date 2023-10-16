@@ -5,7 +5,7 @@
     <EmptyScreen v-if="!lessons||lessons.length==0" :has-filters="false">
       <template v-slot:no-filters>
         <div class="empty-screen">
-          <font-awesome-icon icon="clock-rotate-left" class="empty-icon"/>
+          <inline-svg :src="icons.history" class="empty-icon"/>
           <p>No lessons in history</p>
         </div>
       </template>
@@ -31,10 +31,12 @@ import PaginationControls from "@/components/shared/PaginationControls.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
+import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
 
 export default defineComponent({
   name: "LessonHistoryTab",
-  components: {EmptyScreen, CourseFilters, LoadingScreen, PaginationControls, LessonListItem},
+  components: {InlineSvg, EmptyScreen, CourseFilters, LoadingScreen, PaginationControls, LessonListItem},
   data() {
     return {
       lessons: [] as LessonSchema[],
@@ -44,7 +46,10 @@ export default defineComponent({
   },
   props: {
     queryParams: {
-      type: Object as PropType<{ page: number, pageSize: number }>,
+      type: Object as PropType<{
+        page: number,
+        pageSize: number
+      }>,
       required: true
     },
   },
@@ -73,6 +78,7 @@ export default defineComponent({
   },
   setup() {
     return {
+      icons,
       lessonStore: useLessonStore()
     };
   }
@@ -92,23 +98,4 @@ export default defineComponent({
   row-gap: 0.5rem;
 }
 
-.empty-screen {
-  color: grey;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.5rem;
-  align-items: center;
-}
-
-.empty-screen .empty-icon {
-  color: lightgrey;
-  width: 60px;
-  height: 60px;
-}
-
-.empty-screen button {
-  color: grey;
-  font-size: 1rem;
-}
 </style>

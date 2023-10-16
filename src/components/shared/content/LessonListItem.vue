@@ -3,9 +3,8 @@
     <template v-slot:all>
       <article>
         <div class="item-content">
-          <BaseImage :image-url="imageUrl" :fall-back-url="assets.lessonBlank"
+          <BaseImage :image-url="imageUrl" :fall-back-url="icons.lessonBlank"
                      alt-text="lesson image"></BaseImage>
-
           <div class="title-stats">
             <div class="title-subtitle">
               <router-link
@@ -44,9 +43,7 @@
             :centered="false"
             :round="false">
           <template v-slot:button>
-            <FontAwesomeIcon icon="ellipsis-vertical" class="more-button">
-
-            </FontAwesomeIcon>
+            <inline-svg :src="icons.dotsStacked" class="more-button"/>
           </template>
           <template v-slot:menu>
 
@@ -72,19 +69,19 @@
 
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {LessonSchema, VocabLevelSchema, VocabsByLevelSchema} from "dzelda-types";
 import {PropType} from "vue";
 import {useStore} from "@/stores/backend/rootStore.js";
-import lessonBlank from "@/assets/images/lesson-blank.svg";
 import constants from "@/constants.js";
+import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
 
 export default {
   name: "LessonListItem",
-  components: {BaseImage, BaseDropDown, BaseCard, FontAwesomeIcon, BaseDropDownList},
+  components: {InlineSvg, BaseImage, BaseDropDown, BaseCard, BaseDropDownList},
   props: {
     lesson: {
       type: Object as PropType<LessonSchema>,
@@ -135,8 +132,8 @@ export default {
   },
   setup() {
     return {
+      icons,
       store: useStore(),
-      assets: {lessonBlank},
       VocabLevelSchema
     };
   }
@@ -232,23 +229,21 @@ a:hover {
   text-decoration: none;
 }
 
-.more-button {
-  align-self: flex-start;
-  padding: 0.2rem 0.5rem;
-}
-
 .more-button:hover {
   cursor: pointer;
 }
 
+/*noinspection CssUnusedSymbol*/
 .easy {
   color: green;
 }
 
+/*noinspection CssUnusedSymbol*/
 .medium {
   color: #E09134;
 }
 
+/*noinspection CssUnusedSymbol*/
 .hard {
   color: red;
 }

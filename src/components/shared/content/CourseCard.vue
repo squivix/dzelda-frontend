@@ -2,7 +2,7 @@
   <base-card>
     <template v-slot:all>
       <article class="course-article">
-        <BaseImage :image-url="imageUrl" :fall-back-url="assets.courseBlank"
+        <BaseImage :image-url="imageUrl" :fall-back-url="icons.courseBlank"
                    alt-text="course image"></BaseImage>
 
         <div class="title-row">
@@ -17,9 +17,7 @@
               :centered="false"
               :round="false">
             <template v-slot:button>
-              <FontAwesomeIcon icon="ellipsis-vertical" class="more-button">
-
-              </FontAwesomeIcon>
+              <inline-svg :src="icons.dotsStacked" class="more-button"/>
             </template>
             <template v-slot:menu>
 
@@ -42,18 +40,17 @@
 
 <script lang="ts">
 import {useStore} from "@/stores/backend/rootStore.js";
-import constants from "@/constants.js";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {PropType} from "vue";
 import {CourseSchema} from "dzelda-types";
-import courseBlank from "@/assets/images/course-blank.svg"
+import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
 
 export default {
   name: "CourseCard",
-  components: {BaseImage, FontAwesomeIcon, BaseDropDown, BaseDropDownList},
+  components: {InlineSvg, BaseImage, BaseDropDown, BaseDropDownList},
   data() {
     return {};
   },
@@ -70,8 +67,8 @@ export default {
   },
   setup() {
     return {
+      icons,
       store: useStore(),
-      assets: {courseBlank}
     }
   }
 };
@@ -121,10 +118,6 @@ h4 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-}
-
-.more-button {
-  padding: 0.2rem 0.5rem;
 }
 
 .more-button:hover {

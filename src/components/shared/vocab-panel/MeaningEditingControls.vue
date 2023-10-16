@@ -4,11 +4,11 @@
     <li v-for="meaning in savedMeanings" :key="meaning.id">
       <form action="javascript:void(0);">
         <button class="delete-user-meaning-button" @click="deleteMeaning(meaning)" type="button">
-          <font-awesome-icon icon="x" ref="toggleShowIcon" class="fa-xs"/>
+          <inline-svg :src="icons.cross"/>
         </button>
         <input :value="meaning.text" :ref="`user-meaning-input-${meaning.id}`"/>
         <button class="edit-user-meaning-button" @click="editMeaning(meaning)" type="submit">
-          <font-awesome-icon icon="check" ref="toggleShowIcon" class="fa-xs"/>
+          <inline-svg :src="icons.checkMark"/>
         </button>
       </form>
     </li>
@@ -17,10 +17,12 @@
 
 <script lang="ts">
 import {useMeaningStore} from "@/stores/backend/meaningStore.js";
+import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
 
 export default {
   name: "MeaningEditingControls",
-  components: {},
+  components: {InlineSvg},
   emits: ["onMeaningDeleted"],
   props: {
     vocabId: {
@@ -56,8 +58,11 @@ export default {
       //TODO reflect this locally by some sort of event that sends newMeaning
     },
   },
-  created() {
-    this.meaningStore = useMeaningStore();
+  setup() {
+    return {
+      icons,
+      meaningStore: useMeaningStore()
+    }
   }
 }
 </script>
@@ -84,13 +89,19 @@ export default {
 }
 
 .delete-user-meaning-button {
-  min-width: 20px;
-  height: 20px;
+  min-width: 25px;
+  height: 25px;
   padding: 0;
   background-color: white;
   color: black;
-  border: 1px solid gray;
+  border: 1px solid grey;
   border-radius: 50%;
+}
+
+.delete-user-meaning-button svg {
+  fill: dimgrey;
+  width: 10px;
+  height: 10px;
 }
 
 .delete-user-meaning-button:hover {
@@ -105,6 +116,11 @@ export default {
   color: black;
   border: 1px solid #FFD263;
   border-radius: 50%;
+}
+
+.edit-user-meaning-button svg {
+  width: 10px;
+  height: 10px;
 }
 
 .edit-user-meaning-button:hover {

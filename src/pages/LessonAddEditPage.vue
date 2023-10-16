@@ -5,8 +5,8 @@
         <div class="file-inputs-div">
           <base-image :image-url="imageUrl" :fall-back-url="assets.lessonBlank"></base-image>
 
-          <label for="image-input" class="file-input-label button-hollow">
-            <FontAwesomeIcon icon="upload"></FontAwesomeIcon>
+          <label for="image-input" class="file-input-label inv-button">
+            <inline-svg :src="icons.upload"/>
             Upload Image
           </label>
           <input id="image-input" type="file" accept="image/png, image/jpeg" @change="setImageFile">
@@ -14,8 +14,8 @@
           <audio controls ref="audio" :src="audioUrl">
             Your browser does not support the audio element.
           </audio>
-          <label for="audio-input" class="file-input-label button-hollow">
-            <FontAwesomeIcon icon="upload"></FontAwesomeIcon>
+          <label for="audio-input" class="file-input-label inv-button">
+            <inline-svg :src="icons.upload"/>
             Upload Audio
           </label>
           <input id="audio-input" type="file" accept="audio/*" @change="setAudioFile">
@@ -41,7 +41,7 @@
           <textarea placeholder="Lesson Text" id="lesson-text" v-model="text" required></textarea>
 
           <div class="buttons-div">
-            <button id="save-button" type="submit" class="button-hollow">Save</button>
+            <button id="save-button" type="submit" class="primary-hollow-button capsule-button">Save</button>
             <button id="save-and-open-button" type="submit" class="primary-filled-button capsule-button">Save & open
             </button>
           </div>
@@ -57,15 +57,16 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {LessonSchema} from "dzelda-types";
 import lessonBlank from "@/assets/images/lesson-blank.svg";
 import {useUserStore} from "@/stores/backend/userStore.js";
+import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
 
 export default {
   name: "LessonAddEditPage",
-  components: {BaseImage, BaseCard, FontAwesomeIcon},
+  components: {InlineSvg, BaseImage, BaseCard},
   computed: {
     pageTitle() {
       return this.$route.name !== "edit-lesson" ? "Add Lesson" : "Edit Lesson";
@@ -163,6 +164,7 @@ export default {
   },
   setup() {
     return {
+      icons,
       store: useStore(),
       courseStore: useCourseStore(),
       lessonStore: useLessonStore(),
@@ -217,8 +219,6 @@ audio {
 }
 
 .file-input-label {
-  border-color: var(--primary-color-dark);
-  color: var(--primary-color-dark);
   text-align: center;
 }
 
@@ -252,5 +252,17 @@ select {
 
 input[type="file"] {
   display: none;
+}
+
+.file-input-label {
+  font-size: 0.5rem;
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+}
+
+.file-input-label svg {
+  width: 30px;
+  height: 30px;
 }
 </style>

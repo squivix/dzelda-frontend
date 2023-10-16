@@ -21,11 +21,12 @@
       </template>
       <template v-slot:with-filters>
         <div class="empty-screen">
-          <font-awesome-icon icon="magnifying-glass" class="empty-icon"/>
+          <inline-svg :src="icons.search" class="empty-icon"/>
           <p>No courses match your query</p>
 
-          <button @click="clearFilters" class="clear-filters-button inv-button link">Clear query
-            <font-awesome-icon :icon="['fas', 'filter-circle-xmark']"/>
+          <button @click="clearFilters" class="clear-filters-button inv-button link">
+            <inline-svg :src="icons.removeFilter"/>
+            Clear query
           </button>
         </div>
       </template>
@@ -108,7 +109,6 @@ export default defineComponent({
   row-gap: 1rem;
 }
 
-
 .top-bar {
   display: flex;
   justify-content: flex-end;
@@ -132,6 +132,18 @@ export default defineComponent({
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-row-gap: 1rem;
   grid-column-gap: 0.75rem;
+}
+
+.clear-filters-button {
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.clear-filters-button svg {
+  width: 20px;
+  height: 20px;
 }
 
 </style>

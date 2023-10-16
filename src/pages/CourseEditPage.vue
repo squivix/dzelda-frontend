@@ -5,8 +5,8 @@
         <div class="file-inputs-div">
           <base-image :image-url="imageUrl" :fall-back-url="assets.courseBlank" class="course-image"
                       alt-text="course image"></base-image>
-          <label for="image-input" class="file-input-label button-hollow">
-            <FontAwesomeIcon icon="upload"></FontAwesomeIcon>
+          <label for="image-input" class="file-input-label inv-button">
+            <inline-svg :src="icons.upload"/>
             Upload Image
           </label>
           <input id="image-input" type="file" accept="image/png, image/jpeg" @change="setImageFile" class="file-input">
@@ -41,11 +41,12 @@
                   <input type="checkbox" :value="lesson.id" v-model="selectedLessons">
                 </td>
                 <td class="handle centered-table-col">
-                  <font-awesome-icon icon="grip-lines"></font-awesome-icon>
+                  <inline-svg :src="icons.dragBars"/>
                 </td>
                 <td>
                   <router-link
-                      :to="{name:'edit-lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}">
+                      :to="{name:'edit-lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}"
+                      class="inv-link">
                     {{ lesson.title }}
                   </router-link>
                 </td>
@@ -69,18 +70,19 @@
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {VueDraggableNext} from "vue-draggable-next";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import courseBlank from "@/assets/images/course-blank.svg";
 import {LessonSchema} from "dzelda-types";
+import {icons} from "@/icons.js";
+import InlineSvg from "vue-inline-svg";
 
 export default {
   name: "CourseEditPage",
   components: {
+    InlineSvg,
     BaseImage,
     BaseCard,
     draggable: VueDraggableNext,
-    FontAwesomeIcon
   },
   data() {
     return {
@@ -139,6 +141,7 @@ export default {
   },
   setup() {
     return {
+      icons,
       courseStore: useCourseStore(),
       assets: {courseBlank}
     };
@@ -233,5 +236,13 @@ input[type="file"] {
 
 .file-input-label {
   font-size: 0.5rem;
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+}
+
+.file-input-label svg {
+  width: 30px;
+  height: 30px;
 }
 </style>

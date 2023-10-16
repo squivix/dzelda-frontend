@@ -5,8 +5,9 @@
         <p>Select a new language to learn from our list of supported languages</p>
         <ul v-if="supportedLanguages" class="languages">
           <li v-for="language in supportedLanguages" :key="language.code" @click="addNewLanguage(language)">
-            <font-awesome-icon v-if="language.isLearning" icon="check"
-                               class="is-learning-check"></font-awesome-icon>
+              <span v-if="language.isLearning" class="is-learning-check icon-wrapper">
+                <inline-svg :src="icons.checkMark"/>
+              </span>
             <img :src="language.flagCircular!" :alt="`${language.code} language flag`"
                  class="language-flag">
             <div class="title-learners">
@@ -22,13 +23,14 @@
 
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {LanguageSchema} from "dzelda-types";
+import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
 
 export default {
   name: "NewLanguagePage",
-  components: {BaseCard, FontAwesomeIcon},
+  components: {InlineSvg, BaseCard},
   data() {
     return {
       supportedLanguages: null as (LanguageSchema & { isLearning: boolean })[] | null
@@ -59,7 +61,7 @@ export default {
     }));
   },
   setup() {
-    return {languageStore: useLanguageStore()};
+    return {icons, languageStore: useLanguageStore()};
   }
 };
 </script>
@@ -130,11 +132,13 @@ export default {
 .is-learning-check {
   background-color: var(--secondary-color);
   color: var(--on-secondary-color);
-  width: 20px;
-  height: 20px;
-  padding: 0.2rem;
+  padding: 0.25rem;
+  overflow: visible;
   border-radius: 3px;
   align-self: flex-end;
 }
 
+.is-learning-check svg {
+  fill: var(--on-secondary-color);
+}
 </style>

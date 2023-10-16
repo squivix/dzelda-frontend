@@ -25,7 +25,7 @@
           <img :src="currentLanguage.flagCircular??''" alt="Current Language Icon"
                class="language-icon current-language-icon">
           <span class="icon-wrapper language-menu-arrow">
-            <inline-svg :src="assets.arrowDown"/>
+            <inline-svg :src="icons.arrowDown"/>
           </span>
         </template>
         <template v-slot:menu>
@@ -49,7 +49,7 @@
       <base-drop-down v-if="userLanguages && userLanguages.length > 0" :is-pointy="true" label="add-menu">
         <template v-slot:button>
                     <span class="add-button icon-wrapper">
-                      <inline-svg :src="assets.plus"/>
+                      <inline-svg :src="icons.plus"/>
                     </span>
         </template>
         <template v-slot:menu>
@@ -71,7 +71,7 @@
       <base-drop-down :is-pointy="true" label="profile-menu">
         <template v-slot:button>
           <base-image :image-url="userAccount.profile.profilePicture"
-                      :fall-back-url="assets.userProfile" class="profile-picture"
+                      :fall-back-url="icons.userProfile" class="profile-picture"
                       alt="profile picture"/>
         </template>
         <template v-slot:menu>
@@ -79,17 +79,17 @@
               {
                 text:'My Profile',
                 link:{ name: 'my-profile' },
-                image:{src:assets.userProfile, alt:'my profile icon'}
+                icon:icons.userProfile
               },
               {
                 text:'Settings',
                 link:{ name: 'settings' },
-                icon:'gear'
+                icon:icons.settings
               },
               {
                 text:'Sign Out',
                 link:{ name: 'sign-out' },
-                icon:'arrow-right-from-bracket'
+                icon:icons.signOut
               }
           ]"></base-drop-down-list>
         </template>
@@ -111,10 +111,8 @@ import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
 import {defineComponent} from "vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import userProfile from "@/assets/images/user-profile.svg"
-import arrowDown from "@/assets/images/arrow-down.svg"
-import plus from "@/assets/images/plus.svg"
 import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
 
 export default defineComponent({
   name: "AuthHeader",
@@ -141,7 +139,7 @@ export default defineComponent({
   },
   setup() {
     return {
-      assets: {userProfile, arrowDown, plus},
+      icons,
       store: useStore(),
       userStore: useUserStore(),
       languageStore: useLanguageStore(),

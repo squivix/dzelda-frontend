@@ -8,7 +8,7 @@
     </meaning-editing-controls>
 
     <button class="capsule-button add-meaning-button" @click="addMeaning">
-      <font-awesome-icon icon="plus"/>
+      <inline-svg :src="icons.plus" class="more-button"/>
     </button>
 
     <h5>Set Level</h5>
@@ -28,10 +28,12 @@
 <script lang="ts">
 import VocabLevelPicker from "@/components/shared/vocab-panel/VocabLevelPicker.vue";
 import MeaningEditingControls from "@/components/shared/vocab-panel/MeaningEditingControls.vue";
+import {icons} from "@/icons.js";
+import InlineSvg from "vue-inline-svg";
 
 export default {
   name: "ExistingVocabPanel",
-  components: {MeaningEditingControls, VocabLevelPicker},
+  components: {MeaningEditingControls, InlineSvg, VocabLevelPicker},
   emits: ["onAddMoreMeaningsClicked", "onMeaningDeleted", "onVocabLevelSet"],
   props: {
     vocab: {
@@ -40,11 +42,6 @@ export default {
 
     },
   },
-  data() {
-    return {};
-  },
-  computed: {},
-
   methods: {
     addMeaning() {
       this.$emit("onAddMoreMeaningsClicked");
@@ -56,7 +53,9 @@ export default {
       this.$emit("onVocabLevelSet", level);
     }
   },
-
+  setup() {
+    return {icons}
+  }
 }
 </script>
 

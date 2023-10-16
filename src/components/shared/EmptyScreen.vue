@@ -47,10 +47,16 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   color: grey;
+  font-size: 1.25rem;
+  text-align: center;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .empty-screen button {
   color: grey;
+}
+
+.empty-screen svg {
+  fill: lightgrey;
 }
 </style>

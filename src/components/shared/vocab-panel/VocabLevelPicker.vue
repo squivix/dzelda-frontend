@@ -19,11 +19,11 @@
     </li>
     <li :class="{ highlighted: level === constants.ALL_VOCAB_LEVELS.LEARNED }"
         @click.stop="setVocabLevel(constants.ALL_VOCAB_LEVELS.LEARNED)">
-      <font-awesome-icon icon="check" ref="toggleShowIcon"/>
+      <inline-svg :src="icons.checkMark"/>
     </li>
     <li :class="{ highlighted: level === constants.ALL_VOCAB_LEVELS.IGNORED }"
         @click.stop="setVocabLevel(constants.ALL_VOCAB_LEVELS.IGNORED)">
-      <font-awesome-icon icon="ban" ref="toggleShowIcon"/>
+      <inline-svg :src="icons.circleSlash"/>
     </li>
   </ol>
 
@@ -32,10 +32,12 @@
 <script lang="ts">
 import constants from "@/constants.ts";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
+import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
 
 export default {
   name: "VocabLevelPicker",
-  components: {},
+  components: {InlineSvg},
   data() {
     return {constants};
   },
@@ -60,7 +62,10 @@ export default {
     },
   },
   setup() {
-    return {vocabStore: useVocabStore()};
+    return {
+      icons,
+      vocabStore: useVocabStore()
+    };
   }
 };
 </script>
@@ -96,5 +101,6 @@ export default {
 .levels .highlighted {
   background-color: var(--primary-color);
   color: var(--on-primary-color);
+  fill: var(--on-primary-color);
 }
 </style>

@@ -3,12 +3,12 @@
     <li v-for="(item, index) in listItems" :key="index" :class="item.class??''">
 
       <router-link v-if="item.link" :to="item.link">
-        <font-awesome-icon v-if="item.icon" :icon="item.icon"></font-awesome-icon>
+        <inline-svg v-if="item.icon" :src="item.icon"/>
         <img class="image-icon" v-else-if="item.image" :src="item.image.src" :alt="item.image.alt">
         <span v-if="item.text">{{ item.text }}</span>
       </router-link>
       <template v-else>
-        <font-awesome-icon v-if="item.icon" :icon="item.icon"></font-awesome-icon>
+        <inline-svg v-if="item.icon" :src="item.icon"/>
         <span v-if="item.text">{{ item.text }}</span>
       </template>
     </li>
@@ -18,9 +18,11 @@
 <script lang="ts">
 import {PropType} from "vue";
 import {RouteLocationRaw} from "vue-router";
+import InlineSvg from "vue-inline-svg";
 
 export default {
   name: "BaseDropDownList",
+  components: {InlineSvg},
   props: {
     listItems: {
       // TODO replace with slots

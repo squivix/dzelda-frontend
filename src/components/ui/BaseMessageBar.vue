@@ -5,7 +5,7 @@
     <div class="message-content-wrapper">
       <p class="message-text">{{ text }}</p>
       <button class="dismiss-button inv-button" @click="onDismissed">
-        <font-awesome-icon icon="x"/>
+        <inline-svg :src="icons.cross"/>
       </button>
     </div>
   </div>
@@ -13,9 +13,12 @@
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
 import {MessageType} from "@/stores/messageBarStore.js";
+import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
 
 export default defineComponent({
   name: "BaseMessageBar",
+  components: {InlineSvg},
   emits: ["onDismissed"],
   props: {
     text: {
@@ -48,7 +51,7 @@ export default defineComponent({
     }
   },
   setup() {
-    return {MessageType};
+    return {icons, MessageType};
   }
 });
 </script>
@@ -103,5 +106,6 @@ export default defineComponent({
 .dismiss-button svg {
   width: 15px;
   height: 15px;
+  fill: dimgrey;
 }
 </style>

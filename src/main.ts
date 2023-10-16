@@ -3,8 +3,6 @@ import App from "@/App.vue";
 import {router} from "@/router/router.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import "@/fa-lib.js";
 import {createPinia} from "pinia";
 
 const app = createApp(App);
@@ -20,7 +18,6 @@ pinia.use(({store}) => {
 app.use(pinia);
 
 //global components
-app.component("font-awesome-icon", FontAwesomeIcon);
 app.component("base-card", BaseCard);
 app.component("base-password-input", BasePasswordInput);
 

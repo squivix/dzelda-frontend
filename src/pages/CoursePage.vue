@@ -4,8 +4,9 @@
       <header>
         <h1>{{ course.title }}</h1>
         <button class="bookmark-button inv-button" @click="toggleCourseIsBookmarked">
-          <font-awesome-icon :icon="[course.isBookmarked?'fas':'far', 'bookmark']"
-                             :class="{'bookmarked':course!.isBookmarked}"/>
+
+          <inline-svg :src="icons.bookmark"
+                      :class="`${course.isBookmarked?'bookmark-filled':'bookmark-hollow'}`"/>
         </button>
       </header>
       <p>{{ course.description }}</p>
@@ -26,11 +27,12 @@ import LessonListItem from "@/components/shared/content/LessonListItem.vue";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {CourseSchema} from "dzelda-types";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
 
 export default {
   name: "CoursePage",
-  components: {FontAwesomeIcon, LessonListItem, BaseCard},
+  components: {InlineSvg, LessonListItem, BaseCard},
   data() {
     return {
       course: null as CourseSchema | null,
@@ -56,6 +58,7 @@ export default {
   },
   setup() {
     return {
+      icons,
       courseStore: useCourseStore(),
       lessonStore: useLessonStore()
     };
@@ -85,7 +88,18 @@ header {
 .bookmark-button svg {
   width: 20px;
   height: 20px;
-  color: var(--primary-color)
+  overflow: visible;
+}
+
+.bookmark-filled {
+  fill: var(--primary-color);
+  stroke: var(--primary-color);
+}
+
+.bookmark-hollow {
+  fill: none;
+  stroke-width: 56px;
+  stroke: var(--primary-color);
 }
 
 h1 {
@@ -102,7 +116,4 @@ h2 {
   row-gap: 1rem;
 }
 
-.bookmarked {
-
-}
 </style>

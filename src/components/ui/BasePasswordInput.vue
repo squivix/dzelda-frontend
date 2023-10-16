@@ -9,19 +9,17 @@
         @input="onInput"
     />
     <button type="button" @click="toggleShowPassword" class="inv-button">
-      <font-awesome-icon
-          :icon="shown ? 'eye-slash' : 'eye'"
-          ref="toggleShowIcon"
-      />
+      <inline-svg :src="isShown?icons.hide:icons.show"/>
     </button>
   </div>
 </template>
 <script lang="ts">
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
 
 export default {
   name: "BasePasswordInput",
-  components: {FontAwesomeIcon},
+  components: {InlineSvg},
   inheritAttrs: false,
   props: {
     modelValue: String,
@@ -33,7 +31,7 @@ export default {
   },
   data() {
     return {
-      shown: false,
+      isShown: false,
     };
   },
 
@@ -46,12 +44,15 @@ export default {
       } else {
         input.type = 'password';
       }
-      this.shown = !this.shown;
+      this.isShown = !this.isShown;
     },
     onInput(event) {
       this.$emit('update:modelValue', event.target.value);
     },
   },
+  setup() {
+    return {icons}
+  }
 };
 </script>
 <style scoped>

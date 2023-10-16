@@ -1,5 +1,5 @@
 <template>
-  <CourseList :is-loading="loading"
+  <CourseList :is-loading="isLoading"
               :page-count="pageCount"
               :page="queryParams.page"
               :pageSize="queryParams.pageSize"
@@ -8,7 +8,7 @@
               :level="queryParams.level"
               :courses="courses">
     <template v-slot:empty-screen>
-      <font-awesome-icon icon="book-bookmark" class="empty-icon"/>
+      <inline-svg :src="icons.bookWithBookmark" class="empty-icon"/>
       <p>Courses you bookmark
         <br>
         will appear here</p>
@@ -21,10 +21,12 @@ import {defineComponent, PropType} from "vue";
 import {CourseSchema} from "dzelda-types";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
 import CourseList from "@/components/shared/content/CourseList.vue";
+import {icons} from "@/icons.js";
+import InlineSvg from "vue-inline-svg";
 
 export default defineComponent({
   name: "BookmarkedCoursesTab",
-  components: {CourseList},
+  components: {CourseList, InlineSvg},
   props: {
     pathParams: {
       type: Object as PropType<{
@@ -47,14 +49,8 @@ export default defineComponent({
     return {
       courses: null as CourseSchema[] | null,
       pageCount: 0,
-      loading: true,
-      isFiltersShown: false,
+      isLoading: false,
     };
-  },
-  computed: {
-    hasFilters() {
-      return !!this.queryParams.addedBy || !!this.queryParams.searchQuery || !!this.queryParams.level;
-    }
   },
   watch: {
     queryParams() {
@@ -66,7 +62,7 @@ export default defineComponent({
   },
   methods: {
     async fetchSavedCourses() {
-      this.loading = true;
+      this.isLoading = true;
       const response = await this.courseStore.fetchUserBookmarkedCourses({
         languageCode: this.$route.params.learningLanguage as string,
         level: this.queryParams.level,
@@ -77,20 +73,12 @@ export default defineComponent({
       });
       this.courses = response.data;
       this.pageCount = response.pageCount;
-      this.loading = false;
+      this.isLoading = false;
     },
-    toggleFilters() {
-      this.isFiltersShown = !this.isFiltersShown;
-    },
-    clearFilters() {
-      this.$router.push({
-        query: {...this.$route.query, level: undefined, addedBy: undefined, searchQuery: undefined, page: undefined}
-      });
-      this.isFiltersShown = false;
-    }
   },
   setup() {
     return {
+      icons,
       courseStore: useCourseStore()
     };
   }

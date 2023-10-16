@@ -4,8 +4,7 @@ import arrowRight from "@/assets/images/arrow-right.svg"
 import arrowUp from "@/assets/images/arrow-up.svg"
 import book from "@/assets/images/book.svg"
 import bookWithBookmark from "@/assets/images/book-with-bookmark.svg"
-import bookmarkFilled from "@/assets/images/bookmark-filled.svg"
-import bookmarkHollow from "@/assets/images/bookmark-hollow.svg"
+import bookmark from "@/assets/images/bookmark.svg"
 import books from "@/assets/images/books.svg"
 import checkMark from "@/assets/images/check-mark.svg"
 import circleSlash from "@/assets/images/circle-slash.svg"
@@ -41,8 +40,7 @@ export const icons = {
     arrowUp,
     book,
     bookWithBookmark,
-    bookmarkFilled,
-    bookmarkHollow,
+    bookmark,
     books,
     checkMark,
     circleSlash,

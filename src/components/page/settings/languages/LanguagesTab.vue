@@ -23,8 +23,7 @@
       <tr>
         <td colspan="3">
           <router-link :to="{name:'new-language'}" class="new-language link">
-            <font-awesome-icon icon="circle-plus" class="language-icon">
-            </font-awesome-icon>
+            <inline-svg :src="icons.plusRound" class="language-icon"/>
             <button class="inv-button link">
               Add another language
             </button>
@@ -39,9 +38,12 @@
 <script lang="ts">
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {LanguageSchema, LearnerLanguageSchema} from "dzelda-types";
+import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
 
 export default {
   name: "LanguagesTab",
+  components: {InlineSvg},
   data() {
     return {
       allLanguages: null as LanguageSchema[] | null,
@@ -81,7 +83,10 @@ export default {
     this.userLanguages = await this.fetchUserLanguages()
   },
   setup() {
-    return {languageStore: useLanguageStore()};
+    return {
+      icons,
+      languageStore: useLanguageStore()
+    };
   }
 }
 </script>

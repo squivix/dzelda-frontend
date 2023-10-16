@@ -15,7 +15,8 @@
     <button class="new-meaning-button"
             @click="addNewMeaning"
             type="submit">
-      <font-awesome-icon icon="plus"/>
+
+      <inline-svg :src="icons.plus"/>
     </button>
   </form>
 </template>
@@ -23,10 +24,12 @@
 <script lang="ts">
 import {useMeaningStore} from "@/stores/backend/meaningStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
+import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
 
 export default {
   name: "MeaningAddingControls",
-  components: {},
+  components: {InlineSvg},
   emits: ["onMeaningAdded"],
   props: {
     vocabId: {
@@ -89,6 +92,7 @@ export default {
   },
   setup() {
     return {
+      icons,
       vocabStore: useVocabStore(),
       meaningStore: useMeaningStore()
     };

@@ -5,11 +5,11 @@
       <form class="add-course-form" @submit.prevent="onSubmit">
         <div class="file-inputs-div">
 
-          <base-image :image-url="imageUrl" :fall-back-url="assets.courseBlank"
+          <base-image :image-url="imageUrl" :fall-back-url="icons.courseBlank"
                       alt-text="course image"></base-image>
 
-          <label for="image-input" class="file-input-label button-hollow">
-            <FontAwesomeIcon icon="upload"></FontAwesomeIcon>
+          <label for="image-input" class="file-input-label inv-button">
+            <inline-svg :src="icons.upload"/>
             Upload Image
           </label>
           <input id="image-input" type="file" accept="image/png, image/jpeg" @change="setImageFile" class="file-input">
@@ -39,13 +39,13 @@
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import courseBlank from "@/assets/images/course-blank.svg"
+import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
 
 export default {
   name: "CourseAddPage",
-  components: {BaseCard, FontAwesomeIcon, BaseImage},
+  components: {InlineSvg, BaseCard, BaseImage},
   data() {
     return {
       title: "",
@@ -85,8 +85,8 @@ export default {
   },
   setup() {
     return {
+      icons,
       courseStore: useCourseStore(),
-      assets: {courseBlank}
     };
   }
 };
@@ -160,5 +160,13 @@ input[type="file"] {
 
 .file-input-label {
   font-size: 0.5rem;
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+}
+
+.file-input-label svg {
+  width: 30px;
+  height: 30px;
 }
 </style>
