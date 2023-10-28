@@ -1,19 +1,19 @@
 <template>
   <div>
-    <inline-svg class="spinner" :src="assets.loadingSpinner"/>
+    <inline-svg class="spinner" :src="icons.loadingSpinner"/>
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue'
-import loadingSpinner from "@/assets/images/loading-spinner.svg"
 import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
 
 export default defineComponent({
   name: "LoadingScreen",
   components: {InlineSvg},
   setup() {
-    return {assets: {loadingSpinner}}
+    return {icons}
   }
 })
 </script>

@@ -1,8 +1,10 @@
 <template>
-  <img v-if="imageUrl&&!imageError" :src="imageUrl" @error="imageError=true" :alt="altText"
-       class="image">
-  <div v-else-if="fallBackUrl" class="image fallback-image">
-    <inline-svg :src="fallBackUrl"></inline-svg>
+  <template v-if="imageUrl&&!imageError">
+    <img :src="imageUrl" @error="imageError=true" :alt="altText"
+         :class="{'image':true,'circular':circular}">
+  </template>
+  <div v-else :class="{'image':true, 'fallback-image':true,'circular':circular}">
+    <inline-svg :src="fallBackUrl!"/>
   </div>
 </template>
 
@@ -12,27 +14,22 @@ import InlineSvg from "vue-inline-svg";
 export default {
   name: "BaseImage",
   components: {InlineSvg},
+  props: {
+    imageUrl: {type: String, required: false},
+    fallBackUrl: {type: String, required: false},
+    circular: {type: Boolean, required: false, default: false},
+    altText: {type: String, required: false, default: "image"}
+  },
+  watch: {
+    imageUrl() {
+      this.imageError = false;
+    }
+  },
   data() {
     return {
       imageError: false,
     };
   },
-  props: {
-    imageUrl: {
-      type: String,
-      required: true,
-    },
-    fallBackUrl: {
-      type: String,
-      required: false,
-    },
-    altText: {
-      type: String,
-      required: false,
-      default: "image",
-    }
-  }
-
 };
 </script>
 
@@ -56,6 +53,10 @@ export default {
 .fallback-image svg {
   width: 120px;
   height: 120px;
-  color: var(--on-primary-color);
+  fill: var(--on-primary-color);
+}
+
+.circular {
+  border-radius: 50%;
 }
 </style>

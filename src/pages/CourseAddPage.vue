@@ -58,7 +58,6 @@ export default {
   methods: {
     setImageFile(event: Event) {
       this.image = event.target.files[0];
-      // noinspection JSUnresolvedFunction
       this.imageUrl = URL.createObjectURL(this.image);
     },
     async onSubmit() {

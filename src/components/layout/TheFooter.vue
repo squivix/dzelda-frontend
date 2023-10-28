@@ -9,20 +9,20 @@
     <nav class="social-links">
       <ul>
         <li><a href="https://github.com/squivix/dzelda-frontend" target="_blank">
-          <img :src="assets.githubLogo" alt="github link">
+          <img :src="icons.githubLogo" alt="github link">
         </a></li>
       </ul>
     </nav>
   </footer>
 </template>
 <script lang="ts">
-import githubLogo from "@/assets/images/github-logo.svg";
+import {icons} from "@/icons.js";
 
 export default {
   name: "TheFooter",
   components: {},
   setup() {
-    return {assets: {githubLogo}};
+    return {icons};
   }
 };
 </script>

@@ -3,7 +3,7 @@
 
     <div class="top-div">
       <!--      <img :src="image" @error="setDefaultImage" alt="lesson image" class="lesson-image">-->
-      <BaseImage :image-url="image" :fall-back-url="assets.lessonBlank"
+      <BaseImage :image-url="image" :fall-back-url="icons.lessonBlank"
                  alt-text="lesson image" class="lesson-image"></BaseImage>
       <lesson-paragraph class="title"
                         :paragraph-elements="lessonElements.title"
@@ -40,7 +40,7 @@
 <script lang="ts">
 import LessonParagraph from "@/components/page/reader/LessonParagraph.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import lessonBlank from "@/assets/images/lesson-blank.svg";
+import {icons} from "@/icons.js";
 
 export default {
   name: "TheLessonContent",
@@ -129,7 +129,7 @@ export default {
     document.body.addEventListener("dragenter", e => e.preventDefault());
   },
   setup() {
-    return {assets: {lessonBlank}}
+    return {icons}
   }
 }
 ;

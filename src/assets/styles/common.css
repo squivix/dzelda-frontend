@@ -38,7 +38,6 @@ button:hover {
 
 .square-button {
     border-radius: 3px;
-    padding: 10px 20px;
     font-size: 1rem;
 }
 
@@ -53,6 +52,7 @@ button:hover {
     background: var(--primary-color);
     border: 1px solid var(--primary-color);
     color: var(--on-primary-color);
+    fill: var(--on-primary-color);
     font-weight: bold;
     cursor: pointer;
 }
@@ -60,6 +60,7 @@ button:hover {
 .primary-hollow-button {
     background: var(--on-primary-color);
     color: var(--primary-color);
+    fill: var(--primary-color);
     border: 1px solid var(--primary-color);
     font-size: 1rem;
     font-weight: bold;
@@ -83,6 +84,11 @@ button:hover {
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
+}
+
+.icon-button {
+    display: flex;
+    column-gap: 0.2rem;
 }
 
 .inv-button {
@@ -155,7 +161,6 @@ a:hover {
 /*from: https://css-tricks.com/the-current-state-of-styling-scrollbars-in-css/*/
 .styled-scrollbars {
     /* Foreground, Background */
-    /*noinspection CssUnknownProperty*/
     scrollbar-color: darkgray whitesmoke;
 }
 

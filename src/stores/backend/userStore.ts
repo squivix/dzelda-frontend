@@ -3,6 +3,7 @@ import {useStore} from "@/stores/backend/rootStore.js";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 import {UserSchema} from "dzelda-types";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
+import {cleanUndefined} from "@/utils.js";
 
 export const useUserStore = defineStore("auth", {
     state() {
@@ -147,6 +148,22 @@ export const useUserStore = defineStore("auth", {
                 const messageBarStore = useMessageBarStore();
                 messageBarStore.addMessage({text: "Account deleted.", type: MessageType.INFO});
                 this.router.push({name: "home"});
+            }
+            return response.ok;
+        },
+        async updateUserProfile(body: { bio: string, profilePicture: File | "" | undefined }) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.users.putUsersMeProfile(cleanUndefined({
+                data: {
+                    bio: body.bio
+                },
+                profilePicture: body.profilePicture
+            })));
+
+            // handle your 4XX errors as you may
+            //...
+            if (response.ok) {
+                await this.fetchUserAccount(true)
             }
             return response.ok;
         }

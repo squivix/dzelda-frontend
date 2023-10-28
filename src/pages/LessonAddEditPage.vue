@@ -3,7 +3,7 @@
     <template v-slot:content>
       <form class="add-edit-lesson-form" @submit.prevent="onSubmit">
         <div class="file-inputs-div">
-          <base-image :image-url="imageUrl" :fall-back-url="assets.lessonBlank"></base-image>
+          <base-image :image-url="imageUrl" :fall-back-url="icons.lessonBlank"></base-image>
 
           <label for="image-input" class="file-input-label inv-button">
             <inline-svg :src="icons.upload"/>
@@ -59,7 +59,6 @@ import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {LessonSchema} from "dzelda-types";
-import lessonBlank from "@/assets/images/lesson-blank.svg";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
@@ -169,7 +168,6 @@ export default {
       courseStore: useCourseStore(),
       lessonStore: useLessonStore(),
       userStore: useUserStore(),
-      assets: {lessonBlank: lessonBlank}
     };
   }
 };

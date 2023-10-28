@@ -3,7 +3,7 @@
     <template v-slot:content>
       <form class="edit-course-form" @submit.prevent="onSubmit">
         <div class="file-inputs-div">
-          <base-image :image-url="imageUrl" :fall-back-url="assets.courseBlank" class="course-image"
+          <base-image :image-url="imageUrl" :fall-back-url="icons.courseBlank" class="course-image"
                       alt-text="course image"></base-image>
           <label for="image-input" class="file-input-label inv-button">
             <inline-svg :src="icons.upload"/>
@@ -71,7 +71,6 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import {VueDraggableNext} from "vue-draggable-next";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import courseBlank from "@/assets/images/course-blank.svg";
 import {LessonSchema} from "dzelda-types";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
@@ -98,7 +97,6 @@ export default {
   methods: {
     setImageFile(event: Event) {
       this.image = event.target.files[0];
-      // noinspection JSUnresolvedFunction
       this.imageUrl = URL.createObjectURL(this.image);
     },
     onSubmit() {
@@ -143,7 +141,6 @@ export default {
     return {
       icons,
       courseStore: useCourseStore(),
-      assets: {courseBlank}
     };
   }
 };

@@ -70,7 +70,7 @@
       </base-drop-down>
       <base-drop-down :is-pointy="true" label="profile-menu">
         <template v-slot:button>
-          <base-image :image-url="userAccount.profile.profilePicture"
+          <base-image :image-url="profilePicture"
                       :fall-back-url="icons.userProfile" class="profile-picture"
                       alt="profile picture"/>
         </template>
@@ -129,6 +129,12 @@ export default defineComponent({
     },
     otherLanguages() {
       return this.userLanguages ? this.userLanguages!.filter(lang => lang.code !== this.currentLanguage!.code) : [];
+    },
+    profilePicture() {
+      const profilePicturePath = this.userAccount?.profile.profilePicture;
+      if (profilePicturePath)
+        return `${this.store.resourceUrl}/${profilePicturePath}`;
+      return "";
     },
   },
   methods: {},

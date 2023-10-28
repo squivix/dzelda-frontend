@@ -17,7 +17,6 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue'
-import loadingSpinner from "@/assets/images/loading-spinner.svg"
 import InlineSvg from "vue-inline-svg";
 
 export default defineComponent({

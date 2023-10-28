@@ -2,15 +2,15 @@
   <form @submit.prevent="onSearchSubmitted" class="search-form">
     <input type="text" class="search-input" placeholder="Search" v-model.trim="searchQuery">
     <button class="search-button icon-wrapper">
-      <inline-svg :src="assets.search"/>
+      <inline-svg :src="icons.search"/>
     </button>
   </form>
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue'
-import search from "@/assets/images/search.svg"
 import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
 
 export default defineComponent({
   name: "SearchBar",
@@ -29,7 +29,7 @@ export default defineComponent({
     },
   },
   setup() {
-    return {assets: {search}}
+    return {icons}
   }
 })
 </script>

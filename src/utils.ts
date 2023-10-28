@@ -19,3 +19,18 @@ export function excludeProperties<T, K extends keyof T>(obj: T, keysToOmit: K[])
 
     return result as Omit<T, K>;
 }
+
+export function cleanUndefined(obj: any): any {
+    if (typeof obj !== 'object' || obj === null)
+        return obj;
+
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            if (obj[key] === undefined)
+                delete obj[key];
+            else
+                obj[key] = cleanUndefined(obj[key]);
+        }
+    }
+    return obj;
+}
