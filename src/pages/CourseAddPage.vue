@@ -3,26 +3,12 @@
     <template v-slot:content>
 
       <form class="add-course-form" @submit.prevent="onSubmit">
-        <div class="file-inputs-div">
-
-          <base-image :image-url="imageUrl" :fall-back-url="icons.courseBlank"
-                      alt-text="course image"></base-image>
-
-          <label for="image-input" class="file-input-label inv-button">
-            <inline-svg :src="icons.upload"/>
-            Upload Image
-          </label>
-          <input id="image-input" type="file" accept="image/png, image/jpeg" @change="setImageFile" class="file-input">
-        </div>
-        <div class="other-inputs-div">
+        <base-image-upload-input path="" :fallback="icons.courseBlank" v-model="image"/>
+        <div class="inputs-div">
           <label for="course-title">Title</label>
           <input id="course-title" type="text" placeholder="Course Title" v-model="title" required>
           <label for="course-description">Description</label>
           <textarea id="course-description" placeholder="Course Description" v-model="description"></textarea>
-
-          <!--TODO:make into component with auto complete -->
-          <!--<label for="course-tags">Tags</label>-->
-          <!--<input id="course-tags" placeholder="Course Tags">-->
 
           <label for="is-public-checkbox" class="checkbox-label">
             <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
@@ -42,24 +28,20 @@ import {useCourseStore} from "@/stores/backend/courseStore.js";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
+import BaseImageUploadInput from "@/components/ui/BaseImageUploadInput.vue";
 
 export default {
   name: "CourseAddPage",
-  components: {InlineSvg, BaseCard, BaseImage},
+  components: {BaseImageUploadInput, InlineSvg, BaseCard, BaseImage},
   data() {
     return {
       title: "",
       description: "",
       isPublic: true,
-      image: null as File | null,
-      imageUrl: "",
+      image: undefined as File | "" | undefined,
     };
   },
   methods: {
-    setImageFile(event: Event) {
-      this.image = event.target.files[0];
-      this.imageUrl = URL.createObjectURL(this.image);
-    },
     async onSubmit() {
       const newCourse = await this.addCourse();
       //TODO move this somewhere more general
@@ -112,13 +94,7 @@ export default {
   column-gap: 1rem;
 }
 
-.file-inputs-div {
-  display: flex;
-  flex-direction: column;
-  row-gap: 1rem;
-}
-
-.other-inputs-div {
+.inputs-div {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -147,25 +123,4 @@ export default {
   height: 15vh;
 }
 
-input[type="file"] {
-  display: none;
-}
-
-.course-image {
-  width: 200px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border-radius: 5px;
-}
-
-.file-input-label {
-  font-size: 0.5rem;
-  display: flex;
-  align-items: center;
-  column-gap: 1rem;
-}
-
-.file-input-label svg {
-  width: 30px;
-  height: 30px;
-}
 </style>

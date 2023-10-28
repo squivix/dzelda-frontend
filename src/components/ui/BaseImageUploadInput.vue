@@ -54,7 +54,7 @@ export default defineComponent({
     enabled(enabled) {
       if (!enabled)
         this.isPreview = false;
-    }
+    },
   },
   methods: {
     onChange(event: Event) {
@@ -89,6 +89,7 @@ export default defineComponent({
 .file-inputs-div {
   display: flex;
   flex-direction: column;
+  row-gap: 0.5rem;
 }
 
 input[type="file"] {

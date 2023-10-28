@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
+import {cleanUndefined} from "@/utils.js";
 
 export const useCourseStore = defineStore("course", {
     actions: {
@@ -37,19 +38,19 @@ export const useCourseStore = defineStore("course", {
             languageCode: string,
             title: string,
             description: string,
-            image: File | null,
+            image: File | undefined | "",
             isPublic: boolean
         }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.courses.postCourses({
+            const response = await store.fetchCustom((api) => api.courses.postCourses(cleanUndefined({
                 data: {
                     languageCode: body.languageCode,
                     title: body.title,
                     description: body.description,
                     isPublic: body.isPublic
                 },
-                image: body.image ?? ""
-            }));
+                image: body.image
+            })));
             // handle your 4XX errors as you may
             //...
             return response.data;
@@ -69,20 +70,22 @@ export const useCourseStore = defineStore("course", {
             title: string,
             description: string,
             isPublic: boolean,
+            level: 'beginner1' | 'beginner2' | 'intermediate1' | 'intermediate2' | 'advanced1' | 'advanced2'
             image: File,
             lessonsOrder: number[]
         }) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.courses.putCoursesCourseId(pathParams.courseId,
-                {
+                cleanUndefined({
                     data: {
                         title: body.title,
                         description: body.description,
+                        level: body.level,
                         isPublic: body.isPublic,
                         lessonsOrder: body.lessonsOrder,
                     },
                     image: body.image
-                }));
+                })));
             // handle your 4XX errors as you may
             //...
             return response.data;

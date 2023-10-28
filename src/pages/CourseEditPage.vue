@@ -1,27 +1,14 @@
 <template>
   <base-card title="Edit Course" class="edit-course-base-card">
     <template v-slot:content>
-      <form class="edit-course-form" @submit.prevent="onSubmit">
-        <div class="file-inputs-div">
-          <base-image :image-url="imageUrl" :fall-back-url="icons.courseBlank" class="course-image"
-                      alt-text="course image"></base-image>
-          <label for="image-input" class="file-input-label inv-button">
-            <inline-svg :src="icons.upload"/>
-            Upload Image
-          </label>
-          <input id="image-input" type="file" accept="image/png, image/jpeg" @change="setImageFile" class="file-input">
-        </div>
+      <form class="edit-course-form" v-if="course" @submit.prevent="onSubmit">
+        <base-image-upload-input :path="course!.image" :fallback="icons.courseBlank" v-model="image"/>
 
-        <div class="other-inputs-div">
+        <div class="inputs-div">
           <label for="course-title">Title</label>
           <input id="course-title" type="text" placeholder="Course Title" v-model="title" required>
           <label for="course-description">Description</label>
           <textarea id="course-description" placeholder="Course Description" v-model="description"></textarea>
-
-          <!--TODO:make into component with auto complete -->
-          <!--<label for="course-tags">Tags</label>-->
-          <!--<input id="course-tags" placeholder="Course Tags">-->
-
 
           <label for="lesson-table">Lessons</label>
           <table id="lesson-table" class="">
@@ -71,13 +58,15 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import {VueDraggableNext} from "vue-draggable-next";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import {LessonSchema} from "dzelda-types";
+import {CourseSchema, LessonSchema} from "dzelda-types";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
+import BaseImageUploadInput from "@/components/ui/BaseImageUploadInput.vue";
 
 export default {
   name: "CourseEditPage",
   components: {
+    BaseImageUploadInput,
     InlineSvg,
     BaseImage,
     BaseCard,
@@ -88,17 +77,14 @@ export default {
       title: null as string | null,
       description: null as string | null,
       isPublic: true,
+      level: null as ('beginner1' | 'beginner2' | 'intermediate1' | 'intermediate2' | 'advanced1' | 'advanced2' | null),
       lessons: null as LessonSchema[] | null,
       selectedLessons: [],
-      image: null as File | null,
-      imageUrl: "",
+      image: undefined as File | "" | undefined,
+      course: null as CourseSchema | null
     };
   },
   methods: {
-    setImageFile(event: Event) {
-      this.image = event.target.files[0];
-      this.imageUrl = URL.createObjectURL(this.image);
-    },
     onSubmit() {
       this.editCourse();
       this.$router.push({name: "course", ...this.$route.params});
@@ -109,6 +95,7 @@ export default {
           {
             title: this.title,
             description: this.description,
+            level: this.level,
             isPublic: this.isPublic,
             lessonsOrder: this.lessons.map(lesson => lesson.id),
             image: this.image
@@ -131,10 +118,11 @@ export default {
   },
   async mounted() {
     const course = await this.fetchCourse();
+    this.course = course;
     this.title = course.title;
+    this.level = course.level;
     this.description = course.description;
     this.isPublic = course.isPublic;
-    this.imageUrl = course.image ?? "";
     this.lessons = course.lessons;
   },
   setup() {
@@ -167,13 +155,7 @@ export default {
   column-gap: 1rem;
 }
 
-.file-inputs-div {
-  display: flex;
-  flex-direction: column;
-  row-gap: 1rem;
-}
-
-.other-inputs-div {
+.inputs-div {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -221,25 +203,5 @@ export default {
   text-align: center;
 }
 
-input[type="file"] {
-  display: none;
-}
 
-.course-image {
-  width: 200px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border-radius: 5px;
-}
-
-.file-input-label {
-  font-size: 0.5rem;
-  display: flex;
-  align-items: center;
-  column-gap: 1rem;
-}
-
-.file-input-label svg {
-  width: 30px;
-  height: 30px;
-}
 </style>
