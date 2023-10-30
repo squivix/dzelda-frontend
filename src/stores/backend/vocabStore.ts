@@ -1,9 +1,16 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
+import {VocabLevelSchema} from "dzelda-types";
 
 export const useVocabStore = defineStore("vocab", {
     actions: {
-        async fetchUserVocabs(queryParams: { languageCode?: string, level?: (-1 | 0 | 1 | 2 | 3 | 4 | 5 | 6)[], searchQuery?: string, pageSize?: number, page?: number } = {}) {
+        async fetchUserVocabs(queryParams: {
+            languageCode?: string,
+            level?: (-1 | 0 | 1 | 2 | 3 | 4 | 5 | 6)[],
+            searchQuery?: string,
+            pageSize?: number,
+            page?: number
+        } = {}) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.getUsersMeVocabs(queryParams));
 
@@ -54,6 +61,19 @@ export const useVocabStore = defineStore("vocab", {
             // handle your 4XX errors as you may
             //...
 
+            return response.data;
+        },
+
+        async fetchSavedVocabsCount(pathParams: { username: string }, queryParams: {
+            savedOnFrom?: string,
+            savedOnTo?: string,
+            savedOnInterval?: "day" | "month" | "year",
+            groupBy?: "language",
+            level?: VocabLevelSchema[],
+            isPhrase?: boolean
+        }) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.users.getUsersUsernameVocabsSavedCountTimeSeries(pathParams.username, queryParams, {secure: true}));
             return response.data;
         }
     }

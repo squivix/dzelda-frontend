@@ -3,7 +3,7 @@
     <template v-slot:all>
       <profile-form class="profile-wrapper"/>
       <div class="stats-wrapper">
-
+        <RecentActivityChart/>
       </div>
     </template>
   </base-card>
@@ -15,10 +15,11 @@ import BaseImage from "@/components/ui/BaseImage.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import ProfileForm from "@/components/page/my-profile/ProfileForm.vue";
+import RecentActivityChart from "@/components/page/my-profile/RecentActivityChart.vue";
 
 export default {
   name: "MyProfilePage",
-  components: {ProfileForm, BaseImage, InlineSvg},
+  components: {RecentActivityChart, ProfileForm, BaseImage, InlineSvg},
   data() {
     return {}
   },
@@ -33,7 +34,7 @@ export default {
 .my-profile-base-card {
   display: flex;
   flex-direction: row;
-  width: 70vw;
+  min-width: 70vw;
 }
 
 .profile-wrapper {

@@ -37,7 +37,7 @@
             })),
             {
                   text:undefined,
-                  icon:'circle-plus',
+                  icon:icons.plusRound,
                   link:{ name: 'new-language' },
                   class:'language-add-button'
             }
