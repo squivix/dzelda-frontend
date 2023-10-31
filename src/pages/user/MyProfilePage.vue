@@ -1,9 +1,9 @@
 <template>
-  <base-card title="Profile" class="my-profile-base-card">
+  <base-card title="Profile" class="my-profile-base-card" v-if="userStore.userAccount">
     <template v-slot:all>
       <profile-form class="profile-wrapper"/>
       <div class="stats-wrapper">
-        <RecentActivityChart/>
+        <RecentActivityChart :user="userStore.userAccount"/>
       </div>
     </template>
   </base-card>
@@ -35,6 +35,7 @@ export default {
   display: flex;
   flex-direction: row;
   min-width: 70vw;
+  column-gap: 2rem;
 }
 
 .profile-wrapper {
@@ -42,10 +43,11 @@ export default {
   flex-direction: column;
   align-items: stretch;
   row-gap: 1rem;
+  flex: 1;
 }
 
 .stats-wrapper {
-  flex-grow: 1;
+  flex: 3;
 }
 
 </style>

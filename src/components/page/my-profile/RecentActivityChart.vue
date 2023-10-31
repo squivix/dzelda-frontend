@@ -1,82 +1,142 @@
 <template>
-  <div class="chart-wrapper" v-if="chartData">
-    <line-chart :data="chartData" :options="chartOptions"></line-chart>
+  <div class="recent-activity-chart">
+    <div class="title-bar">
+      <h3>Recent Activity</h3>
+      <select v-model="period" :disabled="isLoading">
+        <option :value="RecentActivityPeriod.LAST_WEEK">Last week</option>
+        <option :value="RecentActivityPeriod.LAST_MONTH">Last month</option>
+        <option :value="RecentActivityPeriod.LAST_6_MONTHS">Last 6 months</option>
+        <option :value="RecentActivityPeriod.LAST_YEAR">Last year</option>
+        <option :value="RecentActivityPeriod.ALL_TIME">All time</option>
+      </select>
+    </div>
+    <LoadingScreen v-if="isLoading" class="loading-screen"/>
+    <BaseLineChart v-else-if="chartData"
+                   :chart-data="chartData"
+                   :x-label="xLabel"
+                   y-label="Saved vocabs"
+                   :chart-options="{scales: {y: {ticks: {precision:0}}}}"/>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, PropType} from 'vue'
 import {Line as LineChart} from "vue-chartjs";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
+import BaseLineChart from "@/components/ui/BaseLineChart.vue";
+import {UserSchema} from "dzelda-types";
+import {ChartData} from "chart.js";
+import LoadingScreen from "@/components/shared/LoadingScreen.vue";
+import {toSentenceCase} from "@/utils.js";
+
+enum RecentActivityPeriod {
+  LAST_WEEK = "last-week",
+  LAST_MONTH = "last-month",
+  LAST_6_MONTHS = "last-6-months",
+  LAST_YEAR = "last-year",
+  ALL_TIME = "all-time"
+}
 
 export default defineComponent({
   name: "RecentActivityChart",
-  components: {LineChart},
+  components: {LoadingScreen, BaseLineChart, LineChart},
+  props: {user: {type: Object as PropType<UserSchema>, required: true}},
   data() {
     return {
-      chartData: null,
-      // {
-      // labels: ['January',
-      //   'February',
-      //   'March',
-      //   'April',
-      //   'May',
-      //   'June',
-      //   'July'
-      // ],
-      // datasets: [
-      //   {
-      //     label: 'English',
-      //     data: [65, 59, 80, 81, 56, 55, 40],
-      //   }
-      // ],
-      // },
-      chartOptions: {
-        plugins: {
-          title: {text: "Recent Activity", display: true, font: {size: 24}, align: "start", padding: {bottom: 15}},
-          legend: {
-            position: "right",
-            labels: {boxWidth: 20}
-          }
-        }
-      }
+      period: RecentActivityPeriod.LAST_WEEK,
+      isLoading: true,
+      chartData: null as ChartData | null,
+      xLabel: undefined as string | undefined,
+    }
+  },
+  watch: {
+    period() {
+      this.fetchSavedVocabsCount();
     }
   },
   methods: {
     async fetchSavedVocabsCount() {
-      const lastWeek = new Date();
-      lastWeek.setDate(new Date().getDate() - 7)
+      this.isLoading = true;
+      const to = new Date();
+      let from = new Date(), interval: "day" | "month" | "year" | undefined;
+      if (this.period == RecentActivityPeriod.LAST_WEEK) {
+        from.setDate(to.getDate() - 6);
+        interval = "day";
+      } else if (this.period == RecentActivityPeriod.LAST_MONTH) {
+        from.setDate(to.getDate() - 30);
+        interval = "day";
+      } else if (this.period == RecentActivityPeriod.LAST_6_MONTHS) {
+        from.setMonth(to.getMonth() - 6);
+        interval = "month";
+      } else if (this.period == RecentActivityPeriod.LAST_YEAR) {
+        from.setFullYear(to.getFullYear() - 1);
+        interval = "month";
+      } else if (this.period == RecentActivityPeriod.ALL_TIME) {
+        console.log(this.user.profile.languagesLearning)
+        //TODO set from to earliest language started learning date and select appropriate interval
+        // from.setFullYear(to.getFullYear() - 1);
+        // interval = "month";
+      }
       const rawData = await this.vocabStore.fetchSavedVocabsCount({
-        username: "me",
+        username: this.user.username,
       }, {
         groupBy: "language",
-        savedOnFrom: lastWeek.toISOString(),
-        savedOnTo: new Date().toISOString(),
-        savedOnInterval: "day",
+        savedOnFrom: from.toISOString(),
+        savedOnTo: to.toISOString(),
+        savedOnInterval: interval,
       })
       const languages: any = {};
       for (const row of rawData) {
         if (!(row.language! in languages))
           languages[row.language!] = {label: row.language!, data: []}
-        languages[row.language!].data.push({x: row.date, y: row.vocabsCount})
+        languages[row.language!].data.push({x: this.formatDate(row.date!), y: row.vocabsCount})
       }
-      console.log(Object.values(languages))
       this.chartData = {datasets: Object.values(languages)}
+      this.xLabel = toSentenceCase(interval!);
+      this.isLoading = false;
+    },
+    formatDate(date: string) {
+      if (this.period == RecentActivityPeriod.LAST_WEEK)
+        return new Date(date).toLocaleString('en-us', {weekday: 'long'})
+      else if (this.period == RecentActivityPeriod.LAST_MONTH)
+        return new Date(date).toLocaleString('en-us', {day: 'numeric', month: 'short'})
+      else if (this.period == RecentActivityPeriod.LAST_6_MONTHS || this.period == RecentActivityPeriod.LAST_YEAR)
+        return new Date(date).toLocaleString('en-us', {year: 'numeric', month: 'long'})
+      else {
+        //TODO set from to earliest language started learning date and select appropriate interval
+      }
     }
   },
   mounted() {
     this.fetchSavedVocabsCount();
   },
   setup() {
-    return {vocabStore: useVocabStore()}
+    return {vocabStore: useVocabStore(), RecentActivityPeriod}
   }
 })
 </script>
 
 <style scoped>
-.chart-wrapper {
-  position: relative;
-  height: 40vh;
+.recent-activity-chart {
+}
+
+:deep(.line-series-chart-wrapper) {
+  min-height: 200px;
   width: 50vw;
+}
+
+.loading-screen {
+  height: 200px;
+  width: 50vw;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+.title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

@@ -34,3 +34,31 @@ export function cleanUndefined(obj: any): any {
     }
     return obj;
 }
+
+export function isObject(item: any): item is { [p: string]: any } {
+    return (item && typeof item === 'object' && !Array.isArray(item));
+}
+
+export function mergeDeep(target: { [p: string]: any }, source: { [p: string]: any }) {
+    let output = Object.assign({}, target);
+    if (isObject(target) && isObject(source)) {
+        Object.keys(source).forEach(key => {
+            if (isObject(source[key])) {
+                if (!(key in target))
+                    Object.assign(output, {[key]: source[key]});
+                else
+                    output[key] = mergeDeep(target[key], source[key]);
+            } else {
+                Object.assign(output, {[key]: source[key]});
+            }
+        });
+    }
+    return output;
+}
+
+export function toSentenceCase(s: string) {
+    if (s.length > 0)
+        return `${s[0].toUpperCase()}${s.slice(1)}`
+    return s;
+
+}

@@ -89,6 +89,7 @@ export default defineComponent({
 .file-inputs-div {
   display: flex;
   flex-direction: column;
+  align-items: center;
   row-gap: 0.5rem;
 }
 
