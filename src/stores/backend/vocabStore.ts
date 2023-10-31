@@ -64,7 +64,7 @@ export const useVocabStore = defineStore("vocab", {
             return response.data;
         },
 
-        async fetchSavedVocabsCount(pathParams: { username: string }, queryParams: {
+        async fetchSavedVocabsCountTimeSeries(pathParams: { username: string }, queryParams: {
             savedOnFrom?: string,
             savedOnTo?: string,
             savedOnInterval?: "day" | "month" | "year",
@@ -75,6 +75,18 @@ export const useVocabStore = defineStore("vocab", {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.getUsersUsernameVocabsSavedCountTimeSeries(pathParams.username, queryParams, {secure: true}));
             return response.data;
+        },
+        async fetchSavedVocabsCount(pathParams: { username: string }, queryParams: {
+            savedOnFrom?: string,
+            savedOnTo?: string,
+            groupBy?: "language",
+            level?: VocabLevelSchema[],
+            isPhrase?: boolean
+        }) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.users.getUsersUsernameVocabsSavedCount(pathParams.username, queryParams, {secure: true}));
+            return response.data;
         }
+
     }
 });

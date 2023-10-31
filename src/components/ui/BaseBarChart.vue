@@ -1,18 +1,18 @@
 <template>
-  <div class="line-chart-wrapper" v-if="chartData">
-    <line-chart :data="data" :options="options"/>
+  <div class="bar-chart-wrapper">
+    <bar-chart :data="data" :options="options"/>
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
-import {Line as LineChart} from "vue-chartjs";
+import {Bar as BarChart} from 'vue-chartjs'
+import {ChartData, ChartOptions} from "chart.js";
 import {mergeDeep} from "@/utils.js";
-import {ChartData, ChartOptions, Point} from "chart.js";
 
 export default defineComponent({
-  name: "BaseLineChart",
-  components: {LineChart},
+  name: "BaseBarChart",
+  components: {BarChart},
   props: {
     chartData: {type: Object as PropType<ChartData>, required: true},
     chartOptions: {type: Object as PropType<ChartOptions>, required: false, default: {}},
@@ -21,10 +21,10 @@ export default defineComponent({
     yLabel: {type: String, required: false}
   },
   computed: {
-    data(): ChartData<"line", (number | Point | null)[], unknown> {
-      return this.chartData as ChartData<"line", (number | Point | null)[], unknown>
+    data(): ChartData<"bar"> {
+      return this.chartData as ChartData<"bar">
     },
-    options(): ChartOptions<"line"> {
+    options(): ChartOptions<"bar"> {
       const defaultOptions = {
         maintainAspectRatio: false,
         scales: {
@@ -46,7 +46,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.line-chart-wrapper {
+.bar-chart-wrapper {
   position: relative;
   min-height: 200px;
   width: 50vw;

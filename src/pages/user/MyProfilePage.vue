@@ -1,10 +1,15 @@
 <template>
   <base-card title="Profile" class="my-profile-base-card" v-if="userStore.userAccount">
     <template v-slot:all>
-      <profile-form class="profile-wrapper"/>
-      <div class="stats-wrapper">
-        <RecentActivityChart :user="userStore.userAccount"/>
+      <div class="profile-stats">
+        <profile-form class="profile-wrapper"/>
+        <div class="stats-wrapper">
+          <RecentActivityChart :user="userStore.userAccount"/>
+          <AllTimeProgressChart :user="userStore.userAccount"/>
+        </div>
+
       </div>
+      <!--      <BadgesSection/>-->
     </template>
   </base-card>
 </template>
@@ -16,10 +21,12 @@ import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import ProfileForm from "@/components/page/my-profile/ProfileForm.vue";
 import RecentActivityChart from "@/components/page/my-profile/RecentActivityChart.vue";
+import AllTimeProgressChart from "@/components/page/my-profile/AllTimeProgressChart.vue";
+import BadgesSection from "@/components/page/my-profile/BadgesSection.vue";
 
 export default {
   name: "MyProfilePage",
-  components: {RecentActivityChart, ProfileForm, BaseImage, InlineSvg},
+  components: {BadgesSection, ProfileForm, AllTimeProgressChart, RecentActivityChart, BaseImage, InlineSvg},
   data() {
     return {}
   },
@@ -32,9 +39,12 @@ export default {
 <style scoped>
 
 .my-profile-base-card {
+  min-width: 70vw;
+}
+
+.profile-stats {
   display: flex;
   flex-direction: row;
-  min-width: 70vw;
   column-gap: 2rem;
 }
 
@@ -48,6 +58,9 @@ export default {
 
 .stats-wrapper {
   flex: 3;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
 }
 
 </style>

@@ -28,6 +28,7 @@ import {UserSchema} from "dzelda-types";
 import {ChartData} from "chart.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {toSentenceCase} from "@/utils.js";
+import {ChartDataset} from "chart.js/dist/types/index.js";
 
 enum RecentActivityPeriod {
   LAST_WEEK = "last-week",
@@ -45,17 +46,17 @@ export default defineComponent({
     return {
       period: RecentActivityPeriod.LAST_WEEK,
       isLoading: true,
-      chartData: null as ChartData | null,
+      chartData: null as ChartData<"line"> | null,
       xLabel: undefined as string | undefined,
     }
   },
   watch: {
     period() {
-      this.fetchSavedVocabsCount();
+      this.fetchChartData();
     }
   },
   methods: {
-    async fetchSavedVocabsCount() {
+    async fetchChartData() {
       this.isLoading = true;
       const to = new Date();
       let from = new Date(), interval: "day" | "month" | "year" | undefined;
@@ -77,7 +78,7 @@ export default defineComponent({
         // from.setFullYear(to.getFullYear() - 1);
         // interval = "month";
       }
-      const rawData = await this.vocabStore.fetchSavedVocabsCount({
+      const rawData = await this.vocabStore.fetchSavedVocabsCountTimeSeries({
         username: this.user.username,
       }, {
         groupBy: "language",
@@ -85,13 +86,13 @@ export default defineComponent({
         savedOnTo: to.toISOString(),
         savedOnInterval: interval,
       })
-      const languages: any = {};
+      const languages: { [k: string]: ChartDataset<"line", { x: any, y: any }[]> } = {};
       for (const row of rawData) {
         if (!(row.language! in languages))
           languages[row.language!] = {label: row.language!, data: []}
         languages[row.language!].data.push({x: this.formatDate(row.date!), y: row.vocabsCount})
       }
-      this.chartData = {datasets: Object.values(languages)}
+      this.chartData = {datasets: Object.values(languages)};
       this.xLabel = toSentenceCase(interval!);
       this.isLoading = false;
     },
@@ -104,11 +105,12 @@ export default defineComponent({
         return new Date(date).toLocaleString('en-us', {year: 'numeric', month: 'long'})
       else {
         //TODO set from to earliest language started learning date and select appropriate interval
+        return date;
       }
     }
   },
   mounted() {
-    this.fetchSavedVocabsCount();
+    this.fetchChartData();
   },
   setup() {
     return {vocabStore: useVocabStore(), RecentActivityPeriod}
@@ -128,6 +130,10 @@ export default defineComponent({
 .loading-screen {
   height: 200px;
   width: 50vw;
+}
+
+.title-bar {
+  margin-bottom: 1rem;
 }
 
 h3 {
