@@ -4,7 +4,12 @@
       <h3>All Time Progress</h3>
     </div>
     <LoadingScreen v-if="isLoading" class="loading-screen"/>
-    <BaseBarChart v-else-if="chartData" :chart-data="chartData" :chart-options="{plugins:{legend:{display: false}}}"/>
+    <BaseBarChart v-else-if="chartData"
+                  :chart-data="chartData"
+                  :chart-options="{plugins:{legend:{display: false}}}"
+                  x-label="Language"
+                  y-label="Vocabs Known"
+    />
   </div>
 </template>
 
@@ -32,7 +37,7 @@ export default defineComponent({
       //TODO add another data series for known/learned words
       const rawData = await this.vocabStore.fetchSavedVocabsCount({username: this.user.username}, {
         groupBy: "language",
-        level: [VocabLevelSchema.LEVEL1, VocabLevelSchema.LEVEL2, VocabLevelSchema.LEVEL3, VocabLevelSchema.LEVEL4]
+        level: [VocabLevelSchema.LEARNED, VocabLevelSchema.KNOWN]
       });
       this.chartData = {datasets: [{data: rawData.map((r) => ({x: r.language, y: r.vocabsCount}))}]}
       this.isLoading = false;

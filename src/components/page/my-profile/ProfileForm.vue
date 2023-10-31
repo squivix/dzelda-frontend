@@ -13,7 +13,7 @@
                           :enabled="isEditing"
                           circular/>
     <h3 class="username">{{ userStore.userAccount!.username }}</h3>
-    <textarea class="bio" :disabled="!isEditing" v-model="bio"></textarea>
+    <textarea class="bio" maxlength="255" placeholder="Your bio" :disabled="!isEditing" v-model="bio"></textarea>
   </form>
 </template>
 

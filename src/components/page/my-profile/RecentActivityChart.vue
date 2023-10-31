@@ -14,7 +14,7 @@
     <BaseLineChart v-else-if="chartData"
                    :chart-data="chartData"
                    :x-label="xLabel"
-                   y-label="Saved vocabs"
+                   y-label="New vocabs"
                    :chart-options="{scales: {y: {ticks: {precision:0}}}}"/>
   </div>
 </template>
@@ -120,9 +120,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.recent-activity-chart {
-}
-
 :deep(.line-series-chart-wrapper) {
   min-height: 200px;
   width: 50vw;
