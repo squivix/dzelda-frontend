@@ -24,7 +24,7 @@ import {defineComponent, PropType} from 'vue'
 import {Line as LineChart} from "vue-chartjs";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import BaseLineChart from "@/components/ui/BaseLineChart.vue";
-import {UserSchema} from "dzelda-types";
+import {UserSchema, VocabLevelSchema} from "dzelda-types";
 import {ChartData} from "chart.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {toSentenceCase} from "@/utils.js";
@@ -85,6 +85,7 @@ export default defineComponent({
         savedOnFrom: from.toISOString(),
         savedOnTo: to.toISOString(),
         savedOnInterval: interval,
+        level: [VocabLevelSchema.LEVEL1, VocabLevelSchema.LEVEL2, VocabLevelSchema.LEVEL3, VocabLevelSchema.LEVEL4]
       })
       const languages: { [k: string]: ChartDataset<"line", { x: any, y: any }[]> } = {};
       for (const row of rawData) {

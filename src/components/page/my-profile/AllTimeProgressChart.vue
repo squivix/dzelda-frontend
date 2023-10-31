@@ -14,8 +14,7 @@ import BaseBarChart from "@/components/ui/BaseBarChart.vue";
 import {ChartData} from "chart.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
-import {UserSchema} from "dzelda-types";
-import {ChartDataset} from "chart.js/dist/types/index.js";
+import {UserSchema, VocabLevelSchema} from "dzelda-types";
 
 export default defineComponent({
   name: "AllTimeProgressChart",
@@ -30,7 +29,11 @@ export default defineComponent({
   methods: {
     async fetchChartData() {
       this.isLoading = true;
-      const rawData = await this.vocabStore.fetchSavedVocabsCount({username: this.user.username}, {groupBy: "language"});
+      //TODO add another data series for known/learned words
+      const rawData = await this.vocabStore.fetchSavedVocabsCount({username: this.user.username}, {
+        groupBy: "language",
+        level: [VocabLevelSchema.LEVEL1, VocabLevelSchema.LEVEL2, VocabLevelSchema.LEVEL3, VocabLevelSchema.LEVEL4]
+      });
       this.chartData = {datasets: [{data: rawData.map((r) => ({x: r.language, y: r.vocabsCount}))}]}
       this.isLoading = false;
     }
