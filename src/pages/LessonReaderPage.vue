@@ -1,7 +1,7 @@
 <template>
   <base-card v-if="!loading && lesson">
     <template v-slot:all>
-      <the-lesson-content
+      <TheLessonContent
           :title="lesson.title"
           :text="lesson.text"
           :lessonElements="lessonElements"
@@ -15,19 +15,19 @@
           @onOverLappingPhrasesClicked="showOverlappingPhrases"
           @onNewPhraseSelected="selectNewPhrase"
           @onBackgroundClicked="clearSelectedVocab">
-      </the-lesson-content>
-      <the-meaning-panel v-if="!selectedOverLappingPhrases"
-                         class="meaning-panel-wrapper"
-                         :vocab="selectedVocab"
-                         :is-phrase="selectedIsPhrase"
-                         @onMeaningAdded="onMeaningAdded"
-                         @onVocabLevelSet="onVocabLevelSet"
-                         @onMeaningDeleted="onMeaningDeleted">
-      </the-meaning-panel>
-      <overlapping-phrases-panel v-else
-                                 :phrases="selectedOverLappingPhrases"
-                                 @onPhraseClick="setSelectedVocab">
-      </overlapping-phrases-panel>
+      </TheLessonContent>
+      <TheMeaningPanel v-if="!selectedOverLappingPhrases"
+                       class="meaning-panel-wrapper"
+                       :vocab="selectedVocab"
+                       :is-phrase="selectedIsPhrase"
+                       @onMeaningAdded="onMeaningAdded"
+                       @onVocabLevelSet="onVocabLevelSet"
+                       @onMeaningDeleted="onMeaningDeleted">
+      </TheMeaningPanel>
+      <OverlappingPhrasesPanel v-else
+                               :phrases="selectedOverLappingPhrases"
+                               @onPhraseClick="setSelectedVocab">
+      </OverlappingPhrasesPanel>
     </template>
   </base-card>
 </template>
@@ -41,10 +41,11 @@ import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {LessonSchema} from "dzelda-types";
 import {useStore} from "@/stores/backend/rootStore.js";
+import {defineComponent, PropType} from "vue";
 
-export default {
+export default defineComponent({
   name: "LessonReaderPage",
-  components: {OverlappingPhrasesPanel, TheLessonContent, TheMeaningPanel},
+  components: {TheLessonContent, TheMeaningPanel, OverlappingPhrasesPanel},
   data() {
     return {
       loadingLesson: true,
@@ -59,8 +60,11 @@ export default {
       lessonElements: null,
     };
   },
+  props: {
+    pathParams: {type: Object as PropType<{ learningLanguage: string, lessonId: number }>, required: true}
+  },
   async mounted() {
-    await this.lessonStore.addLessonToUserHistory({lessonId: Number(this.$route.params.lessonId as string)});
+    await this.lessonStore.addLessonToUserHistory({lessonId: this.pathParams.lessonId});
     await this.fetchLesson();
     await this.fetchWordsLevels();
     this.parseLesson();
@@ -82,13 +86,13 @@ export default {
   methods: {
     async fetchLesson() {
       this.loadingLesson = true;
-      this.lesson = await this.lessonStore.fetchLesson({lessonId: Number(this.$route.params.lessonId as string)});
+      this.lesson = await this.lessonStore.fetchLesson({lessonId: this.pathParams.lessonId});
       this.lesson.text = this.lesson.text.replace(/[\r\n]{3,}/g, "\n\n");
       this.loadingLesson = false;
     },
     async fetchWordsLevels() {
       this.loadingWords = true;
-      const lessonVocabs = await this.vocabStore.fetchLessonVocabs({lessonId: Number(this.$route.params.lessonId as string)}, {});
+      const lessonVocabs = await this.vocabStore.fetchLessonVocabs({lessonId: this.pathParams.lessonId}, {});
 
       this.words = lessonVocabs.filter(v => !v.isPhrase).reduce((obj, w) => ({...obj, [w.text]: w}), {});
       this.phrases = lessonVocabs.filter(v => v.isPhrase).reduce((obj, p) => ({...obj, [p.text]: p}), {});
@@ -206,13 +210,15 @@ export default {
       vocabStore: useVocabStore()
     }
   }
-};
+});
 </script>
+
 <style>
 body {
   user-select: none;
 }
 </style>
+
 <style scoped>
 .base-card {
   width: 80vw;
@@ -223,7 +229,7 @@ body {
   column-gap: 2rem;
   border-radius: 20px;
   max-width: 1150px;
-  padding: 40px min(5vw, 20px) 0px min(5vw, 20px);
+  padding: 40px min(5vw, 20px) 0 min(5vw, 20px);
 }
 
 .lesson-content {

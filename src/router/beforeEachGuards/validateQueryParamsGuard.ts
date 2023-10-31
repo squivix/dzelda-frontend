@@ -1,7 +1,6 @@
 import {NavigationGuardWithThis} from "vue-router";
-import {isEmptyObject, shallowObjectEquals} from "@/utils.js";
+import {isEmptyObject} from "@/utils.js";
 import {queryParamsEqual} from "@/router/routerUtils.js";
-import {QueryParamDef} from "@/router/queryParams.js";
 
 export const validateQueryParamsGuard: NavigationGuardWithThis<undefined> = async (to, from) => {
     if (to.meta.queryParams) {

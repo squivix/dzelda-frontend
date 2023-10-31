@@ -24,7 +24,7 @@ import BookmarkedCoursesTab from "@/components/page/my-library/BookmarkedCourses
 import ImportedCoursesTab from "@/components/page/my-library/ImportedCoursesTab.vue";
 import LessonHistoryTab from "@/components/page/my-library/LessonHistoryTab.vue";
 import * as queryParams from "@/router/queryParams.js";
-import {courseFiltersQueryParams, lessonFiltersQueryParams, generatePaginationQueryParams, vocabFiltersQueryParams} from "@/router/queryParams.js";
+import * as pathParams from "@/router/pathParams.js";
 import {excludeProperties} from "@/utils.js";
 
 export const privateRoutes: RouteRecordRaw[] = [
@@ -44,22 +44,25 @@ export const privateRoutes: RouteRecordRaw[] = [
         redirect: {name: "explore-recent-lessons"},
         props: routeToProps,
         meta: {
+            pathParams: {learningLanguage: pathParams.languageCode},
             queryParams: {
-                ...generatePaginationQueryParams([5, 10, 25, 50, 100]),
-                ...lessonFiltersQueryParams,
+                ...queryParams.generatePaginationQueryParams([5, 10, 25, 50, 100]),
+                ...queryParams.lessonFilters,
                 searchQuery: queryParams.searchQuery
-            }
+            },
         },
         children: [
             {
                 path: "/learn/:learningLanguage/explore/lessons/recent",
                 component: RecentLessonsTab,
                 name: "explore-recent-lessons",
+                meta: {pathParams: {learningLanguage: pathParams.languageCode}}
             },
             {
                 path: "/learn/:learningLanguage/explore/lessons/popular",
                 component: PopularLessonsTab,
                 name: "explore-popular-lessons",
+                meta: {pathParams: {learningLanguage: pathParams.languageCode}}
             }
         ]
     },
@@ -74,15 +77,17 @@ export const privateRoutes: RouteRecordRaw[] = [
         component: MyLibraryPage,
         redirect: {name: "my-library-bookmarked-courses"},
         name: "language-my-library",
+        meta: {pathParams: {learningLanguage: pathParams.languageCode}},
         children: [
             {
                 path: "/learn/:learningLanguage/my-library/bookmarks",
                 component: BookmarkedCoursesTab,
                 name: "my-library-bookmarked-courses",
                 meta: {
+                    pathParams: {learningLanguage: pathParams.languageCode},
                     queryParams: {
-                        ...generatePaginationQueryParams([5, 10, 25, 50, 100]),
-                        ...courseFiltersQueryParams,
+                        ...queryParams.generatePaginationQueryParams([5, 10, 25, 50, 100]),
+                        ...queryParams.courseFilters,
                         searchQuery: queryParams.searchQuery
                     }
                 },
@@ -93,9 +98,10 @@ export const privateRoutes: RouteRecordRaw[] = [
                 component: ImportedCoursesTab,
                 name: "my-library-imported-courses",
                 meta: {
+                    pathParams: {learningLanguage: pathParams.languageCode},
                     queryParams: {
-                        ...generatePaginationQueryParams([5, 10, 25, 50, 100]),
-                        ...excludeProperties(courseFiltersQueryParams, ["addedBy"]),
+                        ...queryParams.generatePaginationQueryParams([5, 10, 25, 50, 100]),
+                        ...excludeProperties(queryParams.courseFilters, ["addedBy"]),
                         searchQuery: queryParams.searchQuery
                     }
                 },
@@ -106,9 +112,10 @@ export const privateRoutes: RouteRecordRaw[] = [
                 component: LessonHistoryTab,
                 name: "my-library-lesson-history",
                 meta: {
+                    pathParams: {learningLanguage: pathParams.languageCode},
                     queryParams: {
-                        ...generatePaginationQueryParams([5, 10, 25, 50, 100]),
-                        ...lessonFiltersQueryParams,
+                        ...queryParams.generatePaginationQueryParams([5, 10, 25, 50, 100]),
+                        ...queryParams.lessonFilters,
                         searchQuery: queryParams.searchQuery
                     }
                 },
@@ -127,11 +134,12 @@ export const privateRoutes: RouteRecordRaw[] = [
         component: MyVocabPage,
         name: "language-my-vocab",
         meta: {
+            pathParams: {learningLanguage: pathParams.languageCode},
             queryParams: {
-                ...generatePaginationQueryParams([25, 50, 100, 150, 200]),
-                ...vocabFiltersQueryParams,
+                ...queryParams.generatePaginationQueryParams([25, 50, 100, 150, 200]),
+                ...queryParams.vocabFilters,
                 searchQuery: queryParams.searchQuery
-            }
+            },
         },
         props: routeToProps,
     },
@@ -139,7 +147,13 @@ export const privateRoutes: RouteRecordRaw[] = [
         path: "/learn/:learningLanguage/lessons/:lessonId",
         component: LessonReaderPage,
         name: "lesson",
-        meta: {}
+        meta: {
+            pathParams: {
+                learningLanguage: pathParams.languageCode,
+                lessonId: pathParams.id
+            }
+        },
+        props: routeToProps,
     },
     {
         path: "/lessons/add",
@@ -157,7 +171,12 @@ export const privateRoutes: RouteRecordRaw[] = [
         path: "/learn/:learningLanguage/lessons/:lessonId/edit",
         component: LessonAddEditPage,
         name: "edit-lesson",
-        meta: {}
+        meta: {
+            pathParams: {
+                learningLanguage: pathParams.languageCode,
+                lessonId: pathParams.id
+            }
+        },
     },
     {
         path: "/courses/add",
@@ -169,19 +188,31 @@ export const privateRoutes: RouteRecordRaw[] = [
         path: "/learn/:learningLanguage/courses/add",
         name: "add-course-lang",
         component: CourseAddPage,
-        meta: {}
+        meta: {
+            pathParams: {learningLanguage: pathParams.languageCode,}
+        },
     },
     {
         path: "/learn/:learningLanguage/courses/:courseId",
         component: CoursePage,
         name: "course",
-        meta: {}
+        meta: {
+            pathParams: {
+                learningLanguage: pathParams.languageCode,
+                courseId: pathParams.id
+            }
+        }
     },
     {
         path: "/learn/:learningLanguage/courses/:courseId/edit",
         component: CourseEditPage,
         name: "edit-course",
-        meta: {}
+        meta: {
+            pathParams: {
+                learningLanguage: pathParams.languageCode,
+                courseId: pathParams.id
+            }
+        }
     },
     {
         path: "/learn/new",

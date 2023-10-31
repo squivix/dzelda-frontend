@@ -6,6 +6,7 @@ import ResetPasswordRequestPage from "@/pages/auth/ResetPasswordRequestPage.vue"
 import ResetPasswordPage from "@/pages/auth/ResetPasswordPage.vue";
 import {setDefaultRouteMeta} from "@/router/routerUtils.js";
 import {z} from "zod";
+import NotFoundPage from "@/pages/NotFoundPage.vue";
 
 export const publicRoutes: RouteRecordRaw[] = [
     {path: "/", redirect: {name: "home"}, name: "root"},
@@ -25,6 +26,7 @@ export const publicRoutes: RouteRecordRaw[] = [
         },
         props: ({query: q}) => ({queryParams: {token: q.token ?? ""}}),
     },
+    {path: "/not-found", name: "not-found", component: NotFoundPage},
 ];
 
 setDefaultRouteMeta(publicRoutes, {

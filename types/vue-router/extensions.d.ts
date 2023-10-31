@@ -1,4 +1,4 @@
-import {QueryParamDef} from "@/router/queryParams.js";
+import {RouteParamDef} from "@/router/queryParams.js";
 
 export {};
 
@@ -7,6 +7,7 @@ declare module "vue-router" {
         requiresAuth?: boolean;
         requiresEmailConfirmed?: boolean;
         showFooter?: boolean;
-        queryParams?: { [key: string]: QueryParamDef };
+        queryParams?: { [key: string]: RouteParamDef };
+        pathParams?: { [key: string]: RouteParamDef }
     }
 }
