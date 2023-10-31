@@ -1,5 +1,6 @@
 <template>
-  <base-card v-if="!loading && lesson">
+  <LoadingScreen v-if="isLoading||!lessonElements"/>
+  <base-card class="base-card" v-else-if="lesson">
     <template v-slot:all>
       <TheLessonContent
           :title="lesson.title"
@@ -35,29 +36,32 @@
 import TheLessonContent from "@/components/page/reader/TheLessonContent.vue";
 import TheMeaningPanel from "@/components/shared/vocab-panel/TheMeaningPanel.vue";
 import constants from "@/constants.js";
-import {getTextElements} from "@/components/page/reader/shared.js";
 import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel.vue";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
-import {LessonSchema} from "dzelda-types";
+import {LearnerVocabSchema, LessonSchema, MeaningSchema, VocabLevelSchema} from "dzelda-types";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {defineComponent, PropType} from "vue";
+import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 
+type PhrasesElementAppearsIn = { [text: string]: { index: number, length: number } }
+export type LessonElement = { text: string, isWord: boolean, phrases: PhrasesElementAppearsIn }
+export type NewVocab = Omit<LearnerVocabSchema, "id" | "addedOn">
 export default defineComponent({
   name: "LessonReaderPage",
-  components: {TheLessonContent, TheMeaningPanel, OverlappingPhrasesPanel},
+  components: {LoadingScreen, TheLessonContent, TheMeaningPanel, OverlappingPhrasesPanel},
   data() {
     return {
-      loadingLesson: true,
-      loadingWords: true,
-      parsingLesson: true,
       lesson: null as LessonSchema | null,
-      words: {},
-      phrases: {},
-      selectedVocab: null,
+      words: {} as Record<string, LearnerVocabSchema>,
+      phrases: {} as Record<string, LearnerVocabSchema | NewVocab>,
+      selectedVocab: null as LearnerVocabSchema | NewVocab | null,
       selectedIsPhrase: false,
-      selectedOverLappingPhrases: null,
-      lessonElements: null,
+      selectedOverLappingPhrases: null as string[] | null,
+      lessonElements: null as { title: LessonElement[], text: LessonElement[][] } | null,
+      isLoadingLesson: true,
+      isLoadingWords: true,
+      isParsingLesson: true,
     };
   },
   props: {
@@ -70,8 +74,8 @@ export default defineComponent({
     this.parseLesson();
   },
   computed: {
-    loading() {
-      return this.loadingLesson || this.loadingWords || this.parsingLesson;
+    isLoading() {
+      return this.isLoadingLesson || this.isLoadingWords || this.isParsingLesson;
     },
     imageUrl() {
       const imagePath = this.lesson!.image || this.lesson!.course.image;
@@ -79,34 +83,37 @@ export default defineComponent({
         return `${this.store.resourceUrl}/${imagePath}`
       return "";
     },
-    vocab() {
+    vocabs() {
       return {...this.words, ...this.phrases};
     }
   },
   methods: {
     async fetchLesson() {
-      this.loadingLesson = true;
+      this.isLoadingLesson = true;
       this.lesson = await this.lessonStore.fetchLesson({lessonId: this.pathParams.lessonId});
       this.lesson.text = this.lesson.text.replace(/[\r\n]{3,}/g, "\n\n");
-      this.loadingLesson = false;
+      this.isLoadingLesson = false;
     },
     async fetchWordsLevels() {
-      this.loadingWords = true;
+      this.isLoadingWords = true;
       const lessonVocabs = await this.vocabStore.fetchLessonVocabs({lessonId: this.pathParams.lessonId}, {});
 
       this.words = lessonVocabs.filter(v => !v.isPhrase).reduce((obj, w) => ({...obj, [w.text]: w}), {});
       this.phrases = lessonVocabs.filter(v => v.isPhrase).reduce((obj, p) => ({...obj, [p.text]: p}), {});
-      this.loadingWords = false;
+      this.isLoadingWords = false;
     },
     setSelectedVocab(vocabText: string) {
-      this.selectedVocab = {text: vocabText, ...this.vocab[vocabText.toLowerCase()]};
+      this.selectedVocab = {...this.vocabs[vocabText.toLowerCase()], text: vocabText};
       this.selectedIsPhrase = !!this.phrases[vocabText.toLowerCase()];
       this.selectedOverLappingPhrases = null;
     },
-    selectNewPhrase(phraseText) {
+    selectNewPhrase(phraseText: string) {
       this.selectedVocab = {
         text: phraseText,
-        level: constants.ALL_VOCAB_LEVELS.NEW,
+        level: VocabLevelSchema.NEW,
+        isPhrase: true,
+        notes: null,
+        language: "en",
         meanings: [],
         learnerMeanings: []
       };
@@ -117,14 +124,14 @@ export default defineComponent({
       this.selectedVocab = null;
       this.selectedOverLappingPhrases = null;
     },
-    showOverlappingPhrases(phrasesText) {
+    showOverlappingPhrases(phrasesText: string[]) {
       this.selectedOverLappingPhrases = phrasesText;
     },
-    onMeaningAdded(vocab, newMeaning) {
+    onMeaningAdded(vocab: LearnerVocabSchema, newMeaning: MeaningSchema) {
       const key = vocab.text.toLowerCase();
       if (vocab.level === constants.ALL_VOCAB_LEVELS.KNOWN || vocab.level === constants.ALL_VOCAB_LEVELS.IGNORED)
         vocab.level = constants.ALL_VOCAB_LEVELS.LEVEL_1;
-      if (this.vocab[key] === undefined) {
+      if (!(key in this.vocabs)) {
         //only for new phrases
         this.phrases[key] = vocab;
         //TODO: find less expensive solution to update lessonElements where the new phrase was added
@@ -132,76 +139,79 @@ export default defineComponent({
         this.onVocabLevelSet(vocab, vocab.level);
       } else
         this.onVocabLevelSet(vocab, vocab.level);
-      this.vocab[key].learnerMeanings.push(newMeaning);
-      this.vocab[key].id = vocab.id;
+      this.vocabs[key].learnerMeanings.push(newMeaning);
+      (this.vocabs[key] as LearnerVocabSchema).id = vocab.id;
       this.setSelectedVocab(vocab.text);
     },
-    onVocabLevelSet(vocab, level) {
-
+    onVocabLevelSet(vocab: LearnerVocabSchema | NewVocab, level: VocabLevelSchema) {
       const key = vocab.text.toLowerCase();
-      this.vocab[key].level = level;
-      if (level === constants.ALL_VOCAB_LEVELS.IGNORED || level === constants.ALL_VOCAB_LEVELS.KNOWN) {
-        this.vocab[key].learnerMeanings = [];
+      this.vocabs[key].level = level;
+      if (level === VocabLevelSchema.IGNORED || level === VocabLevelSchema.KNOWN) {
+        this.vocabs[key].learnerMeanings = [];
         this.clearSelectedVocab();
-        if (level === constants.ALL_VOCAB_LEVELS.IGNORED && this.phrases[key])
-          this.phrases[key] = constants.ALL_VOCAB_LEVELS.NEW;
+        if (level === VocabLevelSchema.IGNORED && this.phrases[key])
+          this.phrases[key].level = VocabLevelSchema.NEW;
       } else
         this.setSelectedVocab(vocab.text);
     },
-    onMeaningDeleted(word, deleted_meaning) {
-      const index = word.learnerMeanings.findIndex((meaning) => meaning.id === deleted_meaning.id);
+    onMeaningDeleted(word: LearnerVocabSchema, deletedMeaning: MeaningSchema) {
+      console.log(deletedMeaning)
+      const index = word.learnerMeanings.findIndex((meaning) => meaning.id === deletedMeaning.id);
       word.learnerMeanings.splice(index, 1);
       if (word.learnerMeanings.length === 0)
         this.onVocabLevelSet(word, constants.ALL_VOCAB_LEVELS.NEW);
     },
     parseLesson() {
-      this.parsingLesson = true;
+      this.isParsingLesson = true;
       this.lessonElements = {
-        title: this.parseStringToElements([this.lesson.title])[0],
-        text: this.parseStringToElements(this.lessonParagraphs(this.lesson.text))
+        title: this.parseStringToElements([this.lesson!.title])[0],
+        text: this.parseStringToElements(this.lessonParagraphs(this.lesson!.text))
       };
-      this.parsingLesson = false;
+      this.isParsingLesson = false;
     },
-    parseStringToElements(texts: string[]) {
-      let paragraphList = [];
+    parseStringToElements(texts: string[]): LessonElement[][] {
+      const paragraphList: LessonElement[][] = [];
 
       const phrases = Object.keys(this.phrases);
       // wrap every paragraph in whitespace to allow regex to detect phrases at the beginning of paragraph
       texts = texts.map(text => ` ${text} `);
 
       for (let paragraph of texts) {
-        let elements = getTextElements(paragraph);
-        let paragraphElements = [];
-        for (let element of elements)
+        const elements = this.getTextElements(paragraph);
+        const paragraphElements = [];
+        for (let element of elements) {
           paragraphElements.push({
             text: element,
             isWord: !!this.words[element.toLowerCase()],
-            phrases: {}
+            phrases: {} as PhrasesElementAppearsIn
           });
+        }
 
-        for (let phrase of phrases) {
+        for (const phrase of phrases) {
           //detect every phrase surrounded by non letters and non-numbers
-          let regex = new RegExp(`[^\\p{L}\\d]${phrase}[^\\p{L}\\d]`, "igu");
-          let matches = paragraph.matchAll(regex);
+          const regex = new RegExp(`[^\\p{L}\\d]${phrase}[^\\p{L}\\d]`, "igu");
+          const matches = paragraph.matchAll(regex);
           for (let match of matches) {
-            let beforePhraseIndex = getTextElements(paragraph.substring(0, match.index)).length;
-            let phraseSlice = getTextElements(match[0]);
+            const beforePhraseIndex = this.getTextElements(paragraph.substring(0, match.index)).length;
+            const phraseSlice = this.getTextElements(match[0]);
             const phraseElements = paragraphElements.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length);
             phraseElements.forEach((pe, index) => pe.phrases[phrase] = {
               index: index,
               length: phraseElements.length
             });
-
           }
         }
         paragraphList.push(paragraphElements);
       }
       return paragraphList;
     },
-
-    lessonParagraphs(text) {
+    lessonParagraphs(text: string) {
       return text.split(/\s\s+/g);
     },
+    getTextElements(paragraph: string) {
+      return paragraph.split(/([^\p{L}\d])/gu).filter((word) => word !== "");
+    }
+
   },
   setup() {
     return {
@@ -230,9 +240,6 @@ body {
   border-radius: 20px;
   max-width: 1150px;
   padding: 40px min(5vw, 20px) 0 min(5vw, 20px);
-}
-
-.lesson-content {
 }
 
 .meaning-panel-wrapper:deep(.meaning-sub-panel) {

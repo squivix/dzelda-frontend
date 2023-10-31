@@ -41,6 +41,8 @@
 import LessonParagraph from "@/components/page/reader/LessonParagraph.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {icons} from "@/icons.js";
+import {PropType} from "vue";
+import {LessonElement} from "@/pages/LessonReaderPage.vue";
 
 export default {
   name: "TheLessonContent",
@@ -72,7 +74,7 @@ export default {
       required: true
     },
     lessonElements: {
-      type: Object,
+      type: Object as PropType<{ title: LessonElement[], text: LessonElement[][] }>,
       required: true
     }
   },

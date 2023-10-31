@@ -34,6 +34,7 @@ import NewVocabPanel from "@/components/shared/vocab-panel/NewVocabPanel.vue";
 import ExistingVocabPanel from "@/components/shared/vocab-panel/ExistingVocabPanel.vue";
 import {PropType} from "vue";
 import {LearnerVocabSchema} from "dzelda-types";
+import {NewVocab} from "@/pages/LessonReaderPage.vue";
 
 export default {
   name: "TheMeaningPanel",
@@ -41,7 +42,7 @@ export default {
   emits: ["onMeaningAdded", "onVocabLevelSet", "onMeaningDeleted"],
   props: {
     vocab: {
-      type: Object as PropType<LearnerVocabSchema>,
+      type: Object as PropType<LearnerVocabSchema | NewVocab | null>,
       required: false,
     },
     isPhrase: {
