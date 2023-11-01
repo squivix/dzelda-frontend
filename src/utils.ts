@@ -21,7 +21,7 @@ export function excludeProperties<T, K extends keyof T>(obj: T, keysToOmit: K[])
 }
 
 export function cleanUndefined(obj: any): any {
-    if (typeof obj !== 'object' || obj === null)
+    if (typeof obj !== "object" || obj === null)
         return obj;
 
     for (const key in obj) {
@@ -36,7 +36,7 @@ export function cleanUndefined(obj: any): any {
 }
 
 export function isObject(item: any): item is { [p: string]: any } {
-    return (item && typeof item === 'object' && !Array.isArray(item));
+    return (item && typeof item === "object" && !Array.isArray(item));
 }
 
 export function mergeDeep(target: { [p: string]: any }, source: { [p: string]: any }) {
@@ -58,7 +58,7 @@ export function mergeDeep(target: { [p: string]: any }, source: { [p: string]: a
 
 export function toSentenceCase(s: string) {
     if (s.length > 0)
-        return `${s[0].toUpperCase()}${s.slice(1)}`
+        return `${s[0].toUpperCase()}${s.slice(1)}`;
     return s;
 
 }

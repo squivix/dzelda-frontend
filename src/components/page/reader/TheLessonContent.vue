@@ -16,12 +16,10 @@
       </LessonParagraph>
     </div>
     <div class="lesson-text styled-scrollbars">
-      <LessonParagraph v-for="(paragraph, paragraphIndex) in lessonElements.text"
-                       :paragraph-elements="paragraph"
+      <LessonParagraph :paragraph-elements="lessonElements.text"
                        :words="words"
                        :phrases="phrases"
-                       :paragraph-index="paragraphIndex+1"
-                       :key="paragraphIndex"
+                       :paragraph-index="1"
                        @onWordClicked="onWordClicked"
                        @onPhraseClicked="onPhraseClicked"
                        @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked">
@@ -73,7 +71,7 @@ export default {
       required: true
     },
     lessonElements: {
-      type: Object as PropType<{ title: LessonElement[], text: LessonElement[][] }>,
+      type: Object as PropType<{ title: LessonElement[], text: LessonElement[]}>,
       required: true
     }
   },

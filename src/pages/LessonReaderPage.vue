@@ -58,7 +58,7 @@ export default defineComponent({
       selectedVocab: null as LearnerVocabSchema | NewVocab | null,
       selectedIsPhrase: false,
       selectedOverLappingPhrases: null as string[] | null,
-      lessonElements: null as { title: LessonElement[], text: LessonElement[][] } | null,
+      lessonElements: null as { title: LessonElement[], text: LessonElement[] } | null,
       isLoadingLesson: true,
       isLoadingWords: true,
       isParsingLesson: true,
@@ -80,7 +80,7 @@ export default defineComponent({
     imageUrl() {
       const imagePath = this.lesson!.image || this.lesson!.course.image;
       if (imagePath)
-        return `${this.store.resourceUrl}/${imagePath}`
+        return `${this.store.resourceUrl}/${imagePath}`;
       return "";
     },
     vocabs() {
@@ -155,7 +155,7 @@ export default defineComponent({
         this.setSelectedVocab(vocab.text);
     },
     onMeaningDeleted(word: LearnerVocabSchema, deletedMeaning: MeaningSchema) {
-      console.log(deletedMeaning)
+      console.log(deletedMeaning);
       const index = word.learnerMeanings.findIndex((meaning) => meaning.id === deletedMeaning.id);
       word.learnerMeanings.splice(index, 1);
       if (word.learnerMeanings.length === 0)
@@ -164,49 +164,37 @@ export default defineComponent({
     parseLesson() {
       this.isParsingLesson = true;
       this.lessonElements = {
-        title: this.parseStringToElements([this.lesson!.title])[0],
-        text: this.parseStringToElements(this.lessonParagraphs(this.lesson!.text))
+        title: this.parseStringToElements(this.lesson!.title),
+        text: this.parseStringToElements(this.lesson!.text)
       };
       this.isParsingLesson = false;
     },
-    parseStringToElements(texts: string[]): LessonElement[][] {
-      const paragraphList: LessonElement[][] = [];
+    parseStringToElements(text: string): LessonElement[] {
+      // wrap in whitespace to allow regex to detect phrases at the beginning of text
+      text = ` ${text} `;
+
+      const textElements: LessonElement[] = this.getTextElements(text).map(element => ({
+        text: element,
+        isWord: !!this.words[element.toLowerCase()],
+        phrases: {} as PhrasesElementAppearsIn
+      }));
 
       const phrases = Object.keys(this.phrases);
-      // wrap every paragraph in whitespace to allow regex to detect phrases at the beginning of paragraph
-      texts = texts.map(text => ` ${text} `);
-
-      for (let paragraph of texts) {
-        const elements = this.getTextElements(paragraph);
-        const paragraphElements = [];
-        for (let element of elements) {
-          paragraphElements.push({
-            text: element,
-            isWord: !!this.words[element.toLowerCase()],
-            phrases: {} as PhrasesElementAppearsIn
+      for (const phrase of phrases) {
+        //detect every phrase surrounded by non letters and non-numbers
+        const regex = new RegExp(`[^\\p{L}\\d]${phrase}[^\\p{L}\\d]`, "igu");
+        const matches = text.matchAll(regex);
+        for (let match of matches) {
+          const beforePhraseIndex = this.getTextElements(text.substring(0, match.index)).length;
+          const phraseSlice = this.getTextElements(match[0]);
+          const phraseElements = textElements.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length);
+          phraseElements.forEach((pe, index) => pe.phrases[phrase] = {
+            index: index,
+            length: phraseElements.length
           });
         }
-
-        for (const phrase of phrases) {
-          //detect every phrase surrounded by non letters and non-numbers
-          const regex = new RegExp(`[^\\p{L}\\d]${phrase}[^\\p{L}\\d]`, "igu");
-          const matches = paragraph.matchAll(regex);
-          for (let match of matches) {
-            const beforePhraseIndex = this.getTextElements(paragraph.substring(0, match.index)).length;
-            const phraseSlice = this.getTextElements(match[0]);
-            const phraseElements = paragraphElements.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length);
-            phraseElements.forEach((pe, index) => pe.phrases[phrase] = {
-              index: index,
-              length: phraseElements.length
-            });
-          }
-        }
-        paragraphList.push(paragraphElements);
       }
-      return paragraphList;
-    },
-    lessonParagraphs(text: string) {
-      return text.split(/\s\s+/g);
+      return textElements;
     },
     getTextElements(paragraph: string) {
       return paragraph.split(/([^\p{L}\d])/gu).filter((word) => word !== "");
@@ -217,7 +205,7 @@ export default defineComponent({
       store: useStore(),
       lessonStore: useLessonStore(),
       vocabStore: useVocabStore()
-    }
+    };
   }
 });
 </script>

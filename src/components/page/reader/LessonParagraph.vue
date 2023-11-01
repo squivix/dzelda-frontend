@@ -18,13 +18,18 @@
               @click.stop="onWordClicked(element.text)">
       {{ element.text }}</span>
     <span v-else>
+      <br v-if="element.text=='\n'">
+      <template v-else>
         {{ element.text }}
+      </template>
     </span>
     </span>
   </component>
 </template>
 
 <script lang="ts">
+
+import {debounce} from "@/utils.js";
 
 export default {
   name: "LessonParagraph",
@@ -67,7 +72,7 @@ export default {
       if (!wrapperDomElem.classList.contains("word-wrapper"))
         return;
 
-      const paragraphElement = this.paragraphElements[Number(wrapperDomElem.dataset.parahraphElementIndex)]
+      const paragraphElement = this.paragraphElements[Number(wrapperDomElem.dataset.parahraphElementIndex)];
       let wordPhrases = Object.keys(paragraphElement.phrases);
       //if word part of multiple phrases
       if (wordPhrases.length > 1)
@@ -162,7 +167,6 @@ export default {
         if (!endWord.classList.contains("word-wrapper"))
           return;
       }
-
       let selectedWords;
       if (endWord === startWord) {
         selectedWords = [startWord];
@@ -180,7 +184,7 @@ export default {
           [startWord, endWord] = [endWord, startWord];
 
         selectedWords = [startWord];
-        const wordsAfterStart = document.querySelectorAll(`#${startWord.id} ~ .word-wrapper`)
+        const wordsAfterStart = document.querySelectorAll(`#${startWord.id} ~ .word-wrapper`);
         for (const w of wordsAfterStart) {
           if (w === endWord)
             break;
@@ -188,17 +192,16 @@ export default {
         }
         selectedWords.push(endWord);
 
-        document.querySelectorAll(".word-wrapper").forEach((w) => w.classList.remove("phrase-selected"))
+        document.querySelectorAll(".word-wrapper").forEach((w) => w.classList.remove("phrase-selected"));
         selectedWords.forEach((w) => w.classList.add("phrase-selected"));
       }
-
     },
     wrapperHoverStart(event) {
       //TODO find better way of styling multiple elements based on the hover of one
       const wrapperNode = event.target;
       if (!wrapperNode.classList.contains("phrase"))
         return;
-      const element = this.paragraphElements[Number(wrapperNode.dataset.parahraphElementIndex)]
+      const element = this.paragraphElements[Number(wrapperNode.dataset.parahraphElementIndex)];
       const phrases = Object.keys(element.phrases);
       if (phrases.length === 0)
         return;
@@ -206,7 +209,7 @@ export default {
         const phraseNodes = this.getPhraseNodes(wrapperNode, element.phrases[phrases[0]]);
         phraseNodes[0].style.borderInlineStart = "1px solid";
         phraseNodes[phraseNodes.length - 1].style.borderInlineEnd = "1px solid";
-        phraseNodes.forEach((pn) => pn.classList.add("phrase-hovered"))
+        phraseNodes.forEach((pn) => pn.classList.add("phrase-hovered"));
       } else {
         wrapperNode.style.borderInlineStart = "1px solid";
         wrapperNode.style.borderInlineEnd = "1px solid";
@@ -217,7 +220,7 @@ export default {
       const wrapperNode = event.target;
       if (!wrapperNode.classList.contains("phrase"))
         return;
-      const element = this.paragraphElements[Number(wrapperNode.dataset.parahraphElementIndex)]
+      const element = this.paragraphElements[Number(wrapperNode.dataset.parahraphElementIndex)];
       const phrases = Object.keys(element.phrases);
       if (phrases.length === 0)
         return;
@@ -225,7 +228,7 @@ export default {
         const phraseNodes = this.getPhraseNodes(wrapperNode, element.phrases[phrases[0]]);
         phraseNodes[0].style.borderInlineStart = "1px solid transparent";
         phraseNodes[phraseNodes.length - 1].style.borderInlineEnd = "1px solid transparent";
-        phraseNodes.forEach((pn) => pn.classList.remove("phrase-hovered"))
+        phraseNodes.forEach((pn) => pn.classList.remove("phrase-hovered"));
       } else {
         //TODO treat case where phrases are not in different directions
         wrapperNode.style.borderInlineStart = "1px solid transparent";
@@ -253,8 +256,8 @@ export default {
 
 
   mounted() {
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
