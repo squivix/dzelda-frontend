@@ -3,9 +3,9 @@
 
     <div class="top-div">
       <BaseImage :image-url="image" :fall-back-url="icons.lessonBlank"
-                 alt-text="lesson image" class="lesson-image"></BaseImage>
+                 alt-text="lesson image" class="lesson-image"/>
       <LessonParagraph class="title"
-                       :paragraph-elements="lessonElements.title"
+                       :lesson-elements="lessonElements.title"
                        :words="words"
                        :phrases="phrases"
                        :paragraph-index="0"
@@ -16,7 +16,7 @@
       </LessonParagraph>
     </div>
     <div class="lesson-text styled-scrollbars">
-      <LessonParagraph :paragraph-elements="lessonElements.text"
+      <LessonParagraph :lesson-elements="lessonElements.text"
                        :words="words"
                        :phrases="phrases"
                        :paragraph-index="1"
@@ -39,7 +39,8 @@ import LessonParagraph from "@/components/page/reader/LessonParagraph.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {icons} from "@/icons.js";
 import {PropType} from "vue";
-import {LessonElement} from "@/pages/LessonReaderPage.vue";
+import {LessonElement, NewVocab} from "@/pages/LessonReaderPage.vue";
+import {LearnerVocabSchema} from "dzelda-types";
 
 export default {
   name: "TheLessonContent",
@@ -63,15 +64,15 @@ export default {
       required: false,
     },
     words: {
-      type: Object,
+      type: Object as PropType<Record<string, LearnerVocabSchema>>,
       required: true,
     },
     phrases: {
-      type: Object,
+      type: Object as PropType<Record<string, LearnerVocabSchema | NewVocab>>,
       required: true
     },
     lessonElements: {
-      type: Object as PropType<{ title: LessonElement[], text: LessonElement[]}>,
+      type: Object as PropType<{ title: LessonElement[], text: LessonElement[] }>,
       required: true
     }
   },

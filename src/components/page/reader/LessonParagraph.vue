@@ -1,6 +1,6 @@
 <template>
   <component :is="component" class="paragraph">
-        <span v-for="(element, index) in paragraphElements"
+        <span v-for="(element, index) in lessonElements"
               :key="index"
               :class="getWrapperClass(element)"
               :data-parahraph-element-index="index"
@@ -16,36 +16,39 @@
               :id="`w${index}`"
               v-if="element.isWord"
               @click.stop="onWordClicked(element.text)">
-      {{ element.text }}</span>
-    <span v-else>
-      <br v-if="element.text=='\n'">
-      <template v-else>
-        {{ element.text }}
-      </template>
-    </span>
+      {{ element.text }}
+        </span>
+      <span v-else>
+        <br v-if="element.text=='\n'">
+        <template v-else>
+          {{ element.text }}
+        </template>
+      </span>
     </span>
   </component>
 </template>
 
 <script lang="ts">
 
-import {debounce} from "@/utils.js";
+import {PropType} from "vue/dist/vue.js";
+import {LearnerVocabSchema} from "dzelda-types";
+import {LessonElement, NewVocab, PhrasesElementAppearsIn} from "@/pages/LessonReaderPage.vue";
 
 export default {
   name: "LessonParagraph",
   computed: {},
   emits: ["onWordClicked", "onPhraseClicked", "onOverLappingPhrasesClicked"],
   props: {
-    paragraphElements: {
-      type: Array,
+    lessonElements: {
+      type: Array as PropType<LessonElement[]>,
       required: true
     },
     words: {
-      type: Object,
+      type: Object as PropType<Record<string, LearnerVocabSchema>>,
       required: true
     },
     phrases: {
-      type: Object,
+      type: Object as PropType<Record<string, LearnerVocabSchema | NewVocab>>,
       required: true
     },
     component: {
@@ -59,20 +62,20 @@ export default {
     }
   },
   data() {
-    return {dragStartWord: null};
+    return {dragStartWord: null as HTMLElement | null};
   },
   methods: {
-    onWordClicked(word) {
-      this.$emit("onWordClicked", word);
+    onWordClicked(wordText: string) {
+      this.$emit("onWordClicked", wordText);
     },
-    onWrapperClicked(event) {
-      let wrapperDomElem = event.target;
-      if (wrapperDomElem.parentElement.classList.contains("word-wrapper"))
-        wrapperDomElem = wrapperDomElem.parentElement;
+    onWrapperClicked(event: Event) {
+      let wrapperDomElem = event.target as HTMLElement;
+      if (wrapperDomElem.parentElement!.classList.contains("word-wrapper"))
+        wrapperDomElem = wrapperDomElem.parentElement!;
       if (!wrapperDomElem.classList.contains("word-wrapper"))
         return;
 
-      const paragraphElement = this.paragraphElements[Number(wrapperDomElem.dataset.parahraphElementIndex)];
+      const paragraphElement = this.lessonElements[Number(wrapperDomElem.dataset.parahraphElementIndex)];
       let wordPhrases = Object.keys(paragraphElement.phrases);
       //if word part of multiple phrases
       if (wordPhrases.length > 1)
@@ -85,7 +88,7 @@ export default {
           this.$emit("onPhraseClicked", phraseText);
       }
     },
-    getWordClass(element) {
+    getWordClass(element: LessonElement) {
       let word = this.words[element.text.toLowerCase()];
       if (!element.isWord)
         return "";
@@ -110,10 +113,10 @@ export default {
           return "word";
       }
     },
-    getWrapperClass(element) {
+    getWrapperClass(element: LessonElement) {
       return `word-wrapper ${this.getPhrasePositionClass(element)} ${this.getPhraseLevelClass(element)}`;
     },
-    getPhraseLevelClass(element) {
+    getPhraseLevelClass(element: LessonElement) {
       if (Object.keys(element.phrases).length === 0)
         return "";
       switch (this.phrases[Object.keys(element.phrases)[0].toLowerCase()].level) {
@@ -135,7 +138,7 @@ export default {
           return "";
       }
     },
-    getPhrasePositionClass(element) {
+    getPhrasePositionClass(element: LessonElement) {
       if (Object.keys(element.phrases).length === 0)
         return "";
       let allStartWord = true, allEndWord = true;
@@ -153,17 +156,17 @@ export default {
       else
         return "phrase-middle";
     },
-    wrapperDragStart(event) {
-      this.dragStartWord = event.target;
-      event.dataTransfer.setDragImage(document.createElement("img"), 0, 0);
+    wrapperDragStart(event: DragEvent) {
+      this.dragStartWord = event.target as HTMLElement;
+      event.dataTransfer!.setDragImage(document.createElement("img"), 0, 0);
     },
-    wrapperDragEnter(event) {
-      let endWord = event.target;
-      let startWord = this.dragStartWord;
+    wrapperDragEnter(event: Event) {
+      let endWord = event.target as HTMLElement;
+      let startWord = this.dragStartWord!;
       if (!startWord || !endWord)
         return;
       if (!endWord.classList.contains("word-wrapper")) {
-        endWord = endWord.parentElement;
+        endWord = endWord.parentElement!;
         if (!endWord.classList.contains("word-wrapper"))
           return;
       }
@@ -184,7 +187,7 @@ export default {
           [startWord, endWord] = [endWord, startWord];
 
         selectedWords = [startWord];
-        const wordsAfterStart = document.querySelectorAll(`#${startWord.id} ~ .word-wrapper`);
+        const wordsAfterStart = document.querySelectorAll(`#${startWord.id} ~ .word-wrapper`) as NodeListOf<HTMLElement>;
         for (const w of wordsAfterStart) {
           if (w === endWord)
             break;
@@ -196,12 +199,12 @@ export default {
         selectedWords.forEach((w) => w.classList.add("phrase-selected"));
       }
     },
-    wrapperHoverStart(event) {
+    wrapperHoverStart(event: Event) {
       //TODO find better way of styling multiple elements based on the hover of one
-      const wrapperNode = event.target;
+      const wrapperNode = event.target as HTMLElement;
       if (!wrapperNode.classList.contains("phrase"))
         return;
-      const element = this.paragraphElements[Number(wrapperNode.dataset.parahraphElementIndex)];
+      const element = this.lessonElements[Number(wrapperNode.dataset.parahraphElementIndex)];
       const phrases = Object.keys(element.phrases);
       if (phrases.length === 0)
         return;
@@ -216,11 +219,11 @@ export default {
         wrapperNode.classList.add("phrase-hovered");
       }
     },
-    wrapperHoverEnd(event) {
-      const wrapperNode = event.target;
+    wrapperHoverEnd(event: Event) {
+      const wrapperNode = event.target as HTMLElement;
       if (!wrapperNode.classList.contains("phrase"))
         return;
-      const element = this.paragraphElements[Number(wrapperNode.dataset.parahraphElementIndex)];
+      const element = this.lessonElements[Number(wrapperNode.dataset.parahraphElementIndex)];
       const phrases = Object.keys(element.phrases);
       if (phrases.length === 0)
         return;
@@ -236,34 +239,29 @@ export default {
         wrapperNode.classList.remove("phrase-hovered");
       }
     },
-    getPhraseNodes(node, elementPhrase) {
+    getPhraseNodes(node: HTMLElement, elementPhrase: PhrasesElementAppearsIn[keyof PhrasesElementAppearsIn]) {
       const phraseLength = elementPhrase.length;
       const hoverNodeIndex = elementPhrase.index;
 
       let phraseStart = node;
       for (let i = hoverNodeIndex; i > 0; i--)
-        phraseStart = phraseStart.previousSibling;
+        phraseStart = phraseStart.previousSibling as HTMLElement;
 
       const phraseNodes = [phraseStart];
       let phraseEnd = phraseNodes[phraseNodes.length - 1];
       for (let i = 1; i < phraseLength; i++) {
-        phraseNodes.push(phraseEnd.nextSibling);
+        phraseNodes.push(phraseEnd.nextSibling as HTMLElement);
         phraseEnd = phraseNodes[phraseNodes.length - 1];
       }
       return phraseNodes;
     },
   },
-
-
   mounted() {
   },
 };
 </script>
 
 <style scoped>
-.paragraph {
-}
-
 .word {
   border: 1px solid transparent;
   padding: 0.1rem 0.2rem;

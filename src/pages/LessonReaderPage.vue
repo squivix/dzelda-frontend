@@ -44,7 +44,7 @@ import {useStore} from "@/stores/backend/rootStore.js";
 import {defineComponent, PropType} from "vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 
-type PhrasesElementAppearsIn = { [text: string]: { index: number, length: number } }
+export type PhrasesElementAppearsIn = { [text: string]: { index: number, length: number } }
 export type LessonElement = { text: string, isWord: boolean, phrases: PhrasesElementAppearsIn }
 export type NewVocab = Omit<LearnerVocabSchema, "id" | "addedOn">
 export default defineComponent({
