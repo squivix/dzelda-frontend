@@ -1,32 +1,31 @@
 <template>
-  <div @click="onBackgroundClicked">
+  <div @click="onBackgroundClicked" class="lesson-content">
 
     <div class="top-div">
-      <!--      <img :src="image" @error="setDefaultImage" alt="lesson image" class="lesson-image">-->
       <BaseImage :image-url="image" :fall-back-url="icons.lessonBlank"
                  alt-text="lesson image" class="lesson-image"></BaseImage>
-      <lesson-paragraph class="title"
-                        :paragraph-elements="lessonElements.title"
-                        :words="words"
-                        :phrases="phrases"
-                        :paragraph-index="0"
-                        component="h2"
-                        @onWordClicked="onWordClicked"
-                        @onPhraseClicked="onPhraseClicked"
-                        @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked">
-      </lesson-paragraph>
+      <LessonParagraph class="title"
+                       :paragraph-elements="lessonElements.title"
+                       :words="words"
+                       :phrases="phrases"
+                       :paragraph-index="0"
+                       component="h2"
+                       @onWordClicked="onWordClicked"
+                       @onPhraseClicked="onPhraseClicked"
+                       @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked">
+      </LessonParagraph>
     </div>
     <div class="lesson-text styled-scrollbars">
-      <lesson-paragraph v-for="(paragraph, paragraphIndex) in lessonElements.text"
-                        :paragraph-elements="paragraph"
-                        :words="words"
-                        :phrases="phrases"
-                        :paragraph-index="paragraphIndex+1"
-                        :key="paragraphIndex"
-                        @onWordClicked="onWordClicked"
-                        @onPhraseClicked="onPhraseClicked"
-                        @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked">
-      </lesson-paragraph>
+      <LessonParagraph v-for="(paragraph, paragraphIndex) in lessonElements.text"
+                       :paragraph-elements="paragraph"
+                       :words="words"
+                       :phrases="phrases"
+                       :paragraph-index="paragraphIndex+1"
+                       :key="paragraphIndex"
+                       @onWordClicked="onWordClicked"
+                       @onPhraseClicked="onPhraseClicked"
+                       @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked">
+      </LessonParagraph>
     </div>
 
     <div>
@@ -84,20 +83,20 @@ export default {
     };
   },
   methods: {
-    onWordClicked(word) {
-      this.$emit("onWordClicked", word);
+    onWordClicked(wordText: string) {
+      this.$emit("onWordClicked", wordText);
     },
-    onPhraseClicked(phraseText) {
+    onPhraseClicked(phraseText: string) {
       this.$emit("onPhraseClicked", phraseText);
     },
-    onOverLappingPhrasesClicked(phrasesText) {
+    onOverLappingPhrasesClicked(phrasesText: string[]) {
       this.$emit("onOverLappingPhrasesClicked", phrasesText);
     },
     onBackgroundClicked() {
       this.clearSelectedPhrases();
       this.$emit("onBackgroundClicked");
     },
-    onNewPhraseSelected(phraseText) {
+    onNewPhraseSelected(phraseText: string) {
       this.$emit("onNewPhraseSelected", phraseText);
     },
     clearSelectedPhrases() {
@@ -107,7 +106,7 @@ export default {
       const selectedPhrase = document.querySelectorAll(".phrase-selected");
       let phraseText = "";
       selectedPhrase.forEach((wrapperNode) => {
-        const wordNode = wrapperNode.childNodes[0];
+        const wordNode = wrapperNode.childNodes[0] as HTMLElement;
         if (wordNode.classList.contains("word"))
           phraseText += wordNode.innerText.toLowerCase() + " ";
       });
@@ -131,7 +130,7 @@ export default {
     document.body.addEventListener("dragenter", e => e.preventDefault());
   },
   setup() {
-    return {icons}
+    return {icons};
   }
 }
 ;
@@ -171,13 +170,7 @@ p {
   line-height: 2.25rem;
 }
 
-
-span {
-  /*user-select: none;*/
-}
-
 span::selection {
-  /*background: transparent;*/
   color: red;
   background: yellow;
 }

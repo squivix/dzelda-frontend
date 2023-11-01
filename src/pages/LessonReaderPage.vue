@@ -211,7 +211,6 @@ export default defineComponent({
     getTextElements(paragraph: string) {
       return paragraph.split(/([^\p{L}\d])/gu).filter((word) => word !== "");
     }
-
   },
   setup() {
     return {
