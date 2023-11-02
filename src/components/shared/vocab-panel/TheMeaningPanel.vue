@@ -33,7 +33,7 @@ import constants from "@/constants.js";
 import NewVocabPanel from "@/components/shared/vocab-panel/NewVocabPanel.vue";
 import ExistingVocabPanel from "@/components/shared/vocab-panel/ExistingVocabPanel.vue";
 import {PropType} from "vue";
-import {LearnerVocabSchema} from "dzelda-types";
+import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-types";
 import {NewVocab} from "@/pages/LessonReaderPage.vue";
 
 export default {
@@ -63,7 +63,7 @@ export default {
   },
   computed: {
     isVocabNotSaved() {
-      return this.vocab.level === constants.ALL_VOCAB_LEVELS.NEW || this.vocab.level === constants.ALL_VOCAB_LEVELS.IGNORED || this.vocab.level === constants.ALL_VOCAB_LEVELS.KNOWN;
+      return [VocabLevelSchema.NEW, VocabLevelSchema.IGNORED, VocabLevelSchema.KNOWN].includes(this.vocab!.level!)
     },
     showAddPanel() {
       return this.isVocabNotSaved || this.addingMoreMeanings;
@@ -73,14 +73,14 @@ export default {
     onAddMoreMeaningsClicked() {
       this.addingMoreMeanings = true;
     },
-    onMeaningAdded(vocab, meaning) {
+    onMeaningAdded(vocab: LearnerVocabSchema, meaning: MeaningSchema) {
       this.$emit("onMeaningAdded", vocab, meaning);
       this.addingMoreMeanings = false;
     },
-    onMeaningDeleted(meaning) {
+    onMeaningDeleted(meaning: MeaningSchema) {
       this.$emit("onMeaningDeleted", this.vocab, meaning);
     },
-    onVocabLevelSet(level) {
+    onVocabLevelSet(level: VocabLevelSchema) {
       this.$emit("onVocabLevelSet", this.vocab, level);
     }
   },

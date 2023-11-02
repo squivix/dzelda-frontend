@@ -26,7 +26,7 @@
       </LessonParagraph>
     </div>
 
-    <div>
+    <div class="lesson-audio">
       <audio v-if="audio" controls :src="audio">
         Your browser does not support the audio element.
       </audio>
@@ -138,7 +138,7 @@ export default {
 .lesson-content {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
+  row-gap: 0.5rem;
   user-select: none;
 }
 
@@ -172,6 +172,10 @@ p {
 span::selection {
   color: red;
   background: yellow;
+}
+
+.lesson-audio {
+
 }
 
 </style>

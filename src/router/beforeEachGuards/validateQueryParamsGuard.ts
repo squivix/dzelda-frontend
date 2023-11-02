@@ -22,6 +22,9 @@ export const validateQueryParamsGuard: NavigationGuardWithThis<undefined> = asyn
             }
             to.query = parsedQueryParams;
         }
-    } else if (!isEmptyObject(to.query))
+    } else if (!isEmptyObject(to.query)) {
+        if (import.meta.env.DEV)
+            console.warn(`Received query params ${JSON.stringify(to.query)} for route with none expected, redirecting to ${to.path}`)
         return {...to, query: {}};
+    }
 };

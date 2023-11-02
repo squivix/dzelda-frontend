@@ -71,7 +71,7 @@ export default defineComponent({
     await this.lessonStore.addLessonToUserHistory({lessonId: this.pathParams.lessonId});
     await this.fetchLesson();
     await this.fetchWordsLevels();
-    this.parseLesson();
+    await this.parseLesson();
   },
   computed: {
     isLoading() {
@@ -97,9 +97,16 @@ export default defineComponent({
     async fetchWordsLevels() {
       this.isLoadingWords = true;
       const lessonVocabs = await this.vocabStore.fetchLessonVocabs({lessonId: this.pathParams.lessonId}, {});
-
-      this.words = lessonVocabs.filter(v => !v.isPhrase).reduce((obj, w) => ({...obj, [w.text]: w}), {});
-      this.phrases = lessonVocabs.filter(v => v.isPhrase).reduce((obj, p) => ({...obj, [p.text]: p}), {});
+      const words: Record<string, LearnerVocabSchema> = {};
+      const phrases: Record<string, LearnerVocabSchema> = {};
+      for (const vocab of lessonVocabs) {
+        if (!vocab.isPhrase)
+          words[vocab.text] = vocab;
+        else
+          phrases[vocab.text] = vocab;
+      }
+      this.words = words;
+      this.phrases = phrases;
       this.isLoadingWords = false;
     },
     setSelectedVocab(vocabText: string) {
@@ -155,46 +162,47 @@ export default defineComponent({
         this.setSelectedVocab(vocab.text);
     },
     onMeaningDeleted(word: LearnerVocabSchema, deletedMeaning: MeaningSchema) {
-      console.log(deletedMeaning);
       const index = word.learnerMeanings.findIndex((meaning) => meaning.id === deletedMeaning.id);
       word.learnerMeanings.splice(index, 1);
       if (word.learnerMeanings.length === 0)
         this.onVocabLevelSet(word, constants.ALL_VOCAB_LEVELS.NEW);
     },
-    parseLesson() {
+    async parseLesson() {
       this.isParsingLesson = true;
       this.lessonElements = {
-        title: this.parseStringToElements(this.lesson!.title),
-        text: this.parseStringToElements(this.lesson!.text)
+        title: await this.parseStringToElements(this.lesson!.title),
+        text: await this.parseStringToElements(this.lesson!.text)
       };
       this.isParsingLesson = false;
     },
-    parseStringToElements(text: string): LessonElement[] {
-      // wrap in whitespace to allow regex to detect phrases at the beginning of text
-      text = ` ${text} `;
+    async parseStringToElements(text: string): Promise<LessonElement[]> {
+      return new Promise((resolve) => {
+        // wrap in whitespace to allow regex to detect phrases at the beginning of text
+        text = ` ${text} `;
 
-      const textElements: LessonElement[] = this.getTextElements(text).map(element => ({
-        text: element,
-        isWord: !!this.words[element.toLowerCase()],
-        phrases: {} as PhrasesElementAppearsIn
-      }));
+        const textElements: LessonElement[] = this.getTextElements(text).map(element => ({
+          text: element,
+          isWord: !!this.words[element.toLowerCase()],
+          phrases: {} as PhrasesElementAppearsIn
+        }));
 
-      const phrases = Object.keys(this.phrases);
-      for (const phrase of phrases) {
-        //detect every phrase surrounded by non letters and non-numbers
-        const regex = new RegExp(`[^\\p{L}\\d]${phrase}[^\\p{L}\\d]`, "igu");
-        const matches = text.matchAll(regex);
-        for (let match of matches) {
-          const beforePhraseIndex = this.getTextElements(text.substring(0, match.index)).length;
-          const phraseSlice = this.getTextElements(match[0]);
-          const phraseElements = textElements.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length);
-          phraseElements.forEach((pe, index) => pe.phrases[phrase] = {
-            index: index,
-            length: phraseElements.length
-          });
+        const phrases = Object.keys(this.phrases);
+        for (const phrase of phrases) {
+          //detect every phrase surrounded by non letters and non-numbers
+          const regex = new RegExp(`[^\\p{L}\\d]${phrase}[^\\p{L}\\d]`, "igu");
+          const matches = text.matchAll(regex);
+          for (let match of matches) {
+            const beforePhraseIndex = this.getTextElements(text.substring(0, match.index)).length;
+            const phraseSlice = this.getTextElements(match[0]);
+            const phraseElements = textElements.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length);
+            phraseElements.forEach((pe, index) => pe.phrases[phrase] = {
+              index: index,
+              length: phraseElements.length
+            });
+          }
         }
-      }
-      return textElements;
+        resolve(textElements);
+      });
     },
     getTextElements(paragraph: string) {
       return paragraph.split(/([^\p{L}\d])/gu).filter((word) => word !== "");
@@ -226,7 +234,7 @@ body {
   column-gap: 2rem;
   border-radius: 20px;
   max-width: 1150px;
-  padding: 40px min(5vw, 20px) 0 min(5vw, 20px);
+  padding: 40px min(5vw, 20px) min(5vw, 20px);
 }
 
 .meaning-panel-wrapper:deep(.meaning-sub-panel) {

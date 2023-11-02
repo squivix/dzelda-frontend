@@ -202,7 +202,7 @@ export default {
     wrapperHoverStart(event: Event) {
       //TODO find better way of styling multiple elements based on the hover of one
       const wrapperNode = event.target as HTMLElement;
-      if (!wrapperNode.classList.contains("phrase"))
+      if (!wrapperNode.classList.contains("phrase") || wrapperNode.classList.contains("phrase-hovered"))
         return;
       const element = this.lessonElements[Number(wrapperNode.dataset.parahraphElementIndex)];
       const phrases = Object.keys(element.phrases);
@@ -255,8 +255,6 @@ export default {
       }
       return phraseNodes;
     },
-  },
-  mounted() {
   },
 };
 </script>
