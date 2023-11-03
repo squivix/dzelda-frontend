@@ -1,6 +1,5 @@
 <template>
   <div @click="onBackgroundClicked" class="lesson-content">
-
     <div class="top-div">
       <BaseImage :image-url="image" :fall-back-url="icons.lessonBlank"
                  alt-text="lesson image" class="lesson-image"/>
@@ -15,7 +14,7 @@
                        @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked">
       </LessonParagraph>
     </div>
-    <div class="lesson-text styled-scrollbars">
+    <div class="lesson-text styled-scrollbars" @scroll="onTextScroll">
       <LessonParagraph :lesson-elements="lessonElements.text"
                        :words="words"
                        :phrases="phrases"
@@ -24,12 +23,6 @@
                        @onPhraseClicked="onPhraseClicked"
                        @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked">
       </LessonParagraph>
-    </div>
-
-    <div class="lesson-audio">
-      <audio v-if="audio" controls :src="audio">
-        Your browser does not support the audio element.
-      </audio>
     </div>
   </div>
 </template>
@@ -41,40 +34,20 @@ import {icons} from "@/icons.js";
 import {PropType} from "vue";
 import {LessonElement, NewVocab} from "@/pages/LessonReaderPage.vue";
 import {LearnerVocabSchema} from "dzelda-types";
+import InlineSvg from "vue-inline-svg";
 
 export default {
   name: "TheLessonContent",
-  components: {BaseImage, LessonParagraph},
-  emits: ["onWordClicked", "onPhraseClicked", "onOverLappingPhrasesClicked", "onNewPhraseSelected", "onBackgroundClicked"],
+  components: {InlineSvg, BaseImage, LessonParagraph},
+  emits: ["onWordClicked", "onPhraseClicked", "onOverLappingPhrasesClicked", "onNewPhraseSelected", "onBackgroundClicked", "onScroll"],
   props: {
-    title: {
-      type: String,
-      required: true,
-    },
-    text: {
-      type: String,
-      required: true,
-    },
-    image: {
-      type: String,
-      required: true,
-    },
-    audio: {
-      type: String,
-      required: false,
-    },
-    words: {
-      type: Object as PropType<Record<string, LearnerVocabSchema>>,
-      required: true,
-    },
-    phrases: {
-      type: Object as PropType<Record<string, LearnerVocabSchema | NewVocab>>,
-      required: true
-    },
-    lessonElements: {
-      type: Object as PropType<{ title: LessonElement[], text: LessonElement[] }>,
-      required: true
-    }
+    title: {type: String, required: true,},
+    text: {type: String, required: true,},
+    image: {type: String, required: true,},
+    audio: {type: String, required: false,},
+    words: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true,},
+    phrases: {type: Object as PropType<Record<string, LearnerVocabSchema | NewVocab>>, required: true},
+    lessonElements: {type: Object as PropType<{ title: LessonElement[], text: LessonElement[] }>, required: true}
   },
   data() {
     return {
@@ -97,6 +70,17 @@ export default {
     },
     onNewPhraseSelected(phraseText: string) {
       this.$emit("onNewPhraseSelected", phraseText);
+    },
+    onTextScroll(event: Event) {
+      const lessonTextDiv = event.target as HTMLElement;
+      let position: "top" | "bottom" | "middle";
+      if (lessonTextDiv.scrollTop == 0)
+        position = "top";
+      else if (Math.abs(lessonTextDiv.scrollHeight - lessonTextDiv.scrollTop - lessonTextDiv.clientHeight) < 1)
+        position = "bottom";
+      else
+        position = "middle";
+      this.$emit("onScroll", position)
     },
     clearSelectedPhrases() {
       document.querySelectorAll(".phrase-selected").forEach((el) => el.classList.remove("phrase-selected"));

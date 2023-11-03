@@ -29,7 +29,6 @@
 </template>
 
 <script lang="ts">
-import constants from "@/constants.js";
 import NewVocabPanel from "@/components/shared/vocab-panel/NewVocabPanel.vue";
 import ExistingVocabPanel from "@/components/shared/vocab-panel/ExistingVocabPanel.vue";
 import {PropType} from "vue";

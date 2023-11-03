@@ -2,33 +2,46 @@
   <LoadingScreen v-if="isLoading||!lessonElements"/>
   <base-card class="base-card" v-else-if="lesson">
     <template v-slot:all>
-      <TheLessonContent
-          :title="lesson.title"
-          :text="lesson.text"
-          :lessonElements="lessonElements"
-          :image="imageUrl"
-          :audio="lesson.audio"
-          :words="words"
-          :phrases="phrases"
-          class="lesson-content"
-          @onWordClicked="setSelectedVocab"
-          @onPhraseClicked="setSelectedVocab"
-          @onOverLappingPhrasesClicked="showOverlappingPhrases"
-          @onNewPhraseSelected="selectNewPhrase"
-          @onBackgroundClicked="clearSelectedVocab">
-      </TheLessonContent>
-      <TheMeaningPanel v-if="!selectedOverLappingPhrases"
-                       class="meaning-panel-wrapper"
-                       :vocab="selectedVocab"
-                       :is-phrase="selectedIsPhrase"
-                       @onMeaningAdded="onMeaningAdded"
-                       @onVocabLevelSet="onVocabLevelSet"
-                       @onMeaningDeleted="onMeaningDeleted">
-      </TheMeaningPanel>
-      <OverlappingPhrasesPanel v-else
-                               :phrases="selectedOverLappingPhrases"
-                               @onPhraseClick="setSelectedVocab">
-      </OverlappingPhrasesPanel>
+      <div class="content-and-side-div">
+        <TheLessonContent
+            ref="theLessonContentRef"
+            :title="lesson.title"
+            :text="lesson.text"
+            :lessonElements="lessonElements"
+            :image="imageUrl"
+            :words="words"
+            :phrases="phrases"
+            class="lesson-content"
+            @onWordClicked="setSelectedVocab"
+            @onPhraseClicked="setSelectedVocab"
+            @onOverLappingPhrasesClicked="showOverlappingPhrases"
+            @onNewPhraseSelected="selectNewPhrase"
+            @onBackgroundClicked="clearSelectedVocab"
+            @onScroll="(position)=>lessonTextScrollPosition=position">
+        </TheLessonContent>
+        <ReaderSidePanel
+            :selected-overlapping-phrases="selectedOverLappingPhrases"
+            :selected-vocab="selectedVocab"
+            :lessonTextScrollPosition="lessonTextScrollPosition"
+            :selected-is-phrase="selectedIsPhrase"
+            @onMeaningAdded="onMeaningAdded"
+            @onVocabLevelSet="onVocabLevelSet"
+            @onMeaningDeleted="onMeaningDeleted"
+            @onOverlappingPhraseClicked="setSelectedVocab">
+        </ReaderSidePanel>
+      </div>
+      <div class="bottom-div">
+        <div>
+          <audio v-if="lesson.audio" controls :src="lesson.audio">
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+        <button
+            class="next-lesson-button secondary-filled-button icon-button capsule-button">
+          <span :class="{'no-text': lessonTextScrollPosition == 'middle'}">Next Lesson</span>
+          <inline-svg :src="icons.arrowRight"></inline-svg>
+        </button>
+      </div>
     </template>
   </base-card>
 </template>
@@ -43,13 +56,20 @@ import {LearnerVocabSchema, LessonSchema, MeaningSchema, VocabLevelSchema} from 
 import {useStore} from "@/stores/backend/rootStore.js";
 import {defineComponent, PropType} from "vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
+import ReaderSidePanel from "@/components/page/reader/ReaderSidePanel.vue";
+import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
+import AuthHeader from "@/App.vue";
 
 export type PhrasesElementAppearsIn = { [text: string]: { index: number, length: number } }
 export type LessonElement = { text: string, isWord: boolean, phrases: PhrasesElementAppearsIn }
 export type NewVocab = Omit<LearnerVocabSchema, "id" | "addedOn">
 export default defineComponent({
   name: "LessonReaderPage",
-  components: {LoadingScreen, TheLessonContent, TheMeaningPanel, OverlappingPhrasesPanel},
+  components: {AuthHeader, InlineSvg, ReaderSidePanel, LoadingScreen, TheLessonContent, TheMeaningPanel, OverlappingPhrasesPanel},
+  props: {
+    pathParams: {type: Object as PropType<{ learningLanguage: string, lessonId: number }>, required: true}
+  },
   data() {
     return {
       lesson: null as LessonSchema | null,
@@ -62,16 +82,8 @@ export default defineComponent({
       isLoadingLesson: true,
       isLoadingWords: true,
       isParsingLesson: true,
+      lessonTextScrollPosition: "top" as "top" | "bottom" | "middle",
     };
-  },
-  props: {
-    pathParams: {type: Object as PropType<{ learningLanguage: string, lessonId: number }>, required: true}
-  },
-  async mounted() {
-    await this.lessonStore.addLessonToUserHistory({lessonId: this.pathParams.lessonId});
-    await this.fetchLesson();
-    await this.fetchWordsLevels();
-    await this.parseLesson();
   },
   computed: {
     isLoading() {
@@ -85,7 +97,13 @@ export default defineComponent({
     },
     vocabs() {
       return {...this.words, ...this.phrases};
-    }
+    },
+  },
+  async mounted() {
+    await this.lessonStore.addLessonToUserHistory({lessonId: this.pathParams.lessonId});
+    await this.fetchLesson();
+    await this.fetchWordsLevels();
+    await this.parseLesson();
   },
   methods: {
     async fetchLesson() {
@@ -210,6 +228,7 @@ export default defineComponent({
   },
   setup() {
     return {
+      icons,
       store: useStore(),
       lessonStore: useLessonStore(),
       vocabStore: useVocabStore()
@@ -227,17 +246,46 @@ body {
 <style scoped>
 .base-card {
   width: 80vw;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.25rem;
+  border-radius: 20px;
+  max-width: 1150px;
+  padding: 40px min(5vw, 20px) 10px min(5vw, 20px);
+  margin-bottom: 0;
+}
+
+.content-and-side-div {
   display: grid;
   grid-template-columns: 2fr 1.3fr;
   grid-template-rows: 70vh;
-  margin: auto;
   column-gap: 2rem;
-  border-radius: 20px;
-  max-width: 1150px;
-  padding: 40px min(5vw, 20px) min(5vw, 20px);
+}
+
+.bottom-div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .meaning-panel-wrapper:deep(.meaning-sub-panel) {
   height: 100%;
+}
+
+.next-lesson-button {
+  height: 2rem;
+}
+
+.next-lesson-button span {
+  transition: font-size 1s;
+}
+
+.no-text {
+  font-size: 0;
+}
+
+audio {
+  max-height: 2rem;
 }
 </style>
