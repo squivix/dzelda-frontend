@@ -25,10 +25,9 @@ import {Line as LineChart} from "vue-chartjs";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import BaseLineChart from "@/components/ui/BaseLineChart.vue";
 import {UserSchema, VocabLevelSchema} from "dzelda-types";
-import {ChartData} from "chart.js";
+import {ChartData, ChartDataset} from "chart.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {toSentenceCase} from "@/utils.js";
-import {ChartDataset} from "chart.js/dist/types/index.js";
 
 enum RecentActivityPeriod {
   LAST_WEEK = "last-week",

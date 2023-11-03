@@ -29,8 +29,7 @@
 </template>
 
 <script lang="ts">
-
-import {PropType} from "vue/dist/vue.js";
+import {PropType} from "vue";
 import {LearnerVocabSchema} from "dzelda-types";
 import {LessonElement, NewVocab, PhrasesElementAppearsIn} from "@/pages/LessonReaderPage.vue";
 
@@ -349,8 +348,8 @@ export default {
 }
 
 .phrase-hovered {
-  padding-top: 0.65rem;
-  padding-bottom: 0.65rem;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
   border-top: 1px solid;
   border-bottom: 1px solid;
 }

@@ -36,11 +36,17 @@
             Your browser does not support the audio element.
           </audio>
         </div>
-        <button
-            class="next-lesson-button secondary-filled-button icon-button capsule-button">
+        <button v-if="!lesson.isLastInCourse"
+                class="next-lesson-button secondary-filled-button icon-button capsule-button" @click="fetchNextLesson">
           <span :class="{'no-text': lessonTextScrollPosition == 'middle'}">Next Lesson</span>
-          <inline-svg :src="icons.arrowRight"></inline-svg>
+          <inline-svg :src="icons.arrowRight"/>
         </button>
+        <router-link v-else
+                     :to="{name:'home'}"
+                     class="next-lesson-button secondary-filled-button icon-button capsule-button">
+          <inline-svg :src="icons.checkMark"/>
+          <span :class="{'no-text': lessonTextScrollPosition == 'middle'}">Finish Course</span>
+        </router-link>
       </div>
     </template>
   </base-card>
@@ -99,6 +105,11 @@ export default defineComponent({
       return {...this.words, ...this.phrases};
     },
   },
+  watch: {
+    // pathParams() {
+    //   this.fetchLessonData()
+    // }
+  },
   async mounted() {
     await this.lessonStore.addLessonToUserHistory({lessonId: this.pathParams.lessonId});
     await this.fetchLesson();
@@ -106,11 +117,18 @@ export default defineComponent({
     await this.parseLesson();
   },
   methods: {
+    // async fetchLessonData() {
+    //
+    // },
     async fetchLesson() {
       this.isLoadingLesson = true;
       this.lesson = await this.lessonStore.fetchLesson({lessonId: this.pathParams.lessonId});
       this.lesson.text = this.lesson.text.replace(/[\r\n]{3,}/g, "\n\n");
       this.isLoadingLesson = false;
+    },
+    async fetchNextLesson() {
+      const lesson = await this.lessonStore.fetchNextLesson({courseId: this.lesson!.course.id, lessonId: this.lesson!.id});
+      await this.$router.push({...this.$route, params: {lessonId: lesson!.id}})
     },
     async fetchWordsLevels() {
       this.isLoadingWords = true;
@@ -275,6 +293,10 @@ body {
 
 .next-lesson-button {
   height: 2rem;
+}
+
+.next-lesson-button:hover {
+  text-decoration: none;
 }
 
 .next-lesson-button span {

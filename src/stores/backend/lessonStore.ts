@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
+import {LessonSchema} from "dzelda-types";
 
 export const useLessonStore = defineStore("lesson", {
     actions: {
@@ -80,5 +81,18 @@ export const useLessonStore = defineStore("lesson", {
 
             return response.data;
         },
+        async fetchNextLesson(pathParams: { lessonId: number, courseId: number }) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.courses.getCoursesCourseIdLessonsLessonIdNext(pathParams.courseId, pathParams.lessonId));
+
+            // handle your 4XX errors as you may
+            //...
+
+            if (response.redirected) {
+                response.data = await response.json()
+                return response.data as LessonSchema;
+            } else
+                return null;
+        }
     }
 });

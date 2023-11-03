@@ -10,7 +10,9 @@
       <aside class="left-side"></aside>
 
       <main>
-        <router-view></router-view>
+        <router-view v-slot="{ Component, route }">
+          <component :is="Component" :key="route.path"/>
+        </router-view>
       </main>
 
       <aside class="right-side"></aside>
