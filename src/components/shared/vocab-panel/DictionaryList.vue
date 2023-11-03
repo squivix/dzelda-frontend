@@ -1,8 +1,10 @@
 <template>
-  <h5 v-if="dictionaries.length>0">Dictionaries</h5>
-  <ol class="dictionaries" v-for="dictionary in dictionaries" :key="dictionary.id">
-    <li @click="openDictionaryLink(dictionary)">{{ dictionary.name }}</li>
-  </ol>
+  <div class="dictionaries-wrapper">
+    <h5 v-if="dictionaries.length>0">Dictionaries</h5>
+    <ol class="dictionaries styled-scrollbars" v-for="dictionary in dictionaries" :key="dictionary.id">
+      <li @click="openDictionaryLink(dictionary)">{{ dictionary.name }}</li>
+    </ol>
+  </div>
 </template>
 
 <script lang="ts">
@@ -42,10 +44,19 @@ export default {
 </script>
 
 <style scoped>
+.dictionaries-wrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+}
+
 .dictionaries {
   display: flex;
   flex-direction: column;
-  row-gap: 0.25rem;
+  row-gap: 0.75rem;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  max-height: 25vh;
 }
 
 .dictionaries > li {

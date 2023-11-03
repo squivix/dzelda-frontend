@@ -1,18 +1,20 @@
 <template>
   <div class="new-vocab-panel">
+    <div class="top-sub-panel">
+      <meaning-adding-controls
+          :vocab-id="vocab.id"
+          :vocab-text="vocab.text"
+          :is-phrase="isPhrase"
+          :suggested-meanings="suggestedMeanings"
+          @onMeaningAdded="onMeaningAdded">
 
-    <meaning-adding-controls
-        :vocab-id="vocab.id"
-        :vocab-text="vocab.text"
-        :is-phrase="isPhrase"
-        :suggested-meanings="suggestedMeanings"
-        @onMeaningAdded="onMeaningAdded">
+      </meaning-adding-controls>
 
-    </meaning-adding-controls>
 
-    <dictionaries-list
-        :vocab-text="vocab.text">
-    </dictionaries-list>
+      <dictionaries-list
+          :vocab-text="vocab.text">
+      </dictionaries-list>
+    </div>
     <div class="mark-buttons-div" v-if="!isPhrase && isLevelNew || isLevelIgnored">
       <button class="square-button hollow-button know-button" @click="markWordAsKnown">Mark as
         known
@@ -91,13 +93,23 @@ export default {
 .new-vocab-panel {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.top-sub-panel {
+  display: flex;
+  flex-direction: column;
   row-gap: 1rem;
+
 }
 
 .mark-buttons-div {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  justify-self: flex-end;
+  margin-bottom: 0.25rem;
 }
 
 .ignore-button {

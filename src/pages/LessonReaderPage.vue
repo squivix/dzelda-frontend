@@ -36,6 +36,7 @@
             Your browser does not support the audio element.
           </audio>
         </div>
+        <!-- TODO move to expanding button component-->
         <button v-if="!lesson.isLastInCourse"
                 class="next-lesson-button secondary-filled-button icon-button capsule-button" @click="fetchNextLesson">
           <span :class="{'no-text': lessonTextScrollPosition == 'middle'}">Next Lesson</span>
@@ -266,7 +267,7 @@ body {
   width: 80vw;
   display: flex;
   flex-direction: column;
-  row-gap: 0.25rem;
+  row-gap: 1rem;
   border-radius: 20px;
   max-width: 1150px;
   padding: 40px min(5vw, 20px) 10px min(5vw, 20px);

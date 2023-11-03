@@ -1,10 +1,8 @@
 <template>
   <div class="suggested-meanings-div" v-if="suggestedMeanings.length>0">
     <h5>Suggested Meanings</h5>
-    <ol class="suggested-meanings">
-      <li v-for="meaning in suggestedMeanings"
-          :key="meaning"
-          @click="addSuggestedMeaning(meaning)">
+    <ol class="suggested-meanings styled-scrollbars">
+      <li v-for="meaning in suggestedMeanings" :key="meaning" @click="addSuggestedMeaning(meaning)">
         {{ meaning.text }}
       </li>
     </ol>
@@ -15,7 +13,6 @@
     <button class="new-meaning-button"
             @click="addNewMeaning"
             type="submit">
-
       <inline-svg :src="icons.plus"/>
     </button>
   </form>
@@ -110,7 +107,10 @@ export default {
 .suggested-meanings {
   display: flex;
   flex-direction: column;
-  row-gap: 0.25rem;
+  row-gap: 0.75rem;
+  overflow-y: auto;
+  max-height: 20vh;
+  padding-right: 0.5rem;
 }
 
 .suggested-meanings > li {
