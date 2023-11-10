@@ -22,13 +22,14 @@
             <template v-slot:menu>
 
               <!--TODO:Only show link if user is authorized to edit course-->
-              <BaseDropDownList class="profile-menu" :list-items="[
-              {
-                text:'Edit',
-                link:{ name: 'edit-course' , params:{courseId:course.id}},
-                icon:'pen'
-              },
-          ]"/>
+              <ol class="dropdown-list">
+                <li>
+                  <router-link :to="{ name: 'edit-course' , params:{courseId:course.id}}">
+                    <inline-svg :src="icons.pen"/>
+                    <span>Edit</span>
+                  </router-link>
+                </li>
+              </ol>
             </template>
           </BaseDropDown>
         </div>
@@ -39,17 +40,17 @@
 
 <script lang="ts">
 import {useStore} from "@/stores/backend/rootStore.js";
-import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {PropType} from "vue";
 import {CourseSchema} from "dzelda-types";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
+import BaseCard from "@/components/ui/BaseCard.vue";
 
 export default {
   name: "CourseCard",
-  components: {InlineSvg, BaseImage, BaseDropDown, BaseDropDownList},
+  components: {InlineSvg, BaseCard, BaseImage, BaseDropDown},
   data() {
     return {};
   },

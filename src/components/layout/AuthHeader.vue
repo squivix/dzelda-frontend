@@ -1,19 +1,19 @@
 <template>
   <header>
     <div class="title-nav-div">
-      <router-link :to="{ name: 'home'}" style="text-decoration: none; color: inherit">
-        <img :src="logo" class="logo-image">
-
+      <router-link :to="{ name: 'home'}" class="title">
+        <img :src="logo" class="logo-image" alt="logo">
+        <!--        <h1>Dzelda</h1>-->
       </router-link>
       <nav v-if="userAccount?.isEmailConfirmed && userLanguages && userLanguages.length > 0">
         <ul>
-          <router-link :to="{ name: 'explore' }" style="text-decoration: none; color: inherit">
+          <router-link :to="{ name: 'explore' }">
             <li>Explore</li>
           </router-link>
-          <router-link :to="{ name: 'my-library' }" style="text-decoration: none; color: inherit">
+          <router-link :to="{ name: 'my-library' }">
             <li>My Library</li>
           </router-link>
-          <router-link :to="{ name: 'my-vocab' }" style="text-decoration: none; color: inherit">
+          <router-link :to="{ name: 'my-vocab' }">
             <li>My Vocab</li>
           </router-link>
         </ul>
@@ -30,21 +30,19 @@
           </span>
         </template>
         <template v-slot:menu>
-          <BaseDropDownList is-grid class="language-grid" :list-items="
-            [...otherLanguages.map(language=>({
-                  text:language.name,
-                  image:{src:language.flagCircular!, alt:'language flag'},
-                  link:{ name: 'explore-lang' ,params:{learningLanguage:language.code}}
-            })),
-            {
-                  text:undefined,
-                  icon:icons.plusRound,
-                  link:{ name: 'new-language' },
-                  class:'language-add-button'
-            }
-            ]">
-
-          </BaseDropDownList>
+          <ol class="language-grid dropdown-list">
+            <li v-for="language in otherLanguages">
+              <router-link :to="{params:{learningLanguage:language.code}}">
+                <img class="image-icon" :src="language.flagCircular!" :alt="`${language.code} language flag`">
+                <span>{{ language.name }}</span>
+              </router-link>
+            </li>
+            <li class="language-add-button">
+              <router-link :to="{ name: 'new-language' }">
+                <inline-svg :src="icons.plusRound"/>
+              </router-link>
+            </li>
+          </ol>
         </template>
       </BaseDropDown>
       <BaseDropDown v-if="userLanguages && userLanguages.length > 0" :is-pointy="true" label="add-menu">
@@ -54,16 +52,10 @@
                     </span>
         </template>
         <template v-slot:menu>
-          <BaseDropDownList class="add-menu"
-                            :list-items="[
-                        {
-                           text:'Add Lesson',
-                           link:{ name: 'add-lesson' }
-                        },{
-                           text:'Add Course',
-                           link:{ name: 'add-course' }
-                        }
-                      ]"/>
+          <ol class="add-menu dropdown-list">
+            <li><router-link :to="{name:'add-lesson'}"><span>Add Lesson</span></router-link></li>
+            <li><router-link :to="{name:'add-course'}"><span>Add Course</span></router-link></li>
+          </ol>
         </template>
       </BaseDropDown>
       <BaseDropDown :is-pointy="true" label="profile-menu">
@@ -73,27 +65,29 @@
                      alt="profile picture"/>
         </template>
         <template v-slot:menu>
-          <BaseDropDownList class="profile-menu" :list-items="[
-              {
-                text:'My Profile',
-                link:{ name: 'my-profile' },
-                icon:icons.userProfile
-              },
-              {
-                text:'Settings',
-                link:{ name: 'settings' },
-                icon:icons.settings
-              },
-              {
-                text:'Sign Out',
-                link:{ name: 'sign-out' },
-                icon:icons.signOut
-              }
-          ]"/>
+          <ol class="add-menu dropdown-list">
+            <li>
+              <router-link :to="{name:'my-profile'}">
+                <inline-svg :src="icons.userProfile"/>
+                <span>My Profile</span>
+              </router-link>
+            </li>
+            <li>
+              <router-link :to="{name:'settings'}">
+                <inline-svg :src="icons.settings"/>
+                <span>Settings</span>
+              </router-link>
+            </li>
+            <li>
+              <router-link :to="{name:'sign-out'}">
+                <inline-svg :src="icons.signOut"/>
+                <span>Sign Out</span>
+              </router-link>
+            </li>
+          </ol>
         </template>
       </BaseDropDown>
     </div>
-
     <div v-else>
       <router-link :to="{ name: 'sign-out' }">
         <button class="hollow-button capsule-button link">Sign Out</button>
@@ -106,7 +100,6 @@ import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import logo from "@/assets/images/logo.png";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
-import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
 import {defineComponent} from "vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import BaseImage from "@/components/ui/BaseImage.vue";
@@ -115,7 +108,7 @@ import {icons} from "@/icons.js";
 
 export default defineComponent({
   name: "AuthHeader",
-  components: {BaseImage, BaseDropDownList, BaseDropDown, InlineSvg},
+  components: {BaseImage, BaseDropDown, InlineSvg},
   computed: {
     userAccount() {
       return this.userStore.userAccount;
@@ -166,6 +159,11 @@ header {
   z-index: 5;
 }
 
+header a {
+  color: inherit;
+  text-decoration: none;
+}
+
 header h1 {
   color: var(--on-primary-color);
 }
@@ -190,6 +188,12 @@ h1 {
   justify-content: flex-start;
   align-items: center;
   column-gap: 3rem;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
 }
 
 nav > ul {
