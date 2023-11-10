@@ -1,27 +1,28 @@
 <template>
   <div class="existing-vocab-panel">
-    <meaning-editing-controls
+    <MeaningEditingControls
         @onMeaningDeleted="onMeaningDeleted"
         :vocab-id="vocab.id"
         :saved-meanings="vocab.learnerMeanings"
     >
-    </meaning-editing-controls>
+    </MeaningEditingControls>
 
     <button class="capsule-button add-meaning-button" @click="addMeaning">
       <inline-svg :src="icons.plus" class="more-button"/>
     </button>
 
     <h5>Set Level</h5>
-    <vocab-level-picker
+    <VocabLevelPicker
         :vocab-id="vocab.id"
         :level="vocab.level"
         @onVocabLevelSet="onVocabLevelSet">
-    </vocab-level-picker>
+    </VocabLevelPicker>
 
     <textarea class="notes"
-              placeholder="Notes"></textarea>
+              placeholder="Notes"
+              v-model="notes"
+              @blur="updateVocabNotes"></textarea>
     <!--        TODO: Encounters with vocab button-->
-    <!--        <button>View Encounters with this vocab</button>-->
   </div>
 </template>
 
@@ -30,16 +31,25 @@ import VocabLevelPicker from "@/components/shared/vocab-panel/VocabLevelPicker.v
 import MeaningEditingControls from "@/components/shared/vocab-panel/MeaningEditingControls.vue";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
+import {useVocabStore} from "@/stores/backend/vocabStore.js";
 
 export default {
   name: "ExistingVocabPanel",
   components: {MeaningEditingControls, InlineSvg, VocabLevelPicker},
-  emits: ["onAddMoreMeaningsClicked", "onMeaningDeleted", "onVocabLevelSet"],
+  emits: ["onAddMoreMeaningsClicked", "onMeaningDeleted", "onVocabLevelSet", "onVocabNotesSet"],
+  data() {
+    return {
+      notes: this.vocab.notes
+    };
+  }, watch: {
+    vocab() {
+      this.notes = this.vocab.notes;
+    }
+  },
   props: {
     vocab: {
       type: Object,
       required: true,
-
     },
   },
   methods: {
@@ -51,12 +61,22 @@ export default {
     },
     onVocabLevelSet(level) {
       this.$emit("onVocabLevelSet", level);
+    },
+    async updateVocabNotes() {
+      await this.vocabStore.updateUserVocab(
+          {vocabId: this.vocab.id},
+          {notes: this.notes}
+      );
+      this.$emit("onVocabNotesSet", this.notes);
     }
   },
   setup() {
-    return {icons}
+    return {
+      icons,
+      vocabStore: useVocabStore()
+    };
   }
-}
+};
 </script>
 
 <style scoped>

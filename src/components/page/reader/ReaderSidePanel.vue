@@ -1,12 +1,12 @@
 <template>
   <div class="side-panel">
     <TheMeaningPanel v-if="!selectedOverlappingPhrases"
-                     class="meaning-panel-wrapper"
                      :vocab="selectedVocab"
                      :is-phrase="selectedIsPhrase"
                      @onMeaningAdded="onMeaningAdded"
                      @onVocabLevelSet="onVocabLevelSet"
-                     @onMeaningDeleted="onMeaningDeleted">
+                     @onMeaningDeleted="onMeaningDeleted"
+                     @onVocabNotesSet="onVocabNotesSet">
     </TheMeaningPanel>
     <OverlappingPhrasesPanel v-else
                              :phrases="selectedOverlappingPhrases"
@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
+import {defineComponent, PropType} from "vue";
 import TheMeaningPanel from "@/components/shared/vocab-panel/TheMeaningPanel.vue";
 import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel.vue";
 import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-types";
@@ -33,7 +33,7 @@ export default defineComponent({
     selectedIsPhrase: {type: Boolean},
   },
   computed: {},
-  emits: ["onMeaningAdded", "onVocabLevelSet", "onVocabLevelSet", "onMeaningDeleted", "onOverlappingPhraseClicked"],
+  emits: ["onMeaningAdded", "onVocabLevelSet", "onVocabLevelSet", "onMeaningDeleted", "onOverlappingPhraseClicked", "onVocabNotesSet"],
   methods: {
     onOverlappingPhraseClicked(vocabText: string) {
       this.$emit("onOverlappingPhraseClicked", vocabText);
@@ -47,11 +47,14 @@ export default defineComponent({
     onMeaningDeleted(word: LearnerVocabSchema, deletedMeaning: MeaningSchema) {
       this.$emit("onMeaningDeleted", word, deletedMeaning);
     },
+    onVocabNotesSet(vocab: LearnerVocabSchema, notes: string) {
+      this.$emit("onVocabNotesSet", vocab, notes);
+    }
   },
   setup() {
-    return {}
+    return {};
   }
-})
+});
 </script>
 
 <style scoped>

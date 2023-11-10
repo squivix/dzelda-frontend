@@ -27,7 +27,8 @@
             @onMeaningAdded="onMeaningAdded"
             @onVocabLevelSet="onVocabLevelSet"
             @onMeaningDeleted="onMeaningDeleted"
-            @onOverlappingPhraseClicked="setSelectedVocab">
+            @onOverlappingPhraseClicked="setSelectedVocab"
+            @onVocabNotesSet="onVocabNotesSet">
         </ReaderSidePanel>
       </div>
       <div class="bottom-div">
@@ -129,7 +130,7 @@ export default defineComponent({
     },
     async fetchNextLesson() {
       const lesson = await this.lessonStore.fetchNextLesson({courseId: this.lesson!.course.id, lessonId: this.lesson!.id});
-      await this.$router.push({...this.$route, params: {lessonId: lesson!.id}})
+      await this.$router.push({...this.$route, params: {lessonId: lesson!.id}});
     },
     async fetchWordsLevels() {
       this.isLoadingWords = true;
@@ -197,6 +198,10 @@ export default defineComponent({
           this.phrases[key].level = VocabLevelSchema.NEW;
       } else
         this.setSelectedVocab(vocab.text);
+    },
+    onVocabNotesSet(vocab: LearnerVocabSchema, notes: string) {
+      const key = vocab.text.toLowerCase();
+      this.vocabs[key].notes = notes;
     },
     onMeaningDeleted(word: LearnerVocabSchema, deletedMeaning: MeaningSchema) {
       const index = word.learnerMeanings.findIndex((meaning) => meaning.id === deletedMeaning.id);

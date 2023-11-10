@@ -2,22 +2,21 @@
   <div v-if="vocab">
     <h4 class="vocab-text">{{ vocab.text }}</h4>
     <div :class="{'meaning-sub-panel':true,'new-vocab-panel':showAddPanel, 'existing-vocab-panel':!showAddPanel}">
-
-      <new-vocab-panel
+      <NewVocabPanel
           v-if="showAddPanel"
           :vocab="vocab"
           :is-phrase="isPhrase"
           @onMeaningAdded="onMeaningAdded"
           @onVocabLevelSet="onVocabLevelSet">
-
-      </new-vocab-panel>
-      <existing-vocab-panel
+      </NewVocabPanel>
+      <ExistingVocabPanel
           v-else
           :vocab="vocab"
           @onAddMoreMeaningsClicked="onAddMoreMeaningsClicked"
           @onMeaningDeleted="onMeaningDeleted"
-          @onVocabLevelSet="onVocabLevelSet">
-      </existing-vocab-panel>
+          @onVocabLevelSet="onVocabLevelSet"
+          @onVocabNotesSet="onVocabNotesSet">
+      </ExistingVocabPanel>
     </div>
   </div>
   <slot name="no-selected-panel" v-else>
@@ -35,7 +34,7 @@ import {NewVocab} from "@/pages/LessonReaderPage.vue";
 export default {
   name: "TheMeaningPanel",
   components: {NewVocabPanel, ExistingVocabPanel},
-  emits: ["onMeaningAdded", "onVocabLevelSet", "onMeaningDeleted"],
+  emits: ["onMeaningAdded", "onVocabLevelSet", "onMeaningDeleted", "onVocabNotesSet"],
   props: {
     vocab: {
       type: Object as PropType<LearnerVocabSchema | NewVocab | null>,
@@ -59,7 +58,7 @@ export default {
   },
   computed: {
     isVocabNotSaved() {
-      return [VocabLevelSchema.NEW, VocabLevelSchema.IGNORED, VocabLevelSchema.KNOWN].includes(this.vocab!.level!)
+      return [VocabLevelSchema.NEW, VocabLevelSchema.IGNORED, VocabLevelSchema.KNOWN].includes(this.vocab!.level!);
     },
     showAddPanel() {
       return this.isVocabNotSaved || this.addingMoreMeanings;
@@ -78,6 +77,9 @@ export default {
     },
     onVocabLevelSet(level: VocabLevelSchema) {
       this.$emit("onVocabLevelSet", this.vocab, level);
+    },
+    onVocabNotesSet(notes: string) {
+      this.$emit("onVocabNotesSet", this.vocab, notes);
     }
   },
 };

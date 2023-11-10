@@ -43,10 +43,11 @@ export const useVocabStore = defineStore("vocab", {
 
             return response.data;
         },
-        async updateUserVocab(pathParams: { vocabId: number }, body: { level: (-1 | 0 | 1 | 2 | 3 | 4 | 5 | 6) }) {
+        async updateUserVocab(pathParams: { vocabId: number }, body: { level?: (-1 | 0 | 1 | 2 | 3 | 4 | 5 | 6), notes?: string }) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.patchUsersMeVocabs(pathParams.vocabId, {
-                level: body.level
+                level: body.level,
+                notes: body.notes
             }));
 
             // handle your 4XX errors as you may
