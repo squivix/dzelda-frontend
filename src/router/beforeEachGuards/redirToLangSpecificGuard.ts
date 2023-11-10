@@ -12,7 +12,4 @@ export const redirToLangSpecificGuard: NavigationGuardWithThis<undefined> = asyn
         const defaultLanguage = userLanguages[0];
         return {path: `/learn/${defaultLanguage.code}${to.path}`};
     }
-
-    if (to.params.learningLanguage && from.params.learningLanguage !== to.params.learningLanguage)
-        await languageStore.updateLanguageLastOpened({languageCode: to.params.learningLanguage as string});
 };
