@@ -2,7 +2,8 @@
   <header>
     <div class="title-nav-div">
       <router-link :to="{ name: 'home'}" style="text-decoration: none; color: inherit">
-        <h1 class="unselectable">Dzelda</h1>
+        <img :src="logo" class="logo-image">
+
       </router-link>
       <nav v-if="userAccount?.isEmailConfirmed && userLanguages && userLanguages.length > 0">
         <ul>
@@ -105,6 +106,7 @@
 </template>
 <script lang="ts">
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
+import logo from "@/assets/images/logo.png";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import BaseDropDownList from "@/components/ui/BaseDropDownList.vue";
@@ -146,6 +148,7 @@ export default defineComponent({
   setup() {
     return {
       icons,
+      logo,
       store: useStore(),
       userStore: useUserStore(),
       languageStore: useLanguageStore(),
@@ -161,7 +164,7 @@ header {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 2vw;
+  padding: 10px 2vw;
   background-color: var(--primary-color);
   z-index: 5;
 }
@@ -176,6 +179,12 @@ header h1:hover {
 
 h1 {
   font: var(--app-title-font);
+}
+
+.logo-image {
+  width: 64px;
+  height: 64px;
+  background-color: transparent;
 }
 
 .title-nav-div {
