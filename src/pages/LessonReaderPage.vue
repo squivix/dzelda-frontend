@@ -68,13 +68,14 @@ import ReaderSidePanel from "@/components/page/reader/ReaderSidePanel.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import AuthHeader from "@/App.vue";
+import BaseCard from "@/components/ui/BaseCard.vue";
 
 export type PhrasesElementAppearsIn = { [text: string]: { index: number, length: number } }
 export type LessonElement = { text: string, isWord: boolean, phrases: PhrasesElementAppearsIn }
 export type NewVocab = Omit<LearnerVocabSchema, "id" | "addedOn">
 export default defineComponent({
   name: "LessonReaderPage",
-  components: {AuthHeader, InlineSvg, ReaderSidePanel, LoadingScreen, TheLessonContent, TheMeaningPanel, OverlappingPhrasesPanel},
+  components: {AuthHeader, InlineSvg, BaseCard, ReaderSidePanel, LoadingScreen, TheLessonContent, TheMeaningPanel, OverlappingPhrasesPanel},
   props: {
     pathParams: {type: Object as PropType<{ learningLanguage: string, lessonId: number }>, required: true}
   },

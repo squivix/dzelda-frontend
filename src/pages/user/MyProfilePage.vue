@@ -23,10 +23,11 @@ import ProfileForm from "@/components/page/my-profile/ProfileForm.vue";
 import RecentActivityChart from "@/components/page/my-profile/RecentActivityChart.vue";
 import AllTimeProgressChart from "@/components/page/my-profile/AllTimeProgressChart.vue";
 import BadgesSection from "@/components/page/my-profile/BadgesSection.vue";
+import BaseCard from "@/components/ui/BaseCard.vue";
 
 export default {
   name: "MyProfilePage",
-  components: {BadgesSection, ProfileForm, AllTimeProgressChart, RecentActivityChart, BaseImage, InlineSvg},
+  components: {BaseCard, BadgesSection, ProfileForm, AllTimeProgressChart, RecentActivityChart, BaseImage, InlineSvg},
   data() {
     return {};
   },

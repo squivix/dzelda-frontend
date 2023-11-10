@@ -27,9 +27,12 @@
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
+import BaseCard from "@/components/ui/BaseCard.vue";
+import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
 
 export default {
   name: "SignUpPage",
+  components: {BaseCard, BasePasswordInput},
   data() {
     return {
       email: "",
@@ -39,7 +42,6 @@ export default {
       errorMessage: "",
     };
   },
-
   methods: {
     async submitForm() {
       const error = await this.userStore.signUp({

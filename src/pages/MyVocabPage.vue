@@ -80,13 +80,13 @@ import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
+import BaseCard from "@/components/ui/BaseCard.vue";
 //TODO stop showing ignored vocabs
 export default {
   name: "MyVocabPage",
   components: {
-    InlineSvg,
-    EmptyScreen,
-    LoadingScreen, CourseFilters, SearchBar, VocabFilters, VocabTable, PaginationControls, TheMeaningPanel
+    InlineSvg, EmptyScreen, BaseCard, LoadingScreen, CourseFilters, SearchBar,
+    VocabFilters, VocabTable, PaginationControls, TheMeaningPanel
   },
   props: {
     pathParams: {
