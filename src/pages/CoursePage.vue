@@ -13,8 +13,8 @@
       <h2>Lessons</h2>
       <ol class="lesson-list">
         <li v-for="lesson in course.lessons" :key="lesson.id" class="lesson">
-          <lesson-list-item :lesson="{...lesson, course}" :show-course="false">
-          </lesson-list-item>
+          <LessonListItem :lesson="{...lesson, course}" :show-course="false">
+          </LessonListItem>
         </li>
       </ol>
     </template>

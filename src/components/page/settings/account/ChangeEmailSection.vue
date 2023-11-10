@@ -4,10 +4,9 @@
     <form class="change-email-form" @submit.prevent="submitEmailChange">
       <label for="email">Email</label>
       <div>
-        <base-changeable-input id="email" type="email" autocomplete="email" required v-model="newEmail"
-                               :clear-on-change="true" @on-change="()=>emailChanged=true"
-                               :class="{'error-input': errorFields.includes('newEmail')}">
-        </base-changeable-input>
+        <BaseChangeableInput id="email" type="email" autocomplete="email" required v-model="newEmail"
+                             :clear-on-change="true" @on-change="()=>emailChanged=true"
+                             :class="{'error-input': errorFields.includes('newEmail')}"/>
         <button type="submit" v-if="emailChanged" class="change-email-button primary-filled-button capsule-button">
           Change Email
         </button>

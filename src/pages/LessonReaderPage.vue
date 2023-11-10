@@ -1,6 +1,6 @@
 <template>
   <LoadingScreen v-if="isLoading||!lessonElements"/>
-  <base-card class="base-card" v-else-if="lesson">
+  <BaseCard class="base-card" v-else-if="lesson">
     <template v-slot:all>
       <div class="content-and-side-div">
         <TheLessonContent
@@ -51,7 +51,7 @@
         </router-link>
       </div>
     </template>
-  </base-card>
+  </BaseCard>
 </template>
 <script lang="ts">
 import TheLessonContent from "@/components/page/reader/TheLessonContent.vue";

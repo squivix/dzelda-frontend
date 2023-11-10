@@ -10,8 +10,7 @@
               @dragstart="wrapperDragStart"
               @dragenter="wrapperDragEnter"
               @mouseenter="wrapperHoverStart"
-              @mouseleave="wrapperHoverEnd"
-        >
+              @mouseleave="wrapperHoverEnd">
         <span :class="getWordClass(element)"
               :id="`w${index}`"
               v-if="element.isWord"

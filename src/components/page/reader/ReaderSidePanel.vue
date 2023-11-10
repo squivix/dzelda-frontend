@@ -6,12 +6,10 @@
                      @onMeaningAdded="onMeaningAdded"
                      @onVocabLevelSet="onVocabLevelSet"
                      @onMeaningDeleted="onMeaningDeleted"
-                     @onVocabNotesSet="onVocabNotesSet">
-    </TheMeaningPanel>
+                     @onVocabNotesSet="onVocabNotesSet"/>
     <OverlappingPhrasesPanel v-else
                              :phrases="selectedOverlappingPhrases"
-                             @onPhraseClick="onOverlappingPhraseClicked">
-    </OverlappingPhrasesPanel>
+                             @onPhraseClick="onOverlappingPhraseClicked"/>
   </div>
 </template>
 

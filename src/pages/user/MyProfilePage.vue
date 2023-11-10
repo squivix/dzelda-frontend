@@ -1,8 +1,8 @@
 <template>
-  <base-card title="Profile" class="my-profile-base-card" v-if="userStore.userAccount">
+  <BaseCard title="Profile" class="my-profile-base-card" v-if="userStore.userAccount">
     <template v-slot:all>
       <div class="profile-stats">
-        <profile-form class="profile-wrapper"/>
+        <ProfileForm class="profile-wrapper"/>
         <div class="stats-wrapper">
           <RecentActivityChart :user="userStore.userAccount"/>
           <AllTimeProgressChart :user="userStore.userAccount"/>
@@ -11,7 +11,7 @@
       </div>
       <!--      <BadgesSection/>-->
     </template>
-  </base-card>
+  </BaseCard>
 </template>
 
 <script lang="ts">
@@ -28,12 +28,12 @@ export default {
   name: "MyProfilePage",
   components: {BadgesSection, ProfileForm, AllTimeProgressChart, RecentActivityChart, BaseImage, InlineSvg},
   data() {
-    return {}
+    return {};
   },
   setup() {
-    return {icons, userStore: useUserStore()}
+    return {icons, userStore: useUserStore()};
   },
-}
+};
 </script>
 
 <style scoped>

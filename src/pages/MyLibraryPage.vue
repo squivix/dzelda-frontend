@@ -1,5 +1,5 @@
 <template>
-  <base-card title="My Library" class="library-base-card">
+  <BaseCard title="My Library" class="library-base-card">
     <template v-slot:content>
       <ul class="tab-labels">
         <li :class="['tab-label', { 'current-tab': currentTab === MyLibraryPageTab.BOOKMARKS }]">
@@ -14,7 +14,7 @@
       </ul>
       <router-view/>
     </template>
-  </base-card>
+  </BaseCard>
 </template>
 
 <script lang="ts">

@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent} from "vue";
 import InlineSvg from "vue-inline-svg";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {icons} from "@/icons.js";
@@ -35,7 +35,7 @@ export default defineComponent({
       bio: this.userStore.userAccount.profile.bio,
       isEditing: false,
       profilePicture: undefined as File | undefined | "",
-    }
+    };
   },
   methods: {
     editForm() {
@@ -55,9 +55,9 @@ export default defineComponent({
       icons,
       store: useStore(),
       userStore: useUserStore()
-    }
+    };
   },
-})
+});
 </script>
 
 <style scoped>

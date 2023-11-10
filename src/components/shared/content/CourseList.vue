@@ -2,14 +2,14 @@
   <LoadingScreen v-if="isLoading"/>
   <div class="wrapper" v-else>
     <div class="top-bar">
-      <search-bar :initial-search-query="searchQuery"/>
+      <SearchBar :initial-search-query="searchQuery"/>
       <button class="filter-button icon-wrapper" @click.stop="toggleFilters">
         <inline-svg :src="icons.filter"/>
       </button>
     </div>
-    <course-filters :is-shown="isFiltersShown"
-                    @on-filters-cleared="() => isFiltersShown=false"
-                    @on-filters-applied="() => isFiltersShown=false"/>
+    <CourseFilters :is-shown="isFiltersShown"
+                   @on-filters-cleared="() => isFiltersShown=false"
+                   @on-filters-applied="() => isFiltersShown=false"/>
 
     <EmptyScreen v-if="!courses||courses.length==0" :has-filters="hasFilters">
       <template v-slot:no-filters>
@@ -34,24 +34,22 @@
 
     <ol class="course-grid" v-else>
       <li v-for="course in courses" :key="course.id">
-        <course-card
-            :course="course">
-        </course-card>
+        <CourseCard :course="course"/>
       </li>
     </ol>
 
-    <pagination-controls
+    <PaginationControls
         v-if="pageCount"
         :page-count="pageCount"
         :page="page"
         :page-size="pageSize"
         :per-page-select-label="`Courses Per Page`">
-    </pagination-controls>
+    </PaginationControls>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
+import {defineComponent, PropType} from "vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import SearchBar from "@/components/ui/SearchBar.vue";
 import InlineSvg from "vue-inline-svg";
@@ -68,7 +66,7 @@ export default defineComponent({
   data() {
     return {
       isFiltersShown: false,
-    }
+    };
   },
   props: {
     isLoading: {type: Boolean, required: true},
@@ -97,9 +95,9 @@ export default defineComponent({
     }
   },
   setup() {
-    return {icons}
+    return {icons};
   }
-})
+});
 </script>
 
 <style scoped>

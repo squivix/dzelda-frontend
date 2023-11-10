@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
+import {defineComponent, PropType} from "vue";
 import BaseBarChart from "@/components/ui/BaseBarChart.vue";
 import {ChartData} from "chart.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
@@ -29,7 +29,7 @@ export default defineComponent({
     return {
       isLoading: true,
       chartData: null as ChartData<"bar", any> | null,
-    }
+    };
   },
   methods: {
     async fetchChartData() {
@@ -39,7 +39,7 @@ export default defineComponent({
         groupBy: "language",
         level: [VocabLevelSchema.LEARNED, VocabLevelSchema.KNOWN]
       });
-      this.chartData = {datasets: [{data: rawData.map((r) => ({x: r.language, y: r.vocabsCount}))}]}
+      this.chartData = {datasets: [{data: rawData.map((r) => ({x: r.language, y: r.vocabsCount}))}]};
       this.isLoading = false;
     }
   },
@@ -47,9 +47,9 @@ export default defineComponent({
     this.fetchChartData();
   },
   setup() {
-    return {vocabStore: useVocabStore()}
+    return {vocabStore: useVocabStore()};
   }
-})
+});
 </script>
 
 <style scoped>

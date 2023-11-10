@@ -1,5 +1,5 @@
 <template>
-  <base-card title="Sign Up" id="signup-card">
+  <BaseCard title="Sign Up" id="signup-card">
     <template v-slot:content>
       <form @submit.prevent="submitForm">
         <label for="email">Email</label>
@@ -9,7 +9,7 @@
         <input id="username" type="text" required v-model="username"
                :class="{'error-input': errorFields.includes('username')}"/>
         <label for="new-password">Password</label>
-        <base-password-input
+        <BasePasswordInput
             id="new-password"
             :class="{'error-input': errorFields.includes('password')}"
             autocomplete="new-password"
@@ -21,7 +21,7 @@
         </button>
       </form>
     </template>
-  </base-card>
+  </BaseCard>
 </template>
 <script lang="ts">
 import {useUserStore} from "@/stores/backend/userStore.js";
@@ -48,7 +48,7 @@ export default {
         password: this.password
       });
       if (error) {
-        this.messageBarStore.addMessage({type: MessageType.ERROR, text: error.message!})
+        this.messageBarStore.addMessage({type: MessageType.ERROR, text: error.message!});
         this.errorMessage = error.message;
         this.errorFields = Object.keys(error.fields!) as Array<"email" | "username" | "password">;
       } else

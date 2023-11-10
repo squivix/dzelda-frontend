@@ -1,27 +1,29 @@
 <template>
-  <div v-if="vocab">
-    <h4 class="vocab-text">{{ vocab.text }}</h4>
-    <div :class="{'meaning-sub-panel':true,'new-vocab-panel':showAddPanel, 'existing-vocab-panel':!showAddPanel}">
-      <NewVocabPanel
-          v-if="showAddPanel"
-          :vocab="vocab"
-          :is-phrase="isPhrase"
-          @onMeaningAdded="onMeaningAdded"
-          @onVocabLevelSet="onVocabLevelSet">
-      </NewVocabPanel>
-      <ExistingVocabPanel
-          v-else
-          :vocab="vocab"
-          @onAddMoreMeaningsClicked="onAddMoreMeaningsClicked"
-          @onMeaningDeleted="onMeaningDeleted"
-          @onVocabLevelSet="onVocabLevelSet"
-          @onVocabNotesSet="onVocabNotesSet">
-      </ExistingVocabPanel>
-    </div>
-  </div>
-  <slot name="no-selected-panel" v-else>
+  <div>
+    <template v-if="vocab">
+      <h4 class="vocab-text">{{ vocab.text }}</h4>
+      <div :class="{'meaning-sub-panel':true,'new-vocab-panel':showAddPanel, 'existing-vocab-panel':!showAddPanel}">
+        <NewVocabPanel
+            v-if="showAddPanel"
+            :vocab="vocab"
+            :is-phrase="isPhrase"
+            @onMeaningAdded="onMeaningAdded"
+            @onVocabLevelSet="onVocabLevelSet">
+        </NewVocabPanel>
+        <ExistingVocabPanel
+            v-else
+            :vocab="vocab"
+            @onAddMoreMeaningsClicked="onAddMoreMeaningsClicked"
+            @onMeaningDeleted="onMeaningDeleted"
+            @onVocabLevelSet="onVocabLevelSet"
+            @onVocabNotesSet="onVocabNotesSet">
+        </ExistingVocabPanel>
+      </div>
+    </template>
+    <slot name="no-selected-panel" v-else>
 
-  </slot>
+    </slot>
+  </div>
 </template>
 
 <script lang="ts">

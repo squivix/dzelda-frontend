@@ -37,8 +37,8 @@ export default defineComponent({
 }
 
 .collapsable-div.is-hidden {
-  padding-top:0;
-  padding-bottom:0;
+  padding-top: 0;
+  padding-bottom: 0;
   max-height: 0;
 }
 

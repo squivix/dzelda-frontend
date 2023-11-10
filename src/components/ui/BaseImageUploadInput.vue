@@ -8,14 +8,13 @@
     <label for="profile-picture-input">
       <base-image :image-url="src"
                   :fall-back-url="fallback"
-                  :circular="circular"
-      />
+                  :circular="circular"/>
     </label>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
+import {defineComponent, PropType} from "vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {useStore} from "@/stores/backend/rootStore.js";
 import InlineSvg from "vue-inline-svg";
@@ -30,8 +29,8 @@ export default defineComponent({
       if (this.isPreview)
         return this.previewUrl;
       if (this.path == "")
-        return ""
-      return `${this.store.resourceUrl}/${this.path}`
+        return "";
+      return `${this.store.resourceUrl}/${this.path}`;
     }
   },
   props: {
@@ -45,7 +44,7 @@ export default defineComponent({
     return {
       isPreview: false,
       previewUrl: "" as string | undefined,
-    }
+    };
   },
   watch: {
     modelValue(imageFile: File | undefined | "") {
@@ -60,29 +59,29 @@ export default defineComponent({
     onChange(event: Event) {
       const file = (event.target as HTMLInputElement).files![0];
       if (file) {
-        this.$emit("update:modelValue", file)
+        this.$emit("update:modelValue", file);
         this.isPreview = true;
       }
     },
     clearImage() {
       //if an image has been uploaded but not submitted, cancel upload, and leave last image unchanged
       if (this.previewUrl) {
-        this.$emit("update:modelValue", undefined)
+        this.$emit("update:modelValue", undefined);
         this.isPreview = false;
         (this.$refs.fileInputRef as HTMLInputElement).value = "";
       }
       //if no image has been uploaded clear last image
       else {
-        this.$emit("update:modelValue", "")
+        this.$emit("update:modelValue", "");
         this.isPreview = true;
         this.previewUrl = undefined;
       }
     }
   },
   setup() {
-    return {icons, store: useStore()}
+    return {icons, store: useStore()};
   }
-})
+});
 </script>
 
 <style scoped>

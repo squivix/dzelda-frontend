@@ -1,6 +1,6 @@
 <template>
-  <base-collapsable-div :is-shown="isShown">
-    <base-filters-card class="card">
+  <BaseCollapsableDiv :is-shown="isShown">
+    <BaseFiltersCard class="card">
       <h4>Filters</h4>
       <form @submit.prevent="applyFilters" @reset="clearFilters">
         <div class="filters-wrapper">
@@ -49,8 +49,8 @@
           <button type="submit" class="primary-filled-button square-button">Apply</button>
         </div>
       </form>
-    </base-filters-card>
-  </base-collapsable-div>
+    </BaseFiltersCard>
+  </BaseCollapsableDiv>
 </template>
 
 <script lang="ts">

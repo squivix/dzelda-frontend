@@ -1,18 +1,18 @@
 <template>
-  <base-card title="My Vocabulary" class="my-vocab-base-card">
+  <BaseCard title="My Vocabulary" class="my-vocab-base-card">
     <template v-slot:content>
       <LoadingScreen v-if="loading"/>
       <section class="main-content" @click="clearSelectedVocab" v-else>
         <div class="bar-table-wrapper">
           <div class="top-bar">
-            <search-bar :initial-search-query="queryParams.searchQuery"/>
+            <SearchBar :initial-search-query="queryParams.searchQuery"/>
             <button class="filter-button" @click.stop="toggleFilters">
               <inline-svg :src="icons.filter"/>
             </button>
           </div>
-          <vocab-filters :is-shown="isFiltersShown"
-                         @on-filters-cleared="() => isFiltersShown=false"
-                         @on-filters-applied="() => isFiltersShown=false"/>
+          <VocabFilters :is-shown="isFiltersShown"
+                        @on-filters-cleared="() => isFiltersShown=false"
+                        @on-filters-applied="() => isFiltersShown=false"/>
           <EmptyScreen v-if="!vocabs||vocabs.length==0" :has-filters="hasFilters">
             <template v-slot:no-filters>
               <div class="empty-screen">
@@ -34,14 +34,14 @@
               </div>
             </template>
           </EmptyScreen>
-          <vocab-table v-else
-                       :vocabs="vocabs"
-                       @onVocabClicked="setSelectedVocab"
-                       @onVocabLevelSet="onVocabLevelSet">
-          </vocab-table>
+          <VocabTable v-else
+                      :vocabs="vocabs"
+                      @onVocabClicked="setSelectedVocab"
+                      @onVocabLevelSet="onVocabLevelSet">
+          </VocabTable>
         </div>
         <div class="meaning-panel-wrapper" v-if="vocabs&&vocabs.length>0">
-          <the-meaning-panel
+          <TheMeaningPanel
               :vocab="selectedVocab!"
               @click.stop
               @onMeaningAdded="onMeaningAdded"
@@ -51,18 +51,18 @@
             <template v-slot:no-selected-panel>
               <h4>Select a word or phrase</h4>
             </template>
-          </the-meaning-panel>
+          </TheMeaningPanel>
         </div>
       </section>
-      <pagination-controls v-if="pageCount"
-                           :page-count="pageCount"
-                           :page="queryParams.page"
-                           :page-size="queryParams.pageSize"
-                           :per-page-select-options="[25, 50, 100, 150, 200]"
-                           per-page-select-label="Vocabs Per Page">
-      </pagination-controls>
+      <PaginationControls v-if="pageCount"
+                          :page-count="pageCount"
+                          :page="queryParams.page"
+                          :page-size="queryParams.pageSize"
+                          :per-page-select-options="[25, 50, 100, 150, 200]"
+                          per-page-select-label="Vocabs Per Page">
+      </PaginationControls>
     </template>
-  </base-card>
+  </BaseCard>
 </template>
 
 <script lang="ts">
@@ -172,7 +172,7 @@ export default {
     return {
       icons,
       vocabStore: useVocabStore(),
-    }
+    };
   }
 };
 </script>

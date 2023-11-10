@@ -1,8 +1,8 @@
 <template>
-  <base-card title="Edit Course" class="edit-course-base-card">
+  <BaseCard title="Edit Course" class="edit-course-base-card">
     <template v-slot:content>
       <form class="edit-course-form" v-if="course" @submit.prevent="onSubmit">
-        <base-image-upload-input :path="course!.image" :fallback="icons.courseBlank" v-model="image"/>
+        <BaseImageUploadInput :path="course!.image" :fallback="icons.courseBlank" v-model="image"/>
 
         <div class="inputs-div">
           <label for="course-title">Title</label>
@@ -50,7 +50,7 @@
         </div>
       </form>
     </template>
-  </base-card>
+  </BaseCard>
 </template>
 
 <script lang="ts">

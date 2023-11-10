@@ -9,11 +9,10 @@
       </tr>
       </thead>
       <tbody class="vocab-tbody">
-      <vocab-table-row v-for="vocab in vocabs" :key="vocab.id"
-                       :vocab="vocab"
-                       @onVocabClicked="onVocabClicked"
-                       @onVocabLevelSet="onVocabLevelSet">
-      </vocab-table-row>
+      <VocabTableRow v-for="vocab in vocabs" :key="vocab.id"
+                     :vocab="vocab"
+                     @onVocabClicked="()=>$emit('onVocabClicked', vocab)"
+                     @onVocabLevelSet="(level)=>$emit('onVocabLevelSet', level)"/>
       </tbody>
     </table>
   </div>
@@ -24,6 +23,7 @@ import VocabTableRow from "@/components/page/my-vocabs/VocabTableRow.vue";
 
 export default {
   name: "VocabTable",
+  emits: ["onVocabClicked", "onVocabLevelSet"],
   components: {VocabTableRow},
   props: {
     vocabs: {
@@ -31,15 +31,8 @@ export default {
       required: true,
     },
   },
-  methods: {
-    onVocabClicked(vocab) {
-      this.$emit("onVocabClicked", vocab)
-    },
-    onVocabLevelSet(vocab, level) {
-      this.$emit("onVocabLevelSet", vocab, level)
-    }
-  }
-}
+  methods: {}
+};
 </script>
 
 <style scoped>

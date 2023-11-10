@@ -32,7 +32,7 @@ import {icons} from "@/icons.js";
 export default {
   name: "BasePageSelector",
   components: {InlineSvg},
-  emits: ['onPageClicked'],
+  emits: ["onPageClicked"],
   props: {
     pageCount: {
       type: Number,
@@ -56,7 +56,7 @@ export default {
   data() {
     return {
       pages: null
-    }
+    };
   },
   watch: {
     pageCount() {
@@ -81,10 +81,10 @@ export default {
     this.updatePages(this.currentPage);
   },
   setup() {
-    return {icons}
+    return {icons};
   }
 
-}
+};
 </script>
 
 <style scoped>

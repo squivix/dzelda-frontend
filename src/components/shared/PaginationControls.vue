@@ -8,12 +8,12 @@
         <option v-for="option in perPageSelectOptions" :key="option" :value="option">{{ option }}</option>
       </select>
     </form>
-    <base-page-selector v-if="!!pageCount"
-                        :current-page="page"
-                        :pageCount="pageCount"
-                        :shown-count="Math.min(5,pageCount)"
-                        @onPageClicked="goToPage">
-    </base-page-selector>
+    <BasePageSelector v-if="!!pageCount"
+                      :current-page="page"
+                      :pageCount="pageCount"
+                      :shown-count="Math.min(5,pageCount)"
+                      @onPageClicked="goToPage">
+    </BasePageSelector>
   </div>
 </template>
 

@@ -1,10 +1,11 @@
 <template>
-  <base-card>
+  <BaseCard>
     <template v-slot:all>
       <article>
         <div class="item-content">
-          <BaseImage :image-url="imageUrl" :fall-back-url="icons.lessonBlank"
-                     alt-text="lesson image"></BaseImage>
+          <BaseImage :image-url="imageUrl"
+                     :fall-back-url="icons.lessonBlank"
+                     alt-text="lesson image"/>
           <div class="title-stats">
             <div class="title-subtitle">
               <router-link
@@ -37,7 +38,7 @@
           </div>
         </div>
 
-        <base-drop-down
+        <BaseDropDown
             :label="`lesson-item-${lesson.id}`"
             group="lesson-items"
             :centered="false"
@@ -48,7 +49,7 @@
           <template v-slot:menu>
 
             <!--TODO:Only show link if user is authorized to edit lesson-->
-            <base-drop-down-list class="profile-menu" :list-items="[
+            <BaseDropDownList class="profile-menu" :list-items="[
               {
                 text:'Edit',
                 link:{ name: 'edit-lesson' , params:{lessonId:lesson.id}},
@@ -58,13 +59,12 @@
                 link:{ name: 'edit-lesson' , params:{lessonId:lesson.id}},
                 icon:'pen'
               },
-          ]">
-            </base-drop-down-list>
+          ]"/>
           </template>
-        </base-drop-down>
+        </BaseDropDown>
       </article>
     </template>
-  </base-card>
+  </BaseCard>
 </template>
 
 <script lang="ts">

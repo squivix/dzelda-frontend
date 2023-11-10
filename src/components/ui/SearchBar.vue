@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent} from "vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 
@@ -29,9 +29,9 @@ export default defineComponent({
     },
   },
   setup() {
-    return {icons}
+    return {icons};
   }
-})
+});
 </script>
 
 <style scoped>

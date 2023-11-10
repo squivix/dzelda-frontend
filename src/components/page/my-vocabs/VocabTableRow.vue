@@ -1,6 +1,6 @@
 <template>
   <tr>
-    <td @click.stop="onVocabClicked(vocab)" class="link-parent">
+    <td @click.stop="onVocabClicked" class="link-parent">
       <button class="inv-button link">
         {{ vocab.text }}
       </button>
@@ -15,16 +15,16 @@
     </td>
     <td class="level-picker-td">
       <!--                                <vocab-level-display :level="vocab.level"></vocab-level-display>-->
-      <vocab-level-picker :level="vocab.level"
-                          :vocab-id="vocab.id"
-                          @onVocabLevelSet="(level)=>onVocabLevelSet(vocab, level)"
-      ></vocab-level-picker>
+      <VocabLevelPicker :level="vocab.level"
+                        :vocab-id="vocab.id"
+                        @onVocabLevelSet="(level)=>onVocabLevelSet(vocab, level)"/>
     </td>
   </tr>
 </template>
 
 <script lang="ts">
 import VocabLevelPicker from "@/components/shared/vocab-panel/VocabLevelPicker.vue";
+import {VocabLevelSchema} from "dzelda-types";
 
 export default {
   name: "VocabTableRow",
@@ -37,14 +37,16 @@ export default {
     }
   },
   methods: {
-    onVocabClicked(vocab) {
-      this.$emit("onVocabClicked", vocab)
+    onVocabClicked() {
+      this.$emit("onVocabClicked");
     },
-    onVocabLevelSet(vocab, level) {
-      this.$emit("onVocabLevelSet", vocab, level)
+    onVocabLevelSet(level: VocabLevelSchema) {
+      this.$emit("onVocabLevelSet", level);
     }
+  },
+  mounted() {
   }
-}
+};
 </script>
 
 <style scoped>

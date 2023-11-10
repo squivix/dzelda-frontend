@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
+import {defineComponent, PropType} from "vue";
 import {Line as LineChart} from "vue-chartjs";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import BaseLineChart from "@/components/ui/BaseLineChart.vue";
@@ -47,7 +47,7 @@ export default defineComponent({
       isLoading: true,
       chartData: null as ChartData<"line"> | null,
       xLabel: undefined as string | undefined,
-    }
+    };
   },
   watch: {
     period() {
@@ -72,7 +72,7 @@ export default defineComponent({
         from.setFullYear(to.getFullYear() - 1);
         interval = "month";
       } else if (this.period == RecentActivityPeriod.ALL_TIME) {
-        console.log(this.user.profile.languagesLearning)
+        console.log(this.user.profile.languagesLearning);
         //TODO set from to earliest language started learning date and select appropriate interval
         // from.setFullYear(to.getFullYear() - 1);
         // interval = "month";
@@ -85,12 +85,12 @@ export default defineComponent({
         savedOnTo: to.toISOString(),
         savedOnInterval: interval,
         level: [VocabLevelSchema.LEVEL1, VocabLevelSchema.LEVEL2, VocabLevelSchema.LEVEL3, VocabLevelSchema.LEVEL4]
-      })
+      });
       const languages: { [k: string]: ChartDataset<"line", { x: any, y: any }[]> } = {};
       for (const row of rawData) {
         if (!(row.language! in languages))
-          languages[row.language!] = {label: row.language!, data: []}
-        languages[row.language!].data.push({x: this.formatDate(row.date!), y: row.vocabsCount})
+          languages[row.language!] = {label: row.language!, data: []};
+        languages[row.language!].data.push({x: this.formatDate(row.date!), y: row.vocabsCount});
       }
       this.chartData = {datasets: Object.values(languages)};
       this.xLabel = toSentenceCase(interval!);
@@ -98,11 +98,11 @@ export default defineComponent({
     },
     formatDate(date: string) {
       if (this.period == RecentActivityPeriod.LAST_WEEK)
-        return new Date(date).toLocaleString('en-us', {weekday: 'long'})
+        return new Date(date).toLocaleString("en-us", {weekday: "long"});
       else if (this.period == RecentActivityPeriod.LAST_MONTH)
-        return new Date(date).toLocaleString('en-us', {day: 'numeric', month: 'short'})
+        return new Date(date).toLocaleString("en-us", {day: "numeric", month: "short"});
       else if (this.period == RecentActivityPeriod.LAST_6_MONTHS || this.period == RecentActivityPeriod.LAST_YEAR)
-        return new Date(date).toLocaleString('en-us', {year: 'numeric', month: 'long'})
+        return new Date(date).toLocaleString("en-us", {year: "numeric", month: "long"});
       else {
         //TODO set from to earliest language started learning date and select appropriate interval
         return date;
@@ -113,9 +113,9 @@ export default defineComponent({
     this.fetchChartData();
   },
   setup() {
-    return {vocabStore: useVocabStore(), RecentActivityPeriod}
+    return {vocabStore: useVocabStore(), RecentActivityPeriod};
   }
-})
+});
 </script>
 
 <style scoped>

@@ -1,9 +1,9 @@
 <template>
-  <base-card title="Add Course" class="add-course-base-card">
+  <BaseCard title="Add Course" class="add-course-base-card">
     <template v-slot:content>
 
       <form class="add-course-form" @submit.prevent="onSubmit">
-        <base-image-upload-input path="" :fallback="icons.courseBlank" v-model="image"/>
+        <BaseImageUploadInput path="" :fallback="icons.courseBlank" v-model="image"/>
         <div class="inputs-div">
           <label for="course-title">Title</label>
           <input id="course-title" type="text" placeholder="Course Title" v-model="title" required>
@@ -19,7 +19,7 @@
       </form>
 
     </template>
-  </base-card>
+  </BaseCard>
 </template>
 
 <script lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <base-card title="Settings" class="settings-base-card">
+  <BaseCard title="Settings" class="settings-base-card">
     <template v-slot:content>
       <div class="content">
         <nav class="nav-panel">
@@ -23,7 +23,7 @@
       </div>
     </template>
 
-  </base-card>
+  </BaseCard>
 </template>
 
 <script lang="ts">
@@ -32,7 +32,7 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 export default {
   name: "SettingsPage",
   components: {BaseCard},
-}
+};
 </script>
 
 <style scoped>

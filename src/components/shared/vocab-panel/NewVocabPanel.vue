@@ -1,19 +1,14 @@
 <template>
   <div class="new-vocab-panel">
     <div class="top-sub-panel">
-      <meaning-adding-controls
+      <MeaningAddingControls
           :vocab-id="vocab.id"
           :vocab-text="vocab.text"
           :is-phrase="isPhrase"
           :suggested-meanings="suggestedMeanings"
-          @onMeaningAdded="onMeaningAdded">
+          @onMeaningAdded="onMeaningAdded"/>
 
-      </meaning-adding-controls>
-
-
-      <dictionaries-list
-          :vocab-text="vocab.text">
-      </dictionaries-list>
+      <DictionariesList :vocab-text="vocab.text"/>
     </div>
     <div class="mark-buttons-div" v-if="!isPhrase && isLevelNew || isLevelIgnored">
       <button class="square-button hollow-button know-button" @click="markWordAsKnown">Mark as
@@ -31,7 +26,7 @@ import MeaningAddingControls from "@/components/shared/vocab-panel/MeaningAdding
 import DictionariesList from "@/components/shared/vocab-panel/DictionaryList.vue";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {PropType} from "vue";
-import {LearnerVocabSchema} from "dzelda-types"
+import {LearnerVocabSchema} from "dzelda-types";
 
 export default {
   name: "NewVocabPanel",
@@ -68,7 +63,7 @@ export default {
       await this.vocabStore.updateUserVocab(
           {vocabId: this.vocab.id},
           {level: constants.ALL_VOCAB_LEVELS.KNOWN}
-      )
+      );
       this.$emit("onVocabLevelSet", constants.ALL_VOCAB_LEVELS.KNOWN);
     },
     async markWordAsIgnored() {
@@ -76,7 +71,7 @@ export default {
       await this.vocabStore.updateUserVocab(
           {vocabId: this.vocab.id},
           {level: constants.ALL_VOCAB_LEVELS.IGNORED}
-      )
+      );
       this.$emit("onVocabLevelSet", constants.ALL_VOCAB_LEVELS.IGNORED);
     },
     onMeaningAdded(vocab, meaning) {
@@ -86,7 +81,7 @@ export default {
   setup() {
     return {vocabStore: useVocabStore()};
   }
-}
+};
 </script>
 
 <style scoped>

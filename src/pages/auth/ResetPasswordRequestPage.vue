@@ -1,5 +1,5 @@
 <template>
-  <base-card title="Reset Password" id="reset-password-card">
+  <BaseCard title="Reset Password" id="reset-password-card">
     <template v-slot:content>
       <form @submit.prevent="submitForm" v-if="!submitted">
         <label for="username">Username</label>
@@ -26,7 +26,7 @@
         link</p>
 
     </template>
-  </base-card>
+  </BaseCard>
 </template>
 <script lang="ts">
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";

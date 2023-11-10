@@ -12,28 +12,22 @@
       <input name="username" disabled hidden type="text" autocomplete="username">
 
       <label for="old-password">Old Password</label>
-      <base-password-input
-          v-model="oldPassword"
-          id="old-password"
-          autocomplete="current-password"
-          required
-          :class="{'error-input': errorFields.includes('oldPassword')}">
-      </base-password-input>
+      <BasePasswordInput v-model="oldPassword"
+                         id="old-password"
+                         autocomplete="current-password"
+                         required
+                         :class="{'error-input': errorFields.includes('oldPassword')}"/>
       <label for="new-password">New Password</label>
-      <base-password-input
-          v-model="newPassword"
-          id="new-password"
-          autocomplete="new-password"
-          required
-          :class="{'error-input': errorFields.includes('newPassword')}">
-      </base-password-input>
+      <BasePasswordInput v-model="newPassword"
+                         id="new-password"
+                         autocomplete="new-password"
+                         required
+                         :class="{'error-input': errorFields.includes('newPassword')}"/>
       <label for="repeat-new-password">Confirm New Password</label>
-      <base-password-input
-          v-model="repeatNewPassword"
-          id="repeat-new-password"
-          autocomplete="new-password"
-          required>
-      </base-password-input>
+      <BasePasswordInput v-model="repeatNewPassword"
+                         id="repeat-new-password"
+                         autocomplete="new-password"
+                         required/>
       <button class="change-password-button primary-filled-button capsule-button">Change Password</button>
     </form>
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>

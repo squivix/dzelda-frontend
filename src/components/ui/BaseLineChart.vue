@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
+import {defineComponent, PropType} from "vue";
 import {Line as LineChart} from "vue-chartjs";
 import {mergeDeep} from "@/utils.js";
 import {ChartData, ChartOptions, Point} from "chart.js";
@@ -22,7 +22,7 @@ export default defineComponent({
   },
   computed: {
     data(): ChartData<"line", (number | Point | null)[], unknown> {
-      return this.chartData as ChartData<"line", (number | Point | null)[], unknown>
+      return this.chartData as ChartData<"line", (number | Point | null)[], unknown>;
     },
     options(): ChartOptions<"line"> {
       const defaultOptions = {
@@ -38,11 +38,11 @@ export default defineComponent({
             labels: {boxWidth: 20}
           }
         },
-      }
-      return mergeDeep(defaultOptions, this.chartOptions)
+      };
+      return mergeDeep(defaultOptions, this.chartOptions);
     }
   },
-})
+});
 </script>
 
 <style scoped>

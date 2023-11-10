@@ -5,7 +5,7 @@
           :is="userStore.isAuthenticated ? 'auth-header' : 'guest-header'">
       </component>
 
-      <the-message-bar-queue class="message-bar-queue"></the-message-bar-queue>
+      <TheMessageBarQueue class="message-bar-queue"></TheMessageBarQueue>
 
       <aside class="left-side"></aside>
 
@@ -17,7 +17,7 @@
 
       <aside class="right-side"></aside>
 
-      <the-footer v-if="$route.meta.showFooter"></the-footer>
+      <TheFooter v-if="$route.meta.showFooter"></TheFooter>
     </template>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <base-card title="Login" id="login-card">
+  <BaseCard title="Login" id="login-card">
     <template v-slot:content>
       <form @submit.prevent="submitForm">
         <label for="username">Username</label>
@@ -11,13 +11,13 @@
             autocomplete="username"
             :class="{'error-input': errorFields.includes('username')}"/>
         <label for="current-password">Password</label>
-        <base-password-input
+        <BasePasswordInput
             v-model="password"
             id="current-password"
             autocomplete="current-password"
             required
             :class="{'error-input': errorFields.includes('password')}">
-        </base-password-input>
+        </BasePasswordInput>
         <router-link :to="{name:'reset-password'}" id="forgot-password-link" class="link">
           Forgot Password?
         </router-link>
@@ -27,7 +27,7 @@
         </button>
       </form>
     </template>
-  </base-card>
+  </BaseCard>
 </template>
 <script lang="ts">
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";

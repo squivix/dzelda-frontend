@@ -1,9 +1,9 @@
 <template>
-  <base-card :title="pageTitle" class="add-edit-lesson-base-card" v-if="editableCourses">
+  <BaseCard :title="pageTitle" class="add-edit-lesson-base-card" v-if="editableCourses">
     <template v-slot:content>
       <form class="add-edit-lesson-form" @submit.prevent="onSubmit">
         <div class="file-inputs-div">
-          <base-image :image-url="imageUrl" :fall-back-url="icons.lessonBlank"></base-image>
+          <BaseImage :image-url="imageUrl" :fall-back-url="icons.lessonBlank"></BaseImage>
 
           <label for="image-input" class="file-input-label inv-button">
             <inline-svg :src="icons.upload"/>
@@ -49,7 +49,7 @@
       </form>
 
     </template>
-  </base-card>
+  </BaseCard>
 </template>
 
 <script lang="ts">

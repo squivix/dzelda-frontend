@@ -11,9 +11,9 @@
       </template>
     </EmptyScreen>
     <ul v-if="lessons" class="lessons-list">
-      <lesson-list-item v-for="lesson in lessons" :key="lesson.id" :lesson="lesson"/>
+      <LessonListItem v-for="lesson in lessons" :key="lesson.id" :lesson="lesson"/>
     </ul>
-    <pagination-controls
+    <PaginationControls
         v-if="pageCount"
         :page="queryParams.page"
         :page-size="queryParams.pageSize"
@@ -55,7 +55,7 @@ export default defineComponent({
   },
   watch: {
     queryParams() {
-      this.fetchLessons()
+      this.fetchLessons();
     }
   },
   methods: {

@@ -1,15 +1,15 @@
 <template>
-  <base-card title="Resend Confirmation Email" id="resend-confirm-email-card">
+  <BaseCard title="Resend Confirmation Email" id="resend-confirm-email-card">
     <template v-slot:content>
       <form @submit.prevent="submitResendForm">
         <label for="email">Email</label>
-        <base-changeable-input id="email"
-                               type="email"
-                               required
-                               v-model="email"
-                               :clear-on-change="true"
-                               @onChange="()=>emailChanged=true">
-        </base-changeable-input>
+        <BaseChangeableInput id="email"
+                             type="email"
+                             required
+                             v-model="email"
+                             :clear-on-change="true"
+                             @onChange="()=>emailChanged=true">
+        </BaseChangeableInput>
 
         <button id="confirm-email-button" class="primary-filled-button capsule-button" type="submit">
           Resend Confirmation Email
@@ -17,7 +17,7 @@
 
       </form>
     </template>
-  </base-card>
+  </BaseCard>
 </template>
 
 <script lang="ts">

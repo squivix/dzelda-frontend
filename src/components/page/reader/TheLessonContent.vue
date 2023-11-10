@@ -11,8 +11,7 @@
                        component="h2"
                        @onWordClicked="onWordClicked"
                        @onPhraseClicked="onPhraseClicked"
-                       @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked">
-      </LessonParagraph>
+                       @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"/>
     </div>
     <div class="lesson-text styled-scrollbars" @scroll="onTextScroll">
       <LessonParagraph :lesson-elements="lessonElements.text"
@@ -21,8 +20,7 @@
                        :paragraph-index="1"
                        @onWordClicked="onWordClicked"
                        @onPhraseClicked="onPhraseClicked"
-                       @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked">
-      </LessonParagraph>
+                       @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"/>
     </div>
   </div>
 </template>
@@ -80,7 +78,7 @@ export default {
         position = "bottom";
       else
         position = "middle";
-      this.$emit("onScroll", position)
+      this.$emit("onScroll", position);
     },
     clearSelectedPhrases() {
       document.querySelectorAll(".phrase-selected").forEach((el) => el.classList.remove("phrase-selected"));

@@ -1,5 +1,5 @@
 <template>
-  <base-card class="explore-base-card">
+  <BaseCard class="explore-base-card">
     <template v-slot:all>
       <h2>Explore</h2>
       <ul class="tab-labels">
@@ -13,7 +13,7 @@
       <router-view :queryParams="queryParams"/>
     </template>
 
-  </base-card>
+  </BaseCard>
 </template>
 
 <script lang="ts">

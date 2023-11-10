@@ -1,5 +1,5 @@
 <template>
-  <base-card>
+  <BaseCard>
     <template v-slot:all>
       <article class="course-article">
         <BaseImage :image-url="imageUrl" :fall-back-url="icons.courseBlank"
@@ -11,7 +11,7 @@
             <h4>{{ course.title }}</h4>
           </router-link>
 
-          <base-drop-down
+          <BaseDropDown
               :label="`course-card-${course.id}`"
               group="course-cards"
               :centered="false"
@@ -22,20 +22,19 @@
             <template v-slot:menu>
 
               <!--TODO:Only show link if user is authorized to edit course-->
-              <base-drop-down-list class="profile-menu" :list-items="[
+              <BaseDropDownList class="profile-menu" :list-items="[
               {
                 text:'Edit',
                 link:{ name: 'edit-course' , params:{courseId:course.id}},
                 icon:'pen'
               },
-          ]">
-              </base-drop-down-list>
+          ]"/>
             </template>
-          </base-drop-down>
+          </BaseDropDown>
         </div>
       </article>
     </template>
-  </base-card>
+  </BaseCard>
 </template>
 
 <script lang="ts">
@@ -69,7 +68,7 @@ export default {
     return {
       icons,
       store: useStore(),
-    }
+    };
   }
 };
 </script>

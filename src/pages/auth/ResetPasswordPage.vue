@@ -1,25 +1,23 @@
 <template>
-  <base-card title="Reset Password" id="reset-password-card">
+  <BaseCard title="Reset Password" id="reset-password-card">
     <template v-slot:content>
       <p class="submit-message" v-if="!tokenIsValid">Password reset token is expired or invalid.
         Please request another
-        <RouterLink :to="{name:'reset-password-request'}">here</RouterLink>
+        <router-link :to="{name:'reset-password-request'}">here</router-link>
         .
       </p>
       <form @submit.prevent="submitForm" v-else-if="!resetSuccessful">
         <label for="new-password">New Password</label>
-        <base-password-input
+        <BasePasswordInput
             v-model="newPassword"
             id="new-password"
             required
-            :class="{'error-input': errorFields.includes('newPassword')}">
-        </base-password-input>
+            :class="{'error-input': errorFields.includes('newPassword')}"/>
         <label for="repeat-new-password">Confirm New Password</label>
-        <base-password-input
+        <BasePasswordInput
             v-model="repeatNewPassword"
             id="repeat-new-password"
-            required>
-        </base-password-input>
+            required/>
         <p class="error-message">{{ errorMessage }}</p>
 
         <button id="reset-password-button" class="primary-filled-button capsule-button" type="submit">
@@ -33,7 +31,7 @@
       </p>
 
     </template>
-  </base-card>
+  </BaseCard>
 </template>
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
@@ -57,13 +55,13 @@ export default defineComponent({
       errorFields: [] as string[],
       resetSuccessful: false,
       tokenIsValid: true,
-    }
+    };
   },
   methods: {
     async validateToken() {
       if (this.queryParams.token === "") {
-        this.$router.push({name: "reset-password-request"})
-        return
+        this.$router.push({name: "reset-password-request"});
+        return;
       }
       const isValid = await this.userStore.validatePasswordResetToken({token: this.queryParams.token});
       if (!isValid)
@@ -72,29 +70,29 @@ export default defineComponent({
     async submitForm() {
       this.errorMessage = "";
       if (!this.tokenIsValid || !this.queryParams.token) {
-        return
+        return;
       }
       if (this.repeatNewPassword !== this.newPassword) {
         this.errorMessage = "Passwords do not match";
-        return
+        return;
       }
       this.resetSuccessful = await this.userStore.resetPassword({
         token: this.queryParams.token,
         newPassword: this.newPassword,
-      })
+      });
     },
 
   },
   setup() {
     return {
       userStore: useUserStore(),
-    }
+    };
   },
   async mounted() {
-    await this.validateToken()
+    await this.validateToken();
   }
 
-})
+});
 </script>
 <style scoped>
 

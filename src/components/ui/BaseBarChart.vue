@@ -5,8 +5,8 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
-import {Bar as BarChart} from 'vue-chartjs'
+import {defineComponent, PropType} from "vue";
+import {Bar as BarChart} from "vue-chartjs";
 import {ChartData, ChartOptions} from "chart.js";
 import {mergeDeep} from "@/utils.js";
 
@@ -22,7 +22,7 @@ export default defineComponent({
   },
   computed: {
     data(): ChartData<"bar"> {
-      return this.chartData as ChartData<"bar">
+      return this.chartData as ChartData<"bar">;
     },
     options(): ChartOptions<"bar"> {
       const defaultOptions = {
@@ -38,11 +38,11 @@ export default defineComponent({
             labels: {boxWidth: 20}
           }
         },
-      }
-      return mergeDeep(defaultOptions, this.chartOptions)
+      };
+      return mergeDeep(defaultOptions, this.chartOptions);
     }
   },
-})
+});
 </script>
 
 <style scoped>

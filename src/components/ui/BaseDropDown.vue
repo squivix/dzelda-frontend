@@ -12,8 +12,7 @@
            :name="group"
            @change="onCheckboxChange">
     <component :is="isPointy?'base-pointy-div':'div'"
-               :class="{menu:true, 'pointy-menu':isPointy, 'centered-menu':centered, 'round-menu':round}"
-    >
+               :class="{menu:true, 'pointy-menu':isPointy, 'centered-menu':centered, 'round-menu':round}">
       <slot name="menu">
       </slot>
     </component>

@@ -21,7 +21,7 @@
     </div>
 
     <div class="right-side-div" v-if="userAccount?.isEmailConfirmed">
-      <base-drop-down v-if="currentLanguage" class="language-dropdown" label="language">
+      <BaseDropDown v-if="currentLanguage" class="language-dropdown" label="language">
         <template v-slot:button>
           <img :src="currentLanguage.flagCircular??''" alt="Current Language Icon"
                class="language-icon current-language-icon">
@@ -30,7 +30,7 @@
           </span>
         </template>
         <template v-slot:menu>
-          <base-drop-down-list is-grid class="language-grid" :list-items="
+          <BaseDropDownList is-grid class="language-grid" :list-items="
             [...otherLanguages.map(language=>({
                   text:language.name,
                   image:{src:language.flagCircular!, alt:'language flag'},
@@ -44,18 +44,18 @@
             }
             ]">
 
-          </base-drop-down-list>
+          </BaseDropDownList>
         </template>
-      </base-drop-down>
-      <base-drop-down v-if="userLanguages && userLanguages.length > 0" :is-pointy="true" label="add-menu">
+      </BaseDropDown>
+      <BaseDropDown v-if="userLanguages && userLanguages.length > 0" :is-pointy="true" label="add-menu">
         <template v-slot:button>
                     <span class="add-button icon-wrapper">
                       <inline-svg :src="icons.plus"/>
                     </span>
         </template>
         <template v-slot:menu>
-          <base-drop-down-list class="add-menu"
-                               :list-items="[
+          <BaseDropDownList class="add-menu"
+                            :list-items="[
                         {
                            text:'Add Lesson',
                            link:{ name: 'add-lesson' }
@@ -63,20 +63,17 @@
                            text:'Add Course',
                            link:{ name: 'add-course' }
                         }
-                      ]">
-          </base-drop-down-list>
-
-
+                      ]"/>
         </template>
-      </base-drop-down>
-      <base-drop-down :is-pointy="true" label="profile-menu">
+      </BaseDropDown>
+      <BaseDropDown :is-pointy="true" label="profile-menu">
         <template v-slot:button>
-          <base-image :image-url="profilePicture"
-                      :fall-back-url="icons.userProfile" class="profile-picture"
-                      alt="profile picture"/>
+          <BaseImage :image-url="profilePicture"
+                     :fall-back-url="icons.userProfile" class="profile-picture"
+                     alt="profile picture"/>
         </template>
         <template v-slot:menu>
-          <base-drop-down-list class="profile-menu" :list-items="[
+          <BaseDropDownList class="profile-menu" :list-items="[
               {
                 text:'My Profile',
                 link:{ name: 'my-profile' },
@@ -92,9 +89,9 @@
                 link:{ name: 'sign-out' },
                 icon:icons.signOut
               }
-          ]"></base-drop-down-list>
+          ]"/>
         </template>
-      </base-drop-down>
+      </BaseDropDown>
     </div>
 
     <div v-else>

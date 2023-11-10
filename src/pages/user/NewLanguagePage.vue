@@ -1,5 +1,5 @@
 <template>
-  <base-card title="New Language" class="new-language-card">
+  <BaseCard title="New Language" class="new-language-card">
     <template v-slot:content>
       <div class="content">
         <p>Select a new language to learn from our list of supported languages</p>
@@ -18,7 +18,7 @@
         </ul>
       </div>
     </template>
-  </base-card>
+  </BaseCard>
 </template>
 
 <script lang="ts">

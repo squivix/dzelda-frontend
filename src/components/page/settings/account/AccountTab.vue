@@ -2,9 +2,9 @@
   <div class="settings-tab styled-scrollbars">
     <div class="tab-wrapper">
       <h2>Account</h2>
-      <change-email-section/>
-      <change-password-section/>
-      <delete-account-section/>
+      <ChangeEmailSection/>
+      <ChangePasswordSection/>
+      <DeleteAccountSection/>
     </div>
   </div>
 </template>

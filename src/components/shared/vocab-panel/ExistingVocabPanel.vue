@@ -3,9 +3,7 @@
     <MeaningEditingControls
         @onMeaningDeleted="onMeaningDeleted"
         :vocab-id="vocab.id"
-        :saved-meanings="vocab.learnerMeanings"
-    >
-    </MeaningEditingControls>
+        :saved-meanings="vocab.learnerMeanings"/>
 
     <button class="capsule-button add-meaning-button" @click="addMeaning">
       <inline-svg :src="icons.plus" class="more-button"/>
@@ -15,8 +13,7 @@
     <VocabLevelPicker
         :vocab-id="vocab.id"
         :level="vocab.level"
-        @onVocabLevelSet="onVocabLevelSet">
-    </VocabLevelPicker>
+        @onVocabLevelSet="onVocabLevelSet"/>
 
     <textarea class="notes"
               placeholder="Notes"

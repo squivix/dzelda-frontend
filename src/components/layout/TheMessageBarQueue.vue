@@ -3,7 +3,7 @@
     <ol>
       <li v-for="(message, index) in messageBarStore.messageQueue">
         <BaseMessageBar :text="message.text" :type="message.type"
-                        @onDismissed="()=>messageBarStore.removeMessage(index)"></BaseMessageBar>
+                        @onDismissed="()=>messageBarStore.removeMessage(index)"/>
       </li>
     </ol>
   </div>
@@ -17,12 +17,12 @@ import {useMessageBarStore} from "@/stores/messageBarStore.js";
 export default defineComponent({
   components: {BaseMessageBar},
   data() {
-    return {}
+    return {};
   },
   setup() {
-    return {messageBarStore: useMessageBarStore()}
+    return {messageBarStore: useMessageBarStore()};
   }
-})
+});
 </script>
 <style>
 .message-bar-queue {
