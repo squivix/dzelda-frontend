@@ -46,6 +46,7 @@
               @click.stop
               @onMeaningAdded="onMeaningAdded"
               @onVocabLevelSet="onVocabLevelSet"
+              @onVocabNotesSet="onVocabNotesSet"
               @onMeaningDeleted="onMeaningDeleted"
               :class="{'meaning-panel':!!selectedVocab}">
             <template v-slot:no-selected-panel>
@@ -152,6 +153,11 @@ export default {
         this.clearSelectedVocab();
       } else
         vocab.level = level;
+    },
+    onVocabNotesSet(vocab: LearnerVocabSchema, notes: string) {
+      const index = this.vocabs!.findIndex((v) => v.text === vocab.text);
+      if (index !== -1)
+        this.vocabs![index].notes = notes;
     },
     onMeaningDeleted(vocab: LearnerVocabSchema, meaning: MeaningSchema) {
       const index = vocab.learnerMeanings.findIndex((v) => v.text === meaning.text);
