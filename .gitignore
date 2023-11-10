@@ -29,3 +29,4 @@ coverage
 .run
 *.env
 !example.env
+tsconfig.tsbuildinfo

@@ -15,7 +15,8 @@
         <td>{{ language.addedOn }}</td>
         <td>
           <button class="inv-button link" @click="removeLanguage(language)">Remove</button>
-          <button class="inv-button link" @click="resetLanguageProgress">Reset Progress</button>
+          <!--          TODO reset progress-->
+          <!--          <button class="inv-button link" @click="resetLanguageProgress">Reset Progress</button>-->
         </td>
       </tr>
       </tbody>
@@ -74,13 +75,11 @@ export default {
         });
         this.userLanguages = await this.fetchUserLanguages();
       }
-    }, resetLanguageProgress() {
-
-    }
+    },
   },
   async mounted() {
     this.allLanguages = await this.fetchAllLanguages();
-    this.userLanguages = await this.fetchUserLanguages()
+    this.userLanguages = await this.fetchUserLanguages();
   },
   setup() {
     return {
@@ -88,7 +87,7 @@ export default {
       languageStore: useLanguageStore()
     };
   }
-}
+};
 </script>
 
 <style scoped>

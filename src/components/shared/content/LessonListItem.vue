@@ -207,7 +207,7 @@ article {
 h4 {
   font-size: 1.35rem;
   margin-top: 20px;
-  margin-bottom: 5px;
+  padding-bottom: 5px;
   color: black;
   /*3 lines max*/
   overflow: hidden;
