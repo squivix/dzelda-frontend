@@ -5,26 +5,15 @@
         <p>Select a new language to learn from our list of supported languages</p>
         <ul v-if="supportedLanguages" class="languages">
           <li v-for="language in supportedLanguages" :key="language.code" @click="onLanguageClicked(language)">
-              <span v-if="language.isLearning" class="is-learning-check icon-wrapper">
-                <inline-svg :src="icons.checkMark"/>
-              </span>
-            <img :src="language.flagCircular!" :alt="`${language.code} language flag`"
-                 class="language-flag">
-            <div class="title-learners">
-              <h4>{{ language.name }}</h4>
-              <p>{{ language.learnersCount }} learners</p>
-            </div>
+            <LanguageCard :language="language"/>
           </li>
         </ul>
       </div>
 
-      <BaseDialog :is-open="isAlreadyLearningDialogShown" @onBackDropClick="isAlreadyLearningDialogShown=false">
-        <div v-if="alreadyLearningLanguage" class="already-learning-dialog">
-          <p>You are already learning {{ alreadyLearningLanguage.name }}</p>
-          <button class="primary-filled-button square-button ok-button" @click="isAlreadyLearningDialogShown=false">OK
-          </button>
-        </div>
-      </BaseDialog>
+      <AlreadyLearningDialog
+          @onClosed="isAlreadyLearningDialogShown=false"
+          :is-shown="isAlreadyLearningDialogShown"
+          :language="alreadyLearningLanguage?.name"/>
 
       <BaseDialog :is-open="isNewLanguageDialogShown" @onBackDropClick="isNewLanguageDialogShown=false">
         <div v-if="newLanguage" class="new-language-dialog">
@@ -49,10 +38,12 @@ import {LanguageSchema} from "dzelda-types";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import BaseDialog from "@/components/ui/BaseDialog.vue";
+import LanguageCard from "@/components/page/new-language/LanguageCard.vue";
+import AlreadyLearningDialog from "@/components/page/new-language/AlreadyLearningDialog.vue";
 
 export default {
   name: "NewLanguagePage",
-  components: {BaseDialog, InlineSvg, BaseCard},
+  components: {AlreadyLearningDialog, LanguageCard, BaseDialog, InlineSvg, BaseCard},
   data() {
     return {
       supportedLanguages: null as (LanguageSchema & { isLearning: boolean })[] | null,
@@ -119,73 +110,6 @@ export default {
   row-gap: 1rem;
   column-gap: 1rem;
   flex-grow: 1;
-}
-
-.languages li {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  row-gap: 1rem;
-  padding: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  border: 1px solid lightgray;
-  border-radius: 10px;
-  transition: transform 0.15s ease-out;
-  overflow: hidden;
-  box-sizing: border-box;
-}
-
-.languages li:hover {
-  transform: scale(1.04);
-  cursor: pointer;
-}
-
-.languages li .title-learners {
-  line-height: 1.25rem;
-  text-align: center;
-}
-
-.languages li h4 {
-  font-size: 1.2rem;
-}
-
-.languages li p {
-  font-size: 0.9rem;
-  color: darkslategray;
-}
-
-.language-flag {
-  width: 125px;
-  height: 125px;
-}
-
-.learning-language {
-  background-color: red;
-}
-
-.is-learning-check {
-  background-color: var(--secondary-color);
-  color: var(--on-secondary-color);
-  padding: 0.25rem;
-  overflow: visible;
-  border-radius: 3px;
-  align-self: flex-end;
-}
-
-.is-learning-check svg {
-  fill: var(--on-secondary-color);
-}
-
-.already-learning-dialog {
-  display: flex;
-  flex-direction: column;
-  row-gap: 1rem;
-}
-
-.ok-button {
-  align-self: flex-end;
-  padding: 0.5rem 1rem;
 }
 
 .new-language-dialog {
