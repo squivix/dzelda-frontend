@@ -1,6 +1,8 @@
 <template>
-  <dialog ref="dialog">
-    <slot></slot>
+  <dialog ref="dialog" @click="onBackDropClick" :class="{'open':isOpen, 'closed':!isOpen}">
+    <div @click.stop>
+      <slot></slot>
+    </div>
   </dialog>
 </template>
 
@@ -9,6 +11,7 @@ import {defineComponent} from "vue";
 
 export default defineComponent({
   name: "BaseDialog",
+  emits: ["onBackDropClick"],
   props: {
     isOpen: {type: Boolean, default: false}
   },
@@ -18,7 +21,14 @@ export default defineComponent({
       if (this.isOpen)
         dialog.showModal();
       else
-        dialog.close();
+        dialog.addEventListener("transitionend", () => {
+          dialog.close();
+        }, {once: true});
+    }
+  },
+  methods: {
+    onBackDropClick() {
+      this.$emit("onBackDropClick");
     }
   },
   mounted() {
@@ -31,41 +41,38 @@ export default defineComponent({
 
 <style scoped>
 dialog {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin: 0;
+  padding: 0;
   border: none;
-  padding: 4vw 4vh;
-  transform: translate(-50%, -50%);
   box-shadow: rgba(60, 64, 67, 0.3) 0 1px 2px 0, rgba(60, 64, 67, 0.15) 0 2px 6px 2px;
-  animation: drop-in 0.25s ease-in, fade-in 0.25s ease-in;
+  border-radius: 5px;
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+dialog.open {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+dialog.closed {
+  transform: translateY(-25px);
+  opacity: 0;
+}
+
+dialog.open::backdrop {
+  opacity: 1;
+}
+
+dialog.closed::backdrop {
+  opacity: 0;
 }
 
 dialog:focus-visible {
   outline-width: 0;
 }
 
-dialog::backdrop {
-  animation: fade-in 0.25s ease-in;
-
-}
-
-@keyframes drop-in {
-  0% {
-    transform: translate(-50%, -50%) translateY(-15px);
-  }
-  100% {
-    transform: translate(-50%, -50%) translateY(0px);
-  }
-}
-@keyframes fade-in {
-  0% {
-    opacity: 0.2;
-  }
-
-  100% {
-    opacity: 1;
-  }
+dialog > div {
+  width: 100%;
+  height: 100%;
+  padding: 4vw 4vh;
 }
 </style>

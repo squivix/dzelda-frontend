@@ -17,7 +17,7 @@
 
       <aside class="right-side"></aside>
 
-      <TheFooter v-if="$route.meta.showFooter"></TheFooter>
+      <TheFooter v-if="$route.meta.showFooter"/>
     </template>
   </div>
 </template>
