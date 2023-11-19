@@ -15,17 +15,14 @@
           :is-shown="isAlreadyLearningDialogShown"
           :language="alreadyLearningLanguage?.name"/>
 
-      <BaseDialog :is-open="isNewLanguageDialogShown" @onBackDropClick="isNewLanguageDialogShown=false">
-        <div v-if="newLanguage" class="new-language-dialog">
+      <ConfirmDialog @on-yes-clicked="addNewLanguage"
+                     @on-no-clicked="isNewLanguageDialogShown=false"
+                     @on-closed="isNewLanguageDialogShown=false"
+                     :is-shown="isNewLanguageDialogShown">
+        <div v-if="newLanguage">
           <p>Start learning {{ newLanguage.name }}?</p>
-          <div class="buttons-div">
-            <button class="primary-filled-button square-button no-button" @click="isNewLanguageDialogShown=false">No
-            </button>
-            <button class="primary-filled-button square-button yes-button" @click="addNewLanguage">Yes
-            </button>
-          </div>
         </div>
-      </BaseDialog>
+      </ConfirmDialog>
 
     </template>
   </BaseCard>
@@ -40,10 +37,11 @@ import {icons} from "@/icons.js";
 import BaseDialog from "@/components/ui/BaseDialog.vue";
 import LanguageCard from "@/components/page/new-language/LanguageCard.vue";
 import AlreadyLearningDialog from "@/components/page/new-language/AlreadyLearningDialog.vue";
+import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
 
 export default {
   name: "NewLanguagePage",
-  components: {AlreadyLearningDialog, LanguageCard, BaseDialog, InlineSvg, BaseCard},
+  components: {ConfirmDialog, AlreadyLearningDialog, LanguageCard, BaseDialog, InlineSvg, BaseCard},
   data() {
     return {
       supportedLanguages: null as (LanguageSchema & { isLearning: boolean })[] | null,
@@ -110,30 +108,5 @@ export default {
   row-gap: 1rem;
   column-gap: 1rem;
   flex-grow: 1;
-}
-
-.new-language-dialog {
-  display: flex;
-  flex-direction: column;
-  row-gap: 1rem;
-}
-
-.buttons-div {
-  align-self: flex-end;
-  display: flex;
-  column-gap: 0.5rem;
-}
-
-.buttons-div button {
-
-  padding: 0.5rem 1rem;
-}
-
-.yes-button {
-}
-
-.no-button {
-  background-color: #FF3333;
-  border-color: #FF3333;
 }
 </style>
