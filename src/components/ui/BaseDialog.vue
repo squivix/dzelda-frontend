@@ -73,6 +73,6 @@ dialog:focus-visible {
 dialog > div {
   width: 100%;
   height: 100%;
-  padding: 4vw 4vh;
+  padding: 2vh 2vw;
 }
 </style>

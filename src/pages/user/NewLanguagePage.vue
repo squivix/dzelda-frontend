@@ -17,6 +17,13 @@
           </li>
         </ul>
       </div>
+
+      <BaseDialog :is-open="isAlreadyLearningDialogShown" @onBackDropClick="isAlreadyLearningDialogShown=false">
+        <div v-if="alreadyLearningLanguage" class="already-learning-dialog">
+          <p>You are already learning {{ alreadyLearningLanguage.name }}</p>
+          <button class="primary-filled-button square-button" @click="isAlreadyLearningDialogShown=false">OK</button>
+        </div>
+      </BaseDialog>
     </template>
   </BaseCard>
 </template>
@@ -27,13 +34,16 @@ import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {LanguageSchema} from "dzelda-types";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
+import BaseDialog from "@/components/ui/BaseDialog.vue";
 
 export default {
   name: "NewLanguagePage",
-  components: {InlineSvg, BaseCard},
+  components: {BaseDialog, InlineSvg, BaseCard},
   data() {
     return {
-      supportedLanguages: null as (LanguageSchema & { isLearning: boolean })[] | null
+      supportedLanguages: null as (LanguageSchema & { isLearning: boolean })[] | null,
+      isAlreadyLearningDialogShown: false,
+      alreadyLearningLanguage: null as (LanguageSchema & { isLearning: boolean }) | null,
     };
   },
   methods: {
@@ -42,9 +52,10 @@ export default {
     },
     async addNewLanguage(language: LanguageSchema & { isLearning: boolean }) {
       //TODO move to custom dialog
-      if (language.isLearning)
-        alert(`You are already learning ${language.name}`);
-      else if (confirm(`Start learning ${language.name}?`)) {
+      if (language.isLearning) {
+        this.alreadyLearningLanguage = language;
+        this.isAlreadyLearningDialogShown = true;
+      } else if (confirm(`Start learning ${language.name}?`)) {
         await this.languageStore.addLanguageToUser({languageCode: language.code});
         await this.languageStore.fetchUserLanguages({ignoreCache: true});
         await this.$router.push({name: "explore", params: {learningLanguage: language.code}});
@@ -140,5 +151,16 @@ export default {
 
 .is-learning-check svg {
   fill: var(--on-secondary-color);
+}
+
+.already-learning-dialog {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+.already-learning-dialog button{
+  align-self: flex-end;
+  padding: 0.5rem 1rem;
 }
 </style>
