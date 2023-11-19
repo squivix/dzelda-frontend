@@ -30,7 +30,6 @@ import TheMessageBarQueue from "@/components/layout/TheMessageBarQueue.vue";
 
 
 export default {
-  computed: {},
   components: {
     TheMessageBarQueue,
     GuestHeader,

@@ -27,8 +27,7 @@ export default {
 div {
   border: 1px solid var(--border-color);
   border-radius: 3px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
-  rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 0 5px 0, rgba(0, 0, 0, 0.1) 0 0 1px 0;
   padding: 4.5rem 3vw;
   margin-left: 2vw;
   margin-right: 2vw;
