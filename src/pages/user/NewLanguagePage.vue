@@ -4,7 +4,7 @@
       <div class="content">
         <p>Select a new language to learn from our list of supported languages</p>
         <ul v-if="supportedLanguages" class="languages">
-          <li v-for="language in supportedLanguages" :key="language.code" @click="addNewLanguage(language)">
+          <li v-for="language in supportedLanguages" :key="language.code" @click="onLanguageClicked(language)">
               <span v-if="language.isLearning" class="is-learning-check icon-wrapper">
                 <inline-svg :src="icons.checkMark"/>
               </span>
@@ -21,9 +21,23 @@
       <BaseDialog :is-open="isAlreadyLearningDialogShown" @onBackDropClick="isAlreadyLearningDialogShown=false">
         <div v-if="alreadyLearningLanguage" class="already-learning-dialog">
           <p>You are already learning {{ alreadyLearningLanguage.name }}</p>
-          <button class="primary-filled-button square-button" @click="isAlreadyLearningDialogShown=false">OK</button>
+          <button class="primary-filled-button square-button ok-button" @click="isAlreadyLearningDialogShown=false">OK
+          </button>
         </div>
       </BaseDialog>
+
+      <BaseDialog :is-open="isNewLanguageDialogShown" @onBackDropClick="isNewLanguageDialogShown=false">
+        <div v-if="newLanguage" class="new-language-dialog">
+          <p>Start learning {{ newLanguage.name }}?</p>
+          <div class="buttons-div">
+            <button class="primary-filled-button square-button no-button" @click="isNewLanguageDialogShown=false">No
+            </button>
+            <button class="primary-filled-button square-button yes-button" @click="addNewLanguage">Yes
+            </button>
+          </div>
+        </div>
+      </BaseDialog>
+
     </template>
   </BaseCard>
 </template>
@@ -44,23 +58,33 @@ export default {
       supportedLanguages: null as (LanguageSchema & { isLearning: boolean })[] | null,
       isAlreadyLearningDialogShown: false,
       alreadyLearningLanguage: null as (LanguageSchema & { isLearning: boolean }) | null,
+      isNewLanguageDialogShown: false,
+      newLanguage: null as (LanguageSchema & { isLearning: boolean }) | null,
     };
   },
   methods: {
     async fetchSupportedLanguages() {
       return await this.languageStore.fetchLanguages({isSupported: true});
     },
-    async addNewLanguage(language: LanguageSchema & { isLearning: boolean }) {
+    async onLanguageClicked(language: LanguageSchema & { isLearning: boolean }) {
       //TODO move to custom dialog
       if (language.isLearning) {
         this.alreadyLearningLanguage = language;
         this.isAlreadyLearningDialogShown = true;
-      } else if (confirm(`Start learning ${language.name}?`)) {
-        await this.languageStore.addLanguageToUser({languageCode: language.code});
-        await this.languageStore.fetchUserLanguages({ignoreCache: true});
-        await this.$router.push({name: "explore", params: {learningLanguage: language.code}});
+      } else {//(confirm(`Start learning ${language.name}?`)) {
+
+        this.newLanguage = language;
+        this.isNewLanguageDialogShown = true;
       }
-    }
+    },
+    async addNewLanguage() {
+      if (this.newLanguage) {
+        await this.languageStore.addLanguageToUser({languageCode: this.newLanguage.code});
+        await this.languageStore.fetchUserLanguages({ignoreCache: true});
+        await this.$router.push({name: "explore", params: {learningLanguage: this.newLanguage.code}});
+        this.isNewLanguageDialogShown = false;
+      }
+    },
   },
   async mounted() {
     const supportedLanguages = await this.fetchSupportedLanguages();
@@ -159,8 +183,33 @@ export default {
   row-gap: 1rem;
 }
 
-.already-learning-dialog button{
+.ok-button {
   align-self: flex-end;
   padding: 0.5rem 1rem;
+}
+
+.new-language-dialog {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+.buttons-div {
+  align-self: flex-end;
+  display: flex;
+  column-gap: 0.5rem;
+}
+
+.buttons-div button {
+
+  padding: 0.5rem 1rem;
+}
+
+.yes-button {
+}
+
+.no-button {
+  background-color: #FF3333;
+  border-color: #FF3333;
 }
 </style>
