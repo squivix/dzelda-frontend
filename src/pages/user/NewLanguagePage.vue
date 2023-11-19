@@ -56,12 +56,10 @@ export default {
       return await this.languageStore.fetchLanguages({isSupported: true});
     },
     async onLanguageClicked(language: LanguageSchema & { isLearning: boolean }) {
-      //TODO move to custom dialog
       if (language.isLearning) {
         this.alreadyLearningLanguage = language;
         this.isAlreadyLearningDialogShown = true;
-      } else {//(confirm(`Start learning ${language.name}?`)) {
-
+      } else {
         this.newLanguage = language;
         this.isNewLanguageDialogShown = true;
       }
@@ -70,8 +68,8 @@ export default {
       if (this.newLanguage) {
         await this.languageStore.addLanguageToUser({languageCode: this.newLanguage.code});
         await this.languageStore.fetchUserLanguages({ignoreCache: true});
-        await this.$router.push({name: "explore", params: {learningLanguage: this.newLanguage.code}});
         this.isNewLanguageDialogShown = false;
+        await this.$router.push({name: "explore", params: {learningLanguage: this.newLanguage.code}});
       }
     },
   },
