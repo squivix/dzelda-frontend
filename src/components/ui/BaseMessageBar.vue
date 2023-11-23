@@ -4,7 +4,7 @@
       :class="messageBoxClass">
     <div class="message-content-wrapper">
       <p class="message-text">{{ text }}</p>
-      <button class="dismiss-button inv-button" @click="onDismissed">
+      <button v-if="isDismissable" class="dismiss-button inv-button" @click="onDismissed">
         <inline-svg :src="icons.cross"/>
       </button>
     </div>
@@ -21,15 +21,9 @@ export default defineComponent({
   components: {InlineSvg},
   emits: ["onDismissed"],
   props: {
-    text: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String as PropType<MessageType>,
-      required: false,
-      default: MessageType.INFO
-    }
+    text: {type: String, required: true,},
+    type: {type: String as PropType<MessageType>, required: false, default: MessageType.INFO},
+    isDismissable: {type: Boolean, default: true}
   },
   computed: {
     messageBoxClass() {

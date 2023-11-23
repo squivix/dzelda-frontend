@@ -14,7 +14,7 @@
         <td>{{ language.name }}</td>
         <td>{{ language.addedOn }}</td>
         <td>
-          <button class="inv-button link" @click="removeLanguage(language)">Remove</button>
+          <button class="inv-button link" @click="onRemoveLanguageClicked(language)">Remove</button>
           <!--          TODO reset progress-->
           <!--          <button class="inv-button link" @click="resetLanguageProgress">Reset Progress</button>-->
         </td>
@@ -33,6 +33,17 @@
       </tr>
       </tfoot>
     </table>
+
+    <SeriousConfirmDialog :is-shown="isConfirmDeleteDialogShown"
+                          :yes-text="`Yes, delete all my ${languageToBeRemoved?.name} data`"
+                          :expected-text="`delete language`"
+                          @on-yes-clicked="removeLanguage"
+                          @on-no-clicked="isConfirmDeleteDialogShown=false">
+      <p>Are you sure you want to remove {{ languageToBeRemoved?.name }} from your languages?
+        <br>
+        <br>
+        This action cannot be undone. All your {{ languageToBeRemoved?.name }} data will be permanently deleted.</p>
+    </SeriousConfirmDialog>
   </div>
 </template>
 
@@ -41,14 +52,17 @@ import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {LanguageSchema, LearnerLanguageSchema} from "dzelda-types";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
+import SeriousConfirmDialog from "@/components/shared/SeriousConfirmDialog.vue";
 
 export default {
   name: "LanguagesTab",
-  components: {InlineSvg},
+  components: {SeriousConfirmDialog, InlineSvg},
   data() {
     return {
       allLanguages: null as LanguageSchema[] | null,
       userLanguages: null as LearnerLanguageSchema[] | null,
+      isConfirmDeleteDialogShown: false,
+      languageToBeRemoved: null as LanguageSchema | null,
     };
   },
 
@@ -67,11 +81,15 @@ export default {
     async fetchUserLanguages() {
       return await this.languageStore.fetchUserLanguages();
     },
-    async removeLanguage(language: LanguageSchema) {
-      //TODO move to modal dialogue
-      if (confirm("Are you sure you want to delete this language?")) {
+    onRemoveLanguageClicked(language: LanguageSchema) {
+      this.languageToBeRemoved = language;
+      this.isConfirmDeleteDialogShown = true;
+    },
+    async removeLanguage() {
+      if (this.languageToBeRemoved) {
+        this.isConfirmDeleteDialogShown = false;
         await this.languageStore.deleteLanguageFromUser({
-          languageCode: language.code,
+          languageCode: this.languageToBeRemoved.code,
         });
         this.userLanguages = await this.fetchUserLanguages();
       }
