@@ -232,6 +232,7 @@ export default defineComponent({
         const phrases = Object.keys(this.phrases);
         for (const phrase of phrases) {
           //detect every phrase surrounded by non letters and non-numbers
+          //TODO also get rid of this client side parsing
           const regex = new RegExp(`[^\\p{L}\\d]${phrase}[^\\p{L}\\d]`, "igu");
           const matches = text.matchAll(regex);
           for (let match of matches) {
@@ -248,6 +249,7 @@ export default defineComponent({
       });
     },
     getTextElements(paragraph: string) {
+      //TODO get rid of this client side parsing, replace with same code as server shared or called through API
       return paragraph.split(/([^\p{L}\d])/gu).filter((word) => word !== "");
     }
   },
