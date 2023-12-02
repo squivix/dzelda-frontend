@@ -11,9 +11,12 @@
                              @onChange="()=>emailChanged=true">
         </BaseChangeableInput>
 
-        <button id="confirm-email-button" class="primary-filled-button capsule-button" type="submit">
+        <SubmitButton id="confirm-email-button"
+                      class="primary-filled-button capsule-button"
+                      type="submit"
+                      :is-submitting="isSubmitting">
           Resend Confirmation Email
-        </button>
+        </SubmitButton>
 
       </form>
     </template>
@@ -25,20 +28,24 @@ import {defineComponent} from "vue";
 import BaseChangeableInput from "@/components/ui/BaseChangeableInput.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default defineComponent({
   name: "ResendConfirmEmailPage",
-  components: {BaseChangeableInput, BaseCard},
+  components: {SubmitButton, BaseChangeableInput, BaseCard},
   data() {
     return {
       //@ts-ignore store type not recognized in data due to bad vue support :(
       email: this.userStore.userAccount.email,
       emailChanged: false,
+      isSubmitting: false,
     };
   },
   methods: {
     async submitResendForm() {
+      this.isSubmitting = true;
       await this.userStore.requestEmailConfirmToken({email: this.emailChanged ? this.email : undefined});
+      this.isSubmitting = false;
       this.$router.push({name: "confirm-email-sent"});
     }
   },
@@ -87,10 +94,6 @@ input {
 
 #confirm-email-button {
   margin-top: 1rem;
-}
-
-.submit-message {
-  min-height: 1lh;
 }
 
 a {

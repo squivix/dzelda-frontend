@@ -209,7 +209,7 @@ export default {
   display: flex;
   column-gap: 0.25rem;
   align-self: flex-end;
-
+  align-items: center;
 }
 
 .filter-button {

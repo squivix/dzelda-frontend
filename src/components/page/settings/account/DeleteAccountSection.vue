@@ -1,9 +1,11 @@
 <template>
   <section>
     <h3>Delete Account</h3>
-    <button class="delete-account-button primary-filled-button capsule-button" @click="onDeleteAccountClicked">Delete
-      Account
-    </button>
+    <SubmitButton class="delete-account-button primary-filled-button capsule-button"
+                  @click="onDeleteAccountClicked"
+                  :is-submitting="isSubmitting">
+      Delete Account
+    </SubmitButton>
     <SeriousConfirmDialog :is-shown="isConfirmDialogShown"
                           expected-text="delete my account"
                           yes-text="Yes, delete my account"
@@ -20,19 +22,26 @@
 import {defineComponent} from "vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import SeriousConfirmDialog from "@/components/shared/SeriousConfirmDialog.vue";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default defineComponent({
   name: "DeleteAccountSection",
-  components: {SeriousConfirmDialog},
+  components: {SubmitButton, SeriousConfirmDialog},
   data() {
-    return {isConfirmDialogShown: false};
+    return {
+      isConfirmDialogShown: false,
+      isSubmitting: false
+    };
   },
   methods: {
     onDeleteAccountClicked() {
       this.isConfirmDialogShown = true;
     },
     async deleteAccount() {
+      this.isConfirmDialogShown = false;
+      this.isSubmitting = true;
       await this.userStore.deleteAccount();
+      this.isSubmitting = false;
     }
   },
   setup() {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <inline-svg class="spinner" :src="icons.loadingSpinner"/>
+    <inline-svg class="spinner" :src="icons.loadingSpinnerTailSpin"/>
   </div>
 </template>
 
@@ -26,7 +26,7 @@ div {
 }
 
 .spinner {
-  --color: var(--secondary-color);
+  color: var(--secondary-color);
   width: 100px;
   height: 100px;
 }

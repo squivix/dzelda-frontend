@@ -2,7 +2,7 @@
   <BaseCard>
     <template v-slot:all>
       <article class="course-article">
-        <BaseImage :image-url="imageUrl" :fall-back-url="icons.courseBlank"
+        <BaseImage :image-url="imageUrl" :fall-back-url="icons.books"
                    alt-text="course image"></BaseImage>
 
         <div class="title-row">

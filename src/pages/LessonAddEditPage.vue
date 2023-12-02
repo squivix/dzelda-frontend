@@ -3,7 +3,7 @@
     <template v-slot:content>
       <form class="add-edit-lesson-form" @submit.prevent="onSubmit">
         <div class="file-inputs-div">
-          <BaseImage :image-url="imageUrl" :fall-back-url="icons.lessonBlank"></BaseImage>
+          <BaseImage :image-url="imageUrl" :fall-back-url="icons.bookOpen"></BaseImage>
 
           <label for="image-input" class="file-input-label inv-button">
             <inline-svg :src="icons.upload"/>
@@ -41,9 +41,12 @@
           <textarea placeholder="Lesson Text" id="lesson-text" v-model="text" required></textarea>
 
           <div class="buttons-div">
-            <button id="save-button" type="submit" class="primary-hollow-button capsule-button">Save</button>
-            <button id="save-and-open-button" type="submit" class="primary-filled-button capsule-button">Save & open
-            </button>
+            <SubmitButton id="save-and-open-button"
+                          type="submit"
+                          class="primary-filled-button capsule-button"
+                          :is-submitting="isSubmitting">
+              Save & open
+            </SubmitButton>
           </div>
         </div>
       </form>
@@ -62,10 +65,11 @@ import {LessonSchema} from "dzelda-types";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default {
   name: "LessonAddEditPage",
-  components: {InlineSvg, BaseImage, BaseCard},
+  components: {SubmitButton, InlineSvg, BaseImage, BaseCard},
   computed: {
     pageTitle() {
       return this.$route.name !== "edit-lesson" ? "Add Lesson" : "Edit Lesson";
@@ -82,6 +86,7 @@ export default {
       audio: null as File | null,
       imageUrl: "",
       audioUrl: null as string | null,
+      isSubmitting: false,
     };
   },
   watch: {
@@ -109,22 +114,16 @@ export default {
       this.editableCourses = response.data;
     },
     async onSubmit(event) {
+      this.isSubmitting = true;
       if (this.lesson == null)
         await this.addLesson();
       else
         await this.editLesson();
-
-      if (event.submitter.id === "save-button") {
-        await this.$router.push({
-          name: "edit-lesson",
-          params: {learningLanguage: this.$route.params.learningLanguage, lessonId: this.lesson.id}
-        });
-      } else if (event.submitter.id === "save-and-open-button") {
-        await this.$router.push({
-          name: "lesson",
-          params: {learningLanguage: this.$route.params.learningLanguage, lessonId: this.lesson.id}
-        });
-      }
+      this.isSubmitting = false;
+      await this.$router.push({
+        name: "lesson",
+        params: {learningLanguage: this.$route.params.learningLanguage, lessonId: this.lesson.id}
+      });
     },
     async addLesson() {
       this.lesson = await this.lessonStore.createLesson({

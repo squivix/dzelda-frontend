@@ -4,7 +4,10 @@
       <inline-svg :src="icons.pen"/>
       Edit
     </button>
-    <button v-else class="save-button square-button primary-filled-button" type="submit">Save</button>
+    <SubmitButton v-else
+                  class="save-button square-button primary-filled-button"
+                  type="submit"
+                  :is-submitting="isSubmitting">Save</SubmitButton>
 
     <BaseImageUploadInput :path="userStore.userAccount.profile.profilePicture"
                           class="profile-picture"
@@ -25,16 +28,18 @@ import {icons} from "@/icons.js";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
 import BaseImageUploadInput from "@/components/ui/BaseImageUploadInput.vue";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default defineComponent({
   name: "ProfileForm",
-  components: {BaseImageUploadInput, BaseImage, InlineSvg},
+  components: {SubmitButton, BaseImageUploadInput, BaseImage, InlineSvg},
   data() {
     return {
       //@ts-ignore store type not recognized in data due to bad vue support :(
       bio: this.userStore.userAccount.profile.bio,
       isEditing: false,
       profilePicture: undefined as File | undefined | "",
+      isSubmitting: false,
     };
   },
   methods: {
@@ -42,10 +47,12 @@ export default defineComponent({
       this.isEditing = true;
     },
     async updateProfile() {
+      this.isSubmitting = true;
       await this.userStore.updateUserProfile({
         bio: this.bio,
         profilePicture: this.profilePicture
       });
+      this.isSubmitting = false;
       this.profilePicture = undefined;
       this.isEditing = false;
     },

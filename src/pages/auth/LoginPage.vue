@@ -22,9 +22,13 @@
           Forgot Password?
         </router-link>
         <p class="error-message">{{ errorMessage }}</p>
-        <button id="login-button" class="primary-filled-button capsule-button" type="submit">
+        <SubmitButton type="submit"
+                      id="login-button"
+                      class="primary-filled-button capsule-button"
+                      :is-submitting="isSubmitting"
+                      :keep-text="true">
           Login
-        </button>
+        </SubmitButton>
       </form>
     </template>
   </BaseCard>
@@ -34,26 +38,30 @@ import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default {
   name: "LoginPage",
-  components: {BaseCard, BasePasswordInput},
+  components: {SubmitButton, BaseCard, BasePasswordInput},
   data() {
     return {
       username: "",
       password: "",
       errorMessage: "",
-      errorFields: [] as Array<"username" | "password">
+      errorFields: [] as Array<"username" | "password">,
+      isSubmitting: false,
     };
   },
   computed: {},
   methods: {
     async submitForm() {
+      this.isSubmitting = true;
       this.errorMessage = "";
       const error = await this.userStore.login({
         username: this.username,
         password: this.password,
       });
+      this.isSubmitting = false;
       if (error !== undefined) {
         this.messageBarStore.addMessage({text: error.message, type: MessageType.ERROR});
         this.errorMessage = error.message;

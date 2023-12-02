@@ -1,7 +1,7 @@
 <template>
   <div @click="onBackgroundClicked" class="lesson-content">
     <div class="top-div">
-      <BaseImage :image-url="image" :fall-back-url="icons.lessonBlank"
+      <BaseImage :image-url="image" :fall-back-url="icons.bookOpen"
                  alt-text="lesson image" class="lesson-image"/>
       <LessonParagraph class="title"
                        :lesson-elements="lessonElements.title"

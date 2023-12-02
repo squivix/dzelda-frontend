@@ -285,7 +285,7 @@ nav > ul > li:hover {
 .profile-picture:deep(svg) {
   width: 24px;
   height: 24px;
-  fill: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .profile-menu {

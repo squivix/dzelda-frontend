@@ -98,8 +98,8 @@ export default defineComponent({
 }
 
 .dismiss-button svg {
-  width: 15px;
-  height: 15px;
+  width: 12px;
+  height: 12px;
   fill: dimgrey;
 }
 </style>

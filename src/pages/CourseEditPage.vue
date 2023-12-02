@@ -2,7 +2,7 @@
   <BaseCard title="Edit Course" class="edit-course-base-card">
     <template v-slot:content>
       <form class="edit-course-form" v-if="course" @submit.prevent="onSubmit">
-        <BaseImageUploadInput :path="course!.image" :fallback="icons.courseBlank" v-model="image"/>
+        <BaseImageUploadInput :path="course!.image" :fallback="icons.books" v-model="image"/>
 
         <div class="inputs-div">
           <label for="course-title">Title</label>
@@ -46,7 +46,12 @@
             <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
             Public
           </label>
-          <button id="save-button" type="submit" class="primary-filled-button capsule-button">Save</button>
+          <SubmitButton id="save-button"
+                        type="submit"
+                        class="primary-filled-button capsule-button"
+                        :is-submitting="isSubmitting">
+            Save
+          </SubmitButton>
         </div>
       </form>
     </template>
@@ -62,10 +67,12 @@ import {CourseSchema, LessonSchema} from "dzelda-types";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
 import BaseImageUploadInput from "@/components/ui/BaseImageUploadInput.vue";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default {
   name: "CourseEditPage",
   components: {
+    SubmitButton,
     BaseImageUploadInput,
     InlineSvg,
     BaseImage,
@@ -77,11 +84,12 @@ export default {
       title: null as string | null,
       description: null as string | null,
       isPublic: true,
-      level: null as ('beginner1' | 'beginner2' | 'intermediate1' | 'intermediate2' | 'advanced1' | 'advanced2' | null),
+      level: null as ("beginner1" | "beginner2" | "intermediate1" | "intermediate2" | "advanced1" | "advanced2" | null),
       lessons: null as LessonSchema[] | null,
       selectedLessons: [],
       image: undefined as File | "" | undefined,
-      course: null as CourseSchema | null
+      course: null as CourseSchema | null,
+      isSubmitting: false,
     };
   },
   methods: {
@@ -90,6 +98,7 @@ export default {
       this.$router.push({name: "course", ...this.$route.params});
     },
     async editCourse() {
+      this.isSubmitting = true;
       await this.courseStore.updateCourse(
           {courseId: Number(this.$route.params.courseId as string)},
           {
@@ -101,6 +110,7 @@ export default {
             image: this.image
           }
       );
+      this.isSubmitting = false;
     },
 
     selectAllLessons(event) {

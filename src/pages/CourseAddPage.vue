@@ -3,7 +3,7 @@
     <template v-slot:content>
 
       <form class="add-course-form" @submit.prevent="onSubmit">
-        <BaseImageUploadInput path="" :fallback="icons.courseBlank" v-model="image"/>
+        <BaseImageUploadInput path="" :fallback="icons.books" v-model="image"/>
         <div class="inputs-div">
           <label for="course-title">Title</label>
           <input id="course-title" type="text" placeholder="Course Title" v-model="title" required>
@@ -14,7 +14,13 @@
             <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
             Public
           </label>
-          <button id="save-button" type="submit" class="primary-filled-button capsule-button">Save</button>
+
+          <SubmitButton id="save-button"
+                        type="submit"
+                        class="primary-filled-button capsule-button"
+                        :is-submitting="isSubmitting">
+            Save
+          </SubmitButton>
         </div>
       </form>
 
@@ -29,21 +35,25 @@ import BaseImage from "@/components/ui/BaseImage.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import BaseImageUploadInput from "@/components/ui/BaseImageUploadInput.vue";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default {
   name: "CourseAddPage",
-  components: {BaseImageUploadInput, InlineSvg, BaseCard, BaseImage},
+  components: {SubmitButton, BaseImageUploadInput, InlineSvg, BaseCard, BaseImage},
   data() {
     return {
       title: "",
       description: "",
       isPublic: true,
       image: undefined as File | "" | undefined,
+      isSubmitting: false,
     };
   },
   methods: {
     async onSubmit() {
+      this.isSubmitting = true;
       const newCourse = await this.addCourse();
+      this.isSubmitting = false;
       //TODO move this somewhere more general
       if (this.$route.query["redir"])
         await this.$router.push({path: this.$route.query["redir"]});

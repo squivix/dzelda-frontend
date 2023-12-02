@@ -135,7 +135,7 @@ export const useUserStore = defineStore("auth", {
             const response = await store.fetchCustom((api) => api.users.putUsersMePassword({
                 oldPassword: body.oldPassword,
                 newPassword: body.newPassword
-            }, {format: "json"}));
+            }, {format: "json"}), {ignore401: true});
             if (!response.ok)
                 return response.error;
         },
@@ -163,7 +163,7 @@ export const useUserStore = defineStore("auth", {
             // handle your 4XX errors as you may
             //...
             if (response.ok) {
-                await this.fetchUserAccount(true)
+                await this.fetchUserAccount(true);
             }
             return response.ok;
         }

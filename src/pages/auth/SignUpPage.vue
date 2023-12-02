@@ -16,9 +16,12 @@
             :required="true"
             v-model="password"/>
         <p class="error-message">{{ errorMessage }}</p>
-        <button id="signup-button" class="primary-filled-button capsule-button" type="submit">
+        <SubmitButton id="signup-button"
+                      class="primary-filled-button capsule-button"
+                      :is-submitting="isSubmitting"
+                      :keep-text="true">
           Sign Up
-        </button>
+        </SubmitButton>
       </form>
     </template>
   </BaseCard>
@@ -29,10 +32,11 @@ import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default {
   name: "SignUpPage",
-  components: {BaseCard, BasePasswordInput},
+  components: {SubmitButton, BaseCard, BasePasswordInput},
   data() {
     return {
       email: "",
@@ -40,15 +44,18 @@ export default {
       password: "",
       errorFields: [] as Array<"email" | "username" | "password">,
       errorMessage: "",
+      isSubmitting: false,
     };
   },
   methods: {
     async submitForm() {
+      this.isSubmitting = true;
       const error = await this.userStore.signUp({
         username: this.username,
         email: this.email,
         password: this.password
       });
+      this.isSubmitting = false;
       if (error) {
         this.messageBarStore.addMessage({type: MessageType.ERROR, text: error.message!});
         this.errorMessage = error.message;

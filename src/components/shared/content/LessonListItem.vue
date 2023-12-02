@@ -4,7 +4,7 @@
       <article>
         <div class="item-content">
           <BaseImage :image-url="imageUrl"
-                     :fall-back-url="icons.lessonBlank"
+                     :fall-back-url="icons.bookOpen"
                      alt-text="lesson image"/>
           <div class="title-stats">
             <div class="title-subtitle">

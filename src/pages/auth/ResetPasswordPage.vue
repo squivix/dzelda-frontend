@@ -20,9 +20,12 @@
             required/>
         <p class="error-message">{{ errorMessage }}</p>
 
-        <button id="reset-password-button" class="primary-filled-button capsule-button" type="submit">
+        <SubmitButton id="reset-password-button"
+                      class="primary-filled-button capsule-button"
+                      type="submit"
+                      :is-submitting="isSubmitting">
           Reset Password
-        </button>
+        </SubmitButton>
 
       </form>
 
@@ -38,10 +41,11 @@ import {defineComponent, PropType} from "vue";
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default defineComponent({
   name: "ResetPasswordPage",
-  components: {BasePasswordInput, BaseCard},
+  components: {SubmitButton, BasePasswordInput, BaseCard},
   props: {
     queryParams: {
       type: Object as PropType<{ token: string }>,
@@ -56,6 +60,7 @@ export default defineComponent({
       errorFields: [] as string[],
       resetSuccessful: false,
       tokenIsValid: true,
+      isSubmitting: false,
     };
   },
   methods: {
@@ -77,10 +82,12 @@ export default defineComponent({
         this.errorMessage = "Passwords do not match";
         return;
       }
+      this.isSubmitting = true;
       this.resetSuccessful = await this.userStore.resetPassword({
         token: this.queryParams.token,
         newPassword: this.newPassword,
       });
+      this.isSubmitting = false;
     },
 
   },

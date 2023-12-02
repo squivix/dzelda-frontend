@@ -2,20 +2,25 @@
   <section>
     <h3>Change Email</h3>
     <form class="change-email-form" @submit.prevent="submitEmailChange">
-      <label for="email">Email</label>
-      <div>
-        <BaseChangeableInput id="email" type="email" autocomplete="email" required v-model="newEmail"
-                             :clear-on-change="true" @on-change="()=>emailChanged=true"
-                             :class="{'error-input': errorFields.includes('newEmail')}"/>
-        <button type="submit" v-if="emailChanged" class="change-email-button primary-filled-button capsule-button">
-          Change Email
-        </button>
-      </div>
       <p v-if="emailChangeSuccess">
         We've sent you an email with a confirmation link.
         <br><br>
         Please confirm your new email within 24 hours for the change to be applied.
       </p>
+      <template v-else>
+        <label for="email">Email</label>
+        <div>
+          <BaseChangeableInput id="email" type="email" autocomplete="email" required v-model="newEmail"
+                               :clear-on-change="true" @on-change="()=>emailChanged=true"
+                               :class="{'error-input': errorFields.includes('newEmail')}"/>
+          <SubmitButton v-if="emailChanged"
+                        type="submit"
+                        class="change-email-button primary-filled-button capsule-button"
+                        :is-submitting="isSubmitting">
+            Change Email
+          </SubmitButton>
+        </div>
+      </template>
     </form>
   </section>
 </template>
@@ -25,23 +30,26 @@ import {defineComponent} from "vue";
 import BaseChangeableInput from "@/components/ui/BaseChangeableInput.vue";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 import {useUserStore} from "@/stores/backend/userStore.js";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default defineComponent({
   name: "ChangeEmailSection",
-  components: {BaseChangeableInput},
+  components: {SubmitButton, BaseChangeableInput},
   data() {
     return {
-      errorMessage: "",
       emailChangeSuccess: false,
       emailChanged: false,
       errorFields: [] as Array<"newEmail">,
       //@ts-ignore store type not recognized in data due to bad vue support :(
       newEmail: this.userStore.userAccount!.email,
+      isSubmitting: false,
     };
   },
   methods: {
     async submitEmailChange() {
+      this.isSubmitting = true;
       const error = await this.userStore.changeEmail({newEmail: this.newEmail});
+      this.isSubmitting = false;
       if (error !== undefined && error.code == 400) {
         this.messageBarStore.addMessage({text: error.message, type: MessageType.ERROR});
         this.errorFields = Object.keys(error.fields!) as Array<"newEmail">;

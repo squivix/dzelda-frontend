@@ -2,7 +2,6 @@ import {defineStore} from "pinia";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {ApiClient, HttpResponse} from "dzelda-types";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
-import {cleanUndefined} from "@/utils.js";
 
 
 export const useStore = defineStore("main", {
@@ -26,7 +25,16 @@ export const useStore = defineStore("main", {
             }): Promise<HttpResponse<T, E>> {
                 const userStore = useUserStore();
                 this.apiClient.setSecurityData(userStore.authToken);
-                const response = await endpoint(this.apiClient as ApiClient<string>);   //for some reason this.apiClient is any :/
+                let response;
+                try {
+                    response = await endpoint(this.apiClient as ApiClient<string>);   //for some reason this.apiClient is any :/
+                } catch (e) {
+                    const message = "We're having trouble reaching our servers, please come back later";
+                    const messageBarStore = useMessageBarStore();
+                    messageBarStore.addMessage({text: message, type: MessageType.ERROR});
+                    throw new Error(message as string);
+                }
+
                 if (response.status >= 500) {
                     const message = "Something went wrong server-side, please come back later";
                     const messageBarStore = useMessageBarStore();

@@ -28,9 +28,12 @@
                          id="repeat-new-password"
                          autocomplete="new-password"
                          required/>
-      <button class="change-password-button primary-filled-button capsule-button">Change Password</button>
+      <SubmitButton class="change-password-button primary-filled-button capsule-button"
+                    :is-submitting="isSubmitting">
+        Change Password
+      </SubmitButton>
     </form>
-    <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+    <p v-if="errorMessage && !changeSuccessful" class="error-message">{{ errorMessage }}</p>
   </section>
 </template>
 
@@ -39,10 +42,11 @@ import {defineComponent} from "vue";
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default defineComponent({
   name: "ChangePasswordSection",
-  components: {BasePasswordInput},
+  components: {SubmitButton, BasePasswordInput},
   data() {
     return {
       oldPassword: "",
@@ -51,6 +55,7 @@ export default defineComponent({
       errorFields: [] as Array<"oldPassword" | "newPassword">,
       changeSuccessful: false,
       errorMessage: "",
+      isSubmitting: false,
     };
   },
   methods: {
@@ -59,12 +64,15 @@ export default defineComponent({
         this.errorMessage = "Passwords do not match";
         return;
       }
+      this.isSubmitting = true;
       const error = await this.userStore.changePassword({
         oldPassword: this.oldPassword,
         newPassword: this.newPassword,
       });
+      this.isSubmitting = false;
       if (!error) {
         this.changeSuccessful = true;
+        this.errorMessage = "";
         this.messageBarStore.addMessage({text: "Password changed", type: MessageType.SUCCESS});
       } else {
         if (error.code == 400)

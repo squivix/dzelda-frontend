@@ -8,7 +8,6 @@ import bookmark from "@/assets/images/bookmark.svg"
 import books from "@/assets/images/books.svg"
 import checkMark from "@/assets/images/check-mark.svg"
 import circleSlash from "@/assets/images/circle-slash.svg"
-import courseBlank from "@/assets/images/course-blank.svg"
 import cross from "@/assets/images/cross.svg"
 import crossSquare from "@/assets/images/cross-square.svg"
 import dotsStacked from "@/assets/images/dots-stacked.svg"
@@ -19,8 +18,9 @@ import githubLogo from "@/assets/images/github-logo.svg"
 import hamburgerMenu from "@/assets/images/hamburger-menu.svg"
 import hide from "@/assets/images/hide.svg"
 import history from "@/assets/images/history.svg"
-import lessonBlank from "@/assets/images/lesson-blank.svg"
-import loadingSpinner from "@/assets/images/loading-spinner.svg"
+import bookOpen from "@/assets/images/book-open.svg"
+import loadingSpinnerTailSpin from "@/assets/images/loading-spinner-tail-spin.svg"
+import loadingSpinnerOval from "@/assets/images/loading-spinner-oval.svg"
 import pen from "@/assets/images/pen.svg"
 import plus from "@/assets/images/plus.svg"
 import plusRound from "@/assets/images/plus-round.svg"
@@ -32,7 +32,7 @@ import signOut from "@/assets/images/sign-out.svg"
 import upload from "@/assets/images/upload.svg"
 import userProfile from "@/assets/images/user-profile.svg"
 import vocabsList from "@/assets/images/vocabs-list.svg"
-
+//TODO use currentColor in all svgs so color setting from css works
 export const icons = {
     arrowDown,
     arrowLeft,
@@ -44,7 +44,6 @@ export const icons = {
     books,
     checkMark,
     circleSlash,
-    courseBlank,
     cross,
     crossSquare,
     dotsStacked,
@@ -55,8 +54,9 @@ export const icons = {
     hamburgerMenu,
     hide,
     history,
-    lessonBlank,
-    loadingSpinner,
+    bookOpen,
+    loadingSpinnerTailSpin,
+    loadingSpinnerOval,
     pen,
     plus,
     plusRound,

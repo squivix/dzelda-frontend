@@ -85,19 +85,4 @@ export default defineComponent({
   border-bottom: 3px solid var(--secondary-color);
 }
 
-.top-bar {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  column-gap: 0.5vw;
-}
-
-.search-filter-wrapper {
-  display: flex;
-  flex-direction: column;
-  row-gap: 1rem;
-}
-
-
 </style>

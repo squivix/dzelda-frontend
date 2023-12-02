@@ -1,7 +1,7 @@
 <template>
   <BaseCard title="Reset Password" id="reset-password-card">
     <template v-slot:content>
-      <form @submit.prevent="submitForm" v-if="!submitted">
+      <form @submit.prevent="submitForm" v-if="!isSubmitted">
         <label for="username">Username</label>
         <input
             id="username"
@@ -17,9 +17,12 @@
             v-model="email"
         />
 
-        <button id="reset-password-button" class="primary-filled-button capsule-button" type="submit">
+        <SubmitButton id="reset-password-button"
+                      class="primary-filled-button capsule-button"
+                      type="submit"
+                      :is-submitting="isSubmitting">
           Reset Password
-        </button>
+        </SubmitButton>
 
       </form>
       <p class="submit-message" v-else>If the account exists we will send you an email with the reset
@@ -32,24 +35,28 @@
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default {
   name: "ResetPasswordRequestPage",
-  components: {BasePasswordInput, BaseCard},
+  components: {SubmitButton, BasePasswordInput, BaseCard},
   data() {
     return {
-      username: '',
-      email: '',
-      submitted: false,
-    }
+      username: "",
+      email: "",
+      isSubmitted: false,
+      isSubmitting: false,
+    };
   },
   methods: {
     async submitForm() {
+      this.isSubmitting = true;
       await this.userStore.requestPasswordReset({
         username: this.username,
         email: this.email
       });
-      this.submitted = true;
+      this.isSubmitting = false;
+      this.isSubmitted = true;
     }
   },
   setup() {
@@ -57,7 +64,7 @@ export default {
       userStore: useUserStore()
     };
   }
-}
+};
 </script>
 
 <style scoped>

@@ -10,15 +10,11 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="language in userLanguages" :key="language.id">
-        <td>{{ language.name }}</td>
-        <td>{{ language.addedOn }}</td>
-        <td>
-          <button class="inv-button link" @click="onRemoveLanguageClicked(language)">Remove</button>
-          <!--          TODO reset progress-->
-          <!--          <button class="inv-button link" @click="resetLanguageProgress">Reset Progress</button>-->
-        </td>
-      </tr>
+      <LanguageRow v-for="language in userLanguages"
+                   :key="language.id"
+                   :language="language"
+                   @onRemoveLanguageClicked="onRemoveLanguageClicked"
+      />
       </tbody>
       <tfoot>
       <tr>
@@ -53,16 +49,19 @@ import {LanguageSchema, LearnerLanguageSchema} from "dzelda-types";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import SeriousConfirmDialog from "@/components/shared/SeriousConfirmDialog.vue";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
+import LanguageRow from "@/components/page/settings/languages/LanguageRow.vue";
 
 export default {
   name: "LanguagesTab",
-  components: {SeriousConfirmDialog, InlineSvg},
+  components: {LanguageRow, SubmitButton, SeriousConfirmDialog, InlineSvg},
   data() {
     return {
       allLanguages: null as LanguageSchema[] | null,
       userLanguages: null as LearnerLanguageSchema[] | null,
       isConfirmDeleteDialogShown: false,
       languageToBeRemoved: null as LanguageSchema | null,
+      isSubmittingRemoveLanguage: false
     };
   },
 
@@ -76,7 +75,7 @@ export default {
   },
   methods: {
     async fetchAllLanguages() {
-      return await this.languageStore.fetchLanguages({supported: true});
+      return await this.languageStore.fetchLanguages({isSupported: true});
     },
     async fetchUserLanguages() {
       return await this.languageStore.fetchUserLanguages();
@@ -126,14 +125,10 @@ h2 {
   padding-bottom: 0.75rem;
 }
 
-.languages tbody tr:nth-child(odd) {
+.languages tbody:deep(tr:nth-child(odd)) {
   background-color: whitesmoke;
 }
 
-
-.languages td {
-  padding: 0.5rem 0;
-}
 
 .languages tfoot td {
   padding-top: 1rem;
