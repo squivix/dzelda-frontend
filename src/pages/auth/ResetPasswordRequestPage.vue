@@ -31,10 +31,11 @@
 <script lang="ts">
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
+import BaseCard from "@/components/ui/BaseCard.vue";
 
 export default {
   name: "ResetPasswordRequestPage",
-  components: {BasePasswordInput},
+  components: {BasePasswordInput, BaseCard},
   data() {
     return {
       username: '',

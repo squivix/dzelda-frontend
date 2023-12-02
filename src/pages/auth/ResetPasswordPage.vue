@@ -37,10 +37,11 @@
 import {defineComponent, PropType} from "vue";
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
+import BaseCard from "@/components/ui/BaseCard.vue";
 
 export default defineComponent({
   name: "ResetPasswordPage",
-  components: {BasePasswordInput},
+  components: {BasePasswordInput, BaseCard},
   props: {
     queryParams: {
       type: Object as PropType<{ token: string }>,

@@ -24,10 +24,11 @@
 import {defineComponent} from "vue";
 import BaseChangeableInput from "@/components/ui/BaseChangeableInput.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
+import BaseCard from "@/components/ui/BaseCard.vue";
 
 export default defineComponent({
   name: "ResendConfirmEmailPage",
-  components: {BaseChangeableInput},
+  components: {BaseChangeableInput, BaseCard},
   data() {
     return {
       //@ts-ignore store type not recognized in data due to bad vue support :(
