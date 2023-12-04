@@ -10,7 +10,7 @@
         </div>
         <div class="form-row">
           <label for="username">Username</label>
-          <input id="username" type="text" minlength="4" required pattern="[A-Za-z0-9]+" title="Please only use alphanumerical characters or underscore (A-Z,a-z,0-9,_)." v-model="username"
+          <input id="username" type="text" minlength="4" required pattern="[A-Za-z0-9_]+" title="Please only use alphanumerical characters or underscore (A-Z,a-z,0-9,_)." v-model="username"
                  :class="{'error-input': !!errorFields.username}"/>
           <p :class="{'error-message':true, 'hidden': !errorFields.username}">{{ errorFields.username }}</p>
         </div>
