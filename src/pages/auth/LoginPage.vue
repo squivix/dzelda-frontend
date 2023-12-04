@@ -3,18 +3,18 @@
     <template v-slot:content>
       <form @submit.prevent="submitForm">
         <label for="username">Username</label>
-        <input
-            id="username"
-            type="text"
-            required
-            v-model="username"
-            autocomplete="username"
-            :class="{'error-input': errorFields.includes('username')}"/>
+        <input id="username"
+               type="text"
+               required
+               v-model="username"
+               autocomplete="username"
+               :class="{'error-input': errorFields.includes('username')}"/>
         <label for="current-password">Password</label>
         <BasePasswordInput
             v-model="password"
             id="current-password"
             autocomplete="current-password"
+            :min-length="1"
             required
             :class="{'error-input': errorFields.includes('password')}">
         </BasePasswordInput>

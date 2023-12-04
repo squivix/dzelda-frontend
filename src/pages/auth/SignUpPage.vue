@@ -2,20 +2,29 @@
   <BaseCard title="Sign Up" id="signup-card">
     <template v-slot:content>
       <form @submit.prevent="submitForm">
-        <label for="email">Email</label>
-        <input id="email" type="email" required v-model="email"
-               :class="{'error-input': errorFields.includes('email')}"/>
-        <label for="username">Username</label>
-        <input id="username" type="text" required v-model="username"
-               :class="{'error-input': errorFields.includes('username')}"/>
-        <label for="new-password">Password</label>
-        <BasePasswordInput
-            id="new-password"
-            :class="{'error-input': errorFields.includes('password')}"
-            autocomplete="new-password"
-            :required="true"
-            v-model="password"/>
-        <p class="error-message">{{ errorMessage }}</p>
+        <div class="form-row">
+          <label for="email">Email</label>
+          <input id="email" type="email" maxlength="256"  required v-model="email"
+                 :class="{'error-input': !!errorFields.email}"/>
+          <p :class="{'error-message':true, 'hidden': !errorFields.email}">{{ errorFields.email }}</p>
+        </div>
+        <div class="form-row">
+          <label for="username">Username</label>
+          <input id="username" type="text" minlength="4" required pattern="[A-Za-z0-9]+" title="Please only use alphanumerical characters or underscore (A-Z,a-z,0-9,_)." v-model="username"
+                 :class="{'error-input': !!errorFields.username}"/>
+          <p :class="{'error-message':true, 'hidden': !errorFields.username}">{{ errorFields.username }}</p>
+        </div>
+        <div class="form-row">
+          <label for="new-password">Password</label>
+          <BasePasswordInput
+              id="new-password"
+              :class="{'error-input': !!errorFields.password}"
+              autocomplete="new-password"
+              :required="true"
+              :min-length="8"
+              v-model="password"/>
+          <p :class="{'error-message':true, 'hidden': !errorFields.password}">{{ errorFields.password }}</p>
+        </div>
         <SubmitButton id="signup-button"
                       class="primary-filled-button capsule-button"
                       :is-submitting="isSubmitting"
@@ -29,7 +38,6 @@
 <script lang="ts">
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
-import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
@@ -42,8 +50,7 @@ export default {
       email: "",
       username: "",
       password: "",
-      errorFields: [] as Array<"email" | "username" | "password">,
-      errorMessage: "",
+      errorFields: {"email": "", "username": "", "password": ""},
       isSubmitting: false,
     };
   },
@@ -56,11 +63,9 @@ export default {
         password: this.password
       });
       this.isSubmitting = false;
-      if (error) {
-        this.messageBarStore.addMessage({type: MessageType.ERROR, text: error.message!});
-        this.errorMessage = error.message;
-        this.errorFields = Object.keys(error.fields!) as Array<"email" | "username" | "password">;
-      } else
+      if (error)
+        this.errorFields = error.fields! as { "email": string, "username": string, "password": string };
+      else
         this.$router.push({name: "confirm-email"});
     },
   },
@@ -70,7 +75,6 @@ export default {
     return {
       userStore: useUserStore(),
       languageStore: useLanguageStore(),
-      messageBarStore: useMessageBarStore()
     };
   }
 };
@@ -88,6 +92,7 @@ form {
   flex-direction: column;
   margin-right: 0;
   padding: 0 10%;
+  row-gap: 1rem;
 }
 
 label {
@@ -95,12 +100,17 @@ label {
   font-size: 1.2rem;
 }
 
-input, .base-password-div,
-select {
-  margin-bottom: 1.5rem;
+.form-row {
+  display: flex;
+  flex-direction: column;
 }
 
-#signup-button {
-  margin-top: 1rem;
+input, .base-password-div {
+  margin-bottom: 0.5rem;
+}
+
+.hidden {
+  height: 0;
+  min-height: 0;
 }
 </style>
