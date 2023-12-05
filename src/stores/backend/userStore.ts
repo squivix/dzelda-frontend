@@ -157,12 +157,9 @@ export const useUserStore = defineStore("auth", {
                 profilePicture: body.profilePicture
             })));
 
-            // handle your 4XX errors as you may
-            //...
-            if (response.ok) {
+            if (response.ok)
                 await this.fetchUserAccount(true);
-            }
-            return response.ok;
+            return response;
         }
     }
 });

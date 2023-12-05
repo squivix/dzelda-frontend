@@ -7,7 +7,8 @@
     <SubmitButton v-else
                   class="save-button square-button primary-filled-button"
                   type="submit"
-                  :is-submitting="isSubmitting">Save</SubmitButton>
+                  :is-submitting="isSubmitting">Save
+    </SubmitButton>
 
     <BaseImageUploadInput :path="userStore.userAccount.profile.profilePicture"
                           class="profile-picture"
@@ -15,8 +16,10 @@
                           v-model="profilePicture"
                           :enabled="isEditing"
                           circular/>
+    <p v-if="errorFields.profilePicture" class="error-message">{{ errorFields.profilePicture }}</p>
     <h3 class="username">{{ userStore.userAccount!.username }}</h3>
-    <textarea class="bio" maxlength="255" placeholder="Your bio" :disabled="!isEditing" v-model="bio"></textarea>
+    <textarea class="bio" placeholder="Your bio" :disabled="!isEditing" v-model="bio"></textarea>
+    <p v-if="errorFields.bio" class="error-message">{{ errorFields.bio }}</p>
   </form>
 </template>
 
@@ -40,6 +43,7 @@ export default defineComponent({
       isEditing: false,
       profilePicture: undefined as File | undefined | "",
       isSubmitting: false,
+      errorFields: {bio: "", profilePicture: ""}
     };
   },
   methods: {
@@ -47,14 +51,24 @@ export default defineComponent({
       this.isEditing = true;
     },
     async updateProfile() {
+      this.errorFields = {bio: "", profilePicture: ""};
       this.isSubmitting = true;
-      await this.userStore.updateUserProfile({
+      const response = await this.userStore.updateUserProfile({
         bio: this.bio,
         profilePicture: this.profilePicture
       });
       this.isSubmitting = false;
-      this.profilePicture = undefined;
-      this.isEditing = false;
+
+      if (response.ok) {
+        this.profilePicture = undefined;
+        this.isEditing = false;
+      } else {
+        const error = response.error;
+        if (error.code == 400)
+          this.errorFields = error.fields as { bio: string, profilePicture: string };
+        else if (error.code == 413 || error.code == 415)
+          this.errorFields.profilePicture = error.message;
+      }
     },
   },
   setup() {
@@ -68,6 +82,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.profile-wrapper {
+  min-width: 200px;
+  width: 15vw;
+}
+
 .profile-picture {
   border-radius: 50%;
 }
@@ -79,7 +98,7 @@ export default defineComponent({
 
 .bio {
   resize: none;
-  height: 5rem;
+  min-height: 7rlh;
 }
 
 .edit-button, .save-button {
@@ -87,6 +106,5 @@ export default defineComponent({
   font-size: 0.9rem;
   align-self: flex-end;
 }
-
 
 </style>

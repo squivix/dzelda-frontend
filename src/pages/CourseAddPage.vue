@@ -3,12 +3,21 @@
     <template v-slot:content>
 
       <form class="add-course-form" @submit.prevent="onSubmit">
-        <BaseImageUploadInput path="" :fallback="icons.books" v-model="image"/>
+        <div class="image-row">
+          <BaseImageUploadInput path="" :fallback="icons.books" v-model="image"/>
+          <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
+        </div>
         <div class="inputs-div">
-          <label for="course-title">Title</label>
-          <input id="course-title" type="text" placeholder="Course Title" v-model="title" required>
-          <label for="course-description">Description</label>
-          <textarea id="course-description" placeholder="Course Description" v-model="description"></textarea>
+          <div class="form-row">
+            <label for="course-title">Title</label>
+            <input id="course-title" type="text" maxlength="255" placeholder="Course Title" v-model="title" required>
+            <p v-if="errorFields.title" class="error-message">{{ errorFields.title }}</p>
+          </div>
+          <div class="form-row">
+            <label for="course-description">Description</label>
+            <textarea id="course-description" maxlength="500" placeholder="Course Description" v-model="description"></textarea>
+            <p v-if="errorFields.description" class="error-message">{{ errorFields.description }}</p>
+          </div>
 
           <label for="is-public-checkbox" class="checkbox-label">
             <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
@@ -46,33 +55,40 @@ export default {
       description: "",
       isPublic: true,
       image: undefined as File | "" | undefined,
+      errorFields: {title: "", description: "", image: ""},
       isSubmitting: false,
     };
   },
   methods: {
     async onSubmit() {
       this.isSubmitting = true;
-      const newCourse = await this.addCourse();
-      this.isSubmitting = false;
-      //TODO move this somewhere more general
-      if (this.$route.query["redir"])
-        await this.$router.push({path: this.$route.query["redir"]});
-      else
-        await this.$router.push({
-          name: "edit-course",
-          params: {courseId: newCourse.id, learningLanguage: this.$route.params.learningLanguage}
-        });
-    },
-
-    async addCourse() {
-      return this.courseStore.createCourse({
+      this.errorFields = {title: "", description: "", image: ""};
+      const response = await this.courseStore.createCourse({
         languageCode: this.$route.params.learningLanguage as string,
         title: this.title,
         description: this.description,
         isPublic: this.isPublic,
         image: this.image,
       });
-    }
+      this.isSubmitting = false;
+      if (response.ok) {
+        const newCourse = response.data;
+        //TODO redir query param
+        // if (this.$route.query["redir"])
+        //   await this.$router.push({path: this.$route.query["redir"]});
+        await this.$router.push({
+          name: "edit-course",
+          params: {courseId: newCourse.id, learningLanguage: this.$route.params.learningLanguage}
+        });
+      } else {
+        const error = response.error;
+        if (error.code == 400)
+          this.errorFields = error.fields as { title: string, description: string, image: string };
+        else if (error.code == 413 || error.code == 415)
+          this.errorFields.image = error.message;
+      }
+    },
+
   },
   setup() {
     return {
@@ -110,13 +126,18 @@ export default {
   flex-grow: 1;
 }
 
+.form-row {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
 .add-course-form label {
-  margin-bottom: 0.5rem;
   font-size: 1.25rem;
 }
 
 .add-course-form input:not([type=checkbox]), .add-course-form select, .add-course-form textarea {
-  margin-bottom: 1rem;
   font-size: 1rem;
 }
 
@@ -131,6 +152,12 @@ export default {
 #course-description {
   resize: none;
   height: 15vh;
+}
+
+.image-row {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
 }
 
 </style>

@@ -42,7 +42,7 @@ export const useCourseStore = defineStore("course", {
             isPublic: boolean
         }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.courses.postCourses(cleanUndefined({
+            const response= await store.fetchCustom((api) => api.courses.postCourses(cleanUndefined({
                 data: {
                     languageCode: body.languageCode,
                     title: body.title,
@@ -51,9 +51,7 @@ export const useCourseStore = defineStore("course", {
                 },
                 image: body.image
             })));
-            // handle your 4XX errors as you may
-            //...
-            return response.data;
+            return response
         },
         async fetchCourse(pathParams: {
             courseId: number

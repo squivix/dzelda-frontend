@@ -56,7 +56,7 @@ export default defineComponent({
       if (response.ok)
         this.$router.push({name: "confirm-email-sent"});
       else {
-        const error = response.error!;
+        const error = response.error;
         if (error.code == 400)
           this.errorMessage = (error.fields as { email: string }).email;
       }

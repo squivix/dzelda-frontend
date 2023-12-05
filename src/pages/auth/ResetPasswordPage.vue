@@ -152,8 +152,4 @@ input,
   min-height: 1lh;
 }
 
-.error-message {
-  color: red;
-  min-height: 1lh;
-}
 </style>

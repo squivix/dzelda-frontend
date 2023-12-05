@@ -28,13 +28,13 @@ export default defineComponent({
   computed: {
     messageBoxClass() {
       if (this.type == MessageType.ERROR)
-        return "error-message";
+        return "error-bar";
       else if (this.type == MessageType.INFO)
-        return "info-message";
+        return "info-bar";
       else if (this.type == MessageType.WARNING)
-        return "warning-message";
+        return "warning-bar";
       else if (this.type == MessageType.SUCCESS)
-        return "success-message";
+        return "success-bar";
       else
         return "";
     }
@@ -67,23 +67,22 @@ export default defineComponent({
   margin-left: 1rem;
 }
 
-.error-message {
+.error-bar {
   background-color: #F1CBCB;
   color: red;
-
 }
 
-.info-message {
+.info-bar {
   background-color: #CBE5FE;
   color: #004185;
 }
 
-.warning-message {
+.warning-bar {
   background-color: #FFF6DC;
   color: #907117;
 }
 
-.success-message {
+.success-bar {
   background-color: #CBFFC0;
   color: #144F14;
 }
