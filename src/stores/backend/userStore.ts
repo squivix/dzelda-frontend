@@ -75,7 +75,7 @@ export const useUserStore = defineStore("auth", {
             email?: string
         }) {
             const store = useStore();
-            await store.fetchCustom((api) => api.emailConfirmTokens.postEmailResetTokens({email: body.email}));
+            return await store.fetchCustom((api) => api.emailConfirmTokens.postEmailConfirmTokens({email: body.email}, {format: "json"}));
         },
         async requestPasswordReset(body: {
             username: string,
@@ -91,7 +91,7 @@ export const useUserStore = defineStore("auth", {
             token: string
         }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.passwordResetTokens.postPasswordResetTokensValidate({token: body.token}), {ignore401: true});
+            const response = await store.fetchCustom((api) => api.passwordResetTokens.postPasswordResetTokensVerify({token: body.token}), {ignore401: true});
             return response.ok;
         },
         async resetPassword(body: {
@@ -99,11 +99,10 @@ export const useUserStore = defineStore("auth", {
             newPassword: string
         }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.postUsersMePasswordReset({
+            return await store.fetchCustom((api) => api.users.postUsersMePasswordReset({
                 token: body.token,
                 newPassword: body.newPassword
-            }));
-            return response.ok;
+            }, {format: "json"}), {ignore401: true});
         },
         async confirmEmail(body: {
             token: string
@@ -118,14 +117,11 @@ export const useUserStore = defineStore("auth", {
             newEmail: string
         }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.putUsersMeEmail({
+            return await store.fetchCustom((api) => api.users.putUsersMeEmail({
                     newEmail: body.newEmail
                 },
                 {format: "json"}   //workaround, see https://github.com/acacode/swagger-typescript-api/issues/536#issuecomment-1737274548
             ));
-            if (!response.ok)
-                return response.error;
-            return;
         },
         async changePassword(body: {
             oldPassword: string,
@@ -145,6 +141,7 @@ export const useUserStore = defineStore("auth", {
             if (response.ok) {
                 delete localStorage.authToken;
                 this.token = null;
+                this.userAccount = null;
                 const messageBarStore = useMessageBarStore();
                 messageBarStore.addMessage({text: "Account deleted.", type: MessageType.INFO});
                 this.router.push({name: "home"});

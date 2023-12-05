@@ -16,24 +16,29 @@
                          id="old-password"
                          autocomplete="current-password"
                          required
-                         :class="{'error-input': errorFields.includes('oldPassword')}"/>
+                         :min-length="1"
+                         :class="{'error-input': !!errorFields.oldPassword}"/>
       <label for="new-password">New Password</label>
       <BasePasswordInput v-model="newPassword"
                          id="new-password"
                          autocomplete="new-password"
+                         :min-length="8"
                          required
-                         :class="{'error-input': errorFields.includes('newPassword')}"/>
+                         :class="{'error-input': !!errorFields.newPassword}"/>
       <label for="repeat-new-password">Confirm New Password</label>
       <BasePasswordInput v-model="repeatNewPassword"
                          id="repeat-new-password"
+                         :min-length="8"
                          autocomplete="new-password"
                          required/>
+
+      <p v-if="errorFields.newPassword" class="error-message">{{ errorFields.newPassword }}</p>
+      <p v-else-if="errorMessage" class="error-message">{{ errorMessage }}</p>
       <SubmitButton class="change-password-button primary-filled-button capsule-button"
                     :is-submitting="isSubmitting">
         Change Password
       </SubmitButton>
     </form>
-    <p v-if="errorMessage && !changeSuccessful" class="error-message">{{ errorMessage }}</p>
   </section>
 </template>
 
@@ -52,7 +57,7 @@ export default defineComponent({
       oldPassword: "",
       newPassword: "",
       repeatNewPassword: "",
-      errorFields: [] as Array<"oldPassword" | "newPassword">,
+      errorFields: { oldPassword: "", newPassword: "" },
       changeSuccessful: false,
       errorMessage: "",
       isSubmitting: false,
@@ -60,6 +65,8 @@ export default defineComponent({
   },
   methods: {
     async submitPasswordChange() {
+      this.errorFields = { oldPassword: "", newPassword: "" };
+      this.errorMessage = "";
       if (this.repeatNewPassword !== this.newPassword) {
         this.errorMessage = "Passwords do not match";
         return;
@@ -76,8 +83,7 @@ export default defineComponent({
         this.messageBarStore.addMessage({text: "Password changed", type: MessageType.SUCCESS});
       } else {
         if (error.code == 400)
-          this.errorFields = Object.keys(error.fields!) as Array<"oldPassword" | "newPassword">;
-        this.messageBarStore.addMessage({text: error.message, type: MessageType.ERROR});
+          this.errorFields = error.fields! as { oldPassword: string, newPassword: string };
         this.errorMessage = error.message;
       }
     }

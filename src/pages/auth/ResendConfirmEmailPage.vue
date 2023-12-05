@@ -6,10 +6,14 @@
         <BaseChangeableInput id="email"
                              type="email"
                              required
+                             maxlength="256"
+                             class="base-changeable-input-div"
                              v-model="email"
                              :clear-on-change="true"
                              @onChange="()=>emailChanged=true">
         </BaseChangeableInput>
+
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
         <SubmitButton id="confirm-email-button"
                       class="primary-filled-button capsule-button"
@@ -37,16 +41,25 @@ export default defineComponent({
     return {
       //@ts-ignore store type not recognized in data due to bad vue support :(
       email: this.userStore.userAccount.email,
+      errorMessage: "",
       emailChanged: false,
       isSubmitting: false,
     };
   },
   methods: {
     async submitResendForm() {
+      this.errorMessage = "";
       this.isSubmitting = true;
-      await this.userStore.requestEmailConfirmToken({email: this.emailChanged ? this.email : undefined});
+      const response = await this.userStore.requestEmailConfirmToken({email: this.emailChanged ? this.email : undefined});
       this.isSubmitting = false;
-      this.$router.push({name: "confirm-email-sent"});
+
+      if (response.ok)
+        this.$router.push({name: "confirm-email-sent"});
+      else {
+        const error = response.error!;
+        if (error.code == 400)
+          this.errorMessage = (error.fields as { email: string }).email;
+      }
     }
   },
   beforeRouteEnter() {
@@ -83,13 +96,8 @@ label {
   font-size: 1.2rem;
 }
 
-input {
-  border: none;
-  outline: 1px solid black;
-}
-
-input {
-  margin-bottom: 1.5rem;
+.base-changeable-input-div {
+  margin-bottom: 0.5rem;
 }
 
 #confirm-email-button {

@@ -3,19 +3,10 @@
     <template v-slot:content>
       <form @submit.prevent="submitForm" v-if="!isSubmitted">
         <label for="username">Username</label>
-        <input
-            id="username"
-            type="text"
-            required
-            v-model="username"
-        />
+        <input id="username" type="text" required v-model="username"/>
+
         <label for="email">Email</label>
-        <input
-            id="email"
-            type="email"
-            required
-            v-model="email"
-        />
+        <input id="email" type="email" maxlength="256" required v-model="email"/>
 
         <SubmitButton id="reset-password-button"
                       class="primary-filled-button capsule-button"

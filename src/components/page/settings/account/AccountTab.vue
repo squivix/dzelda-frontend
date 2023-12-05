@@ -34,7 +34,7 @@ export default {
   row-gap: 2rem;
   width: 75%;
   max-width: 500px;
-
+  padding: 0 0.1rem;
 }
 
 h2 {

@@ -24,6 +24,7 @@ export default defineComponent({
     return {tokenInvalid: false};
   },
   beforeRouteEnter() {
+    // TODO fix bug where this redirect stops confirm email change. Fix by finding a way to check if pending email change
     const userStore = useUserStore();
     if (userStore.userAccount!.isEmailConfirmed)
       return {name: "home"};

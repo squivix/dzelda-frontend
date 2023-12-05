@@ -55,7 +55,6 @@ div {
 
 input {
   width: 100%;
-  outline: none;
   margin: 0;
   padding: 0;
 }

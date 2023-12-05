@@ -6,13 +6,13 @@
           <label for="email">Email</label>
           <input id="email" type="email" maxlength="256"  required v-model="email"
                  :class="{'error-input': !!errorFields.email}"/>
-          <p :class="{'error-message':true, 'hidden': !errorFields.email}">{{ errorFields.email }}</p>
+          <p v-if="errorFields.email" class="error-message">{{ errorFields.email }}</p>
         </div>
         <div class="form-row">
           <label for="username">Username</label>
           <input id="username" type="text" minlength="4" required pattern="[A-Za-z0-9_]+" title="Please only use alphanumerical characters or underscore (A-Z,a-z,0-9,_)." v-model="username"
                  :class="{'error-input': !!errorFields.username}"/>
-          <p :class="{'error-message':true, 'hidden': !errorFields.username}">{{ errorFields.username }}</p>
+          <p v-if="errorFields.username" class="error-message">{{ errorFields.username }}</p>
         </div>
         <div class="form-row">
           <label for="new-password">Password</label>
@@ -23,7 +23,7 @@
               :required="true"
               :min-length="8"
               v-model="password"/>
-          <p :class="{'error-message':true, 'hidden': !errorFields.password}">{{ errorFields.password }}</p>
+          <p v-if="errorFields.password" class="error-message">{{ errorFields.password }}</p>
         </div>
         <SubmitButton id="signup-button"
                       class="primary-filled-button capsule-button"
@@ -109,8 +109,4 @@ input, .base-password-div {
   margin-bottom: 0.5rem;
 }
 
-.hidden {
-  height: 0;
-  min-height: 0;
-}
 </style>

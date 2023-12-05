@@ -18,6 +18,7 @@
             v-model="repeatNewPassword"
             id="repeat-new-password"
             required/>
+
         <p class="error-message">{{ errorMessage }}</p>
 
         <SubmitButton id="reset-password-button"
@@ -83,10 +84,20 @@ export default defineComponent({
         return;
       }
       this.isSubmitting = true;
-      this.resetSuccessful = await this.userStore.resetPassword({
+      const response = await this.userStore.resetPassword({
         token: this.queryParams.token,
         newPassword: this.newPassword,
       });
+      if (response.ok)
+        this.resetSuccessful = true;
+      else {
+        const error = response.error;
+        if (error.code == 400)
+          this.errorMessage = (error.fields as { newPassword: string }).newPassword;
+        else
+          this.errorMessage = error.message;
+
+      }
       this.isSubmitting = false;
     },
 
