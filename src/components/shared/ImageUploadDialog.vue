@@ -12,6 +12,7 @@
       <Cropper class="cropper"
                ref="cropper"
                :src="imageUrl"
+               :stencilComponent="circular?$options.components!.CircleStencil:$options.components!.RectangleStencil"
                :stencil-props="{aspectRatio: 1}"/>
       <div class="bottom-div">
         <p class="error-message" v-if="errorMessage">{{ errorMessage }}</p>
@@ -29,7 +30,7 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import BaseDialog from "@/components/ui/BaseDialog.vue";
-import {Cropper} from "vue-advanced-cropper";
+import {CircleStencil, Cropper, RectangleStencil} from "vue-advanced-cropper";
 import "vue-advanced-cropper/dist/style.css";
 import BaseDropZoneFileInput from "@/components/ui/BaseDropZoneFileInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
@@ -37,11 +38,12 @@ import prettyBytes from "pretty-bytes";
 
 export default defineComponent({
   name: "ImageUploadDialog",
-  components: {SubmitButton, BaseDialog, BaseDropZoneFileInput, Cropper},
+  components: {SubmitButton, BaseDialog, BaseDropZoneFileInput, Cropper, RectangleStencil, CircleStencil},
   emits: ["onClosed", "onSubmit"],
   props: {
     isShown: {type: Boolean},
     name: {type: String},
+    circular: {type: Boolean, default: false},
     acceptedFileFormats: {type: String, default: "JPG, PNG"},
     maxFileSizeInBytes: {type: Number, required: true}
   },

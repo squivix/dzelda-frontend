@@ -4,16 +4,20 @@
       <inline-svg :src="icons.pen"/>
       Edit
     </button>
-    <SubmitButton v-else
-                  class="save-button square-button primary-filled-button"
-                  type="submit"
-                  :is-submitting="isSubmitting">Save
-    </SubmitButton>
+    <div class="buttons-div" v-else>
+      <button type="button" class="square-button primary-hollow-button reset-button" @click="clearForm">Cancel</button>
+      <SubmitButton class="save-button square-button primary-filled-button"
+                    type="submit"
+                    :is-submitting="isSubmitting">Save
+      </SubmitButton>
+    </div>
 
-    <BaseImageUploadInput :path="userStore.userAccount.profile.profilePicture"
+    <BaseImageUploadInput v-model="profilePicture"
                           class="profile-picture"
+                          name="profile picture"
+                          :oldImagePath="userStore.userAccount.profile.profilePicture"
+                          :maxFileSizeInBytes="500_000"
                           :fallback="icons.userProfile"
-                          v-model="profilePicture"
                           :enabled="isEditing"
                           circular/>
     <p v-if="errorFields.profilePicture" class="error-message">{{ errorFields.profilePicture }}</p>
@@ -50,6 +54,11 @@ export default defineComponent({
     editForm() {
       this.isEditing = true;
     },
+    clearForm() {
+      this.bio = this.userStore.userAccount!.profile.bio;
+      this.profilePicture = undefined;
+      this.isEditing = false;
+    },
     async updateProfile() {
       this.errorFields = {bio: "", profilePicture: ""};
       this.isSubmitting = true;
@@ -65,7 +74,10 @@ export default defineComponent({
       } else {
         const error = response.error;
         if (error.code == 400)
-          this.errorFields = error.fields as { bio: string, profilePicture: string };
+          this.errorFields = error.fields as {
+            bio: string,
+            profilePicture: string
+          };
         else if (error.code == 413 || error.code == 415)
           this.errorFields.profilePicture = error.message;
       }
@@ -87,6 +99,12 @@ export default defineComponent({
   width: 15vw;
 }
 
+.buttons-div {
+  display: flex;
+  column-gap: 0.5rem;
+  align-self: flex-end;
+}
+
 .profile-picture {
   border-radius: 50%;
 }
@@ -101,7 +119,11 @@ export default defineComponent({
   min-height: 7rlh;
 }
 
-.edit-button, .save-button {
+.edit-button {
+  align-self: flex-end;
+}
+
+.edit-button, .save-button, .reset-button {
   padding: 0.5rem 0.75rem;
   font-size: 0.9rem;
   align-self: flex-end;

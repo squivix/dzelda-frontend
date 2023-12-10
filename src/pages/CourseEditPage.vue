@@ -2,7 +2,8 @@
   <BaseCard title="Edit Course" class="edit-course-base-card">
     <template v-slot:content>
       <form class="edit-course-form" v-if="course" @submit.prevent="onSubmit">
-        <BaseImageUploadInput :path="course!.image" :fallback="icons.books" v-model="image"/>
+        <BaseImageUploadInput :oldImagePath="course!.image" name="course image" :fallback="icons.books" v-model="image"
+                              :maxFileSizeInBytes="500*1000"/>
 
         <div class="inputs-div">
           <label for="course-title">Title</label>
@@ -87,7 +88,7 @@ export default {
       level: null as ("beginner1" | "beginner2" | "intermediate1" | "intermediate2" | "advanced1" | "advanced2" | null),
       lessons: null as LessonSchema[] | null,
       selectedLessons: [],
-      image: undefined as File | "" | undefined,
+      image: undefined as Blob | "" | undefined,
       course: null as CourseSchema | null,
       isSubmitting: false,
     };

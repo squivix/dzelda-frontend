@@ -4,8 +4,8 @@
 
       <form class="add-course-form" @submit.prevent="onSubmit">
         <div class="image-level-section">
-          <BaseImageUploadInput name="course image" path="" :fallback="icons.books" v-model="image"
-                                :maxFileSizeInBytes="500*1000"/>
+          <BaseImageUploadInput name="course image" :fallback="icons.books" v-model="image"
+                                :maxFileSizeInBytes="500_000"/>
           <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
           <div class="form-row">
             <label>Level</label>
@@ -97,7 +97,11 @@ export default {
       } else {
         const error = response.error;
         if (error.code == 400)
-          this.errorFields = error.fields as { title: string, description: string, image: string };
+          this.errorFields = error.fields as {
+            title: string,
+            description: string,
+            image: string
+          };
         else if (error.code == 413 || error.code == 415)
           this.errorFields.image = error.message;
       }

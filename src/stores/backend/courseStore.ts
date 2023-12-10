@@ -40,7 +40,7 @@ export const useCourseStore = defineStore("course", {
             languageCode: string,
             title: string,
             description: string,
-            image: File | Blob | "" | undefined,
+            image: File | Blob | undefined,
             isPublic: boolean,
             level: LanguageLevelSchema | undefined
         }) {
@@ -74,10 +74,12 @@ export const useCourseStore = defineStore("course", {
             description: string,
             isPublic: boolean,
             level: "beginner1" | "beginner2" | "intermediate1" | "intermediate2" | "advanced1" | "advanced2"
-            image: File | undefined | "",
+            image: File | Blob | undefined | "",
             lessonsOrder: number[]
         }) {
             const store = useStore();
+            if (body.image instanceof Blob)
+                body.image = new File([body.image], "image");
             const response = await store.fetchCustom((api) => api.courses.putCoursesCourseId(pathParams.courseId,
                 cleanUndefined({
                     data: {

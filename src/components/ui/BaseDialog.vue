@@ -1,5 +1,9 @@
 <template>
-  <dialog ref="dialog" @click="onDismissed" @cancel.prevent="onDismissed" :class="{'open':isOpen, 'closed':!isOpen}">
+  <dialog ref="dialog"
+          @click="onDismissed"
+          @cancel.prevent="onDismissed"
+          @keydown.esc.prevent="onDismissed"
+          :class="{'open':isOpen, 'closed':!isOpen}">
     <div @click.stop>
       <slot></slot>
     </div>
@@ -20,11 +24,12 @@ export default defineComponent({
       const dialog = this.$refs.dialog as HTMLDialogElement;
       if (this.isOpen)
         dialog.showModal();
-      else
+      else {
         dialog.addEventListener("transitionend", () => {
           dialog.close();
           this.$emit("onClosingTransitionEnd");
         }, {once: true});
+      }
     }
   },
   methods: {

@@ -1,14 +1,14 @@
 <template>
   <div class="file-inputs-div">
-    <button v-if="enabled && (path||previewUrl)" class="clear-image-button" @click="clearImage" type="button">
+    <button v-if="enabled && !!src" class="clear-image-button" @click="clearImage" type="button">
       <inline-svg :src="icons.cross"/>
     </button>
-    <button class="image-wrapper inv-button" type="button" @click="isUploadDialogShown=true">
+    <button class="image-wrapper inv-button" type="button" :disabled="!enabled" @click="isUploadDialogShown=true">
       <BaseImage class="base-image"
                  :image-url="src"
                  :fall-back-url="fallback"
                  :circular="circular"/>
-      <div class="image-overlay">
+      <div :class="{'image-overlay':true, 'circular':circular, 'hidden':!enabled}">
         <div>
           <inline-svg :src="icons.pen"/>
           Edit
@@ -18,7 +18,8 @@
     <ImageUploadDialog :maxFileSizeInBytes="maxFileSizeInBytes"
                        :name="name"
                        :isShown="isUploadDialogShown"
-                       @onSubmit="onImageSet"
+                       :circular="circular"
+                       @onSubmit="setImage"
                        @onClosed="isUploadDialogShown=false"/>
   </div>
 </template>
@@ -38,20 +39,21 @@ export default defineComponent({
   emits: ["update:modelValue"],
   computed: {
     src() {
-      if (this.isPreview)
-        return this.previewUrl;
-      if (this.path == "")
+      //if no new image use old image
+      if (this.modelValue === undefined)
+        return this.oldImagePath ? `${this.store.resourceUrl}/${this.oldImagePath}` : "";
+      //if old image was cleared use nothing
+      else if (this.modelValue === "")
         return "";
-      return `${this.store.resourceUrl}/${this.path}`;
+      //if new image was uploaded use new image
+      else
+        return URL.createObjectURL(this.modelValue);
     },
-    previewUrl() {
-      return this.modelValue ? URL.createObjectURL(this.modelValue) : undefined;
-    }
   },
   props: {
-    modelValue: {type: Object as PropType<Blob | "">},
+    modelValue: {type: [Object, String] as PropType<Blob | "">},
     name: {type: String},
-    path: {type: String, required: true},
+    oldImagePath: {type: String, default: ""},
     fallback: {type: String, required: false},
     enabled: {type: Boolean, required: false, default: true},
     circular: {type: Boolean, required: false, default: false},
@@ -59,33 +61,21 @@ export default defineComponent({
   },
   data() {
     return {
-      isPreview: false,
       isUploadDialogShown: false,
     };
   },
-  watch: {
-    enabled(enabled) {
-      if (!enabled)
-        this.isPreview = false;
-    },
-  },
   methods: {
-    onImageSet(imageBlob: Blob) {
+    setImage(imageBlob: Blob) {
       this.$emit("update:modelValue", imageBlob);
-      this.isPreview = true;
       this.isUploadDialogShown = false;
     },
     clearImage() {
       //if an image has been uploaded but not submitted, cancel upload, and leave last image unchanged
-      if (this.modelValue) {
+      if (this.modelValue)
         this.$emit("update:modelValue", undefined);
-        this.isPreview = false;
-      }
-      //if no image has been uploaded clear last image
-      else {
+      //if no image has been uploaded clear old image
+      else
         this.$emit("update:modelValue", "");
-        this.isPreview = true;
-      }
     },
   },
   setup() {
@@ -97,6 +87,10 @@ export default defineComponent({
 <style scoped>
 .image-wrapper {
   position: relative;
+  cursor: default;
+}
+
+.image-wrapper:not([disabled]) {
   cursor: pointer;
 }
 
@@ -133,15 +127,10 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  row-gap: 0.5rem;
 }
 
 input[type="file"] {
   display: none;
-}
-
-input:not([disabled]) + label:hover {
-  cursor: pointer;
 }
 
 .clear-image-button {
@@ -158,5 +147,13 @@ input:not([disabled]) + label:hover {
 .clear-image-button svg {
   width: 10px;
   height: 10px;
+}
+
+.circular {
+  border-radius: 50%;
+}
+
+.hidden {
+  display: none !important;
 }
 </style>
