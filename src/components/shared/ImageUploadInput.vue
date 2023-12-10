@@ -1,6 +1,8 @@
 <template>
   <div class="file-inputs-div">
-    <button v-if="enabled && !!src" class="clear-image-button" @click="clearImage" type="button">
+    <button v-if="enabled && !!src" class="clear-image-button"
+            :style="{'margin-bottom': !circular?'0.5rem':'0'}"
+            @click="clearImage" type="button">
       <inline-svg :src="icons.cross"/>
     </button>
     <button class="image-wrapper inv-button" type="button" :disabled="!enabled" @click="isUploadDialogShown=true">
@@ -34,7 +36,7 @@ import ImageUploadDialog from "@/components/shared/ImageUploadDialog.vue";
 import BaseDropZoneFileInput from "@/components/ui/BaseDropZoneFileInput.vue";
 
 export default defineComponent({
-  name: "BaseImageUploadInput",
+  name: "ImageUploadInput",
   components: {BaseDropZoneFileInput, BaseImage, InlineSvg, ImageUploadDialog},
   emits: ["update:modelValue"],
   computed: {

@@ -43,18 +43,26 @@ export default {
   components: {ConfirmDialog, AlreadyLearningDialog, LanguageCard, InlineSvg, BaseCard},
   data() {
     return {
-      supportedLanguages: null as (LanguageSchema & { isLearning: boolean })[] | null,
+      supportedLanguages: null as (LanguageSchema & {
+        isLearning: boolean
+      })[] | null,
       isAlreadyLearningDialogShown: false,
-      alreadyLearningLanguage: null as (LanguageSchema & { isLearning: boolean }) | null,
+      alreadyLearningLanguage: null as (LanguageSchema & {
+        isLearning: boolean
+      }) | null,
       isNewLanguageDialogShown: false,
-      newLanguage: null as (LanguageSchema & { isLearning: boolean }) | null,
+      newLanguage: null as (LanguageSchema & {
+        isLearning: boolean
+      }) | null,
     };
   },
   methods: {
     async fetchSupportedLanguages() {
       return await this.languageStore.fetchLanguages({isSupported: true});
     },
-    async onLanguageClicked(language: LanguageSchema & { isLearning: boolean }) {
+    async onLanguageClicked(language: LanguageSchema & {
+      isLearning: boolean
+    }) {
       if (language.isLearning) {
         this.alreadyLearningLanguage = language;
         this.isAlreadyLearningDialogShown = true;

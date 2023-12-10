@@ -4,7 +4,7 @@
 
       <form class="add-course-form" @submit.prevent="onSubmit">
         <div class="image-level-section">
-          <BaseImageUploadInput name="course image" :fallback="icons.books" v-model="image"
+          <ImageUploadInput name="course image" :fallback="icons.books" v-model="image"
                                 :maxFileSizeInBytes="500_000"/>
           <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
           <div class="form-row">
@@ -51,7 +51,7 @@ import {useCourseStore} from "@/stores/backend/courseStore.js";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import BaseImageUploadInput from "@/components/ui/BaseImageUploadInput.vue";
+import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {LANGUAGE_LEVELS} from "@/constants.js";
 import {toSentenceCase} from "@/utils.js";
@@ -59,7 +59,7 @@ import {LanguageLevelSchema} from "dzelda-types";
 
 export default {
   name: "CourseAddPage",
-  components: {SubmitButton, BaseImageUploadInput, InlineSvg, BaseCard, BaseImage},
+  components: {SubmitButton, ImageUploadInput, InlineSvg, BaseCard, BaseImage},
   data() {
     return {
       title: "",

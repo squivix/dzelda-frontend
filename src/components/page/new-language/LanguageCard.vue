@@ -1,13 +1,15 @@
 <template>
   <article class="language">
-    <span v-if="language.isLearning" class="is-learning-check icon-wrapper">
+    <span class="is-learning-check icon-wrapper" :class="{'hidden':!language.isLearning}">
         <inline-svg :src="icons.checkMark"/>
     </span>
-    <img :src="language.flagCircular!" :alt="`${language.code} language flag`"
-         class="language-flag">
-    <div class="title-learners">
-      <h4>{{ language.name }}</h4>
-      <p>{{ language.learnersCount }} learners</p>
+    <div class="inner-language-div">
+      <img :src="language.flagCircular!" :alt="`${language.code} language flag`"
+           class="language-flag">
+      <div class="title-learners">
+        <h4>{{ language.name }}</h4>
+        <p>{{ language.learnersCount }} learners</p>
+      </div>
     </div>
   </article>
 </template>
@@ -21,7 +23,13 @@ import {icons} from "@/icons.js";
 export default defineComponent({
   name: "LanguageCard",
   components: {InlineSvg},
-  props: {language: {type: Object as PropType<LanguageSchema & { isLearning: boolean }>, required: true}},
+  props: {
+    language: {
+      type: Object as PropType<LanguageSchema & {
+        isLearning: boolean
+      }>, required: true
+    }
+  },
   methods: {},
   setup() {
     return {icons};
@@ -34,11 +42,8 @@ export default defineComponent({
 .language {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  row-gap: 1rem;
   padding: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
   border: 1px solid lightgray;
   border-radius: 10px;
   transition: transform 0.15s ease-out;
@@ -50,6 +55,14 @@ export default defineComponent({
 .language:hover {
   transform: scale(1.04);
   cursor: pointer;
+}
+
+.inner-language-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 1rem;
 }
 
 .title-learners {
@@ -84,4 +97,7 @@ p {
   fill: var(--on-secondary-color);
 }
 
+.hidden {
+  opacity: 0;
+}
 </style>

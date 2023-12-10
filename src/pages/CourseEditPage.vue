@@ -2,7 +2,7 @@
   <BaseCard title="Edit Course" class="edit-course-base-card">
     <template v-slot:content>
       <form class="edit-course-form" v-if="course" @submit.prevent="onSubmit">
-        <BaseImageUploadInput :oldImagePath="course!.image" name="course image" :fallback="icons.books" v-model="image"
+        <ImageUploadInput :oldImagePath="course!.image" name="course image" :fallback="icons.books" v-model="image"
                               :maxFileSizeInBytes="500*1000"/>
 
         <div class="inputs-div">
@@ -67,14 +67,14 @@ import BaseImage from "@/components/ui/BaseImage.vue";
 import {CourseSchema, LessonSchema} from "dzelda-types";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
-import BaseImageUploadInput from "@/components/ui/BaseImageUploadInput.vue";
+import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default {
   name: "CourseEditPage",
   components: {
     SubmitButton,
-    BaseImageUploadInput,
+    ImageUploadInput,
     InlineSvg,
     BaseImage,
     BaseCard,

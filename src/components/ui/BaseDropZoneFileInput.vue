@@ -1,5 +1,10 @@
 <template>
-  <div class="drop-zone unselectable">
+  <div class="drop-zone unselectable"
+       :class="{'highlighted':isHighlighted}"
+       @drop.prevent.stop="dropFile"
+       @dragover.prevent
+       @dragenter="onDragEnter"
+       @dragleave="onDragLeave">
     <input :id="id" type="file" v-bind="$attrs" @change="onChange">
 
     <label class="center-div" :for="id">
@@ -23,7 +28,6 @@ import prettyBytes from "pretty-bytes";
 export default defineComponent({
   name: "BaseDropZoneFileInput",
   components: {InlineSvg},
-
   props: {
     id: {type: String, default: "file-input"},
     buttonText: {type: String, default: "Upload"},
@@ -31,9 +35,33 @@ export default defineComponent({
     acceptedFileFormats: {type: String},
     maxFileSizeInBytes: {type: Number, required: true}
   },
+  data() {
+    return {
+      isHighlighted: false,
+      innerDragEnterCount: 0
+    };
+  },
   methods: {
     onChange(event: Event) {
-      this.$emit("onChange", (event.target as HTMLInputElement).files![0]);
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (file)
+        this.$emit("onChange", file);
+    },
+    onDragEnter() {
+      this.innerDragEnterCount++;
+      this.isHighlighted = true;
+    },
+    onDragLeave() {
+      this.innerDragEnterCount--;
+      if (this.innerDragEnterCount == 0)
+        this.isHighlighted = false;
+    },
+
+    dropFile(event: DragEvent) {
+      this.isHighlighted = false;
+      const file = event.dataTransfer?.files[0];
+      if (file)
+        this.$emit("onChange", file);
     }
   },
   setup() {
@@ -52,6 +80,10 @@ export default defineComponent({
   min-width: 300px;
   display: grid;
   place-items: center;
+}
+
+.drop-zone.highlighted {
+  background-color: var(--secondary-color-light);
 }
 
 .center-div {

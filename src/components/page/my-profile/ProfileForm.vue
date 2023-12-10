@@ -12,7 +12,7 @@
       </SubmitButton>
     </div>
 
-    <BaseImageUploadInput v-model="profilePicture"
+    <ImageUploadInput v-model="profilePicture"
                           class="profile-picture"
                           name="profile picture"
                           :oldImagePath="userStore.userAccount.profile.profilePicture"
@@ -34,12 +34,12 @@ import BaseImage from "@/components/ui/BaseImage.vue";
 import {icons} from "@/icons.js";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
-import BaseImageUploadInput from "@/components/ui/BaseImageUploadInput.vue";
+import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default defineComponent({
   name: "ProfileForm",
-  components: {SubmitButton, BaseImageUploadInput, BaseImage, InlineSvg},
+  components: {SubmitButton, ImageUploadInput, BaseImage, InlineSvg},
   data() {
     return {
       //@ts-ignore store type not recognized in data due to bad vue support :(
