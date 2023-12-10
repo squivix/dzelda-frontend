@@ -49,7 +49,7 @@ export default defineComponent({
     }
   },
   props: {
-    modelValue: {type: Object as PropType<Blob>},
+    modelValue: {type: Object as PropType<Blob | "">},
     name: {type: String},
     path: {type: String, required: true},
     fallback: {type: String, required: false},
@@ -77,8 +77,10 @@ export default defineComponent({
     },
     clearImage() {
       //if an image has been uploaded but not submitted, cancel upload, and leave last image unchanged
-      if (this.modelValue)
+      if (this.modelValue) {
+        this.$emit("update:modelValue", undefined);
         this.isPreview = false;
+      }
       //if no image has been uploaded clear last image
       else {
         this.$emit("update:modelValue", "");
