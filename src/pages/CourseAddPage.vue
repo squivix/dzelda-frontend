@@ -3,9 +3,16 @@
     <template v-slot:content>
 
       <form class="add-course-form" @submit.prevent="onSubmit">
-        <div class="image-row">
-          <BaseImageUploadInput path="" :fallback="icons.books" v-model="image"/>
+        <div class="image-level-section">
+          <BaseImageUploadInput name="course image" path="" :fallback="icons.books" v-model="image"
+                                :maxFileSizeInBytes="500*1000"/>
           <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
+          <div class="form-row">
+            <label>Level</label>
+            <select v-model="level">
+              <option v-for="level in LANGUAGE_LEVELS" :value="level">{{ toSentenceCase(level) }}</option>
+            </select>
+          </div>
         </div>
         <div class="inputs-div">
           <div class="form-row">
@@ -15,7 +22,8 @@
           </div>
           <div class="form-row">
             <label for="course-description">Description</label>
-            <textarea id="course-description" maxlength="500" placeholder="Course Description" v-model="description"></textarea>
+            <textarea id="course-description" maxlength="500" placeholder="Course Description"
+                      v-model="description"></textarea>
             <p v-if="errorFields.description" class="error-message">{{ errorFields.description }}</p>
           </div>
 
@@ -45,6 +53,9 @@ import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import BaseImageUploadInput from "@/components/ui/BaseImageUploadInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
+import {LANGUAGE_LEVELS} from "@/constants.js";
+import {toSentenceCase} from "@/utils.js";
+import {LanguageLevelSchema} from "dzelda-types";
 
 export default {
   name: "CourseAddPage",
@@ -54,12 +65,14 @@ export default {
       title: "",
       description: "",
       isPublic: true,
-      image: undefined as File | "" | undefined,
+      level: LANGUAGE_LEVELS.ADVANCED_1,
+      image: undefined as Blob | undefined,
       errorFields: {title: "", description: "", image: ""},
       isSubmitting: false,
     };
   },
   methods: {
+    toSentenceCase,
     async onSubmit() {
       this.isSubmitting = true;
       this.errorFields = {title: "", description: "", image: ""};
@@ -69,6 +82,7 @@ export default {
         description: this.description,
         isPublic: this.isPublic,
         image: this.image,
+        level: this.level as LanguageLevelSchema
       });
       this.isSubmitting = false;
       if (response.ok) {
@@ -77,7 +91,7 @@ export default {
         // if (this.$route.query["redir"])
         //   await this.$router.push({path: this.$route.query["redir"]});
         await this.$router.push({
-          name: "edit-course",
+          name: "course",
           params: {courseId: newCourse.id, learningLanguage: this.$route.params.learningLanguage}
         });
       } else {
@@ -93,6 +107,7 @@ export default {
   setup() {
     return {
       icons,
+      LANGUAGE_LEVELS,
       courseStore: useCourseStore(),
     };
   }
@@ -154,7 +169,7 @@ export default {
   height: 15vh;
 }
 
-.image-row {
+.image-level-section {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;

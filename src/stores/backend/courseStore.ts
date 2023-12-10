@@ -1,6 +1,8 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {cleanUndefined} from "@/utils.js";
+import {LanguageLevelSchema} from "dzelda-types";
+import {dataUriToBuffer} from "data-uri-to-buffer";
 
 export const useCourseStore = defineStore("course", {
     actions: {
@@ -38,20 +40,23 @@ export const useCourseStore = defineStore("course", {
             languageCode: string,
             title: string,
             description: string,
-            image: File | undefined | "",
-            isPublic: boolean
+            image: File | Blob | "" | undefined,
+            isPublic: boolean,
+            level: LanguageLevelSchema | undefined
         }) {
             const store = useStore();
-            const response= await store.fetchCustom((api) => api.courses.postCourses(cleanUndefined({
+            if (body.image instanceof Blob)
+                body.image = new File([body.image], "image");
+            return await store.fetchCustom((api) => api.courses.postCourses(cleanUndefined({
                 data: {
                     languageCode: body.languageCode,
                     title: body.title,
                     description: body.description,
-                    isPublic: body.isPublic
+                    isPublic: body.isPublic,
+                    level: body.level,
                 },
                 image: body.image
             })));
-            return response
         },
         async fetchCourse(pathParams: {
             courseId: number
@@ -68,8 +73,8 @@ export const useCourseStore = defineStore("course", {
             title: string,
             description: string,
             isPublic: boolean,
-            level: 'beginner1' | 'beginner2' | 'intermediate1' | 'intermediate2' | 'advanced1' | 'advanced2'
-            image: File,
+            level: "beginner1" | "beginner2" | "intermediate1" | "intermediate2" | "advanced1" | "advanced2"
+            image: File | undefined | "",
             lessonsOrder: number[]
         }) {
             const store = useStore();

@@ -1,5 +1,5 @@
 <template>
-  <dialog ref="dialog" @click="onBackDropClick" :class="{'open':isOpen, 'closed':!isOpen}">
+  <dialog ref="dialog" @click="onDismissed" @cancel.prevent="onDismissed" :class="{'open':isOpen, 'closed':!isOpen}">
     <div @click.stop>
       <slot></slot>
     </div>
@@ -11,7 +11,7 @@ import {defineComponent} from "vue";
 
 export default defineComponent({
   name: "BaseDialog",
-  emits: ["onBackDropClick"],
+  emits: ["onDismissed", "onClosingTransitionEnd"],
   props: {
     isOpen: {type: Boolean, default: false}
   },
@@ -23,12 +23,13 @@ export default defineComponent({
       else
         dialog.addEventListener("transitionend", () => {
           dialog.close();
+          this.$emit("onClosingTransitionEnd");
         }, {once: true});
     }
   },
   methods: {
-    onBackDropClick() {
-      this.$emit("onBackDropClick");
+    onDismissed() {
+      this.$emit("onDismissed");
     }
   },
   mounted() {

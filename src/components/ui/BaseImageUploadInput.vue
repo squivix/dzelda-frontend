@@ -1,15 +1,25 @@
 <template>
   <div class="file-inputs-div">
-    <input id="profile-picture-input" type="file" class="file-input" :disabled="!enabled"
-           ref="fileInputRef" accept="image/png, image/jpeg" @change="onChange">
     <button v-if="enabled && (path||previewUrl)" class="clear-image-button" @click="clearImage" type="button">
       <inline-svg :src="icons.cross"/>
     </button>
-    <label for="profile-picture-input">
-      <base-image :image-url="src"
-                  :fall-back-url="fallback"
-                  :circular="circular"/>
-    </label>
+    <button class="image-wrapper inv-button" type="button" @click="isUploadDialogShown=true">
+      <BaseImage class="base-image"
+                 :image-url="src"
+                 :fall-back-url="fallback"
+                 :circular="circular"/>
+      <div class="image-overlay">
+        <div>
+          <inline-svg :src="icons.pen"/>
+          Edit
+        </div>
+      </div>
+    </button>
+    <ImageUploadDialog :maxFileSizeInBytes="maxFileSizeInBytes"
+                       :name="name"
+                       :isShown="isUploadDialogShown"
+                       @onSubmit="onImageSet"
+                       @onClosed="isUploadDialogShown=false"/>
   </div>
 </template>
 
@@ -19,10 +29,12 @@ import BaseImage from "@/components/ui/BaseImage.vue";
 import {useStore} from "@/stores/backend/rootStore.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
+import ImageUploadDialog from "@/components/shared/ImageUploadDialog.vue";
+import BaseDropZoneFileInput from "@/components/ui/BaseDropZoneFileInput.vue";
 
 export default defineComponent({
   name: "BaseImageUploadInput",
-  components: {BaseImage, InlineSvg},
+  components: {BaseDropZoneFileInput, BaseImage, InlineSvg, ImageUploadDialog},
   emits: ["update:modelValue"],
   computed: {
     src() {
@@ -31,52 +43,48 @@ export default defineComponent({
       if (this.path == "")
         return "";
       return `${this.store.resourceUrl}/${this.path}`;
+    },
+    previewUrl() {
+      return this.modelValue ? URL.createObjectURL(this.modelValue) : undefined;
     }
   },
   props: {
+    modelValue: {type: Object as PropType<Blob>},
+    name: {type: String},
     path: {type: String, required: true},
     fallback: {type: String, required: false},
-    modelValue: {type: [Object, String] as PropType<File | undefined | "">},
     enabled: {type: Boolean, required: false, default: true},
     circular: {type: Boolean, required: false, default: false},
+    maxFileSizeInBytes: {type: Number, required: true}
   },
   data() {
     return {
       isPreview: false,
-      previewUrl: "" as string | undefined,
+      isUploadDialogShown: false,
     };
   },
   watch: {
-    modelValue(imageFile: File | undefined | "") {
-      this.previewUrl = imageFile ? URL.createObjectURL(imageFile) : "";
-    },
     enabled(enabled) {
       if (!enabled)
         this.isPreview = false;
     },
   },
   methods: {
-    onChange(event: Event) {
-      const file = (event.target as HTMLInputElement).files![0];
-      if (file) {
-        this.$emit("update:modelValue", file);
-        this.isPreview = true;
-      }
+    onImageSet(imageBlob: Blob) {
+      this.$emit("update:modelValue", imageBlob);
+      this.isPreview = true;
+      this.isUploadDialogShown = false;
     },
     clearImage() {
       //if an image has been uploaded but not submitted, cancel upload, and leave last image unchanged
-      if (this.previewUrl) {
-        this.$emit("update:modelValue", undefined);
+      if (this.modelValue)
         this.isPreview = false;
-        (this.$refs.fileInputRef as HTMLInputElement).value = "";
-      }
       //if no image has been uploaded clear last image
       else {
         this.$emit("update:modelValue", "");
         this.isPreview = true;
-        this.previewUrl = undefined;
       }
-    }
+    },
   },
   setup() {
     return {icons, store: useStore()};
@@ -85,6 +93,40 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.image-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  color: #FFF;
+}
+
+.image-wrapper:hover .image-overlay {
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 30%);
+}
+
+.image-overlay div {
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.image-overlay div svg {
+  width: 25px;
+  height: 25px;
+}
+
 .file-inputs-div {
   display: flex;
   flex-direction: column;

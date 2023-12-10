@@ -97,6 +97,7 @@ button:hover {
 .inv-button {
     background: none;
     border: none;
+    padding: 0;
 }
 
 .inv-button:hover {

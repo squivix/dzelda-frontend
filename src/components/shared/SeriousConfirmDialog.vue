@@ -1,5 +1,5 @@
 <template>
-  <BaseDialog :is-open="isShown" @onBackDropClick="$emit('onClosed')">
+  <BaseDialog :is-open="isShown" @onDismissed="$emit('onClosed')">
     <div class="dialog-wrapper">
       <BaseMessageBar :type="MessageType.WARNING" :is-dismissable="false"
                       text="Warning: bad things will happen if you don't read this"/>

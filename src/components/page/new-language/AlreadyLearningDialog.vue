@@ -1,5 +1,5 @@
 <template>
-  <BaseDialog :is-open="isShown" @onBackDropClick="$emit('onClosed')">
+  <BaseDialog :is-open="isShown" @onDismissed="$emit('onClosed')">
     <div v-if="language" class="already-learning-dialog">
       <p>You are already learning {{ language }}</p>
       <button class="primary-filled-button square-button ok-button" @click="$emit('onClosed')">OK

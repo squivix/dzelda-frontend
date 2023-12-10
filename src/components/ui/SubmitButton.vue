@@ -1,10 +1,10 @@
 <template>
   <button @click="$emit('onClick')" :disabled="isSubmitting">
-    <InlineSvg v-if="isSubmitting" :src="icons.loadingSpinnerOval" class="hidden"/>
+    <InlineSvg v-show="isSubmitting" :src="icons.loadingSpinnerOval"/>
     <p>
-    <slot v-if="!isSubmitting || keepText">
+      <slot v-if="!isSubmitting || keepText">
 
-    </slot>
+      </slot>
     </p>
   </button>
 </template>

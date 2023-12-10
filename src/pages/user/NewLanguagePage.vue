@@ -34,14 +34,13 @@ import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {LanguageSchema} from "dzelda-types";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import BaseDialog from "@/components/ui/BaseDialog.vue";
 import LanguageCard from "@/components/page/new-language/LanguageCard.vue";
 import AlreadyLearningDialog from "@/components/page/new-language/AlreadyLearningDialog.vue";
 import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
 
 export default {
   name: "NewLanguagePage",
-  components: {ConfirmDialog, AlreadyLearningDialog, LanguageCard, BaseDialog, InlineSvg, BaseCard},
+  components: {ConfirmDialog, AlreadyLearningDialog, LanguageCard, InlineSvg, BaseCard},
   data() {
     return {
       supportedLanguages: null as (LanguageSchema & { isLearning: boolean })[] | null,

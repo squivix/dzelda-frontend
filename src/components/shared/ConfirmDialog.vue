@@ -1,5 +1,5 @@
 <template>
-  <BaseDialog :is-open="isShown" @onBackDropClick="$emit('onClosed')">
+  <BaseDialog :is-open="isShown" @onDismissed="$emit('onClosed')">
     <div class="dialog-wrapper">
       <slot>
 
@@ -19,7 +19,7 @@ import BaseDialog from "@/components/ui/BaseDialog.vue";
 export default defineComponent({
   name: "ConfirmDialog",
   components: {BaseDialog},
-  props: {isShown: {type: Boolean},},
+  props: {isShown: {type: Boolean}},
   emits: ["onYesClicked", "onNoClicked","onClosed"],
   methods: {
     onNoClicked() {
