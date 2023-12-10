@@ -5,7 +5,7 @@
        @dragover.prevent
        @dragenter="onDragEnter"
        @dragleave="onDragLeave">
-    <input :id="id" type="file" v-bind="$attrs" @change="onChange">
+    <input :id="id" type="file" :accept="acceptedMimeTypes?.join(', ')??''" v-bind="$attrs" @change="onChange">
 
     <label class="center-div" :for="id">
       <h5>Drop {{ name }} here or</h5>
@@ -13,8 +13,9 @@
         <inline-svg :src="icons.upload"/>
         {{ buttonText }}
       </button>
-      <p>Accepted file formats: {{ acceptedFileFormats }}</p>
-      <p>Maximum file size: {{ prettyBytes(maxFileSizeInBytes) }}</p>
+      <p v-if="acceptedFileExtensions">Accepted file formats: {{ acceptedFileExtensions }}</p>
+      <p v-if="maximumFileSize">Maximum file size: {{ maximumFileSize }}</p>
+
     </label>
   </div>
 </template>
@@ -24,6 +25,8 @@ import {defineComponent, PropType} from "vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import prettyBytes from "pretty-bytes";
+import mime from "mime";
+
 
 export default defineComponent({
   name: "BaseDropZoneFileInput",
@@ -32,14 +35,25 @@ export default defineComponent({
     id: {type: String, default: "file-input"},
     buttonText: {type: String, default: "Upload"},
     name: {type: String, default: "your file"},
-    acceptedFileFormats: {type: String},
-    maxFileSizeInBytes: {type: Number, required: true}
+    acceptedMimeTypes: {type: Array as PropType<string[]>},
+    maxFileSizeInBytes: {type: Number}
   },
   data() {
     return {
       isHighlighted: false,
       innerDragEnterCount: 0
     };
+  },
+  computed: {
+    acceptedFileExtensions() {
+      if (!this.acceptedMimeTypes)
+        return undefined;
+      return this.acceptedMimeTypes.map(m => mime.getExtension(m) || "").join(", ");
+    },
+    maximumFileSize() {
+      if (this.maxFileSizeInBytes)
+        return prettyBytes(this.maxFileSizeInBytes);
+    }
   },
   methods: {
     onChange(event: Event) {
@@ -56,7 +70,6 @@ export default defineComponent({
       if (this.innerDragEnterCount == 0)
         this.isHighlighted = false;
     },
-
     dropFile(event: DragEvent) {
       this.isHighlighted = false;
       const file = event.dataTransfer?.files[0];

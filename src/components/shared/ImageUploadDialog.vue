@@ -1,13 +1,14 @@
 <template>
   <BaseDialog class="base-dialog" :is-open="isShown" @onDismissed="onDismissed" @onClosingTransitionEnd="clearData">
     <div v-if="!imageFile" class="upload-div">
-      <BaseDropZoneFileInput accept="image/jpeg, image/png"
-                             :name="name"
-                             :acceptedFileFormats="acceptedFileFormats"
+      <BaseDropZoneFileInput :name="name"
+                             :acceptedMimeTypes="acceptedMimeTypes"
                              :maxFileSizeInBytes="maxFileSizeInBytes"
-                             @onChange="setImageFile"/>
-    </div>
+                             @onChange="setImageFile">
 
+      </BaseDropZoneFileInput>
+      <p class="error-message" v-if="errorMessage">{{ errorMessage }}</p>
+    </div>
     <div class="cropper-div" v-else>
       <Cropper class="cropper"
                ref="cropper"
@@ -35,6 +36,7 @@ import "vue-advanced-cropper/dist/style.css";
 import BaseDropZoneFileInput from "@/components/ui/BaseDropZoneFileInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import prettyBytes from "pretty-bytes";
+import {PropType} from "vue/dist/vue.js";
 
 export default defineComponent({
   name: "ImageUploadDialog",
@@ -44,8 +46,8 @@ export default defineComponent({
     isShown: {type: Boolean},
     name: {type: String},
     circular: {type: Boolean, default: false},
-    acceptedFileFormats: {type: String, default: "JPG, PNG"},
-    maxFileSizeInBytes: {type: Number, required: true}
+    acceptedMimeTypes: {type: Array as PropType<string[]>, default: ["image/jpeg", "image/png"]},
+    maxFileSizeInBytes: {type: Number}
   },
   data() {
     return {
@@ -61,9 +63,17 @@ export default defineComponent({
       return undefined;
     }
   },
+  watch: {
+    imageFile() {
+      this.errorMessage = "";
+    }
+  },
   methods: {
     setImageFile(file: File) {
-      this.imageFile = file;
+      if (this.acceptedMimeTypes.includes(file.type))
+        this.imageFile = file;
+      else
+        this.errorMessage = `File type not accepted`;
     },
     clearData() {
       this.imageFile = undefined;
@@ -82,10 +92,10 @@ export default defineComponent({
       const cropper = this.$refs.cropper as InstanceType<typeof Cropper>;
       const {canvas} = cropper.getResult();
       canvas!.toBlob((blob) => {
-        if (!blob || blob.size > this.maxFileSizeInBytes) {
+        if (!blob || blob.size > (this.maxFileSizeInBytes ?? Infinity)) {
           this.errorMessage = !blob
               ? "Failed to crop image"
-              : `Image too big (${prettyBytes(blob.size)}), must be no more than ${prettyBytes(this.maxFileSizeInBytes)}`;
+              : `Image too big (${prettyBytes(blob.size)}), must be no more than ${prettyBytes(this.maxFileSizeInBytes!)}`;
           this.isSubmitting = false;
           return;
         }
@@ -103,6 +113,9 @@ export default defineComponent({
 
 .upload-div {
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
 }
 
 .cropper-div {
