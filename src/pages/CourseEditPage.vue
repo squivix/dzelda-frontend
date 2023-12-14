@@ -3,7 +3,7 @@
     <template v-slot:content>
       <form class="edit-course-form" v-if="course" @submit.prevent="onSubmit">
         <ImageUploadInput :oldImagePath="course!.image" name="course image" :fallback="icons.books" v-model="image"
-                              :maxFileSizeInBytes="500*1000"/>
+                          :maxFileSizeInBytes="500*1000"/>
 
         <div class="inputs-div">
           <label for="course-title">Title</label>
@@ -12,36 +12,7 @@
           <textarea id="course-description" placeholder="Course Description" v-model="description"></textarea>
 
           <label for="lesson-table">Lessons</label>
-          <table id="lesson-table" class="">
-            <thead class="lesson-thead">
-            <th class="centered-table-col"><input type="checkbox" @change="selectAllLessons"></th>
-            <th class="centered-table-col"></th>
-            <th>Title</th>
-            </thead>
-
-            <draggable
-                tag="tbody"
-                class="lesson-rows"
-                handle=".handle"
-                v-model="lessons">
-              <tr v-for="lesson in lessons" :key="lesson.id">
-                <td class="centered-table-col">
-                  <input type="checkbox" :value="lesson.id" v-model="selectedLessons">
-                </td>
-                <td class="handle centered-table-col">
-                  <inline-svg :src="icons.dragBars"/>
-                </td>
-                <td>
-                  <router-link
-                      :to="{name:'edit-lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}"
-                      class="inv-link">
-                    {{ lesson.title }}
-                  </router-link>
-                </td>
-              </tr>
-            </draggable>
-          </table>
-
+          <LessonOrderTable v-model="lessons"/>
 
           <label for="is-public-checkbox" class="checkbox-label">
             <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
@@ -69,10 +40,12 @@ import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
+import LessonOrderTable from "@/components/page/edit-course/LessonOrderTable.vue";
 
 export default {
   name: "CourseEditPage",
   components: {
+    LessonOrderTable,
     SubmitButton,
     ImageUploadInput,
     InlineSvg,
@@ -86,7 +59,7 @@ export default {
       description: null as string | null,
       isPublic: true,
       level: null as ("beginner1" | "beginner2" | "intermediate1" | "intermediate2" | "advanced1" | "advanced2" | null),
-      lessons: null as LessonSchema[] | null,
+      lessons: undefined as LessonSchema[] | undefined,
       selectedLessons: [],
       image: undefined as Blob | "" | undefined,
       course: null as CourseSchema | null,
@@ -177,13 +150,9 @@ export default {
   font-size: 1.25rem;
 }
 
-.edit-course-form input:not([type='checkbox']), .edit-course-form select, .edit-course-form textarea, #lesson-table {
+.edit-course-form input:not([type='checkbox']), .edit-course-form select, .edit-course-form textarea {
   margin-bottom: 1rem;
   font-size: 1rem;
-}
-
-.checkbox-label {
-  margin-bottom: 1rem;
 }
 
 #save-button {
@@ -193,25 +162,6 @@ export default {
 #course-description {
   resize: none;
   height: 15vh;
-}
-
-.lesson-thead th:not(.centered-table-col) {
-  text-align: start;
-  vertical-align: middle;
-  font-weight: bold;
-}
-
-.lesson-rows tr:nth-child(odd) {
-  background-color: whitesmoke;
-}
-
-.lesson-rows td {
-  vertical-align: middle;
-  padding: 0.5rem 0.1rem;
-}
-
-.centered-table-col {
-  text-align: center;
 }
 
 

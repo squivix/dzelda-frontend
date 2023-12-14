@@ -1,6 +1,6 @@
 <template>
   <article class="language">
-    <span class="is-learning-check icon-wrapper" :class="{'hidden':!language.isLearning}">
+    <span class="is-learning-check icon-wrapper" :class="{'invisible':!language.isLearning}">
         <inline-svg :src="icons.checkMark"/>
     </span>
     <div class="inner-language-div">
@@ -95,9 +95,5 @@ p {
 
 .is-learning-check svg {
   fill: var(--on-secondary-color);
-}
-
-.hidden {
-  opacity: 0;
 }
 </style>

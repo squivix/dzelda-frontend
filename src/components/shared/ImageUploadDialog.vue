@@ -29,14 +29,13 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent, PropType} from "vue";
 import BaseDialog from "@/components/ui/BaseDialog.vue";
 import {CircleStencil, Cropper, RectangleStencil} from "vue-advanced-cropper";
 import "vue-advanced-cropper/dist/style.css";
 import BaseDropZoneFileInput from "@/components/ui/BaseDropZoneFileInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import prettyBytes from "pretty-bytes";
-import {PropType} from "vue/dist/vue.js";
 
 export default defineComponent({
   name: "ImageUploadDialog",
