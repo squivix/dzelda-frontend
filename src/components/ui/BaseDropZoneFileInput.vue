@@ -48,7 +48,7 @@ export default defineComponent({
     acceptedFileExtensions() {
       if (!this.acceptedMimeTypes)
         return undefined;
-      return this.acceptedMimeTypes.map(m => mime.getExtension(m) || "").join(", ");
+      return this.acceptedMimeTypes.map(m => mime.getExtension(m) || "").filter(Boolean).join(", ");
     },
     maximumFileSize() {
       if (this.maxFileSizeInBytes)

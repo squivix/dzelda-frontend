@@ -12,7 +12,18 @@
           <textarea id="course-description" placeholder="Course Description" v-model="description"></textarea>
 
           <label for="lesson-table">Lessons</label>
-          <LessonOrderTable v-model="lessons"/>
+          <EmptyScreen v-if="lessons?.length==0" class="lessons-empty-screen">
+            <template v-slot:no-filters>
+              <div>
+                <p>No lessons in course</p>
+                <router-link :to="{name:'add-lesson'}" class="inv-link add-lesson-button">
+                  <inline-svg :src="icons.plusRound" class="empty-icon"/>
+                  Add lesson
+                </router-link>
+              </div>
+            </template>
+          </EmptyScreen>
+          <LessonOrderTable v-else v-model="lessons"/>
 
           <label for="is-public-checkbox" class="checkbox-label">
             <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
@@ -41,10 +52,12 @@ import InlineSvg from "vue-inline-svg";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import LessonOrderTable from "@/components/page/edit-course/LessonOrderTable.vue";
+import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 
 export default {
   name: "CourseEditPage",
   components: {
+    EmptyScreen,
     LessonOrderTable,
     SubmitButton,
     ImageUploadInput,
@@ -164,5 +177,29 @@ export default {
   height: 15vh;
 }
 
+.lessons-empty-screen {
+  height: auto;
+}
+
+.lessons-empty-screen > div, .add-lesson-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 0.5rem;
+}
+
+.add-lesson-button {
+  color: grey;
+}
+
+.add-lesson-button svg {
+  width: 30px;
+  height: 30px;
+}
+
+.add-lesson-button:hover {
+  color: #183153;
+}
 
 </style>

@@ -4,8 +4,7 @@
 
       <form class="add-course-form" @submit.prevent="onSubmit">
         <div class="image-level-section">
-          <ImageUploadInput name="course image" :fallback="icons.books" v-model="image"
-                                :maxFileSizeInBytes="500_000"/>
+          <ImageUploadInput name="course image" :fallback="icons.books" v-model="image" :maxFileSizeInBytes="500_000"/>
           <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
           <div class="form-row">
             <label>Level</label>

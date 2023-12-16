@@ -16,7 +16,7 @@
                     dragClass="invisible"
                     :modelValue="modelValue"
                     @update:model-value="newValue => $emit('update:modelValue',newValue)">
-        <tr v-for="lesson in modelValue" :key="lesson.id">
+        <tr  v-for="lesson in modelValue" :key="lesson.id">
           <td class="handle centered-table-col">
             <inline-svg :src="icons.dragBars"/>
           </td>
@@ -34,23 +34,24 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
+import {defineComponent, PropType} from "vue";
 import {VueDraggableNext as VueDraggable} from "vue-draggable-next";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import {LessonSchema} from "dzelda-types";
+import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 
 export default defineComponent({
   name: "LessonOrderTable",
-  components: {InlineSvg, VueDraggable},
+  components: {EmptyScreen, InlineSvg, VueDraggable},
   props: {modelValue: {type: Object as PropType<LessonSchema[] | undefined>}},
   data() {
-    return {}
+    return {};
   },
   setup() {
-    return {icons}
+    return {icons};
   }
-})
+});
 </script>
 
 <style scoped>
@@ -81,4 +82,6 @@ td {
 .centered-table-col {
   text-align: center;
 }
+
+
 </style>

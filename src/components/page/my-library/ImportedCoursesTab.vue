@@ -96,9 +96,7 @@ export default defineComponent({
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   row-gap: 0.5rem;
 }
-
-.add-course-button:hover, .add-course-button:hover svg {
+.add-course-button:hover {
   color: #183153;
-  fill: #183153;
 }
 </style>
