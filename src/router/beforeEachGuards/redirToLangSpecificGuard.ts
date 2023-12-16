@@ -10,6 +10,6 @@ export const redirToLangSpecificGuard: NavigationGuardWithThis<undefined> = asyn
         if (userLanguages.length == 0)
             return {name: "new-language"};
         const defaultLanguage = userLanguages[0];
-        return {path: `/learn/${defaultLanguage.code}${to.path}`};
+        return {path: `/learn/${defaultLanguage.code}${to.path}`, query:to.query};
     }
 };

@@ -12,17 +12,19 @@
           <textarea id="course-description" placeholder="Course Description" v-model="description"></textarea>
 
           <label for="lesson-table">Lessons</label>
+
           <EmptyScreen v-if="lessons?.length==0" class="lessons-empty-screen">
             <template v-slot:no-filters>
               <div>
                 <p>No lessons in course</p>
-                <router-link :to="{name:'add-lesson'}" class="inv-link add-lesson-button">
+                <router-link :to="{name:'add-lesson', query:{courseId:course.id}}" class="inv-link add-lesson-button">
                   <inline-svg :src="icons.plusRound" class="empty-icon"/>
                   Add lesson
                 </router-link>
               </div>
             </template>
           </EmptyScreen>
+
           <LessonOrderTable v-else v-model="lessons"/>
 
           <label for="is-public-checkbox" class="checkbox-label">
@@ -45,7 +47,6 @@
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {VueDraggableNext} from "vue-draggable-next";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
-import BaseImage from "@/components/ui/BaseImage.vue";
 import {CourseSchema, LessonSchema} from "dzelda-types";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
@@ -53,18 +54,16 @@ import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import LessonOrderTable from "@/components/page/edit-course/LessonOrderTable.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
+import {PropType} from "vue";
 
 export default {
   name: "CourseEditPage",
   components: {
-    EmptyScreen,
-    LessonOrderTable,
-    SubmitButton,
-    ImageUploadInput,
-    InlineSvg,
-    BaseImage,
-    BaseCard,
-    draggable: VueDraggableNext,
+    EmptyScreen, LessonOrderTable, SubmitButton,
+    ImageUploadInput, InlineSvg, BaseCard, draggable: VueDraggableNext,
+  },
+  props: {
+    pathParams: {type: Object as PropType<{ learningLanguage: string, courseId: number }>, required: true}
   },
   data() {
     return {
@@ -82,12 +81,12 @@ export default {
   methods: {
     onSubmit() {
       this.editCourse();
-      this.$router.push({name: "course", ...this.$route.params});
+      this.$router.push({name: "course", ...this.pathParams});
     },
     async editCourse() {
       this.isSubmitting = true;
       await this.courseStore.updateCourse(
-          {courseId: Number(this.$route.params.courseId as string)},
+          {courseId: Number(this.pathParams.courseId)},
           {
             title: this.title,
             description: this.description,
@@ -108,7 +107,7 @@ export default {
     },
     async fetchCourse() {
       return await this.courseStore.fetchCourse({
-        courseId: this.$route.params.courseId,
+        courseId: this.pathParams.courseId,
       });
     },
 

@@ -165,7 +165,12 @@ export const privateRoutes: RouteRecordRaw[] = [
         path: "/learn/:learningLanguage/lessons/add",
         name: "add-lesson-lang",
         component: LessonAddEditPage,
-        meta: {}
+        meta: {
+            queryParams: {
+                courseId: pathParams.id
+            }
+        },
+        props: routeToProps,
     },
     {
         path: "/learn/:learningLanguage/lessons/:lessonId/edit",
@@ -177,6 +182,7 @@ export const privateRoutes: RouteRecordRaw[] = [
                 lessonId: pathParams.id
             }
         },
+        props: routeToProps,
     },
     {
         path: "/courses/add",
@@ -212,7 +218,8 @@ export const privateRoutes: RouteRecordRaw[] = [
                 learningLanguage: pathParams.languageCode,
                 courseId: pathParams.id
             }
-        }
+        },
+        props: routeToProps,
     },
     {
         path: "/learn/new",

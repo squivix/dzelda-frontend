@@ -61,25 +61,24 @@ import {useCourseStore} from "@/stores/backend/courseStore.js";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import {LessonSchema} from "dzelda-types";
+import {CourseSchema, LessonSchema} from "dzelda-types";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
+import {PropType} from "vue";
 
 export default {
   name: "LessonAddEditPage",
   components: {SubmitButton, InlineSvg, BaseImage, BaseCard},
-  computed: {
-    pageTitle() {
-      return this.$route.name !== "edit-lesson" ? "Add Lesson" : "Edit Lesson";
-    },
+  props: {
+    queryParams: {type: Object as PropType<{ courseId?: number }>, required: true}
   },
   data() {
     return {
       lesson: null as LessonSchema | null,
-      editableCourses: null,
-      selectedCourse: "" as "" | number,
+      editableCourses: null as CourseSchema[] | null,
+      selectedCourse: "" as number | "",
       title: "",
       text: "",
       image: null as File | null,
@@ -88,6 +87,11 @@ export default {
       audioUrl: null as string | null,
       isSubmitting: false,
     };
+  },
+  computed: {
+    pageTitle() {
+      return this.$route.name !== "edit-lesson" ? "Add Lesson" : "Edit Lesson";
+    },
   },
   watch: {
     selectedCourse(newVal) {
@@ -158,6 +162,10 @@ export default {
       this.text = this.lesson.text;
       this.imageUrl = this.lesson?.image ?? this.lesson?.course?.image ?? "";
       this.audioUrl = this.lesson?.audio ?? "";
+    } else {
+      if (this.editableCourses!.some(course => course.id == this.queryParams.courseId))
+        this.selectedCourse = this.queryParams.courseId!;
+      this.$router.replace({query: {...this.queryParams, courseId: undefined}});
     }
   },
   setup() {
