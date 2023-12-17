@@ -1,31 +1,41 @@
 <template>
   <BaseCard title="Edit Course" class="edit-course-base-card">
     <template v-slot:content>
-      <form class="edit-course-form" v-if="course" @submit.prevent="onSubmit">
-        <ImageUploadInput :oldImagePath="course!.image" name="course image" :fallback="icons.books" v-model="image"
-                          :maxFileSizeInBytes="500*1000"/>
-
+      <LoadingScreen v-if="isLoading || !course"/>
+      <form v-else class="edit-course-form" @submit.prevent="submitEditCourse">
+        <div class="image-level-section">
+          <ImageUploadInput :oldImagePath="course.image" name="course image" :fallback="icons.books" v-model="image"
+                            :maxFileSizeInBytes="500_000"/>
+          <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
+          <div class="form-row">
+            <label>Level</label>
+            <select v-model="level">
+              <option v-for="level in LANGUAGE_LEVELS" :value="level">{{ toSentenceCase(level) }}</option>
+            </select>
+          </div>
+        </div>
         <div class="inputs-div">
-          <label for="course-title">Title</label>
-          <input id="course-title" type="text" placeholder="Course Title" v-model="title" required>
-          <label for="course-description">Description</label>
-          <textarea id="course-description" placeholder="Course Description" v-model="description"></textarea>
+          <div class="form-row">
+            <label for="course-title">Title</label>
+            <input id="course-title" type="text" maxlength="255" placeholder="Course Title" v-model="title" required>
+            <p v-if="errorFields.title" class="error-message">{{ errorFields.title }}</p>
+          </div>
+          <div class="form-row">
+            <label for="course-description">Description</label>
+            <textarea id="course-description" maxlength="500" placeholder="Course Description" v-model="description"></textarea>
+            <p v-if="errorFields.description" class="error-message">{{ errorFields.description }}</p>
+          </div>
 
-          <label for="lesson-table">Lessons</label>
+          <div class="form-row">
+            <label for="lesson-table">Lessons</label>
 
-          <EmptyScreen v-if="lessons?.length==0" class="lessons-empty-screen">
-            <template v-slot:no-filters>
-              <div>
-                <p>No lessons in course</p>
-                <router-link :to="{name:'add-lesson', query:{courseId:course.id}}" class="inv-link add-lesson-button">
-                  <inline-svg :src="icons.plusRound" class="empty-icon"/>
-                  Add lesson
-                </router-link>
-              </div>
-            </template>
-          </EmptyScreen>
-
-          <LessonOrderTable v-else v-model="lessons"/>
+            <p v-if="lessons?.length==0">No lessons in course</p>
+            <LessonOrderTable v-model="lessons"/>
+            <router-link :to="{name:'add-lesson', query:{courseId:course.id}}" class="inv-link add-lesson-button">
+              <inline-svg :src="icons.plusRound" class="empty-icon"/>
+              Add lesson
+            </router-link>
+          </div>
 
           <label for="is-public-checkbox" class="checkbox-label">
             <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
@@ -47,7 +57,7 @@
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {VueDraggableNext} from "vue-draggable-next";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
-import {CourseSchema, LessonSchema} from "dzelda-types";
+import {CourseSchema, LanguageLevelSchema, LessonSchema} from "dzelda-types";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
@@ -55,10 +65,14 @@ import SubmitButton from "@/components/ui/SubmitButton.vue";
 import LessonOrderTable from "@/components/page/edit-course/LessonOrderTable.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import {PropType} from "vue";
+import LoadingScreen from "@/components/shared/LoadingScreen.vue";
+import {LANGUAGE_LEVELS} from "@/constants.js";
+import {toSentenceCase} from "../utils.js";
 
 export default {
   name: "CourseEditPage",
   components: {
+    LoadingScreen,
     EmptyScreen, LessonOrderTable, SubmitButton,
     ImageUploadInput, InlineSvg, BaseCard, draggable: VueDraggableNext,
   },
@@ -67,54 +81,54 @@ export default {
   },
   data() {
     return {
-      title: null as string | null,
-      description: null as string | null,
-      isPublic: true,
-      level: null as ("beginner1" | "beginner2" | "intermediate1" | "intermediate2" | "advanced1" | "advanced2" | null),
-      lessons: undefined as LessonSchema[] | undefined,
-      selectedLessons: [],
-      image: undefined as Blob | "" | undefined,
       course: null as CourseSchema | null,
+      title: undefined as string | undefined,
+      description: undefined as string | undefined,
+      isPublic: undefined as boolean | undefined,
+      level: undefined as LanguageLevelSchema | undefined,
+      lessons: undefined as LessonSchema[] | undefined,
+      image: undefined as Blob | "" | undefined,
+      errorFields: {title: "", description: "", image: ""},
       isSubmitting: false,
+      isLoading: false,
     };
   },
   methods: {
-    onSubmit() {
-      this.editCourse();
-      this.$router.push({name: "course", ...this.pathParams});
-    },
-    async editCourse() {
+    async submitEditCourse() {
       this.isSubmitting = true;
-      await this.courseStore.updateCourse(
-          {courseId: Number(this.pathParams.courseId)},
+      const response = await this.courseStore.updateCourse(
+          {courseId: this.pathParams.courseId},
           {
-            title: this.title,
-            description: this.description,
-            level: this.level,
-            isPublic: this.isPublic,
-            lessonsOrder: this.lessons.map(lesson => lesson.id),
+            title: this.title!,
+            description: this.description!,
+            level: this.level!,
+            isPublic: this.isPublic!,
+            lessonsOrder: this.lessons!.map(lesson => lesson.id),
             image: this.image
           }
       );
       this.isSubmitting = false;
-    },
-
-    selectAllLessons(event) {
-      if (event.target.checked)
-        this.selectedLessons = this.lessons.map((lesson) => lesson.id);
-      else
-        this.selectedLessons = [];
+      if (response.ok)
+        this.$router.push({name: "course", ...this.pathParams});
+      else {
+        const error = response.error;
+        if (error.code == 400)
+          this.errorFields = error.fields as { title: string, description: string, image: string };
+        else if (error.code == 413 || error.code == 415)
+          this.errorFields.image = error.message;
+      }
     },
     async fetchCourse() {
-      return await this.courseStore.fetchCourse({
-        courseId: this.pathParams.courseId,
-      });
+      return await this.courseStore.fetchCourse({courseId: this.pathParams.courseId});
     },
 
   },
   async mounted() {
+    this.isLoading = true;
     const course = await this.fetchCourse();
+    this.isLoading = false;
     this.course = course;
+
     this.title = course.title;
     this.level = course.level;
     this.description = course.description;
@@ -122,10 +136,7 @@ export default {
     this.lessons = course.lessons;
   },
   setup() {
-    return {
-      icons,
-      courseStore: useCourseStore(),
-    };
+    return {LANGUAGE_LEVELS, toSentenceCase, icons, courseStore: useCourseStore(),};
   }
 };
 </script>
@@ -157,13 +168,11 @@ export default {
   flex-grow: 1;
 }
 
-.edit-course-form label {
-  margin-bottom: 0.5rem;
+label {
   font-size: 1.25rem;
 }
 
-.edit-course-form input:not([type='checkbox']), .edit-course-form select, .edit-course-form textarea {
-  margin-bottom: 1rem;
+input:not([type='checkbox']), select, textarea {
   font-size: 1rem;
 }
 
@@ -174,10 +183,6 @@ export default {
 #course-description {
   resize: none;
   height: 15vh;
-}
-
-.lessons-empty-screen {
-  height: auto;
 }
 
 .lessons-empty-screen > div, .add-lesson-button {
@@ -200,5 +205,20 @@ export default {
 .add-lesson-button:hover {
   color: #183153;
 }
+
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.image-level-section {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
 
 </style>

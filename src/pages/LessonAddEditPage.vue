@@ -113,8 +113,8 @@ export default {
     async fetchEditableCourses() {
       const response = await this.courseStore.fetchCourses({
         languageCode: this.$route.params.learningLanguage,
-        addedBy: (await this.userStore.fetchUserAccount()).username,
-      });
+        addedBy: "me",
+      }, {secure: true});
       this.editableCourses = response.data;
     },
     async onSubmit(event) {
@@ -152,6 +152,7 @@ export default {
   },
   async mounted() {
     await this.fetchEditableCourses();
+    console.log(this.editableCourses);
     if (this.$route.name === "edit-lesson") {
       this.lesson = await this.lessonStore.fetchLesson({
         lessonId: this.$route.params.lessonId,

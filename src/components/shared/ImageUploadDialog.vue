@@ -5,7 +5,6 @@
                              :acceptedMimeTypes="acceptedMimeTypes"
                              :maxFileSizeInBytes="maxFileSizeInBytes"
                              @onChange="setImageFile">
-
       </BaseDropZoneFileInput>
       <p class="error-message" v-if="errorMessage">{{ errorMessage }}</p>
     </div>
@@ -18,7 +17,7 @@
       <div class="bottom-div">
         <p class="error-message" v-if="errorMessage">{{ errorMessage }}</p>
         <div class="buttons-div">
-          <button class="primary-hollow-button square-button" type="reset" @click="closeDialog">Cancel</button>
+          <button class="primary-hollow-button square-button" type="button" @click="closeDialog">Cancel</button>
           <SubmitButton :is-submitting="isSubmitting" class="primary-filled-button square-button" type="button"
                         @click="submitImage">Submit
           </SubmitButton>
@@ -91,6 +90,7 @@ export default defineComponent({
       const cropper = this.$refs.cropper as InstanceType<typeof Cropper>;
       const {canvas} = cropper.getResult();
       canvas!.toBlob((blob) => {
+        console.log(blob.size);
         if (!blob || blob.size > (this.maxFileSizeInBytes ?? Infinity)) {
           this.errorMessage = !blob
               ? "Failed to crop image"

@@ -91,9 +91,7 @@ export const useCourseStore = defineStore("course", {
                     },
                     image: body.image
                 })));
-            // handle your 4XX errors as you may
-            //...
-            return response.data;
+            return response;
         },
         async addCourseToUserBookmarks(body: {
             courseId: number

@@ -71,7 +71,6 @@ export default {
     };
   },
   methods: {
-    toSentenceCase,
     async onSubmit() {
       this.isSubmitting = true;
       this.errorFields = {title: "", description: "", image: ""};
@@ -96,11 +95,7 @@ export default {
       } else {
         const error = response.error;
         if (error.code == 400)
-          this.errorFields = error.fields as {
-            title: string,
-            description: string,
-            image: string
-          };
+          this.errorFields = error.fields as { title: string, description: string, image: string };
         else if (error.code == 413 || error.code == 415)
           this.errorFields.image = error.message;
       }
@@ -110,7 +105,7 @@ export default {
   setup() {
     return {
       icons,
-      LANGUAGE_LEVELS,
+      LANGUAGE_LEVELS, toSentenceCase,
       courseStore: useCourseStore(),
     };
   }

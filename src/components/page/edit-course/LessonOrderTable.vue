@@ -1,10 +1,11 @@
 <template>
-  <div>
+  <div class="table-wrapper styled-scrollbars">
     <table id="lesson-table" class="">
-      <thead class="lesson-thead">
+      <thead>
       <tr>
-        <th class="drag-th"></th>
-        <th></th>
+        <th class="centered-col">Drag</th>
+        <th>Title</th>
+        <th>Action</th>
       </tr>
       </thead>
 
@@ -16,15 +17,17 @@
                     dragClass="invisible"
                     :modelValue="modelValue"
                     @update:model-value="newValue => $emit('update:modelValue',newValue)">
-        <tr  v-for="lesson in modelValue" :key="lesson.id">
-          <td class="handle centered-table-col">
+        <tr v-for="lesson in modelValue" :key="lesson.id">
+          <td class="handle centered-col">
             <inline-svg :src="icons.dragBars"/>
           </td>
           <td>
+            {{ lesson.title }}
+          </td>
+          <td>
             <router-link
-                :to="{name:'edit-lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}"
-                class="inv-link">
-              {{ lesson.title }}
+                :to="{name:'edit-lesson', params:{lessonId:lesson.id}}">
+              Edit
             </router-link>
           </td>
         </tr>
@@ -55,12 +58,32 @@ export default defineComponent({
 </script>
 
 <style scoped>
-#lesson-table {
-  margin-bottom: 1rem;
-  font-size: 1rem;
+.table-wrapper {
+  overflow: auto;
+  max-height: 200px;
 }
 
-.lesson-thead th:not(.centered-table-col) {
+#lesson-table {
+
+  font-size: 1rem;
+  width: 100%;
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: white;
+}
+
+tbody:before {
+  content: "-";
+  display: block;
+  line-height: 0.5rem;
+  visibility: hidden;
+}
+
+th {
   text-align: start;
   vertical-align: middle;
   font-weight: bold;
@@ -74,14 +97,23 @@ th {
   background-color: whitesmoke;
 }
 
-td {
-  vertical-align: middle;
-  padding: 0.5rem 0.1rem;
+.lesson-tbody {
 }
 
-.centered-table-col {
+td {
+  vertical-align: middle;
+  padding: 0.5rem 1rem;
+}
+
+a, a:visited {
+  color: black;
+}
+
+.centered-col {
   text-align: center;
 }
 
-
+.handle:hover {
+  cursor: pointer;
+}
 </style>
