@@ -1,15 +1,10 @@
 <template>
-  <BaseCard :title="pageTitle" class="add-edit-lesson-base-card" v-if="editableCourses">
+  <BaseCard title="Add Lesson" class="add-lesson-base-card">
     <template v-slot:content>
-      <form class="add-edit-lesson-form" @submit.prevent="onSubmit">
-        <div class="file-inputs-div">
-          <BaseImage :image-url="imageUrl" :fall-back-url="icons.bookOpen"></BaseImage>
-
-          <label for="image-input" class="file-input-label inv-button">
-            <inline-svg :src="icons.upload"/>
-            Upload Image
-          </label>
-          <input id="image-input" type="file" accept="image/png, image/jpeg" @change="setImageFile">
+      <form class="add-lesson-form" @submit.prevent="addLesson">
+        <div class="side-inputs">
+          <ImageUploadInput name="lesson image" :fallback="icons.bookOpen" v-model="image"
+                            :maxFileSizeInBytes="500_000"/>
 
           <audio controls ref="audio" :src="audioUrl">
             Your browser does not support the audio element.
@@ -19,20 +14,13 @@
             Upload Audio
           </label>
           <input id="audio-input" type="file" accept="audio/*" @change="setAudioFile">
-
-
         </div>
-        <div class="other-div">
+        <div class="main-inputs">
           <label for="lesson-course">Course</label>
           <select required id="lesson-course" v-model="selectedCourse">
             <option value="" disabled selected>Select course</option>
-            <option v-for="course in editableCourses" :key="course.id" :value="course.id">
-              {{ course.title }}
-            </option>
-
-            <option>
-              New Course
-            </option>
+            <option v-for="course in editableCourses" :key="course.id" :value="course.id">{{ course.title }}</option>
+            <option>New Course</option>
           </select>
           <label for="lesson-title">Title</label>
           <input id="lesson-title" type="text" placeholder="Lesson Title" v-model="title" required>
@@ -50,7 +38,6 @@
           </div>
         </div>
       </form>
-
     </template>
   </BaseCard>
 </template>
@@ -60,38 +47,30 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
-import BaseImage from "@/components/ui/BaseImage.vue";
-import {CourseSchema, LessonSchema} from "dzelda-types";
+import {CourseSchema} from "dzelda-types";
 import {useUserStore} from "@/stores/backend/userStore.js";
-import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {PropType} from "vue";
+import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 
 export default {
-  name: "LessonAddEditPage",
-  components: {SubmitButton, InlineSvg, BaseImage, BaseCard},
+  name: "LessonAddPage",
+  components: {ImageUploadInput, SubmitButton, BaseCard},
   props: {
     queryParams: {type: Object as PropType<{ courseId?: number }>, required: true}
   },
   data() {
     return {
-      lesson: null as LessonSchema | null,
       editableCourses: null as CourseSchema[] | null,
       selectedCourse: "" as number | "",
       title: "",
       text: "",
-      image: null as File | null,
+      image: undefined as Blob | undefined,
       audio: null as File | null,
-      imageUrl: "",
       audioUrl: null as string | null,
       isSubmitting: false,
     };
-  },
-  computed: {
-    pageTitle() {
-      return this.$route.name !== "edit-lesson" ? "Add Lesson" : "Edit Lesson";
-    },
   },
   watch: {
     selectedCourse(newVal) {
@@ -100,10 +79,6 @@ export default {
     }
   },
   methods: {
-    setImageFile(event) {
-      this.image = event.target.files[0];
-      this.imageUrl = URL.createObjectURL(this.image);
-    },
     setAudioFile(event) {
       this.audio = event.target.files[0];
       this.audioUrl = URL.createObjectURL(this.audio);
@@ -117,57 +92,30 @@ export default {
       }, {secure: true});
       this.editableCourses = response.data;
     },
-    async onSubmit(event) {
-      this.isSubmitting = true;
-      if (this.lesson == null)
-        await this.addLesson();
-      else
-        await this.editLesson();
-      this.isSubmitting = false;
-      await this.$router.push({
-        name: "lesson",
-        params: {learningLanguage: this.$route.params.learningLanguage, lessonId: this.lesson.id}
-      });
-    },
     async addLesson() {
-      this.lesson = await this.lessonStore.createLesson({
+      this.isSubmitting = true;
+      const response = await this.lessonStore.createLesson({
         courseId: this.selectedCourse as number,
         title: this.title,
         text: this.text,
         image: this.image,
         audio: this.audio
       });
-
+      this.isSubmitting = false;
+      if (response.ok) {
+        const lesson = response.data;
+        await this.$router.push({
+          name: "lesson",
+          params: {lessonId: lesson.id}
+        });
+      }
     },
-
-    async editLesson() {
-      await this.lessonStore.updateLesson({lessonId: this.$route.params.lessonId,}, {
-        courseId: this.selectedCourse,
-        title: this.title,
-        text: this.text,
-        image: this.image,
-        audio: this.audio
-      });
-    }
   },
   async mounted() {
     await this.fetchEditableCourses();
-    console.log(this.editableCourses);
-    if (this.$route.name === "edit-lesson") {
-      this.lesson = await this.lessonStore.fetchLesson({
-        lessonId: this.$route.params.lessonId,
-        languageCode: this.$route.params.learningLanguage
-      });
-      this.selectedCourse = this.lesson.course.id;
-      this.title = this.lesson.title;
-      this.text = this.lesson.text;
-      this.imageUrl = this.lesson?.image ?? this.lesson?.course?.image ?? "";
-      this.audioUrl = this.lesson?.audio ?? "";
-    } else {
-      if (this.editableCourses!.some(course => course.id == this.queryParams.courseId))
-        this.selectedCourse = this.queryParams.courseId!;
-      this.$router.replace({query: {...this.queryParams, courseId: undefined}});
-    }
+    if (this.editableCourses!.some(course => course.id == this.queryParams.courseId))
+      this.selectedCourse = this.queryParams.courseId!;
+    this.$router.replace({query: {...this.queryParams, courseId: undefined}});
   },
   setup() {
     return {
@@ -184,7 +132,7 @@ export default {
 </script>
 
 <style scoped>
-.add-edit-lesson-base-card {
+.add-lesson-base-card {
   display: flex;
   flex-direction: column;
   row-gap: 1.25rem;
@@ -193,28 +141,22 @@ export default {
   width: 70vw;
 }
 
-.add-edit-lesson-base-card:deep(header) {
+.add-lesson-base-card:deep(header) {
   margin-bottom: 1rem;
 }
 
-.course-image {
-  width: 200px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border-radius: 5px;
-}
-
-.add-edit-lesson-form {
+form {
   display: flex;
   column-gap: 1rem;
 }
 
-.add-edit-lesson-form .file-inputs-div {
+.side-inputs {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
 }
 
-.add-edit-lesson-form .other-div {
+.main-inputs {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -224,17 +166,12 @@ audio {
   width: auto;
 }
 
-.file-input-label {
-  text-align: center;
-}
-
-
-.add-edit-lesson-form label {
+label {
   margin-bottom: 0.5rem;
   font-size: 1.25rem;
 }
 
-.add-edit-lesson-form input, .add-edit-lesson-form select, .add-edit-lesson-form textarea {
+input, select, textarea {
   margin-bottom: 1rem;
   font-size: 1rem;
 }
@@ -248,7 +185,6 @@ select {
   resize: none;
   height: 35vh;
 }
-
 
 .buttons-div {
   display: flex;

@@ -37,28 +37,6 @@
             </div>
           </div>
         </div>
-
-        <BaseDropDown
-            :label="`lesson-item-${lesson.id}`"
-            group="lesson-items"
-            :centered="false"
-            :round="false">
-          <template v-slot:button>
-            <inline-svg :src="icons.dotsStacked" class="more-button"/>
-          </template>
-          <template v-slot:menu>
-
-            <!--TODO:Only show link if user is authorized to edit lesson-->
-            <ol class="dropdown-list">
-              <li>
-                <router-link :to="{ name: 'edit-lesson' , params:{lessonId:lesson.id}}">
-                  <inline-svg :src="icons.pen"/>
-                  <span>Edit</span>
-                </router-link>
-              </li>
-            </ol>
-          </template>
-        </BaseDropDown>
       </article>
     </template>
   </BaseCard>

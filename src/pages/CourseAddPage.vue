@@ -88,10 +88,7 @@ export default {
         //TODO redir query param
         // if (this.$route.query["redir"])
         //   await this.$router.push({path: this.$route.query["redir"]});
-        await this.$router.push({
-          name: "course",
-          params: {courseId: newCourse.id, learningLanguage: this.$route.params.learningLanguage}
-        });
+        await this.$router.push({name: "course", params: {courseId: newCourse.id}});
       } else {
         const error = response.error;
         if (error.code == 400)
@@ -133,7 +130,7 @@ export default {
   column-gap: 1rem;
 }
 
-.inputs-div {
+.main-inputs {
   display: flex;
   flex-direction: column;
   flex-grow: 1;

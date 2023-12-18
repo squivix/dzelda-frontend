@@ -90,7 +90,6 @@ export default defineComponent({
       const cropper = this.$refs.cropper as InstanceType<typeof Cropper>;
       const {canvas} = cropper.getResult();
       canvas!.toBlob((blob) => {
-        console.log(blob.size);
         if (!blob || blob.size > (this.maxFileSizeInBytes ?? Infinity)) {
           this.errorMessage = !blob
               ? "Failed to crop image"

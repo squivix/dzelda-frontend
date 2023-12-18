@@ -19,7 +19,12 @@ export const useLessonStore = defineStore("lesson", {
             return response.data;
         },
         async fetchLessonsInHistory(queryParams: {
-            languageCode?: string, sortBy?: "title" | "createdDate" | "pastViewersCount", sortOrder?: "asc" | "desc", searchQuery?: string, pageSize?: number, page?: number
+            languageCode?: string,
+            sortBy?: "title" | "createdDate" | "pastViewersCount",
+            sortOrder?: "asc" | "desc",
+            searchQuery?: string,
+            pageSize?: number,
+            page?: number
         } = {}) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.getUsersMeLessonsHistory(queryParams));
@@ -28,21 +33,25 @@ export const useLessonStore = defineStore("lesson", {
             //...
             return response.data;
         },
-        async createLesson(body: { title: string, text: string, courseId: number, image: File | null, audio: File | null }) {
+        async createLesson(body: {
+            title: string,
+            text: string,
+            courseId: number,
+            image: File | Blob | undefined,
+            audio: File | undefined
+        }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.lessons.postLessons({
+            if (body.image instanceof Blob)
+                body.image = new File([body.image], "image");
+            return await store.fetchCustom((api) => api.lessons.postLessons({
                 data: {
                     title: body.title,
                     text: body.text,
                     courseId: body.courseId,
                 },
-                image: body.image,
+                image: body.image as File | undefined,
                 audio: body.audio,
             }));
-
-            // handle your 4XX errors as you may
-            //...
-            return response.data;
         },
         async addLessonToUserHistory(body: { lessonId: number }) {
             const store = useStore();
@@ -64,23 +73,6 @@ export const useLessonStore = defineStore("lesson", {
 
             return response.data;
         },
-        async updateLesson(pathParams: { lessonId: number }, body: { courseId: number, title: string, text: string, image: File, audio: File }) {
-            const store = useStore();
-            const response = await store.fetchCustom((api) => api.lessons.putLessonsLessonId(pathParams.lessonId, {
-                data: {
-                    courseId: body.courseId,
-                    title: body.title,
-                    text: body.text,
-                },
-                image: body.image,
-                audio: body.audio,
-            }));
-
-            // handle your 4XX errors as you may
-            //...
-
-            return response.data;
-        },
         async fetchNextLesson(pathParams: { lessonId: number, courseId: number }) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.courses.getCoursesCourseIdLessonsLessonIdNext(pathParams.courseId, pathParams.lessonId));
@@ -89,7 +81,7 @@ export const useLessonStore = defineStore("lesson", {
             //...
 
             if (response.redirected) {
-                response.data = await response.json()
+                response.data = await response.json();
                 return response.data as LessonSchema;
             } else
                 return null;

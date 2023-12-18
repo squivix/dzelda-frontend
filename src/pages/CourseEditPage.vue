@@ -3,7 +3,7 @@
     <template v-slot:content>
       <LoadingScreen v-if="isLoading || !course"/>
       <form v-else class="edit-course-form" @submit.prevent="submitEditCourse">
-        <div class="image-level-section">
+        <div class="side-inputs">
           <ImageUploadInput :oldImagePath="course.image" name="course image" :fallback="icons.books" v-model="image"
                             :maxFileSizeInBytes="500_000"/>
           <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
@@ -14,7 +14,7 @@
             </select>
           </div>
         </div>
-        <div class="inputs-div">
+        <div class="main-inputs">
           <div class="form-row">
             <label for="course-title">Title</label>
             <input id="course-title" type="text" maxlength="255" placeholder="Course Title" v-model="title" required>
@@ -22,21 +22,20 @@
           </div>
           <div class="form-row">
             <label for="course-description">Description</label>
-            <textarea id="course-description" maxlength="500" placeholder="Course Description" v-model="description"></textarea>
+            <textarea id="course-description" maxlength="500" placeholder="Course Description"
+                      v-model="description"></textarea>
             <p v-if="errorFields.description" class="error-message">{{ errorFields.description }}</p>
           </div>
-
           <div class="form-row">
             <label for="lesson-table">Lessons</label>
 
             <p v-if="lessons?.length==0">No lessons in course</p>
-            <LessonOrderTable v-model="lessons"/>
+            <LessonOrderTable v-else v-model="lessons"/>
             <router-link :to="{name:'add-lesson', query:{courseId:course.id}}" class="inv-link add-lesson-button">
               <inline-svg :src="icons.plusRound" class="empty-icon"/>
               Add lesson
             </router-link>
           </div>
-
           <label for="is-public-checkbox" class="checkbox-label">
             <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
             Public
@@ -162,7 +161,7 @@ export default {
   column-gap: 1rem;
 }
 
-.inputs-div {
+.main-inputs {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -214,7 +213,7 @@ input:not([type='checkbox']), select, textarea {
   margin-bottom: 0.5rem;
 }
 
-.image-level-section {
+.side-inputs {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;

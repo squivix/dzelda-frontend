@@ -5,7 +5,6 @@
       <tr>
         <th class="centered-col">Drag</th>
         <th>Title</th>
-        <th>Action</th>
       </tr>
       </thead>
 
@@ -23,12 +22,6 @@
           </td>
           <td>
             {{ lesson.title }}
-          </td>
-          <td>
-            <router-link
-                :to="{name:'edit-lesson', params:{lessonId:lesson.id}}">
-              Edit
-            </router-link>
           </td>
         </tr>
       </VueDraggable>

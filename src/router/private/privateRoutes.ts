@@ -2,7 +2,7 @@ import ExplorePage from "@/pages/ExplorePage.vue";
 import MyLibraryPage from "@/pages/MyLibraryPage.vue";
 import MyVocabPage from "@/pages/MyVocabPage.vue";
 import LessonReaderPage from "@/pages/LessonReaderPage.vue";
-import LessonAddEditPage from "@/pages/LessonAddEditPage.vue";
+import LessonAddPage from "@/pages/LessonAddPage.vue";
 import CourseAddPage from "@/pages/CourseAddPage.vue";
 import CoursePage from "@/pages/CoursePage.vue";
 import CourseEditPage from "@/pages/CourseEditPage.vue";
@@ -157,29 +157,17 @@ export const privateRoutes: RouteRecordRaw[] = [
     },
     {
         path: "/lessons/add",
-        component: LessonAddEditPage,
+        component: LessonAddPage,
         name: "add-lesson",
         meta: {redirToLanguageSpecific: true}
     },
     {
         path: "/learn/:learningLanguage/lessons/add",
         name: "add-lesson-lang",
-        component: LessonAddEditPage,
+        component: LessonAddPage,
         meta: {
             queryParams: {
                 courseId: pathParams.id
-            }
-        },
-        props: routeToProps,
-    },
-    {
-        path: "/learn/:learningLanguage/lessons/:lessonId/edit",
-        component: LessonAddEditPage,
-        name: "edit-lesson",
-        meta: {
-            pathParams: {
-                learningLanguage: pathParams.languageCode,
-                lessonId: pathParams.id
             }
         },
         props: routeToProps,

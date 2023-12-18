@@ -125,12 +125,6 @@ export default defineComponent({
   height: 25px;
 }
 
-.file-inputs-div {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 input[type="file"] {
   display: none;
 }
