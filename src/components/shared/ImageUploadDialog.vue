@@ -1,8 +1,9 @@
 <template>
   <BaseDialog class="base-dialog" :is-open="isShown" @onDismissed="onDismissed" @onClosingTransitionEnd="clearData">
     <div v-if="!imageFile" class="upload-div">
-      <BaseDropZoneFileInput :name="name"
-                             :acceptedMimeTypes="acceptedMimeTypes"
+      <BaseDropZoneFileInput :id="id"
+                             :fileTitle="fileTitle"
+                             :acceptedFileExtensions="acceptedFileExtensions"
                              :maxFileSizeInBytes="maxFileSizeInBytes"
                              @onChange="setImageFile">
       </BaseDropZoneFileInput>
@@ -35,6 +36,7 @@ import "vue-advanced-cropper/dist/style.css";
 import BaseDropZoneFileInput from "@/components/ui/BaseDropZoneFileInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import prettyBytes from "pretty-bytes";
+import mime from "mime";
 
 export default defineComponent({
   name: "ImageUploadDialog",
@@ -42,10 +44,11 @@ export default defineComponent({
   emits: ["onClosed", "onSubmit"],
   props: {
     isShown: {type: Boolean},
-    name: {type: String},
+    id: {type: String, required: true},
+    fileTitle: {type: String},
+    maxFileSizeInBytes: {type: Number},
+    acceptedFileExtensions: {type: Array as PropType<string[]>, default: [".jpeg", ".jpg", ".png"]},
     circular: {type: Boolean, default: false},
-    acceptedMimeTypes: {type: Array as PropType<string[]>, default: ["image/jpeg", "image/png"]},
-    maxFileSizeInBytes: {type: Number}
   },
   data() {
     return {
@@ -68,7 +71,7 @@ export default defineComponent({
   },
   methods: {
     setImageFile(file: File) {
-      if (this.acceptedMimeTypes.includes(file.type))
+      if (this.acceptedFileExtensions.map(e => mime.getType(e)).includes(file.type))
         this.imageFile = file;
       else
         this.errorMessage = `File type not accepted`;

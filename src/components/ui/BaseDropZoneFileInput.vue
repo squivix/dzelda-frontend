@@ -5,15 +5,15 @@
        @dragover.prevent
        @dragenter="onDragEnter"
        @dragleave="onDragLeave">
-    <input :id="id" type="file" :accept="acceptedMimeTypes?.join(', ')??''" v-bind="$attrs" @change="onChange">
+    <input :id="id" type="file" :accept="acceptedFileExtensions?.join(', ')??''" v-bind="$attrs" @change="onChange">
 
     <label class="center-div" :for="id">
-      <h5>Drop {{ name }} here or</h5>
+      <h5>Drop {{ fileTitle }} here or</h5>
       <button>
         <inline-svg :src="icons.upload"/>
         {{ buttonText }}
       </button>
-      <p v-if="acceptedFileExtensions">Accepted file formats: {{ acceptedFileExtensions }}</p>
+      <p v-if="acceptedFileExtensions">Accepted file formats: {{ acceptedFileExtensions.join(",") }}</p>
       <p v-if="maximumFileSize">Maximum file size: {{ maximumFileSize }}</p>
 
     </label>
@@ -32,10 +32,10 @@ export default defineComponent({
   name: "BaseDropZoneFileInput",
   components: {InlineSvg},
   props: {
-    id: {type: String, default: "file-input"},
+    id: {type: String, required: true},
     buttonText: {type: String, default: "Upload"},
-    name: {type: String, default: "your file"},
-    acceptedMimeTypes: {type: Array as PropType<string[]>},
+    fileTitle: {type: String, default: "your file"},
+    acceptedFileExtensions: {type: Array as PropType<string[]>},
     maxFileSizeInBytes: {type: Number}
   },
   data() {
@@ -45,11 +45,6 @@ export default defineComponent({
     };
   },
   computed: {
-    acceptedFileExtensions() {
-      if (!this.acceptedMimeTypes)
-        return undefined;
-      return this.acceptedMimeTypes.map(m => mime.getExtension(m) || "").filter(Boolean).join(", ");
-    },
     maximumFileSize() {
       if (this.maxFileSizeInBytes)
         return prettyBytes(this.maxFileSizeInBytes);

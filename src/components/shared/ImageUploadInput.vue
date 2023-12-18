@@ -17,8 +17,9 @@
         </div>
       </div>
     </button>
-    <ImageUploadDialog :maxFileSizeInBytes="maxFileSizeInBytes"
-                       :name="name"
+    <ImageUploadDialog :id="id"
+                       :maxFileSizeInBytes="maxFileSizeInBytes"
+                       :fileTitle="fileTitle"
                        :isShown="isUploadDialogShown"
                        :circular="circular"
                        @onSubmit="setImage"
@@ -33,11 +34,10 @@ import {useStore} from "@/stores/backend/rootStore.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import ImageUploadDialog from "@/components/shared/ImageUploadDialog.vue";
-import BaseDropZoneFileInput from "@/components/ui/BaseDropZoneFileInput.vue";
 
 export default defineComponent({
   name: "ImageUploadInput",
-  components: {BaseDropZoneFileInput, BaseImage, InlineSvg, ImageUploadDialog},
+  components: {BaseImage, InlineSvg, ImageUploadDialog},
   emits: ["update:modelValue"],
   computed: {
     src() {
@@ -53,8 +53,9 @@ export default defineComponent({
     },
   },
   props: {
+    id: {type: String, required: true},
     modelValue: {type: [Object, String] as PropType<Blob | "">},
-    name: {type: String},
+    fileTitle: {type: String},
     oldImagePath: {type: String, default: ""},
     fallback: {type: String, required: false},
     enabled: {type: Boolean, required: false, default: true},

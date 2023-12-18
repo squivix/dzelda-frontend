@@ -3,17 +3,9 @@
     <template v-slot:content>
       <form class="add-lesson-form" @submit.prevent="addLesson">
         <div class="side-inputs">
-          <ImageUploadInput name="lesson image" :fallback="icons.bookOpen" v-model="image"
+          <ImageUploadInput id="lesson-image-input" fileTitle="lesson image" :fallback="icons.bookOpen" v-model="image"
                             :maxFileSizeInBytes="500_000"/>
-
-          <audio controls ref="audio" :src="audioUrl">
-            Your browser does not support the audio element.
-          </audio>
-          <label for="audio-input" class="file-input-label inv-button">
-            <inline-svg :src="icons.upload"/>
-            Upload Audio
-          </label>
-          <input id="audio-input" type="file" accept="audio/*" @change="setAudioFile">
+          <AudioUploadInput id="lesson-audio-input" fileTitle="lesson audio" v-model="audio" :maxFileSizeInBytes="100_000_000"/>
         </div>
         <div class="main-inputs">
           <label for="lesson-course">Course</label>
@@ -53,10 +45,12 @@ import {icons} from "@/icons.js";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {PropType} from "vue";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
+import AudioUploadInput from "@/components/shared/AudioUploadInput.vue";
+import mime from "mime";
 
 export default {
   name: "LessonAddPage",
-  components: {ImageUploadInput, SubmitButton, BaseCard},
+  components: {AudioUploadInput, ImageUploadInput, SubmitButton, BaseCard},
   props: {
     queryParams: {type: Object as PropType<{ courseId?: number }>, required: true}
   },
@@ -67,7 +61,7 @@ export default {
       title: "",
       text: "",
       image: undefined as Blob | undefined,
-      audio: null as File | null,
+      audio: undefined as File | undefined,
       audioUrl: null as string | null,
       isSubmitting: false,
     };
