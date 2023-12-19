@@ -3,23 +3,35 @@
     <template v-slot:content>
       <form class="add-lesson-form" @submit.prevent="addLesson">
         <div class="side-inputs">
-          <ImageUploadInput id="lesson-image-input" fileTitle="lesson image" :fallback="icons.bookOpen" v-model="image"
-                            :maxFileSizeInBytes="500_000"/>
-          <AudioUploadInput id="lesson-audio-input" fileTitle="lesson audio" v-model="audio" :maxFileSizeInBytes="100_000_000"/>
+          <div class="form-row">
+            <label>Image</label>
+            <ImageUploadInput id="lesson-image-input" fileTitle="lesson image" :fallback="icons.bookOpen"
+                              v-model="image"
+                              :maxFileSizeInBytes="500_000"/>
+          </div>
+          <div class="form-row">
+            <label>Audio</label>
+            <AudioUploadInput id="lesson-audio-input" fileTitle="lesson audio" v-model="audio"
+                              :maxFileSizeInBytes="100_000_000"/>
+          </div>
         </div>
         <div class="main-inputs">
-          <label for="lesson-course">Course</label>
-          <select required id="lesson-course" v-model="selectedCourse">
-            <option value="" disabled selected>Select course</option>
-            <option v-for="course in editableCourses" :key="course.id" :value="course.id">{{ course.title }}</option>
-            <option>New Course</option>
-          </select>
-          <label for="lesson-title">Title</label>
-          <input id="lesson-title" type="text" placeholder="Lesson Title" v-model="title" required>
-
-          <label for="lesson-text">Text</label>
-          <textarea placeholder="Lesson Text" id="lesson-text" v-model="text" required></textarea>
-
+          <div class="form-row">
+            <label for="lesson-course">Course</label>
+            <select required id="lesson-course" v-model="selectedCourse">
+              <option value="" disabled selected>Select course</option>
+              <option v-for="course in editableCourses" :key="course.id" :value="course.id">{{ course.title }}</option>
+              <option>New Course</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="lesson-title">Title</label>
+            <input id="lesson-title" type="text" placeholder="Lesson Title" v-model="title" required>
+          </div>
+          <div class="form-row">
+            <label for="lesson-text">Text</label>
+            <textarea placeholder="Lesson Text" id="lesson-text" v-model="text" required></textarea>
+          </div>
           <div class="buttons-div">
             <SubmitButton id="save-and-open-button"
                           type="submit"
@@ -160,7 +172,6 @@ audio {
 }
 
 label {
-  margin-bottom: 0.5rem;
   font-size: 1.25rem;
 }
 
@@ -185,19 +196,9 @@ select {
   column-gap: 0.25rem;
 }
 
-input[type="file"] {
-  display: none;
-}
-
-.file-input-label {
-  font-size: 0.5rem;
+.form-row {
   display: flex;
-  align-items: center;
-  column-gap: 1rem;
-}
-
-.file-input-label svg {
-  width: 30px;
-  height: 30px;
+  flex-direction: column;
+  row-gap: 0.5rem;
 }
 </style>

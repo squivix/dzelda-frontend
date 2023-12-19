@@ -12,14 +12,15 @@
       </SubmitButton>
     </div>
 
-    <ImageUploadInput v-model="profilePicture"
-                          class="profile-picture"
-                          name="profile picture"
-                          :oldImagePath="userStore.userAccount.profile.profilePicture"
-                          :maxFileSizeInBytes="500_000"
-                          :fallback="icons.userProfile"
-                          :enabled="isEditing"
-                          circular/>
+    <ImageUploadInput id="profile-picture-input"
+                      v-model="profilePicture"
+                      class="profile-picture"
+                      name="profile picture"
+                      :oldImagePath="userStore.userAccount.profile.profilePicture"
+                      :maxFileSizeInBytes="500_000"
+                      :fallback="icons.userProfile"
+                      :enabled="isEditing"
+                      circular/>
     <p v-if="errorFields.profilePicture" class="error-message">{{ errorFields.profilePicture }}</p>
     <h3 class="username">{{ userStore.userAccount!.username }}</h3>
     <textarea class="bio" placeholder="Your bio" :disabled="!isEditing" v-model="bio"></textarea>

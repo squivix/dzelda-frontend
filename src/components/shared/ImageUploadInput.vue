@@ -1,9 +1,9 @@
 <template>
   <div class="file-inputs-div">
-    <button v-if="enabled && !!src" class="clear-image-button"
+    <button v-if="enabled && !!src" class="inv-button clear-image-button"
             :style="{'margin-bottom': !circular?'0.5rem':'0'}"
             @click="clearImage" type="button">
-      <inline-svg :src="icons.cross"/>
+      <inline-svg :src="icons.crossRound"/>
     </button>
     <button class="image-wrapper inv-button" type="button" :disabled="!enabled" @click="isUploadDialogShown=true">
       <BaseImage class="base-image"
@@ -131,19 +131,12 @@ input[type="file"] {
 }
 
 .clear-image-button {
-  align-self: flex-end;
-  display: grid;
-  place-items: center;
-  padding: 8px;
-  border: none;
-  background-color: red;
-  fill: white;
-  border-radius: 50%;
+  color: red;
 }
 
 .clear-image-button svg {
-  width: 10px;
-  height: 10px;
+  width: 20px;
+  height: 20px;
 }
 
 .circular {

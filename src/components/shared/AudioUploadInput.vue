@@ -1,12 +1,26 @@
 <template>
-  <div>
-    <audio v-show="src" controls ref="audio" :src="src" @error="onAudioError" @canplay="closeDialog">
-      Your browser does not support the audio element.
+  <div class="input-wrapper">
+    <div class="buttons-div">
+      <button class="upload-button inv-button icon-button" @click="isUploadDialogShown=true" type="button">
+        <template v-if="src">
+          <inline-svg :src="icons.pen"/>
+          Edit
+        </template>
+        <template v-else>
+          <inline-svg :src="icons.upload"/>
+          Upload
+        </template>
+
+      </button>
+      <button class="clear-button inv-button icon-button" v-if="!!src" @click="clearAudio" type="button">
+        <inline-svg :src="icons.crossRound"/>
+        Clear
+      </button>
+    </div>
+    <audio controls v-if="src" ref="audio" :src="src" @error="onAudioError" @canplay="closeDialog">Your browser does
+      not support the audio element.
     </audio>
-    <button class="inv-button" @click="isUploadDialogShown=true" type="button">
-      <inline-svg :src="icons.upload"/>
-      Upload Audio
-    </button>
+
     <FileUploadDialog :id="id"
                       :maxFileSizeInBytes="maxFileSizeInBytes"
                       :externalErrorMessage="errorMessage"
@@ -89,5 +103,28 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
 
+audio {
+  max-width: 200px;
+}
+
+.icon-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.buttons-div {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.clear-button {
+}
 </style>
