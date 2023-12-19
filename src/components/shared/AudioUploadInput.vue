@@ -1,6 +1,6 @@
 <template>
   <div>
-    <audio v-show="src" controls ref="audio" :src="src">
+    <audio v-show="src" controls ref="audio" :src="src" @error="onAudioError" @canplay="closeDialog">
       Your browser does not support the audio element.
     </audio>
     <button class="inv-button" @click="isUploadDialogShown=true" type="button">
@@ -9,7 +9,8 @@
     </button>
     <FileUploadDialog :id="id"
                       :maxFileSizeInBytes="maxFileSizeInBytes"
-                      :acceptedFileExtensions="['.mp3']"
+                      :externalErrorMessage="errorMessage"
+                      :acceptedFileExtensions="['.mp3', '.m4a']"
                       :fileTitle="fileTitle"
                       :isShown="isUploadDialogShown"
                       @onSubmit="setAudio"
@@ -37,7 +38,14 @@ export default defineComponent({
   data() {
     return {
       isUploadDialogShown: false,
+      errorMessage: "",
     };
+  },
+  watch: {
+    isUploadDialogShown() {
+      if (!this.isUploadDialogShown)
+        this.errorMessage = "";
+    }
   },
   computed: {
     src() {
@@ -55,6 +63,14 @@ export default defineComponent({
   methods: {
     setAudio(audioBlob: Blob) {
       this.$emit("update:modelValue", audioBlob);
+    },
+    onAudioError() {
+      if (this.modelValue) {
+        this.errorMessage = "Failed to read audio file";
+        this.$emit("update:modelValue", undefined);
+      }
+    },
+    closeDialog() {
       this.isUploadDialogShown = false;
     },
     clearAudio() {

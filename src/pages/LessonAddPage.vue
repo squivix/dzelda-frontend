@@ -46,7 +46,6 @@ import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {PropType} from "vue";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import AudioUploadInput from "@/components/shared/AudioUploadInput.vue";
-import mime from "mime";
 
 export default {
   name: "LessonAddPage",

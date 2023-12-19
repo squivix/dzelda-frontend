@@ -1,12 +1,13 @@
 <template>
-  <BaseDialog class="base-dialog" :is-open="isShown" @onDismissed="$emit('onClosed')">
-    <BaseDropZoneFileInput :id="id"
+  <BaseDialog :is-open="isShown" @onDismissed="$emit('onClosed')" @onClosingTransitionEnd="clearErrorMessage">
+    <BaseDropZoneFileInput class="drop-zone"
+                           :id="id"
                            :fileTitle="fileTitle"
                            :acceptedFileExtensions="acceptedFileExtensions"
                            :maxFileSizeInBytes="maxFileSizeInBytes"
-                           @onChange="setFile">
+                           @onChange="submitFile">
     </BaseDropZoneFileInput>
-    <p class="error-message" v-if="errorMessage">{{ errorMessage }}</p>
+    <p class="error-message" v-if="externalErrorMessage||errorMessage">{{ externalErrorMessage || errorMessage }}</p>
   </BaseDialog>
 </template>
 
@@ -15,6 +16,7 @@ import {defineComponent, PropType} from "vue";
 import BaseDropZoneFileInput from "@/components/ui/BaseDropZoneFileInput.vue";
 import BaseDialog from "@/components/ui/BaseDialog.vue";
 import prettyBytes from "pretty-bytes";
+import path from "path";
 
 export default defineComponent({
   name: "FileUploadDialog",
@@ -25,37 +27,36 @@ export default defineComponent({
     fileTitle: {type: String},
     circular: {type: Boolean, default: false},
     acceptedFileExtensions: {type: Array as PropType<string[]>},
-    maxFileSizeInBytes: {type: Number}
+    maxFileSizeInBytes: {type: Number},
+    externalErrorMessage: {type: String}
   },
   data() {
     return {
       errorMessage: "",
     };
   },
-  watch: {
-    imageFile() {
-      this.errorMessage = "";
-    }
-  },
   methods: {
-    setFile(file: File) {
-      if (this.acceptedMimeTypes && !this.acceptedMimeTypes.includes(file.type)) {
+    async submitFile(file: File) {
+      if (this.acceptedFileExtensions && !this.acceptedFileExtensions.includes(path.extname(file.name))) {
         this.errorMessage = `File type not accepted`;
         return;
       }
-      this.submitFile(file);
-    },
-    async submitFile(file: File) {
       if (file.size > (this.maxFileSizeInBytes ?? Infinity)) {
         this.errorMessage = `File too big (${prettyBytes(file.size)}), must be no more than ${prettyBytes(this.maxFileSizeInBytes!)}`;
         return;
       }
+      this.errorMessage = "";
       this.$emit("onSubmit", file);
+    },
+    clearErrorMessage() {
+      this.errorMessage = "";
     }
   }
 });
 </script>
 
 <style scoped>
-
+.drop-zone {
+  margin-bottom: 1rem;
+}
 </style>

@@ -25,7 +25,6 @@ import {defineComponent, PropType} from "vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import prettyBytes from "pretty-bytes";
-import mime from "mime";
 
 
 export default defineComponent({

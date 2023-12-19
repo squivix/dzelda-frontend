@@ -14,7 +14,9 @@
                ref="cropper"
                :src="imageUrl"
                :stencilComponent="circular?$options.components!.CircleStencil:$options.components!.RectangleStencil"
-               :stencil-props="{aspectRatio: 1}"/>
+               :stencil-props="{aspectRatio: 1}"
+               @error="onCropperError"
+      />
       <div class="bottom-div">
         <p class="error-message" v-if="errorMessage">{{ errorMessage }}</p>
         <div class="buttons-div">
@@ -36,7 +38,7 @@ import "vue-advanced-cropper/dist/style.css";
 import BaseDropZoneFileInput from "@/components/ui/BaseDropZoneFileInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import prettyBytes from "pretty-bytes";
-import mime from "mime";
+import path from "path";
 
 export default defineComponent({
   name: "ImageUploadDialog",
@@ -64,21 +66,22 @@ export default defineComponent({
       return undefined;
     }
   },
-  watch: {
-    imageFile() {
-      this.errorMessage = "";
-    }
-  },
   methods: {
     setImageFile(file: File) {
-      if (this.acceptedFileExtensions.map(e => mime.getType(e)).includes(file.type))
+      if (!this.acceptedFileExtensions.includes(path.extname(file.name))) {
         this.imageFile = file;
-      else
+        this.errorMessage = "";
+      } else
         this.errorMessage = `File type not accepted`;
     },
     clearData() {
       this.imageFile = undefined;
       this.isSubmitting = false;
+      this.errorMessage = "";
+    },
+    onCropperError() {
+      this.clearData();
+      this.errorMessage = `Error reading image file`;
     },
     onDismissed() {
       if (!this.imageFile)
