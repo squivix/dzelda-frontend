@@ -91,11 +91,8 @@ export default {
         //   await this.$router.push({path: this.$route.query["redir"]});
         await this.$router.push({name: "course", params: {courseId: newCourse.id}});
       } else {
-        const error = response.error;
-        if (error.code == 400)
-          this.errorFields = error.fields as { title: string, description: string, image: string };
-        else if (error.code == 413 || error.code == 415)
-          this.errorFields.image = error.message;
+        if ("fields" in response.error)
+          this.errorFields = response.error.fields as { title: string, description: string, image: string };
       }
     },
 

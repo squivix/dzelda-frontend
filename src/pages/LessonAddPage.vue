@@ -8,11 +8,13 @@
             <ImageUploadInput id="lesson-image-input" fileTitle="lesson image" :fallback="icons.bookOpen"
                               v-model="image"
                               :maxFileSizeInBytes="500_000"/>
+            <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
           </div>
           <div class="form-row">
             <label>Audio</label>
             <AudioUploadInput id="lesson-audio-input" fileTitle="lesson audio" v-model="audio"
                               :maxFileSizeInBytes="100_000_000"/>
+            <p v-if="errorFields.audio" class="error-message">{{ errorFields.audio }}</p>
           </div>
         </div>
         <div class="main-inputs">
@@ -23,14 +25,17 @@
               <option v-for="course in editableCourses" :key="course.id" :value="course.id">{{ course.title }}</option>
               <option>New Course</option>
             </select>
+            <p v-if="errorFields.courseId" class="error-message">{{ errorFields.courseId }}</p>
           </div>
           <div class="form-row">
             <label for="lesson-title">Title</label>
-            <input id="lesson-title" type="text" placeholder="Lesson Title" v-model="title" required>
+            <input id="lesson-title" type="text" placeholder="Lesson Title" v-model="title" required maxlength="124">
+            <p v-if="errorFields.title" class="error-message">{{ errorFields.title }}</p>
           </div>
           <div class="form-row">
             <label for="lesson-text">Text</label>
-            <textarea placeholder="Lesson Text" id="lesson-text" v-model="text" required></textarea>
+            <textarea placeholder="Lesson Text" id="lesson-text" v-model="text" required :maxlength="50_000"></textarea>
+            <p v-if="errorFields.text" class="error-message">{{ errorFields.text }}</p>
           </div>
           <div class="buttons-div">
             <SubmitButton id="save-and-open-button"
@@ -76,6 +81,7 @@ export default {
       audio: undefined as File | undefined,
       audioUrl: null as string | null,
       isSubmitting: false,
+      errorFields: {title: "", text: "", image: "", audio: "", courseId: ""},
     };
   },
   watch: {
@@ -93,6 +99,7 @@ export default {
       this.editableCourses = response.data;
     },
     async addLesson() {
+      this.errorFields = {title: "", text: "", image: "", audio: "", courseId: ""};
       this.isSubmitting = true;
       const response = await this.lessonStore.createLesson({
         courseId: this.selectedCourse as number,
@@ -108,6 +115,12 @@ export default {
           name: "lesson",
           params: {lessonId: lesson.id}
         });
+      } else {
+        if ("fields" in response.error)
+          this.errorFields = response.error.fields as {
+            title: string, text: string,
+            courseId: string, image: string, audio: string,
+          };
       }
     },
   },
@@ -167,7 +180,7 @@ label {
 }
 
 input, select, textarea {
-  margin-bottom: 1rem;
+
   font-size: 1rem;
 }
 
@@ -191,5 +204,6 @@ select {
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 </style>

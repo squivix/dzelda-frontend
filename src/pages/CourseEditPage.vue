@@ -111,11 +111,8 @@ export default {
       if (response.ok)
         this.$router.push({name: "course", ...this.pathParams});
       else {
-        const error = response.error;
-        if (error.code == 400)
-          this.errorFields = error.fields as { title: string, description: string, image: string };
-        else if (error.code == 413 || error.code == 415)
-          this.errorFields.image = error.message;
+        if ("fields" in response.error)
+          this.errorFields = response.error.fields as { title: string, description: string, image: string };
       }
     },
     async fetchCourse() {
