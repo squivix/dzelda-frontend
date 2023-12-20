@@ -1,7 +1,7 @@
 <template>
   <div class="file-inputs-div">
     <button v-if="enabled && !!src" class="inv-button clear-image-button"
-            :style="{'margin-bottom': !circular?'0.5rem':'0'}"
+            :style="{'margin-bottom': !circular?'0.1rem':'0'}"
             @click="clearImage" type="button">
       <inline-svg :src="icons.crossRound"/>
     </button>
@@ -88,6 +88,12 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.file-inputs-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .image-wrapper {
   position: relative;
   cursor: default;
@@ -132,6 +138,7 @@ input[type="file"] {
 
 .clear-image-button {
   color: red;
+  align-self: flex-end;
 }
 
 .clear-image-button svg {

@@ -17,31 +17,29 @@
         Clear
       </button>
     </div>
-    <audio controls v-if="src" ref="audio" :src="src" @error="onAudioError" @canplay="closeDialog">Your browser does
+    <audio controls v-if="src" ref="audio" :src="src">Your browser does
       not support the audio element.
     </audio>
 
-    <FileUploadDialog :id="id"
-                      :maxFileSizeInBytes="maxFileSizeInBytes"
-                      :externalErrorMessage="errorMessage"
-                      :acceptedFileExtensions="['.mp3', '.m4a']"
-                      :fileTitle="fileTitle"
-                      :isShown="isUploadDialogShown"
-                      @onSubmit="setAudio"
-                      @onClosed="isUploadDialogShown=false"/>
+    <AudioUploadDialog :id="id"
+                       :maxFileSizeInBytes="maxFileSizeInBytes"
+                       :fileTitle="fileTitle"
+                       :isShown="isUploadDialogShown"
+                       @onSubmit="setAudio"
+                       @onClosed="isUploadDialogShown=false"/>
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import FileUploadDialog from "@/components/shared/FileUploadDialog.vue";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
+import AudioUploadDialog from "@/components/shared/AudioUploadDialog.vue";
 
 export default defineComponent({
   name: "AudioUploadInput",
-  components: {FileUploadDialog, InlineSvg},
+  components: {AudioUploadDialog, InlineSvg},
   props: {
     id: {type: String, required: true},
     modelValue: {type: [Object, String] as PropType<File | "">},
@@ -52,14 +50,7 @@ export default defineComponent({
   data() {
     return {
       isUploadDialogShown: false,
-      errorMessage: "",
     };
-  },
-  watch: {
-    isUploadDialogShown() {
-      if (!this.isUploadDialogShown)
-        this.errorMessage = "";
-    }
   },
   computed: {
     src() {
@@ -77,14 +68,6 @@ export default defineComponent({
   methods: {
     setAudio(audioBlob: Blob) {
       this.$emit("update:modelValue", audioBlob);
-    },
-    onAudioError() {
-      if (this.modelValue) {
-        this.errorMessage = "Failed to read audio file";
-        this.$emit("update:modelValue", undefined);
-      }
-    },
-    closeDialog() {
       this.isUploadDialogShown = false;
     },
     clearAudio() {

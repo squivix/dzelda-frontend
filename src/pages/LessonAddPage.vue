@@ -63,6 +63,7 @@ export default {
   name: "LessonAddPage",
   components: {AudioUploadInput, ImageUploadInput, SubmitButton, BaseCard},
   props: {
+    pathParams: {type: Object as PropType<{ learningLanguage: string }>, required: true},
     queryParams: {type: Object as PropType<{ courseId?: number }>, required: true}
   },
   data() {
@@ -84,15 +85,9 @@ export default {
     }
   },
   methods: {
-    setAudioFile(event) {
-      this.audio = event.target.files[0];
-      this.audioUrl = URL.createObjectURL(this.audio);
-
-      this.$refs.audio.load();
-    },
     async fetchEditableCourses() {
       const response = await this.courseStore.fetchCourses({
-        languageCode: this.$route.params.learningLanguage,
+        languageCode: this.pathParams.learningLanguage,
         addedBy: "me",
       }, {secure: true});
       this.editableCourses = response.data;
@@ -165,10 +160,6 @@ form {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-}
-
-audio {
-  width: auto;
 }
 
 label {

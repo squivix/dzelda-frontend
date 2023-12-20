@@ -33,7 +33,7 @@
       </div>
       <div class="bottom-div">
         <div>
-          <audio v-if="lesson.audio" controls :src="lesson.audio">
+          <audio v-if="lesson.audio" controls :src="audioUrl">
             Your browser does not support the audio element.
           </audio>
         </div>
@@ -75,7 +75,16 @@ export type LessonElement = { text: string, isWord: boolean, phrases: PhrasesEle
 export type NewVocab = Omit<LearnerVocabSchema, "id" | "addedOn">
 export default defineComponent({
   name: "LessonReaderPage",
-  components: {AuthHeader, InlineSvg, BaseCard, ReaderSidePanel, LoadingScreen, TheLessonContent, TheMeaningPanel, OverlappingPhrasesPanel},
+  components: {
+    AuthHeader,
+    InlineSvg,
+    BaseCard,
+    ReaderSidePanel,
+    LoadingScreen,
+    TheLessonContent,
+    TheMeaningPanel,
+    OverlappingPhrasesPanel
+  },
   props: {
     pathParams: {type: Object as PropType<{ learningLanguage: string, lessonId: number }>, required: true}
   },
@@ -104,6 +113,12 @@ export default defineComponent({
         return `${this.store.resourceUrl}/${imagePath}`;
       return "";
     },
+    audioUrl() {
+      const audioPath = this.lesson!.audio;
+      if (audioPath)
+        return `${this.store.resourceUrl}/${audioPath}`;
+      return "";
+    },
     vocabs() {
       return {...this.words, ...this.phrases};
     },
@@ -130,7 +145,10 @@ export default defineComponent({
       this.isLoadingLesson = false;
     },
     async fetchNextLesson() {
-      const lesson = await this.lessonStore.fetchNextLesson({courseId: this.lesson!.course.id, lessonId: this.lesson!.id});
+      const lesson = await this.lessonStore.fetchNextLesson({
+        courseId: this.lesson!.course.id,
+        lessonId: this.lesson!.id
+      });
       await this.$router.push({...this.$route, params: {lessonId: lesson!.id}});
     },
     async fetchWordsLevels() {

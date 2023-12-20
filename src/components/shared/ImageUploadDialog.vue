@@ -11,6 +11,7 @@
     </div>
     <div class="cropper-div" v-else>
       <Cropper class="cropper"
+               backgroundClass="cropper-background"
                ref="cropper"
                :src="imageUrl"
                :stencilComponent="circular?$options.components!.CircleStencil:$options.components!.RectangleStencil"
@@ -69,10 +70,11 @@ export default defineComponent({
   methods: {
     setImageFile(file: File) {
       if (!this.acceptedFileExtensions.includes(path.extname(file.name))) {
-        this.imageFile = file;
-        this.errorMessage = "";
-      } else
         this.errorMessage = `File type not accepted`;
+        return;
+      }
+      this.imageFile = file;
+      this.errorMessage = "";
     },
     clearData() {
       this.imageFile = undefined;
@@ -111,6 +113,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
 .base-dialog > :deep(div) {
   padding: 0;
 }
@@ -126,6 +129,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
+  overflow: hidden;
 }
 
 .cropper {
@@ -152,4 +156,13 @@ export default defineComponent({
   flex-grow: 1;
 }
 
+:deep(.cropper-background) {
+  background-color: white;
+}
+
+/*TODO decide if you wanna allow transparency in images -> support png*/
+/*:deep(.cropper-background) {*/
+/*background-image: url('/src/assets/images/checkered.svg');*/
+/*background-size: 20px 20px;*/
+/*}*/
 </style>

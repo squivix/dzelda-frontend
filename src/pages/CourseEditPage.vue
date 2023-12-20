@@ -4,7 +4,8 @@
       <LoadingScreen v-if="isLoading || !course"/>
       <form v-else class="edit-course-form" @submit.prevent="submitEditCourse">
         <div class="side-inputs">
-          <ImageUploadInput :oldImagePath="course.image" name="course image" :fallback="icons.books" v-model="image"
+          <ImageUploadInput id="course-image-input" :oldImagePath="course.image" name="course image"
+                            :fallback="icons.books" v-model="image"
                             :maxFileSizeInBytes="500_000"/>
           <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
           <div class="form-row">

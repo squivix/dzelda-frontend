@@ -45,6 +45,7 @@ export default {
 
 .fallback-image {
   flex-shrink: 0;
+  background-image: none;
   background-color: var(--primary-color);
   display: grid;
   place-items: center;
