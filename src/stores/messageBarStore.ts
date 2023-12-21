@@ -34,7 +34,8 @@ export const useMessageBarStore = defineStore("messageBar", {
             this.messageQueue.splice(index, 1);
         },
         clearMessages() {
-            this.messageQueue = [];
+            if (this.messageQueue.length > 0)
+                this.messageQueue.length = 0;
         }
     }
 

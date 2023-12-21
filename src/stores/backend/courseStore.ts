@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {cleanUndefined} from "@/utils.js";
 import {LanguageLevelSchema} from "dzelda-types";
-import {dataUriToBuffer} from "data-uri-to-buffer";
+import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export const useCourseStore = defineStore("course", {
     actions: {
@@ -44,6 +44,7 @@ export const useCourseStore = defineStore("course", {
             isPublic: boolean,
             level: LanguageLevelSchema | undefined
         }) {
+            useMessageBarStore().clearMessages();
             const store = useStore();
             if (body.image instanceof Blob)
                 body.image = new File([body.image], "image");
@@ -63,8 +64,9 @@ export const useCourseStore = defineStore("course", {
         }) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.courses.getCoursesCourseId(pathParams.courseId));
-            // handle your 4XX errors as you may
-            //...
+
+            if (response.status == 404)
+                await this.router.push({name: "not-found"});
             return response.data;
         },
         async updateCourse(pathParams: {
@@ -77,10 +79,11 @@ export const useCourseStore = defineStore("course", {
             image: File | Blob | undefined | "",
             lessonsOrder: number[]
         }) {
+            useMessageBarStore().clearMessages();
             const store = useStore();
             if (body.image instanceof Blob)
                 body.image = new File([body.image], "image");
-            const response = await store.fetchCustom((api) => api.courses.putCoursesCourseId(pathParams.courseId,
+            return await store.fetchCustom((api) => api.courses.putCoursesCourseId(pathParams.courseId,
                 cleanUndefined({
                     data: {
                         title: body.title,
@@ -91,24 +94,21 @@ export const useCourseStore = defineStore("course", {
                     },
                     image: body.image
                 })));
-            return response;
         },
         async addCourseToUserBookmarks(body: {
             courseId: number
         }) {
+            useMessageBarStore().clearMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.postUsersMeCoursesBookmarked({courseId: body.courseId}));
-            // handle your 4XX errors as you may
-            //...
             return response.data;
         },
         async removeCourseFromUserBookmarks(pathParams: {
             courseId: number
         }) {
+            useMessageBarStore().clearMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.deleteUsersMeCoursesBookmarkedCourseId(pathParams.courseId));
-            // handle your 4XX errors as you may
-            //...
             return response.data;
         }
     }

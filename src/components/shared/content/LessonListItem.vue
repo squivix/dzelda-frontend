@@ -3,7 +3,7 @@
     <template v-slot:all>
       <router-link
           :to="{name:'lesson', params:{lessonId:lesson.id}}"
-          class="link">
+          class="inv-link">
         <article>
           <div class="item-content">
             <BaseImage :image-url="imageUrl"

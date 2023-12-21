@@ -32,15 +32,13 @@ export const useStore = defineStore("main", {
                     const message = "We're having trouble reaching our servers, please come back later";
                     const messageBarStore = useMessageBarStore();
                     messageBarStore.addMessage({text: message, type: MessageType.ERROR});
+                    await this.router.push({name: "server-side-error"});
                     throw new Error(message as string);
                 }
 
-                if (response.status >= 500) {
-                    const message = "Something went wrong server-side, please come back later";
-                    const messageBarStore = useMessageBarStore();
-                    messageBarStore.addMessage({text: message, type: MessageType.ERROR});
-                    throw new Error(message as string);
-                } else if (response.status == 401 && !options?.ignore401) {
+                if (response.status >= 500)
+                    await this.router.push({name: "server-side-error"});
+                else if (response.status == 401 && !options?.ignore401) {
                     userStore.token = null;
                     delete localStorage.authToken;
                     this.router.push({name: "home"});

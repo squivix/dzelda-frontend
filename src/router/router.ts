@@ -2,7 +2,6 @@ import {createRouter, createWebHistory} from "vue-router";
 import {privateRoutes} from "@/router/private/privateRoutes.js";
 import {publicRoutes} from "@/router/public/publicRoutes.js";
 import {requiresAuthGuard} from "@/router/beforeEachGuards/requiresAuthGuard.js";
-import {clearMessageBarGuard} from "@/router/beforeEachGuards/clearMessageBarGuard.js";
 import {requiresEmailConfirmedGuard} from "@/router/beforeEachGuards/requiresEmailConfirmedGuard.js";
 import {fetchUserDataGuard} from "@/router/beforeEachGuards/fetchUserDataGuard.js";
 import {redirToLangSpecificGuard} from "@/router/beforeEachGuards/redirToLangSpecificGuard.js";
@@ -14,6 +13,7 @@ export const router = createRouter({
     routes: [
         ...privateRoutes,
         ...publicRoutes,
+        {path: "/:pathMatch(.*)*", redirect: {name: "not-found"}},
     ],
     history: createWebHistory(),
 });
@@ -25,4 +25,3 @@ router.beforeEach(redirToLangSpecificGuard);
 router.beforeEach(validatePathParams);
 router.beforeEach(validateQueryParamsGuard);
 router.beforeEach(updateLanguageLastOpenedGuard);
-router.beforeEach(clearMessageBarGuard);

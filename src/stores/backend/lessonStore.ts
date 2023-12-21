@@ -2,6 +2,7 @@ import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {LessonSchema} from "dzelda-types";
 import {cleanUndefined} from "@/utils.js";
+import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export const useLessonStore = defineStore("lesson", {
     actions: {
@@ -14,9 +15,6 @@ export const useLessonStore = defineStore("lesson", {
         } = {}) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.lessons.getLessons(queryParams));
-
-            // handle your 4XX errors as you may
-            //...
             return response.data;
         },
         async fetchLessonsInHistory(queryParams: {
@@ -29,9 +27,6 @@ export const useLessonStore = defineStore("lesson", {
         } = {}) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.getUsersMeLessonsHistory(queryParams));
-
-            // handle your 4XX errors as you may
-            //...
             return response.data;
         },
         async createLesson(body: {
@@ -41,6 +36,7 @@ export const useLessonStore = defineStore("lesson", {
             image: File | Blob | undefined,
             audio: File | undefined
         }) {
+            useMessageBarStore().clearMessages();
             const store = useStore();
             if (body.image instanceof Blob)
                 body.image = new File([body.image], "image");
@@ -59,28 +55,20 @@ export const useLessonStore = defineStore("lesson", {
             const response = await store.fetchCustom((api) => api.users.postUsersMeLessonsHistory({
                 lessonId: body.lessonId
             }));
-
-            // handle your 4XX errors as you may
-            //...
-
+            if (response.status == 404)
+                await this.router.push({name: "not-found"});
             return response.data;
         },
         async fetchLesson(pathParams: { lessonId: number }) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.lessons.getLessonsLessonId(pathParams.lessonId));
-
-            // handle your 4XX errors as you may
-            //...
-
+            if (response.status == 404)
+                await this.router.push({name: "not-found"});
             return response.data;
         },
         async fetchNextLesson(pathParams: { lessonId: number, courseId: number }) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.courses.getCoursesCourseIdLessonsLessonIdNext(pathParams.courseId, pathParams.lessonId));
-
-            // handle your 4XX errors as you may
-            //...
-
             if (response.redirected) {
                 response.data = await response.json();
                 return response.data as LessonSchema;

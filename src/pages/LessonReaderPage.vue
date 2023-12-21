@@ -123,11 +123,6 @@ export default defineComponent({
       return {...this.words, ...this.phrases};
     },
   },
-  watch: {
-    // pathParams() {
-    //   this.fetchLessonData()
-    // }
-  },
   async mounted() {
     await this.lessonStore.addLessonToUserHistory({lessonId: this.pathParams.lessonId});
     await this.fetchLesson();
@@ -135,9 +130,6 @@ export default defineComponent({
     await this.parseLesson();
   },
   methods: {
-    // async fetchLessonData() {
-    //
-    // },
     async fetchLesson() {
       this.isLoadingLesson = true;
       this.lesson = await this.lessonStore.fetchLesson({lessonId: this.pathParams.lessonId});

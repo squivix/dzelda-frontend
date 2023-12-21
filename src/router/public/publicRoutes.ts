@@ -7,6 +7,7 @@ import ResetPasswordPage from "@/pages/auth/ResetPasswordPage.vue";
 import {setDefaultRouteMeta} from "@/router/routerUtils.js";
 import {z} from "zod";
 import NotFoundPage from "@/pages/NotFoundPage.vue";
+import ServerSideErrorPage from "@/pages/ServerSideErrorPage.vue";
 
 export const publicRoutes: RouteRecordRaw[] = [
     {path: "/", redirect: {name: "home"}, name: "root"},
@@ -28,11 +29,13 @@ export const publicRoutes: RouteRecordRaw[] = [
         },
         props: ({query: q}) => ({queryParams: {token: q.token ?? ""}}),
     },
-    {path: "/not-found", name: "not-found", component: NotFoundPage},
+    {path: "/404", name: "not-found", component: NotFoundPage},
+    {path: "/500", name: "server-side-error", component: ServerSideErrorPage, meta: {showHeader: false, showFooter: false}},
 ];
 
 setDefaultRouteMeta(publicRoutes, {
     requiresAuth: false,
     requiresEmailConfirmed: false,
+    showHeader: true,
     showFooter: true
 });

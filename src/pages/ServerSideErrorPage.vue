@@ -1,6 +1,7 @@
 <template>
   <EmptyScreen>
-    <p>404 Page not found</p>
+    <p>500 Something went wrong Server-side</p>
+    <p>Please come back later</p>
   </EmptyScreen>
 </template>
 
@@ -9,7 +10,7 @@ import {defineComponent} from "vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 
 export default defineComponent({
-  name: "NotFoundPage",
+  name: "ServerSideErrorPage",
   components: {EmptyScreen}
 });
 </script>

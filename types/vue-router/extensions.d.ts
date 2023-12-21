@@ -7,6 +7,7 @@ declare module "vue-router" {
         requiresAuth?: boolean;
         requiresEmailConfirmed?: boolean;
         showFooter?: boolean;
+        showHeader?: boolean;
         queryParams?: { [key: string]: RouteParamDef };
         pathParams?: { [key: string]: RouteParamDef }
     }

@@ -276,5 +276,6 @@ export const privateRoutes: RouteRecordRaw[] = [
 setDefaultRouteMeta(privateRoutes, {
     requiresAuth: true,
     requiresEmailConfirmed: true,
+    showHeader: true,
     showFooter: false
 });

@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {VocabLevelSchema} from "dzelda-types";
+import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export const useVocabStore = defineStore("vocab", {
     actions: {
@@ -13,55 +14,38 @@ export const useVocabStore = defineStore("vocab", {
         } = {}) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.getUsersMeVocabs(queryParams));
-
-            // handle your 4XX errors as you may
-            //...
-
             return response.data;
         },
         async createVocab(body: { text: string, languageCode: string, isPhrase: boolean }) {
+            useMessageBarStore().clearMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.vocabs.postVocabs({
                 text: body.text,
                 languageCode: body.languageCode,
                 isPhrase: body.isPhrase
             }));
-
-            // handle your 4XX errors as you may
-            //...
-
             return response.data;
         },
         async addVocabToUser(body: { vocabId: number }) {
+            useMessageBarStore().clearMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.postUsersMeVocabs({
                 vocabId: body.vocabId
             }));
-
-            // handle your 4XX errors as you may
-            //...
-
             return response.data;
         },
         async updateUserVocab(pathParams: { vocabId: number }, body: { level?: (-1 | 0 | 1 | 2 | 3 | 4 | 5 | 6), notes?: string }) {
+            useMessageBarStore().clearMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.patchUsersMeVocabsVocabId(pathParams.vocabId, {
                 level: body.level,
                 notes: body.notes
             }));
-
-            // handle your 4XX errors as you may
-            //...
-
             return response.data;
         },
         async fetchLessonVocabs(pathParams: { lessonId: number }, queryParams: {}) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.lessons.getLessonsLessonIdVocabs(pathParams.lessonId, queryParams));
-
-            // handle your 4XX errors as you may
-            //...
-
             return response.data;
         },
 

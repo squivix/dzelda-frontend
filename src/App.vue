@@ -1,24 +1,19 @@
 <template>
   <div id="the-root">
-    <template v-if="userStore.userAccount||!userStore.isAuthenticated">
-      <component
-          :is="userStore.isAuthenticated ? 'auth-header' : 'guest-header'">
-      </component>
+    <component v-if="$route.meta.showHeader" :is="userStore.isAuthenticated ? 'auth-header' : 'guest-header'"/>
+    <TheMessageBarQueue class="message-bar-queue"/>
 
-      <TheMessageBarQueue class="message-bar-queue"></TheMessageBarQueue>
+    <aside class="left-side"></aside>
 
-      <aside class="left-side"></aside>
+    <main>
+      <router-view v-slot="{ Component, route }">
+        <component :is="Component" :key="route.path"/>
+      </router-view>
+    </main>
 
-      <main>
-        <router-view v-slot="{ Component, route }">
-          <component :is="Component" :key="route.path"/>
-        </router-view>
-      </main>
+    <aside class="right-side"></aside>
 
-      <aside class="right-side"></aside>
-
-      <TheFooter v-if="$route.meta.showFooter"/>
-    </template>
+    <TheFooter v-if="$route.meta.showFooter"/>
   </div>
 </template>
 <script lang="ts">
