@@ -1,39 +1,38 @@
 <template>
   <BaseCard>
     <template v-slot:all>
-      <article class="course-article">
-        <BaseImage :image-url="imageUrl" :fall-back-url="icons.books"
-                   alt-text="course image"></BaseImage>
+      <router-link
+          :to="{name:'course', params:{courseId:course.id}}">
+        <article class="course-article">
+          <BaseImage :image-url="imageUrl" :fall-back-url="icons.books"
+                     alt-text="course image"></BaseImage>
 
-        <div class="title-row">
-          <router-link
-              :to="{name:'course', params:{learningLanguage:$route.params.learningLanguage, courseId:course.id}}">
+          <div class="title-row">
             <h4>{{ course.title }}</h4>
-          </router-link>
 
-          <BaseDropDown
-              :label="`course-card-${course.id}`"
-              group="course-cards"
-              :centered="false"
-              :round="false">
-            <template v-slot:button>
-              <inline-svg :src="icons.dotsStacked" class="more-button"/>
-            </template>
-            <template v-slot:menu>
+            <BaseDropDown :label="`course-card-${course.id}`"
+                          group="course-cards"
+                          :centered="false"
+                          :round="false">
+              <template v-slot:button>
+                <inline-svg :src="icons.dotsStacked" class="more-button"/>
+              </template>
+              <template v-slot:menu>
 
-              <!--TODO:Only show link if user is authorized to edit course-->
-              <ol class="dropdown-list">
-                <li>
-                  <router-link :to="{ name: 'edit-course' , params:{courseId:course.id}}">
-                    <inline-svg :src="icons.pen"/>
-                    <span>Edit</span>
-                  </router-link>
-                </li>
-              </ol>
-            </template>
-          </BaseDropDown>
-        </div>
-      </article>
+                <!--TODO:Only show link if user is authorized to edit course-->
+                <ol class="dropdown-list">
+                  <li>
+                    <router-link :to="{ name: 'edit-course' , params:{courseId:course.id}}">
+                      <inline-svg :src="icons.pen"/>
+                      <span>Edit</span>
+                    </router-link>
+                  </li>
+                </ol>
+              </template>
+            </BaseDropDown>
+          </div>
+        </article>
+      </router-link>
     </template>
   </BaseCard>
 </template>
@@ -124,5 +123,7 @@ h4 {
   cursor: pointer;
 }
 
-
+:deep(.dropdown-label) {
+  padding: 0.5rem;
+}
 </style>

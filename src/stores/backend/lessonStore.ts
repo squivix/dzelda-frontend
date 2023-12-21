@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {LessonSchema} from "dzelda-types";
+import {cleanUndefined} from "@/utils.js";
 
 export const useLessonStore = defineStore("lesson", {
     actions: {
@@ -43,7 +44,7 @@ export const useLessonStore = defineStore("lesson", {
             const store = useStore();
             if (body.image instanceof Blob)
                 body.image = new File([body.image], "image");
-            return await store.fetchCustom((api) => api.lessons.postLessons({
+            return await store.fetchCustom((api) => api.lessons.postLessons(cleanUndefined({
                 data: {
                     title: body.title,
                     text: body.text,
@@ -51,7 +52,7 @@ export const useLessonStore = defineStore("lesson", {
                 },
                 image: body.image as File | undefined,
                 audio: body.audio,
-            }));
+            })));
         },
         async addLessonToUserHistory(body: { lessonId: number }) {
             const store = useStore();

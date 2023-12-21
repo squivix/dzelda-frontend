@@ -1,6 +1,6 @@
 <template>
   <div class="dropdown">
-    <label :for="`dropdown-checkbox-${label}`" class="dropdown-label link">
+    <label :for="`dropdown-checkbox-${label}`" class="dropdown-label link" @click.prevent.stop="triggerIsShown">
       <slot name="button">
 
       </slot>
@@ -42,6 +42,9 @@ export default {
     }
   },
   methods: {
+    triggerIsShown() {
+      this.isShown = !this.isShown;
+    },
     hide() {
       this.isShown = false;
     },
@@ -62,6 +65,7 @@ export default {
 
 .menu {
   position: absolute;
+  margin-top: 0.1rem;
   text-align: center;
   border: none;
   background-color: var(--on-primary-color);

@@ -46,7 +46,7 @@ export default defineComponent({
   aspect-ratio: 1 / 1;
   width: 35px;
   height: 35px;
-  border-radius: 50%;
+  border-radius: 5px;
   background-color: var(--primary-color);
   border: 1px solid var(--on-primary-color);
 }

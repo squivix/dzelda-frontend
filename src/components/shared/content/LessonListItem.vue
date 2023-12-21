@@ -1,43 +1,43 @@
 <template>
   <BaseCard>
     <template v-slot:all>
-      <article>
-        <div class="item-content">
-          <BaseImage :image-url="imageUrl"
-                     :fall-back-url="icons.bookOpen"
-                     alt-text="lesson image"/>
-          <div class="title-stats">
-            <div class="title-subtitle">
-              <router-link
-                  :to="{name:'lesson', params:{learningLanguage:$route.params.learningLanguage, lessonId:lesson.id}}"
-                  class="link">
+      <router-link
+          :to="{name:'lesson', params:{lessonId:lesson.id}}"
+          class="link">
+        <article>
+          <div class="item-content">
+            <BaseImage :image-url="imageUrl"
+                       :fall-back-url="icons.bookOpen"
+                       alt-text="lesson image"/>
+            <div class="title-stats">
+              <div class="title-subtitle">
                 <h4>{{ lesson.title }}</h4>
-              </router-link>
-
-              <router-link v-if="showCourse"
-                           :to="{name:'course', params:{learningLanguage:$route.params.learningLanguage, courseId:lesson.course.id}}">
-                <p class="course-title">{{ lesson.course.title }}</p>
-              </router-link>
-            </div>
-
-            <div class="stats">
-              <div class="stats-count">
-                <span class="vocabs-indicator new-vocabs"></span>
-                <div>
-                  <span>{{ lesson.vocabsByLevel![VocabLevelSchema.NEW] }} (</span>
-                  <span :class="newVocabsPercentageClass">{{ newVocabsPercentage }}%</span>
-                  <span>)</span>
-                </div>
-
+                <router-link v-if="showCourse"
+                             :to="{name:'course', params:{ courseId:lesson.course.id}}"
+                             class="link-parent">
+                  <p class="course-title">{{ lesson.course.title }}</p>
+                </router-link>
               </div>
-              <div class="stats-count">
-                <span class="vocabs-indicator saved-vocabs"></span>
-                <span>{{ savedVocabsCount }}</span>
+
+              <div class="stats">
+                <div class="stats-count">
+                  <span class="vocabs-indicator new-vocabs"></span>
+                  <div>
+                    <span>{{ lesson.vocabsByLevel![VocabLevelSchema.NEW] }} (</span>
+                    <span :class="newVocabsPercentageClass">{{ newVocabsPercentage }}%</span>
+                    <span>)</span>
+                  </div>
+
+                </div>
+                <div class="stats-count">
+                  <span class="vocabs-indicator saved-vocabs"></span>
+                  <span>{{ savedVocabsCount }}</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </article>
+        </article>
+      </router-link>
     </template>
   </BaseCard>
 </template>

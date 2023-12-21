@@ -6,7 +6,7 @@
         <div class="bar-table-wrapper">
           <div class="top-bar">
             <SearchBar :initial-search-query="queryParams.searchQuery"/>
-            <button class="filter-button" @click.stop="toggleFilters">
+            <button class="filter-button icon-wrapper" @click.stop="toggleFilters">
               <inline-svg :src="icons.filter"/>
             </button>
           </div>
@@ -215,7 +215,8 @@ export default {
 .filter-button {
   border: 2px solid grey;
   border-radius: 5px;
-  height: 30px;
+  height: 35px;
+  width: 35px;
 }
 
 .filter-button:hover {

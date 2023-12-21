@@ -117,8 +117,8 @@ export default defineComponent({
 .filter-button {
   border: 2px solid grey;
   border-radius: 5px;
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
 }
 
 .filter-button:hover {

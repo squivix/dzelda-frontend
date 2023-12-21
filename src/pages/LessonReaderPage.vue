@@ -39,13 +39,13 @@
         </div>
         <!-- TODO move to expanding button component-->
         <button v-if="!lesson.isLastInCourse"
-                class="next-lesson-button secondary-filled-button icon-button capsule-button" @click="fetchNextLesson">
+                class="next-lesson-button secondary-filled-button icon-text-button capsule-button" @click="fetchNextLesson">
           <span :class="{'no-text': lessonTextScrollPosition == 'middle'}">Next Lesson</span>
           <inline-svg :src="icons.arrowRight"/>
         </button>
         <router-link v-else
                      :to="{name:'home'}"
-                     class="next-lesson-button secondary-filled-button icon-button capsule-button">
+                     class="next-lesson-button secondary-filled-button icon-text-button capsule-button">
           <inline-svg :src="icons.checkMark"/>
           <span :class="{'no-text': lessonTextScrollPosition == 'middle'}">Finish Course</span>
         </router-link>

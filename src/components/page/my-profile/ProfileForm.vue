@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="updateProfile" v-if="userStore.userAccount" class="profile-wrapper">
-    <button v-if="!isEditing" @click="editForm" class="edit-button square-button icon-button primary-hollow-button">
+    <button v-if="!isEditing" @click="editForm" class="edit-button square-button icon-text-button primary-hollow-button">
       <inline-svg :src="icons.pen"/>
       Edit
     </button>

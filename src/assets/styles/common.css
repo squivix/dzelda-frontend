@@ -88,7 +88,7 @@ button:hover {
     cursor: pointer;
 }
 
-.icon-button {
+.icon-text-button {
     display: flex;
     align-items: center;
     column-gap: 0.2rem;
