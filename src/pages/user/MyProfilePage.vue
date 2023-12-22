@@ -63,4 +63,26 @@ export default {
   row-gap: 1rem;
 }
 
+@media screen and (max-width: 750px) {
+  .profile-stats {
+    flex-direction: column;
+    align-items: stretch;
+    row-gap: 1rem;
+  }
+
+  .profile-wrapper {
+    width: unset;
+  }
+
+  :deep(.line-chart-wrapper) {
+    width: unset;
+    height: 350px;
+  }
+
+  :deep(.bar-chart-wrapper) {
+    width: unset;
+    height: 350px;
+  }
+}
+
 </style>

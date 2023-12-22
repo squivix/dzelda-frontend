@@ -18,7 +18,8 @@ export default defineComponent({
     chartOptions: {type: Object as PropType<ChartOptions>, required: false, default: {}},
     title: {type: String, required: false},
     xLabel: {type: String, required: false},
-    yLabel: {type: String, required: false}
+    yLabel: {type: String, required: false},
+    legendPosition: {type: String as PropType<"top" | "left" | "bottom" | "right" | "chartArea">, default: "right"}
   },
   computed: {
     data(): ChartData<"line", (number | Point | null)[], unknown> {
@@ -34,8 +35,8 @@ export default defineComponent({
         plugins: {
           title: {text: this.title, display: !!this.title},
           legend: {
-            position: "right",
-            labels: {boxWidth: 20}
+            position: this.legendPosition,
+            labels: {boxWidth: 20},
           }
         },
       };

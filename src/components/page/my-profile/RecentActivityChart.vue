@@ -15,6 +15,7 @@
                    :chart-data="chartData"
                    :x-label="xLabel"
                    y-label="New vocabs"
+                   :legend-position="windowWidth>=750?'right':'bottom'"
                    :chart-options="{scales: {y: {ticks: {precision:0}}}}"/>
   </div>
 </template>
@@ -28,6 +29,7 @@ import {UserSchema, VocabLevelSchema} from "dzelda-types";
 import {ChartData, ChartDataset} from "chart.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {toSentenceCase} from "@/utils.js";
+import {useWindowSize} from "@vueuse/core";
 
 enum RecentActivityPeriod {
   LAST_WEEK = "last-week",
@@ -113,17 +115,18 @@ export default defineComponent({
     this.fetchChartData();
   },
   setup() {
-    return {vocabStore: useVocabStore(), RecentActivityPeriod};
+    const {width: windowWidth, height: windowHeight} = useWindowSize();
+    return {
+      windowWidth,
+      windowHeight,
+      vocabStore: useVocabStore(),
+      RecentActivityPeriod
+    };
   }
 });
 </script>
 
 <style scoped>
-:deep(.line-series-chart-wrapper) {
-  min-height: 200px;
-  width: 50vw;
-}
-
 .loading-screen {
   height: 200px;
   width: 50vw;

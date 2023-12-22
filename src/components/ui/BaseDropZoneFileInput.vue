@@ -13,9 +13,10 @@
         <inline-svg :src="icons.upload"/>
         {{ buttonText }}
       </button>
-      <p v-if="acceptedFileExtensions">Accepted file formats: {{ acceptedFileExtensions.join(",") }}</p>
-      <p v-if="maximumFileSize">Maximum file size: {{ maximumFileSize }}</p>
-
+      <div class="bottom-text">
+        <p v-if="acceptedFileExtensions">Accepted file formats: {{ acceptedFileExtensions.join(",") }}</p>
+        <p v-if="maximumFileSize">Maximum file size: {{ maximumFileSize }}</p>
+      </div>
     </label>
   </div>
 </template>
@@ -84,7 +85,7 @@ export default defineComponent({
   width: 50vw;
   height: 300px;
   max-width: 600px;
-  min-width: 300px;
+  min-width: 250px;
   display: grid;
   place-items: center;
 }
@@ -107,7 +108,12 @@ input[type=file] {
 label {
   cursor: pointer;
 }
-
+.bottom-text{
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+}
 h5 {
   font-size: 1.5rem;
 }
