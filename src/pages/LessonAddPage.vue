@@ -205,4 +205,10 @@ select {
   row-gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
+
+@media screen and (max-width: 750px) {
+  .add-lesson-form {
+    flex-direction: column;
+  }
+}
 </style>

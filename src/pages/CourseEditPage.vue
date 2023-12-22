@@ -217,4 +217,10 @@ input:not([type='checkbox']), select, textarea {
 }
 
 
+@media screen and (max-width: 750px) {
+  .edit-course-form {
+    flex-direction: column;
+  }
+}
+
 </style>

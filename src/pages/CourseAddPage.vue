@@ -1,7 +1,6 @@
 <template>
   <BaseCard title="Add Course" class="add-course-base-card main-page-base-card">
     <template v-slot:content>
-
       <form class="add-course-form" @submit.prevent="onSubmit">
         <div class="image-level-section">
           <ImageUploadInput id="course-image-input" name="course image" :fallback="icons.books" v-model="image"
@@ -167,4 +166,9 @@ export default {
   row-gap: 1rem;
 }
 
+@media screen and (max-width: 750px) {
+  .add-course-form{
+    flex-direction: column;
+  }
+}
 </style>
