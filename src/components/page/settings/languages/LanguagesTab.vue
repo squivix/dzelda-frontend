@@ -1,7 +1,17 @@
 <template>
   <div class="settings-tab">
     <h2>Languages</h2>
-    <table class="languages">
+    <LoadingScreen v-if="!userLanguages"/>
+    <EmptyScreen v-else-if="userLanguages.length==0" message="No languages learning">
+      <template v-slot:no-filters>
+        <router-link :to="{name:'new-language'}" class="new-language-button empty-screen inv-link">
+          <inline-svg :src="icons.plusRound" class="empty-icon"/>
+          <p>Not learning any languages</p>
+          <p>Add language</p>
+        </router-link>
+      </template>
+    </EmptyScreen>
+    <table v-else class="languages">
       <thead>
       <tr>
         <th>Language</th>
@@ -13,17 +23,14 @@
       <LanguageRow v-for="language in userLanguages"
                    :key="language.id"
                    :language="language"
-                   @onRemoveLanguageClicked="onRemoveLanguageClicked"
-      />
+                   @onRemoveLanguageClicked="onRemoveLanguageClicked"/>
       </tbody>
       <tfoot>
       <tr>
         <td colspan="3">
-          <router-link :to="{name:'new-language'}" class="new-language link">
+          <router-link :to="{name:'new-language'}" class="new-language-link">
             <inline-svg :src="icons.plusRound" class="language-icon"/>
-            <button class="inv-button link">
-              Add another language
-            </button>
+            <p>Add another language</p>
           </router-link>
         </td>
       </tr>
@@ -51,10 +58,12 @@ import {icons} from "@/icons.js";
 import SeriousConfirmDialog from "@/components/shared/SeriousConfirmDialog.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import LanguageRow from "@/components/page/settings/languages/LanguageRow.vue";
+import EmptyScreen from "@/components/shared/EmptyScreen.vue";
+import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 
 export default {
   name: "LanguagesTab",
-  components: {LanguageRow, SubmitButton, SeriousConfirmDialog, InlineSvg},
+  components: {LoadingScreen, EmptyScreen, LanguageRow, SubmitButton, SeriousConfirmDialog, InlineSvg},
   data() {
     return {
       allLanguages: null as LanguageSchema[] | null,
@@ -122,7 +131,7 @@ h2 {
   text-align: start;
   font-size: 1.1rem;
   font-weight: bold;
-  padding-bottom: 0.75rem;
+  padding: 0 0.25rem 0.75rem;
 }
 
 .languages tbody:deep(tr:nth-child(odd)) {
@@ -134,15 +143,23 @@ h2 {
   padding-top: 1rem;
 }
 
-.new-language {
+.new-language-link {
   display: flex;
   flex-direction: row;
   column-gap: 0.5rem;
-  align-items: center;
+  align-items: center;;
 }
 
-.new-language svg {
+.new-language-link {
   color: black;
 }
 
+.new-language-button:hover, .new-language-button:hover .empty-icon{
+  color: #183153;
+}
+@media screen and (max-width: 750px) {
+  h2 {
+    display: none
+  }
+}
 </style>

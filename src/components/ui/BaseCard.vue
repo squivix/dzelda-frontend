@@ -35,7 +35,7 @@ div {
 }
 
 header {
-  margin-bottom: 2.5rem;
+  margin-bottom: 1rem;
 }
 
 h2 {

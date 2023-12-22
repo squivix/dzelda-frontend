@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent} from "vue";
 import InlineSvg from "vue-inline-svg";
 
 export default defineComponent({
@@ -26,7 +26,7 @@ export default defineComponent({
     message: {type: String, required: false},
     hasFilters: {type: Boolean, required: false, default: false}
   },
-})
+});
 </script>
 
 <style scoped>
@@ -56,6 +56,6 @@ export default defineComponent({
 }
 
 .empty-screen svg {
-  fill: lightgrey;
+  color: lightgrey;
 }
 </style>

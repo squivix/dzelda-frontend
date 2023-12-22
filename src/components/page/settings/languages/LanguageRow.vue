@@ -1,7 +1,7 @@
 <template>
   <tr>
     <td>{{ language.name }}</td>
-    <td>{{ language.addedOn }}</td>
+    <td>{{ addedOn }}</td>
     <td>
       <SubmitButton class="inv-button link"
                     @click="onRemoveLanguageClicked"
@@ -29,6 +29,11 @@ export default defineComponent({
       isSubmittingRemoveLanguage: false
     };
   },
+  computed: {
+    addedOn() {
+      return this.language.addedOn.split("T")[0];
+    }
+  },
   methods: {
     async onRemoveLanguageClicked() {
       this.isSubmittingRemoveLanguage = true;
@@ -39,7 +44,8 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
 td {
-  padding: 0.5rem 0;
+  padding: 0.25rem;
 }
 </style>

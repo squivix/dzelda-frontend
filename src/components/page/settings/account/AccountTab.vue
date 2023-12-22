@@ -48,11 +48,17 @@ section {
 }
 
 section:deep(h3) {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 section:deep(form label) {
   font-size: 0.85rem;
+}
+
+@media screen and (max-width: 750px) {
+  h2 {
+    display: none
+  }
 }
 
 </style>

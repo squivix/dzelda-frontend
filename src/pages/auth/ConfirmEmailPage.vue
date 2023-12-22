@@ -1,5 +1,5 @@
 <template>
-  <p class="submit-message" v-if="!tokenInvalid">
+  <p v-if="!tokenInvalid">
     Confirming Email...
     <br><br>
     You will be redirected shortly.

@@ -59,13 +59,7 @@ button a {
 }
 
 button {
-  min-width: 100px;
   border: 1px solid var(--on-primary-color);
 }
 
-@media screen and (max-width: 400px) {
-  #auth-buttons {
-    display: none;
-  }
-}
 </style>

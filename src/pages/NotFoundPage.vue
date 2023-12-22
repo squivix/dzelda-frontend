@@ -18,7 +18,6 @@ div {
   text-align: center;
   color: grey;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-
 }
 
 h2 {

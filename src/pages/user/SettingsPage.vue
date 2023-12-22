@@ -4,12 +4,12 @@
       <div class="content">
         <nav class="nav-panel">
           <ul>
-            <li>
+            <li :class="{'current-tab':$route.name=='account-settings'}">
               <router-link :to="{name:'account-settings'}">
                 Account
               </router-link>
             </li>
-            <li>
+            <li :class="{'current-tab':$route.name=='language-settings'}">
               <router-link :to="{name:'language-settings'}">
                 Languages
               </router-link>
@@ -36,10 +36,6 @@ export default {
 </script>
 
 <style scoped>
-.settings-base-card {
-  padding-bottom: 1rem;
-}
-
 .content {
   display: flex;
   height: 50vh;
@@ -61,8 +57,8 @@ export default {
   padding: 1rem 1rem;
 }
 
-.nav-panel a:hover {
-  background-color: lightgray;
+.current-tab {
+  background-color: gainsboro;
 }
 
 .settings-tab {
@@ -73,5 +69,39 @@ export default {
   border-left: 3px solid silver;
   border-radius: 5px;
   margin: 0 1rem 0 0;
+}
+
+@media screen and (max-width: 750px) {
+  .content {
+    flex-direction: column;
+    row-gap: 1rem;
+  }
+
+  .vertical-divider {
+    display: none;
+  }
+
+  .nav-panel {
+    height: auto;
+    flex: 0;
+  }
+
+  .nav-panel > ul {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .nav-panel > ul > li {
+    font-size: 1.2rem;
+  }
+
+  .current-tab {
+    border-bottom: 3px solid var(--secondary-color);
+    background: none;
+  }
+
+  .nav-panel a:hover {
+    background-color: unset;
+  }
 }
 </style>

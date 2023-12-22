@@ -218,7 +218,7 @@ svg {
 }
 
 .empty-icon {
-    fill: lightgrey;
+    color: lightgrey;
     width: 60px;
     height: 60px;
 }
