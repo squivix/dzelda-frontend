@@ -42,6 +42,11 @@ export default defineComponent({
   align-items: center;
 }
 
+.search-input {
+  max-width: 200px;
+  width: 40vw;
+}
+
 .search-button {
   aspect-ratio: 1 / 1;
   width: 35px;

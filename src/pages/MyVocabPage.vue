@@ -2,57 +2,59 @@
   <BaseCard title="My Vocabulary" class="my-vocab-base-card main-page-base-card">
     <template v-slot:content>
       <LoadingScreen v-if="loading"/>
-      <section class="main-content" @click="clearSelectedVocab" v-else>
-        <div class="bar-table-wrapper">
-          <div class="top-bar">
-            <SearchBar :initial-search-query="queryParams.searchQuery"/>
-            <button class="filter-button icon-wrapper" @click.stop="toggleFilters">
-              <inline-svg :src="icons.filter"/>
-            </button>
-          </div>
-          <VocabFilters :is-shown="isFiltersShown"
-                        @on-filters-cleared="() => isFiltersShown=false"
-                        @on-filters-applied="() => isFiltersShown=false"/>
-          <EmptyScreen v-if="!vocabs||vocabs.length==0" :has-filters="hasFilters">
-            <template v-slot:no-filters>
-              <div class="empty-screen">
-                <inline-svg :src="icons.vocabsList" class="empty-icon"/>
-                <p>Vocabs you lookup
-                  <br>
-                  will appear here</p>
-              </div>
-            </template>
-            <template v-slot:with-filters>
-              <div class="empty-screen">
-                <inline-svg :src="icons.search" class="empty-icon"/>
-                <p>No vocabs match your query</p>
-
-                <button @click="clearFilters" class="clear-filters-button inv-button link">
-                  <inline-svg :src="icons.removeFilter"/>
-                  Clear query
-                </button>
-              </div>
-            </template>
-          </EmptyScreen>
-          <VocabTable v-else
-                      :vocabs="vocabs"
-                      @onVocabClicked="setSelectedVocab"
-                      @onVocabLevelSet="onVocabLevelSet">
-          </VocabTable>
+      <section class="" @click="clearSelectedVocab" v-else>
+        <div class="top-bar">
+          <SearchBar :initial-search-query="queryParams.searchQuery"/>
+          <button class="filter-button icon-wrapper" @click.stop="toggleFilters">
+            <inline-svg :src="icons.filter"/>
+          </button>
         </div>
-        <div class="meaning-panel-wrapper" v-if="vocabs&&vocabs.length>0">
-          <TheMeaningPanel
-              :vocab="selectedVocab!"
-              @click.stop
-              @onMeaningAdded="onMeaningAdded"
-              @onVocabLevelSet="onVocabLevelSet"
-              @onVocabNotesSet="onVocabNotesSet"
-              @onMeaningDeleted="onMeaningDeleted"
-              :class="{'meaning-panel':!!selectedVocab}">
-            <template v-slot:no-selected-panel>
-              <h4>Select a word or phrase</h4>
-            </template>
-          </TheMeaningPanel>
+        <VocabFilters :is-shown="isFiltersShown"
+                      @on-filters-cleared="() => isFiltersShown=false"
+                      @on-filters-applied="() => isFiltersShown=false"/>
+        <div class="main-content">
+          <div class="table-wrapper styled-scrollbars">
+            <EmptyScreen v-if="!vocabs||vocabs.length==0" :has-filters="hasFilters">
+              <template v-slot:no-filters>
+                <div class="empty-screen">
+                  <inline-svg :src="icons.vocabsList" class="empty-icon"/>
+                  <p>Vocabs you lookup
+                    <br>
+                    will appear here</p>
+                </div>
+              </template>
+              <template v-slot:with-filters>
+                <div class="empty-screen">
+                  <inline-svg :src="icons.search" class="empty-icon"/>
+                  <p>No vocabs match your query</p>
+
+                  <button @click="clearFilters" class="clear-filters-button inv-button link">
+                    <inline-svg :src="icons.removeFilter"/>
+                    Clear query
+                  </button>
+                </div>
+              </template>
+            </EmptyScreen>
+            <VocabTable v-else
+                        :vocabs="vocabs"
+                        @onVocabClicked="setSelectedVocab"
+                        @onVocabLevelSet="onVocabLevelSet">
+            </VocabTable>
+          </div>
+          <div class="meaning-panel-wrapper" v-if="vocabs&&vocabs.length>0">
+            <TheMeaningPanel
+                :vocab="selectedVocab!"
+                @click.stop
+                @onMeaningAdded="onMeaningAdded"
+                @onVocabLevelSet="onVocabLevelSet"
+                @onVocabNotesSet="onVocabNotesSet"
+                @onMeaningDeleted="onMeaningDeleted"
+                :class="{'meaning-panel':!!selectedVocab}">
+              <template v-slot:no-selected-panel>
+                <h4>Select a word or phrase</h4>
+              </template>
+            </TheMeaningPanel>
+          </div>
         </div>
       </section>
       <PaginationControls v-if="pageCount"
@@ -189,19 +191,26 @@ export default {
 .my-vocab-base-card {
 }
 
+section {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
 .main-content {
   display: flex;
   flex-direction: row;
-  column-gap: 1rem;
+  column-gap: 0.75rem;
 }
 
-.bar-table-wrapper {
+.table-wrapper {
   display: flex;
   flex-direction: column;
   flex-grow: 3;
   row-gap: 1rem;
   padding-right: 0.5rem;
   margin-bottom: 1rem;
+  overflow-x: auto;
 }
 
 .top-bar {
@@ -224,8 +233,8 @@ export default {
 
 .meaning-panel-wrapper {
   flex-grow: 1;
+  max-width: 500px;
   flex-basis: 500px;
-  max-width: 400px;
   align-self: flex-start;
 }
 
@@ -245,5 +254,17 @@ export default {
 .clear-filters-button svg {
   width: 20px;
   height: 20px;
+}
+
+@media screen and (max-width: 750px) {
+  .main-content {
+    flex-direction: column;
+    row-gap: 1rem;
+  }
+
+  .meaning-panel-wrapper {
+    max-width: unset;
+    width: 100%;
+  }
 }
 </style>

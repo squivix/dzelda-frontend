@@ -1,6 +1,11 @@
 <template>
   <ol>
     <li>
+      <button class="page-button" :disabled="currentPage<=1" @click="onPageClicked(1)">
+        <inline-svg :src="icons.doubleArrowLeft"/>
+      </button>
+    </li>
+    <li>
       <button class="page-button" :disabled="currentPage<=1" @click="onPageClicked(currentPage-1)">
         <inline-svg :src="icons.arrowLeft"/>
       </button>
@@ -18,8 +23,13 @@
     </li>
 
     <li>
-      <button class="page-button" :disabled="currentPage>=pageCount" @click="onPageClicked(currentPage+1)">
+      <button class="page-button icon-wrapper" :disabled="currentPage>=pageCount" @click="onPageClicked(currentPage+1)">
         <inline-svg :src="icons.arrowRight"/>
+      </button>
+    </li>
+    <li>
+      <button class="page-button" :disabled="currentPage>=pageCount" @click="onPageClicked(pageCount)">
+        <inline-svg :src="icons.doubleArrowRight"/>
       </button>
     </li>
   </ol>
@@ -34,24 +44,10 @@ export default {
   components: {InlineSvg},
   emits: ["onPageClicked"],
   props: {
-    pageCount: {
-      type: Number,
-      required: true,
-    },
-    shownCount: {
-      type: Number,
-      required: false,
-      default: 5,
-    },
-    currentPage: {
-      type: Number,
-      required: true
-    },
-    beforeCurrentCount: {
-      type: Number,
-      required: false,
-      default: 3,
-    }
+    pageCount: {type: Number, required: true,},
+    shownCount: {type: Number, required: false, default: 5},
+    currentPage: {type: Number, required: true},
+    beforeCurrentCount: {type: Number, required: false, default: 3}
   },
   data() {
     return {
@@ -64,11 +60,11 @@ export default {
     }
   },
   methods: {
-    onPageClicked(page) {
+    onPageClicked(page: number) {
       this.$emit("onPageClicked", page);
       this.updatePages(page);
     },
-    updatePages(currentPage) {
+    updatePages(currentPage: number) {
       let pages = [];
       let start = Math.max(1, currentPage - this.beforeCurrentCount);
       let end = Math.min(this.pageCount + 1, start + this.shownCount + this.beforeCurrentCount);
@@ -91,8 +87,9 @@ export default {
 ol {
   display: flex;
   flex-direction: row;
-  column-gap: 1rem;
+  column-gap: 1vw;
   align-self: center;
+
 }
 
 li {
@@ -104,9 +101,10 @@ li {
   background-color: transparent;
   border: 1px solid grey;
   border-radius: 3px;
-  padding: 0.75rem 1rem;
-  /*width: 40px;*/
-  /*height: 40px;*/
+  padding: 0.75rem 0;
+  width: 10vw;
+  max-width: 40px;
+  height: 100%;
 }
 
 .page-button:hover {
@@ -116,5 +114,10 @@ li {
 .current-page-button {
   background-color: var(--primary-color);
   color: var(--on-primary-color);
+}
+
+.page-button svg {
+  width: 10px;
+  height: 10px;
 }
 </style>

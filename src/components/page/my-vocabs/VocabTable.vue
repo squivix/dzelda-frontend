@@ -64,4 +64,10 @@ th:not(.centered-table-col) {
 }
 
 
+@media screen and (max-width: 750px) {
+  .vocab-table-wrapper{
+    max-height: 300px;
+  }
+}
+
 </style>

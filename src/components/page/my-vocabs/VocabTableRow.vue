@@ -9,7 +9,7 @@
       <ul>
         <li v-for="meaning in vocab.learnerMeanings"
             :key="meaning.id">
-          {{ meaning.text }}
+          <span class="bullet-point">&bull;</span> {{ meaning.text }}
         </li>
       </ul>
     </td>
@@ -24,7 +24,8 @@
 
 <script lang="ts">
 import VocabLevelPicker from "@/components/shared/vocab-panel/VocabLevelPicker.vue";
-import {VocabLevelSchema} from "dzelda-types";
+import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-types";
+import {PropType} from "vue";
 
 export default {
   name: "VocabTableRow",
@@ -32,7 +33,7 @@ export default {
   components: {VocabLevelPicker},
   props: {
     vocab: {
-      type: Object,
+      type: Object as PropType<LearnerVocabSchema>,
       required: true,
     }
   },
@@ -61,7 +62,7 @@ tr:nth-child(odd) {
 }
 
 td {
-  padding: 1rem 1rem;
+  padding: 1rem 0.25rem;
 }
 
 td button {
@@ -71,5 +72,16 @@ td button {
 
 .level-picker-td {
   width: 20%;
+}
+
+.bullet-point {
+  font-weight: bold;
+  font-size: 1.7rem;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  column-gap: 0.4rem;
 }
 </style>

@@ -11,7 +11,8 @@
     <BasePageSelector v-if="!!pageCount"
                       :current-page="page"
                       :pageCount="pageCount"
-                      :shown-count="Math.min(5,pageCount)"
+                      :shownCount="Math.min(2,pageCount)"
+                      :beforeCurrentCount="1"
                       @onPageClicked="goToPage">
     </BasePageSelector>
   </div>
@@ -25,31 +26,15 @@ export default {
   components: {BasePageSelector},
   emits: ["onPaginationChanged"],
   props: {
-    page: {
-      type: Number,
-      required: false,
-      default: 1
-    },
-    pageSize: {
-      type: Number,
-      required: false,
-    },
+    page: {type: Number, required: false, default: 1},
+    pageSize: {type: Number, required: false,},
     perPageSelectOptions: {
-      type: Array,
-      required: false,
-      default() {
+      type: Array, required: false, default() {
         return [5, 10, 25, 50, 100];
       },
     },
-    perPageSelectLabel: {
-      type: String,
-      required: false,
-      default: "Max Per Page",
-    },
-    pageCount: {
-      type: Number,
-      required: true,
-    },
+    perPageSelectLabel: {type: String, required: false, default: "Max Per Page",},
+    pageCount: {type: Number, required: true,},
   },
   methods: {
     setPageSize(pageSize: number) {

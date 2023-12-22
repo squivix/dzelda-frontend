@@ -1,6 +1,8 @@
 import arrowDown from "@/assets/images/arrow-down.svg";
 import arrowLeft from "@/assets/images/arrow-left.svg";
 import arrowRight from "@/assets/images/arrow-right.svg";
+import doubleArrowLeft from "@/assets/images/double-arrow-left.svg";
+import doubleArrowRight from "@/assets/images/double-arrow-right.svg";
 import arrowUp from "@/assets/images/arrow-up.svg";
 import book from "@/assets/images/book.svg";
 import bookWithBookmark from "@/assets/images/book-with-bookmark.svg";
@@ -38,6 +40,8 @@ export const icons = {
     arrowDown,
     arrowLeft,
     arrowRight,
+    doubleArrowLeft,
+    doubleArrowRight,
     arrowUp,
     book,
     bookWithBookmark,
