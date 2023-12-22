@@ -44,7 +44,6 @@
 
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
-import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {LessonSchema, VocabLevelSchema, VocabsByLevelSchema} from "dzelda-types";
 import {PropType} from "vue";
@@ -55,7 +54,7 @@ import {icons} from "@/icons.js";
 
 export default {
   name: "LessonListItem",
-  components: {InlineSvg, BaseImage, BaseDropDown, BaseCard},
+  components: {InlineSvg, BaseImage, BaseCard},
   props: {
     lesson: {
       type: Object as PropType<LessonSchema>,

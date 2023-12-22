@@ -1,12 +1,12 @@
 <template>
   <div class="dropdown">
-    <label :for="`dropdown-checkbox-${label}`" class="dropdown-label link" @click.prevent.stop="triggerIsShown">
+    <label :for="`dropdown-checkbox-${id}`" class="dropdown-label link" @click.prevent.stop="triggerIsShown">
       <slot name="button">
 
       </slot>
     </label>
 
-    <input :id="`dropdown-checkbox-${label}`"
+    <input :id="`dropdown-checkbox-${id}`"
            type="checkbox" class="dropdown-checkbox"
            ref="dropdown-checkbox"
            v-model="isShown">
@@ -27,7 +27,7 @@ export default {
   components: {BasePointyDiv},
   props: {
     isPointy: {type: Boolean, required: false, default: false,},
-    label: {type: String, required: true,},
+    id: {type: String, required: true},
     centered: {type: Boolean, required: false, default: true},
     round: {type: Boolean, required: false, default: true}
   },

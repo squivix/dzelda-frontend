@@ -10,7 +10,7 @@
           <div class="title-row">
             <h4>{{ course.title }}</h4>
 
-            <BaseDropDown :label="`course-card-${course.id}`"
+            <BaseDropDown :id="`course-card-${course.id}`"
                           group="course-cards"
                           :centered="false"
                           :round="false">
