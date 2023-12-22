@@ -1,5 +1,5 @@
 <template>
-  <BaseCard title="Edit Course" class="edit-course-base-card">
+  <BaseCard title="Edit Course" class="edit-course-base-card main-page-base-card">
     <template v-slot:content>
       <LoadingScreen v-if="isLoading || !course"/>
       <form v-else class="edit-course-form" @submit.prevent="submitEditCourse">
@@ -146,7 +146,6 @@ export default {
   row-gap: 1.25rem;
   justify-content: flex-start;
   align-items: stretch;
-  width: 70vw;
 }
 
 .edit-course-base-card:deep(header) {

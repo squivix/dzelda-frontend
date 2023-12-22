@@ -1,5 +1,5 @@
 <template>
-  <BaseCard title="Settings" class="settings-base-card">
+  <BaseCard title="Settings" class="settings-base-card main-page-base-card">
     <template v-slot:content>
       <div class="content">
         <nav class="nav-panel">
@@ -37,7 +37,7 @@ export default {
 
 <style scoped>
 .settings-base-card {
-  width: 70vw;
+  padding-bottom: 1rem;
 }
 
 .content {

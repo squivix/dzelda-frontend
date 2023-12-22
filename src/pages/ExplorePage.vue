@@ -1,5 +1,5 @@
 <template>
-  <BaseCard class="explore-base-card">
+  <BaseCard class="explore-base-card main-page-base-card">
     <template v-slot:all>
       <h2>Explore</h2>
       <ul class="tab-labels">
@@ -66,7 +66,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
-  width: 70vw;
 }
 
 h2 {

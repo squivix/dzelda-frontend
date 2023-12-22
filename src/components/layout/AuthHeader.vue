@@ -212,12 +212,6 @@ h1 {
   margin-right: 1rem;
 }
 
-@media screen and (max-width: 400px) {
-  .right-side-div {
-    display: none;
-  }
-}
-
 .sign-out-button {
   min-width: 105px;
   color: var(--on-primary-color);

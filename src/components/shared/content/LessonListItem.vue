@@ -220,4 +220,15 @@ a:hover {
 .hard {
   color: red;
 }
+
+@media screen and (max-width: 500px) {
+  .item-content {
+    flex-direction: column;
+    align-items: center;
+    width: 100% ;
+  }
+  .title-stats{
+    align-self: stretch;
+  }
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <BaseCard v-if="!loading && course" :title="course.title" class="course-base-card">
+  <BaseCard v-if="!loading && course" :title="course.title" class="course-base-card main-page-base-card">
     <template v-slot:all>
       <header>
         <h1>{{ course.title }}</h1>
@@ -73,7 +73,6 @@ export default {
   row-gap: 1rem;
   justify-content: flex-start;
   align-items: stretch;
-  width: 70vw;
 }
 
 header {

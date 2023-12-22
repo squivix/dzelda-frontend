@@ -1,16 +1,12 @@
 <template>
   <div class="empty-screen-wrapper">
-    <div class="empty-screen">
-      <slot>
-      </slot>
-    </div>
-    <slot name="with-filters" v-if="hasFilters && !!$slots.withFilters">
+    <slot name="with-filters" v-if="hasFilters">
       <div class="empty-screen">
         <p v-if="!!message">{{ message }}</p>
         <p v-else>Nothing found that matches your query</p>
       </div>
     </slot>
-    <slot name="no-filters" v-else-if="!!$slots.noFilters">
+    <slot name="no-filters" v-else>
       <div class="empty-screen">
         <p v-if="!!message">{{ message }}</p>
         <p v-else>Nothing found</p>
@@ -18,10 +14,10 @@
     </slot>
   </div>
 </template>
-<script lang="ts">
-import {defineComponent} from "vue";
-import InlineSvg from "vue-inline-svg";
 
+<script lang="ts">
+import {defineComponent} from 'vue'
+import InlineSvg from "vue-inline-svg";
 
 export default defineComponent({
   name: "EmptyScreen",
@@ -30,7 +26,7 @@ export default defineComponent({
     message: {type: String, required: false},
     hasFilters: {type: Boolean, required: false, default: false}
   },
-});
+})
 </script>
 
 <style scoped>

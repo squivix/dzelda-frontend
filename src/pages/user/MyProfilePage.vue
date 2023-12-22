@@ -1,5 +1,5 @@
 <template>
-  <BaseCard title="Profile" class="my-profile-base-card" v-if="userStore.userAccount">
+  <BaseCard title="Profile" class="my-profile-base-card main-page-base-card" v-if="userStore.userAccount">
     <template v-slot:all>
       <div class="profile-stats">
         <ProfileForm class="profile-wrapper"/>
@@ -40,7 +40,6 @@ export default {
 <style scoped>
 
 .my-profile-base-card {
-  min-width: 70vw;
 }
 
 .profile-stats {

@@ -1,5 +1,5 @@
 <template>
-  <BaseCard title="My Vocabulary" class="my-vocab-base-card">
+  <BaseCard title="My Vocabulary" class="my-vocab-base-card main-page-base-card">
     <template v-slot:content>
       <LoadingScreen v-if="loading"/>
       <section class="main-content" @click="clearSelectedVocab" v-else>
@@ -187,7 +187,6 @@ export default {
 <style scoped>
 
 .my-vocab-base-card {
-  width: 70vw;
 }
 
 .main-content {

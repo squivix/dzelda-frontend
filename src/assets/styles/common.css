@@ -262,3 +262,8 @@ svg {
 .invisible {
     opacity: 0;
 }
+
+.main-page-base-card {
+    width: 85vw;
+    max-width: 1300px;
+}

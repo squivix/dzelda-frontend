@@ -1,5 +1,5 @@
 <template>
-  <BaseCard title="Add Course" class="add-course-base-card">
+  <BaseCard title="Add Course" class="add-course-base-card main-page-base-card">
     <template v-slot:content>
 
       <form class="add-course-form" @submit.prevent="onSubmit">
@@ -115,7 +115,6 @@ export default {
   row-gap: 1.25rem;
   justify-content: flex-start;
   align-items: stretch;
-  width: 70vw;
 }
 
 .add-course-base-card:deep(header) {

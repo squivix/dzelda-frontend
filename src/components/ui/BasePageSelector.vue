@@ -92,6 +92,7 @@ ol {
   display: flex;
   flex-direction: row;
   column-gap: 1rem;
+  align-self: center;
 }
 
 li {

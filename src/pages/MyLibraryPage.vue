@@ -1,5 +1,5 @@
 <template>
-  <BaseCard title="My Library" class="library-base-card">
+  <BaseCard title="My Library" class="library-base-card main-page-base-card">
     <template v-slot:content>
       <ul class="tab-labels">
         <li :class="['tab-label', { 'current-tab': currentTab === MyLibraryPageTab.BOOKMARKS }]">
@@ -60,7 +60,6 @@ export default defineComponent({
   row-gap: 1.25rem;
   justify-content: flex-start;
   align-items: stretch;
-  width: 70vw;
 }
 
 .library-base-card:deep(header) {
