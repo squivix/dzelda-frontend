@@ -1,15 +1,21 @@
 <template>
   <nav>
     <ul>
-      <router-link :to="{ name: 'explore' }">
-        <li>Explore</li>
-      </router-link>
-      <router-link :to="{ name: 'my-library' }">
-        <li>My Library</li>
-      </router-link>
-      <router-link :to="{ name: 'my-vocab' }">
-        <li>My Vocab</li>
-      </router-link>
+      <li>
+        <router-link :to="{ name: 'explore' }" class="inv-link">
+          Explore
+        </router-link>
+      </li>
+      <li>
+        <router-link :to="{ name: 'my-library' }" class="inv-link">
+          My Library
+        </router-link>
+      </li>
+      <li>
+        <router-link :to="{ name: 'my-vocab' }" class="inv-link">
+          My Vocab
+        </router-link>
+      </li>
     </ul>
   </nav>
 </template>
@@ -38,25 +44,39 @@ export default defineComponent({
 </script>
 
 <style scoped>
-a {
-  color: inherit;
-  text-decoration: none;
+nav {
+  align-self: stretch;
+
 }
 
-nav > ul {
+ul {
+  height: 100%;
   display: flex;
   flex-direction: row;
+  align-items: center;
   column-gap: 2rem;
   font: 900 1.25rem sans-serif;
   color: var(--on-primary-color);
 }
 
-nav > ul > li:hover {
+li {
+  height: 100%;
+}
+
+li:hover {
   cursor: pointer;
+}
+a{
+  display : flex;
+  align-items : center;
+  height: 100%;
+}
+a {
+  color: inherit;
 }
 
 @media screen and (max-width: 750px) {
-  nav{
+  nav {
     display: none;
   }
 }

@@ -84,4 +84,16 @@ export default defineComponent({
   border-bottom: 3px solid var(--secondary-color);
 }
 
+@media screen and (max-width: 750px) {
+  .tab-labels .tab-label {
+    font-size: 1rem;
+    padding: 1rem 0.7rem;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .tab-labels {
+    align-self: center;
+  }
+}
 </style>

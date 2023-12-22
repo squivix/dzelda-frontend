@@ -167,7 +167,7 @@ header {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 2vw;
+  padding: 0 2vw;
   background-color: var(--primary-color);
 }
 
@@ -187,6 +187,7 @@ h1 {
   width: 64px;
   height: 64px;
   background-color: transparent;
+  margin: 10px 0;
 }
 
 .title-nav-div {
