@@ -20,6 +20,7 @@
             @onScroll="(position)=>lessonTextScrollPosition=position">
         </TheLessonContent>
         <ReaderSidePanel
+            class="side-panel"
             :selected-overlapping-phrases="selectedOverLappingPhrases"
             :selected-vocab="selectedVocab"
             :lessonTextScrollPosition="lessonTextScrollPosition"
@@ -39,7 +40,8 @@
         </div>
         <!-- TODO move to expanding button component-->
         <button v-if="!lesson.isLastInCourse"
-                class="next-lesson-button secondary-filled-button icon-text-button capsule-button" @click="fetchNextLesson">
+                class="next-lesson-button secondary-filled-button icon-text-button capsule-button"
+                @click="fetchNextLesson">
           <span :class="{'no-text': lessonTextScrollPosition == 'middle'}">Next Lesson</span>
           <inline-svg :src="icons.arrowRight"/>
         </button>
@@ -329,4 +331,17 @@ body {
 audio {
   max-height: 2rem;
 }
+
+@media screen and (max-width: 750px) {
+  .content-and-side-div {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+  }
+
+  .lesson-content {
+    max-height: 500px;
+  }
+}
+
 </style>

@@ -156,8 +156,24 @@ span::selection {
   background: yellow;
 }
 
-.lesson-audio {
+@media screen and (max-width: 800px) {
+  .lesson-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    line-height: 2.5rem;
+  }
 
 }
 
+@media screen and (max-width: 400px) {
+  .top-div {
+    flex-direction: column;
+    align-items: center;
+    row-gap: 0.5rem;
+  }
+}
 </style>

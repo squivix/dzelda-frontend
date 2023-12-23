@@ -56,7 +56,7 @@ export default {
     addSuggestedMeaning(meaning) {
       this.vocabStore.addVocabToUser({vocabId: this.vocabId}).then(async newVocab => {
         await this.meaningStore.addMeaningToUser({meaningId: meaning.id});
-        this.$emit('onMeaningAdded', newVocab, meaning);
+        this.$emit("onMeaningAdded", newVocab, meaning);
       });
     },
     async addNewMeaning() {
@@ -81,7 +81,7 @@ export default {
           await this.meaningStore.addMeaningToUser({
             meaningId: newMeaning.id
           });
-          this.$emit('onMeaningAdded', newVocab, newMeaning);
+          this.$emit("onMeaningAdded", newVocab, newMeaning);
           this.newMeaning = "";
         });
       });
@@ -94,7 +94,7 @@ export default {
       meaningStore: useMeaningStore()
     };
   }
-}
+};
 </script>
 
 <style scoped>
@@ -134,6 +134,8 @@ export default {
 
 .new-meaning-form > input {
   flex-grow: 1;
+  min-width: 100px;
+
 }
 
 .new-meaning-button {
