@@ -135,7 +135,6 @@ export default {
 .new-meaning-form > input {
   flex-grow: 1;
   min-width: 100px;
-
 }
 
 .new-meaning-button {

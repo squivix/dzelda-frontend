@@ -1,6 +1,6 @@
 <template>
   <LoadingScreen v-if="isLoading||!lessonElements"/>
-  <BaseCard class="base-card" v-else-if="lesson">
+  <BaseCard class="base-card unselectable" v-else-if="lesson">
     <template v-slot:all>
       <div class="content-and-side-div">
         <TheLessonContent
@@ -275,12 +275,6 @@ export default defineComponent({
   }
 });
 </script>
-
-<style>
-body {
-  user-select: none;
-}
-</style>
 
 <style scoped>
 .base-card {

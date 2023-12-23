@@ -1,6 +1,6 @@
 <template>
   <header>
-    <div class="main-header">
+    <div class="main-header unselectable">
       <div class="title-nav-div">
         <template v-if="doShowNavBar">
           <label for="nav-expand-checkbox">
@@ -48,8 +48,12 @@
           </template>
           <template v-slot:menu>
             <ol class="add-menu dropdown-list">
-              <li><router-link :to="{name:'add-lesson'}"><span>Add Lesson</span></router-link></li>
-              <li><router-link :to="{name:'add-course'}"><span>Add Course</span></router-link></li>
+              <li>
+                <router-link :to="{name:'add-lesson'}"><span>Add Lesson</span></router-link>
+              </li>
+              <li>
+                <router-link :to="{name:'add-course'}"><span>Add Course</span></router-link>
+              </li>
             </ol>
           </template>
         </BaseDropDown>

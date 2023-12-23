@@ -8,7 +8,7 @@
         :disabled="!changed"
         @input="onInput"
     />
-    <button type="button" @click="toggleChangeInput" class="inv-button" v-if="!changed"
+    <button type="button" @click="toggleChangeInput" class="inv-button unselectable" v-if="!changed"
             v-bind="buttonAttrs">
       Change
     </button>
@@ -67,7 +67,6 @@ button {
   z-index: 2;
   padding: 0;
   font-family: sans-serif;
-  user-select: none;
   color: #0288d1;
 }
 

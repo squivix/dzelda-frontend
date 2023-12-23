@@ -1,5 +1,5 @@
 <template>
-  <div @click="onBackgroundClicked" class="lesson-content">
+  <div @click="onBackgroundClicked" class="lesson-content" @mouseup="emptyTextSelection">
     <div class="top-div">
       <BaseImage :image-url="image" :fall-back-url="icons.bookOpen"
                  alt-text="lesson image" class="lesson-image"/>
@@ -33,6 +33,8 @@ import {PropType} from "vue";
 import {LessonElement, NewVocab} from "@/pages/LessonReaderPage.vue";
 import {LearnerVocabSchema} from "dzelda-types";
 import InlineSvg from "vue-inline-svg";
+import {getTextSelectedElements} from "@/utils.js";
+import {useEventListener} from "@vueuse/core";
 
 export default {
   name: "TheLessonContent",
@@ -45,11 +47,13 @@ export default {
     audio: {type: String, required: false,},
     words: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true,},
     phrases: {type: Object as PropType<Record<string, LearnerVocabSchema | NewVocab>>, required: true},
-    lessonElements: {type: Object as PropType<{ title: LessonElement[], text: LessonElement[] }>, required: true}
+    lessonElements: {type: Object as PropType<{ title: LessonElement[], text: LessonElement[] }>, required: true},
+
   },
   data() {
     return {
       dragStartWord: null,
+      isSelectingPhraseText: false,
     };
   },
   methods: {
@@ -63,8 +67,11 @@ export default {
       this.$emit("onOverLappingPhrasesClicked", phrasesText);
     },
     onBackgroundClicked() {
-      this.clearSelectedPhrases();
-      this.$emit("onBackgroundClicked");
+      if (!this.isSelectingPhraseText) {
+        this.clearSelectedPhrases();
+        this.$emit("onBackgroundClicked");
+      }
+      this.isSelectingPhraseText = false;
     },
     onNewPhraseSelected(phraseText: string) {
       this.$emit("onNewPhraseSelected", phraseText);
@@ -103,12 +110,35 @@ export default {
         this.onNewPhraseSelected(phraseText);
       else
         this.onPhraseClicked(phraseText);
+    },
+    onSelectionChange() {
+      const selectedWrappers = getTextSelectedElements(getSelection()!)?.filter(e => e.classList.contains("word-wrapper"));
+      if (!selectedWrappers || selectedWrappers.length < 2)
+        return
+
+      this.clearSelectedPhrases()
+      let phraseText = "";
+      for (const wrapperElement of selectedWrappers) {
+        wrapperElement.classList.add("phrase-selected")
+        const wordNode = wrapperElement.childNodes[0] as HTMLElement;
+        if (wordNode.classList.contains("word"))
+          phraseText += wordNode.innerText.toLowerCase() + " ";
+      }
+      this.isSelectingPhraseText = true;
+      if (this.words[phraseText])
+        this.onWordClicked(phraseText);
+      //new phrase
+      else if (!this.phrases[phraseText])
+        this.onNewPhraseSelected(phraseText);
+      else
+        this.onPhraseClicked(phraseText);
+    },
+    emptyTextSelection() {
+      getSelection()?.empty();
     }
   },
   mounted() {
-    document.body.addEventListener("drop", this.wrapperDrop);
-    document.body.addEventListener("dragover", e => e.preventDefault());
-    document.body.addEventListener("dragenter", e => e.preventDefault());
+    useEventListener(document, "selectionchange", this.onSelectionChange)
   },
   setup() {
     return {icons};
@@ -121,7 +151,6 @@ export default {
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
-  user-select: none;
 }
 
 .top-div {
@@ -149,11 +178,6 @@ export default {
 p {
   font-size: 1.15rem;
   line-height: 2.25rem;
-}
-
-span::selection {
-  color: red;
-  background: yellow;
 }
 
 @media screen and (max-width: 800px) {

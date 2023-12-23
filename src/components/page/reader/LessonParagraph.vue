@@ -1,26 +1,23 @@
 <template>
   <component :is="component" class="paragraph">
-        <span v-for="(element, index) in lessonElements"
-              :key="index"
-              :class="getWrapperClass(element)"
-              :data-parahraph-element-index="index"
-              @click.stop="onWrapperClicked"
-              :id="`wrapper-p-${paragraphIndex}-w-${index}`"
-              :draggable="true"
-              @dragstart="wrapperDragStart"
-              @dragenter="wrapperDragEnter"
-              @mouseenter="wrapperHoverStart"
-              @mouseleave="wrapperHoverEnd">
+    <span v-for="(element, index) in lessonElements"
+          :key="index"
+          :class="getWrapperClass(element)"
+          :data-parahraph-element-index="index"
+          @click.stop="onWrapperClicked"
+          :id="`wrapper-p-${paragraphIndex}-w-${index}`"
+          @mouseenter="wrapperHoverStart"
+          @mouseleave="wrapperHoverEnd">
         <span :class="getWordClass(element)"
               :id="`w${index}`"
               v-if="element.isWord"
               @click.stop="onWordClicked(element.text)">
-      {{ element.text }}
+            {{ element.text }}
         </span>
-      <span v-else>
+      <span @click.stop v-else>
         <br v-if="element.text=='\n'">
         <template v-else>
-          {{ element.text }}
+            {{ element.text }}
         </template>
       </span>
     </span>
@@ -37,27 +34,11 @@ export default {
   computed: {},
   emits: ["onWordClicked", "onPhraseClicked", "onOverLappingPhrasesClicked"],
   props: {
-    lessonElements: {
-      type: Array as PropType<LessonElement[]>,
-      required: true
-    },
-    words: {
-      type: Object as PropType<Record<string, LearnerVocabSchema>>,
-      required: true
-    },
-    phrases: {
-      type: Object as PropType<Record<string, LearnerVocabSchema | NewVocab>>,
-      required: true
-    },
-    component: {
-      type: String,
-      required: false,
-      default: "p"
-    },
-    paragraphIndex: {
-      type: Number,
-      required: true,
-    }
+    lessonElements: {type: Array as PropType<LessonElement[]>, required: true},
+    words: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
+    phrases: {type: Object as PropType<Record<string, LearnerVocabSchema | NewVocab>>, required: true},
+    component: {type: String, required: false, default: "p"},
+    paragraphIndex: {type: Number, required: true,}
   },
   data() {
     return {dragStartWord: null as HTMLElement | null};
@@ -154,49 +135,6 @@ export default {
       else
         return "phrase-middle";
     },
-    wrapperDragStart(event: DragEvent) {
-      this.dragStartWord = event.target as HTMLElement;
-      event.dataTransfer!.setDragImage(document.createElement("img"), 0, 0);
-    },
-    wrapperDragEnter(event: Event) {
-      let endWord = event.target as HTMLElement;
-      let startWord = this.dragStartWord!;
-      if (!startWord || !endWord)
-        return;
-      if (!endWord.classList.contains("word-wrapper")) {
-        endWord = endWord.parentElement!;
-        if (!endWord.classList.contains("word-wrapper"))
-          return;
-      }
-      let selectedWords;
-      if (endWord === startWord) {
-        selectedWords = [startWord];
-      } else {
-        let tokens = startWord.id.split("-");
-        const startWordNum = Number(tokens[tokens.length - 1]);
-        const startWordParagraph = Number(tokens[tokens.length - 3]);
-        tokens = endWord.id.split("-");
-        const endWordNum = Number(tokens[tokens.length - 1]);
-        const endWordParagraph = Number(tokens[tokens.length - 3]);
-
-        if (startWordParagraph !== endWordParagraph)
-          return;
-        if (startWordNum > endWordNum)
-          [startWord, endWord] = [endWord, startWord];
-
-        selectedWords = [startWord];
-        const wordsAfterStart = document.querySelectorAll(`#${startWord.id} ~ .word-wrapper`) as NodeListOf<HTMLElement>;
-        for (const w of wordsAfterStart) {
-          if (w === endWord)
-            break;
-          selectedWords.push(w);
-        }
-        selectedWords.push(endWord);
-
-        document.querySelectorAll(".word-wrapper").forEach((w) => w.classList.remove("phrase-selected"));
-        selectedWords.forEach((w) => w.classList.add("phrase-selected"));
-      }
-    },
     wrapperHoverStart(event: Event) {
       //TODO find better way of styling multiple elements based on the hover of one
       const wrapperNode = event.target as HTMLElement;
@@ -258,10 +196,19 @@ export default {
 </script>
 
 <style scoped>
+span {
+  user-select: text;
+}
+
+span::selection {
+  background: transparent;
+}
+
 .word {
   border: 1px solid transparent;
   padding: 0.1rem 0.2rem;
   border-radius: 5px;
+  user-select: auto;
 }
 
 .word:hover {

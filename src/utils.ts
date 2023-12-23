@@ -62,3 +62,39 @@ export function toSentenceCase(s: string) {
     return s;
 
 }
+
+function rangeIntersectsNode(range: Range, node: Node) {
+    if (range.intersectsNode)
+        return range.intersectsNode(node);
+    else {
+        let nodeRange = node.ownerDocument!.createRange();
+        try {
+            nodeRange.selectNode(node);
+        } catch (e) {
+            nodeRange.selectNodeContents(node);
+        }
+        return range.compareBoundaryPoints(Range.END_TO_START, nodeRange) == -1 &&
+            range.compareBoundaryPoints(Range.START_TO_END, nodeRange) == 1;
+    }
+}
+
+// from https://stackoverflow.com/a/1483487
+export function getTextSelectedElements(selection: Selection) {
+    if (selection.toString().length < 1)
+        return
+    if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        let containerElement = range.commonAncestorContainer;
+        if (containerElement.nodeType != 1)
+            containerElement = containerElement.parentNode!;
+        const treeWalker = document.createTreeWalker(
+            containerElement,
+            NodeFilter.SHOW_ELEMENT,
+            (node: Node) => rangeIntersectsNode(range, node) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
+        );
+        const elementList = [treeWalker.currentNode as HTMLElement];
+        while (treeWalker.nextNode())
+            elementList.push(treeWalker.currentNode as HTMLElement);
+        return elementList
+    }
+}
