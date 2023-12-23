@@ -5,7 +5,7 @@
       <tr>
         <th>Vocab</th>
         <th>Meanings</th>
-        <th>Level</th>
+        <th class="level-picker-th">Level</th>
       </tr>
       </thead>
       <tbody class="vocab-tbody">
@@ -65,8 +65,12 @@ th:not(.centered-table-col) {
 
 
 @media screen and (max-width: 750px) {
-  .vocab-table-wrapper{
+  .vocab-table-wrapper {
     max-height: 300px;
+  }
+
+  .level-picker-th {
+    display: none;
   }
 }
 

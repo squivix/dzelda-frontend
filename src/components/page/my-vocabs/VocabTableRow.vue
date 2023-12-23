@@ -84,4 +84,10 @@ li {
   align-items: center;
   column-gap: 0.4rem;
 }
+
+@media screen and (max-width: 750px) {
+  .level-picker-td {
+    display: none;
+  }
+}
 </style>
