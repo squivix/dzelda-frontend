@@ -30,7 +30,7 @@ import LessonParagraph from "@/components/page/reader/LessonParagraph.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {icons} from "@/icons.js";
 import {PropType} from "vue";
-import {LessonElement, NewVocab} from "@/pages/LessonReaderPage.vue";
+import {LessonElement} from "@/pages/LessonReaderPage.vue";
 import {LearnerVocabSchema} from "dzelda-types";
 import InlineSvg from "vue-inline-svg";
 import {getTextSelectedElements} from "@/utils.js";
@@ -46,13 +46,11 @@ export default {
     image: {type: String, required: true,},
     audio: {type: String, required: false,},
     words: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true,},
-    phrases: {type: Object as PropType<Record<string, LearnerVocabSchema | NewVocab>>, required: true},
+    phrases: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
     lessonElements: {type: Object as PropType<{ title: LessonElement[], text: LessonElement[] }>, required: true},
-
   },
   data() {
     return {
-      dragStartWord: null,
       isSelectingPhraseText: false,
     };
   },
@@ -89,27 +87,6 @@ export default {
     },
     clearSelectedPhrases() {
       document.querySelectorAll(".phrase-selected").forEach((el) => el.classList.remove("phrase-selected"));
-    },
-    wrapperDrop() {
-      const selectedPhrase = document.querySelectorAll(".phrase-selected");
-      let phraseText = "";
-      selectedPhrase.forEach((wrapperNode) => {
-        const wordNode = wrapperNode.childNodes[0] as HTMLElement;
-        if (wordNode.classList.contains("word"))
-          phraseText += wordNode.innerText.toLowerCase() + " ";
-      });
-      phraseText = phraseText.trim();
-      if (phraseText === "")
-        return;
-
-      //phrase is one word
-      if (this.words[phraseText])
-        this.onWordClicked(phraseText);
-      //new phrase
-      else if (!this.phrases[phraseText])
-        this.onNewPhraseSelected(phraseText);
-      else
-        this.onPhraseClicked(phraseText);
     },
     onSelectionChange() {
       const selectedWrappers = getTextSelectedElements(getSelection()!)?.filter(e => e.classList.contains("word-wrapper"));
@@ -173,11 +150,12 @@ export default {
   overflow-y: auto;
   overflow-x: hidden;
   padding-top: 0.5rem;
+  min-height: 100px;
 }
 
 p {
   font-size: 1.15rem;
-  line-height: 2.25rem;
+  line-height: 2.5rem;
 }
 
 @media screen and (max-width: 800px) {

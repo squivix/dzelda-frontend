@@ -88,7 +88,7 @@ export default {
         //TODO redir query param
         // if (this.$route.query["redir"])
         //   await this.$router.push({path: this.$route.query["redir"]});
-        await this.$router.push({name: "course", params: {courseId: newCourse.id}});
+        await this.$router.push({name: "edit-course", params: {courseId: newCourse.id}});
       } else {
         if ("fields" in response.error)
           this.errorFields = response.error.fields as { title: string, description: string, image: string };

@@ -72,9 +72,8 @@ import {icons} from "@/icons.js";
 import AuthHeader from "@/App.vue";
 import BaseCard from "@/components/ui/BaseCard.vue";
 
-export type PhrasesElementAppearsIn = { [text: string]: { index: number, length: number } }
+export type PhrasesElementAppearsIn = { [text: string]: { phraseId: number, index: number, length: number } }
 export type LessonElement = { text: string, isWord: boolean, phrases: PhrasesElementAppearsIn }
-export type NewVocab = Omit<LearnerVocabSchema, "id" | "addedOn">
 export default defineComponent({
   name: "LessonReaderPage",
   components: {
@@ -94,8 +93,8 @@ export default defineComponent({
     return {
       lesson: null as LessonSchema | null,
       words: {} as Record<string, LearnerVocabSchema>,
-      phrases: {} as Record<string, LearnerVocabSchema | NewVocab>,
-      selectedVocab: null as LearnerVocabSchema | NewVocab | null,
+      phrases: {} as Record<string, LearnerVocabSchema>,
+      selectedVocab: null as LearnerVocabSchema | null,
       selectedIsPhrase: false,
       selectedOverLappingPhrases: null as string[] | null,
       lessonElements: null as { title: LessonElement[], text: LessonElement[] } | null,
@@ -194,14 +193,13 @@ export default defineComponent({
         this.phrases[key] = vocab;
         //TODO: find less expensive solution to update lessonElements where the new phrase was added
         this.parseLesson();
-        this.onVocabLevelSet(vocab, vocab.level);
-      } else
-        this.onVocabLevelSet(vocab, vocab.level);
+      }
+      this.onVocabLevelSet(vocab, vocab.level);
       this.vocabs[key].learnerMeanings.push(newMeaning);
       (this.vocabs[key] as LearnerVocabSchema).id = vocab.id;
       this.setSelectedVocab(vocab.text);
     },
-    onVocabLevelSet(vocab: LearnerVocabSchema | NewVocab, level: VocabLevelSchema) {
+    onVocabLevelSet(vocab: LearnerVocabSchema, level: VocabLevelSchema) {
       const key = vocab.text.toLowerCase();
       this.vocabs[key].level = level;
       if (level === VocabLevelSchema.IGNORED || level === VocabLevelSchema.KNOWN) {
@@ -244,7 +242,7 @@ export default defineComponent({
         const phrases = Object.keys(this.phrases);
         for (const phrase of phrases) {
           //detect every phrase surrounded by non letters and non-numbers
-          //TODO also get rid of this client side parsing
+          //TODO also get rid of this client side parsing as well as all toLowerCases in reader page
           const regex = new RegExp(`[^\\p{L}\\d]${phrase}[^\\p{L}\\d]`, "igu");
           const matches = text.matchAll(regex);
           for (let match of matches) {
@@ -252,8 +250,9 @@ export default defineComponent({
             const phraseSlice = this.getTextElements(match[0]);
             const phraseElements = textElements.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length);
             phraseElements.forEach((pe, index) => pe.phrases[phrase] = {
+              phraseId: this.phrases[phrase].id,
               index: index,
-              length: phraseElements.length
+              length: phraseElements.length,
             });
           }
         }

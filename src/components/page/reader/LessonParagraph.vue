@@ -1,47 +1,53 @@
 <template>
-  <component :is="component" class="paragraph">
+  <component :is="component" class="paragraph" ref="paragraphRef">
     <span v-for="(element, index) in lessonElements"
           :key="index"
           :class="getWrapperClass(element)"
           :data-parahraph-element-index="index"
           @click.stop="onWrapperClicked"
-          :id="`wrapper-p-${paragraphIndex}-w-${index}`"
           @mouseenter="wrapperHoverStart"
           @mouseleave="wrapperHoverEnd">
-        <span :class="getWordClass(element)"
-              :id="`w${index}`"
-              v-if="element.isWord"
-              @click.stop="onWordClicked(element.text)">
-            {{ element.text }}
-        </span>
-      <span @click.stop v-else>
+      <span class="word" :class="getLevelClass(words[element.text.toLowerCase()].level)"
+            :id="`w${index}`"
+            v-if="element.isWord"
+            @click.stop="onWordClicked(element.text)">
+          {{ element.text }}
+      </span>
+      <span @click.stop="onWrapperClicked" v-else-if="element.text.length!=0">
         <br v-if="element.text=='\n'">
         <template v-else>
             {{ element.text }}
         </template>
       </span>
+
     </span>
+    <br>
   </component>
 </template>
 
 <script lang="ts">
 import {PropType} from "vue";
-import {LearnerVocabSchema} from "dzelda-types";
-import {LessonElement, NewVocab, PhrasesElementAppearsIn} from "@/pages/LessonReaderPage.vue";
+import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-types";
+import {LessonElement, PhrasesElementAppearsIn} from "@/pages/LessonReaderPage.vue";
+import {ALL_VOCAB_LEVELS} from "@/constants.js";
 
 export default {
   name: "LessonParagraph",
-  computed: {},
   emits: ["onWordClicked", "onPhraseClicked", "onOverLappingPhrasesClicked"],
   props: {
     lessonElements: {type: Array as PropType<LessonElement[]>, required: true},
     words: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
-    phrases: {type: Object as PropType<Record<string, LearnerVocabSchema | NewVocab>>, required: true},
+    phrases: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
     component: {type: String, required: false, default: "p"},
     paragraphIndex: {type: Number, required: true,}
   },
   data() {
-    return {dragStartWord: null as HTMLElement | null};
+    return {};
+  },
+  computed: {
+    paragraphRef() {
+      return this.$refs.paragraphRef as HTMLElement;
+    }
   },
   methods: {
     onWordClicked(wordText: string) {
@@ -67,55 +73,28 @@ export default {
           this.$emit("onPhraseClicked", phraseText);
       }
     },
-    getWordClass(element: LessonElement) {
-      let word = this.words[element.text.toLowerCase()];
-      if (!element.isWord)
-        return "";
-      switch (word.level) {
-        case -1:
-          return "word word-ignored";
-        case 0:
-          return "word word-new";
-        case 1:
-          return "word word-level-1";
-        case 2:
-          return "word word-level-2";
-        case 3:
-          return "word word-level-3";
-        case 4:
-          return "word word-level-4";
-        case 5:
-          return "word word-learned";
-        case 6:
-          return "word word-known";
-        default:
-          return "word";
-      }
-    },
     getWrapperClass(element: LessonElement) {
-      return `word-wrapper ${this.getPhrasePositionClass(element)} ${this.getPhraseLevelClass(element)}`;
+      return `word-wrapper ${this.getPhraseIdClass(element)} ${this.getPhrasePositionClass(element)} ${this.getPhraseLevelClass(element)} ${Object.keys(element.phrases).length > 1 ? "phrase-multi" : ""}`;
+    },
+    getPhraseIdClass(element: LessonElement) {
+      return Object.values(element.phrases).map(p => `phrase-${p.phraseId}`).join(" ");
     },
     getPhraseLevelClass(element: LessonElement) {
       if (Object.keys(element.phrases).length === 0)
         return "";
-      switch (this.phrases[Object.keys(element.phrases)[0].toLowerCase()].level) {
-        case 0:
-          return "phrase-new";
-        case 1:
-          return "phrase phrase-level-1 ";
-        case 2:
-          return "phrase phrase-level-2 ";
-        case 3:
-          return "phrase phrase-level-3";
-        case 4:
-          return "phrase phrase-level-4";
-        case 5:
-          return "phrase phrase-learned";
-        case 6:
-          return "phrase phrase-known";
-        default:
-          return "";
-      }
+      return `phrase ${this.getLevelClass(this.phrases[Object.keys(element.phrases)[0].toLowerCase()].level)}`;
+    },
+    getLevelClass(level: VocabLevelSchema) {
+      const levelMap = {
+        [ALL_VOCAB_LEVELS.NEW]: "level-new",
+        [ALL_VOCAB_LEVELS.LEVEL_1]: "level-1 ",
+        [ALL_VOCAB_LEVELS.LEVEL_2]: "level-2 ",
+        [ALL_VOCAB_LEVELS.LEVEL_3]: "level-3",
+        [ALL_VOCAB_LEVELS.LEVEL_4]: "level-4",
+        [ALL_VOCAB_LEVELS.LEARNED]: "level-learned",
+        [ALL_VOCAB_LEVELS.KNOWN]: "level-known",
+      };
+      return levelMap[level];
     },
     getPhrasePositionClass(element: LessonElement) {
       if (Object.keys(element.phrases).length === 0)
@@ -136,23 +115,20 @@ export default {
         return "phrase-middle";
     },
     wrapperHoverStart(event: Event) {
-      //TODO find better way of styling multiple elements based on the hover of one
       const wrapperNode = event.target as HTMLElement;
       if (!wrapperNode.classList.contains("phrase") || wrapperNode.classList.contains("phrase-hovered"))
         return;
       const element = this.lessonElements[Number(wrapperNode.dataset.parahraphElementIndex)];
-      const phrases = Object.keys(element.phrases);
+      const phrases = Object.values(element.phrases);
       if (phrases.length === 0)
         return;
       if (phrases.length === 1) {
-        const phraseNodes = this.getPhraseNodes(wrapperNode, element.phrases[phrases[0]]);
-        phraseNodes[0].style.borderInlineStart = "1px solid";
-        phraseNodes[phraseNodes.length - 1].style.borderInlineEnd = "1px solid";
+        const phraseNodes = this.paragraphRef.querySelectorAll(`.phrase-${phrases[0].phraseId}`);
         phraseNodes.forEach((pn) => pn.classList.add("phrase-hovered"));
       } else {
-        wrapperNode.style.borderInlineStart = "1px solid";
-        wrapperNode.style.borderInlineEnd = "1px solid";
-        wrapperNode.classList.add("phrase-hovered");
+        const phraseNodes = this.paragraphRef.querySelectorAll(phrases.map(p => `.phrase-${p.phraseId}`).join(""));
+        phraseNodes.forEach((pn) => pn.classList.add("phrase-hovered"));
+        // wrapperNode.classList.add("phrase-hovered");
       }
     },
     wrapperHoverEnd(event: Event) {
@@ -160,36 +136,18 @@ export default {
       if (!wrapperNode.classList.contains("phrase"))
         return;
       const element = this.lessonElements[Number(wrapperNode.dataset.parahraphElementIndex)];
-      const phrases = Object.keys(element.phrases);
+      const phrases = Object.values(element.phrases);
       if (phrases.length === 0)
         return;
       else if (phrases.length === 1) {
-        const phraseNodes = this.getPhraseNodes(wrapperNode, element.phrases[phrases[0]]);
-        phraseNodes[0].style.borderInlineStart = "1px solid transparent";
-        phraseNodes[phraseNodes.length - 1].style.borderInlineEnd = "1px solid transparent";
+        const phraseNodes = this.paragraphRef.querySelectorAll(`.phrase-${phrases[0].phraseId}`);
         phraseNodes.forEach((pn) => pn.classList.remove("phrase-hovered"));
       } else {
         //TODO treat case where phrases are not in different directions
-        wrapperNode.style.borderInlineStart = "1px solid transparent";
-        wrapperNode.style.borderInlineEnd = "1px solid transparent";
-        wrapperNode.classList.remove("phrase-hovered");
+        const phraseNodes = this.paragraphRef.querySelectorAll(phrases.map(p => `.phrase-${p.phraseId}`).join(""));
+        phraseNodes.forEach((pn) => pn.classList.remove("phrase-hovered"));
+        // wrapperNode.classList.remove("phrase-hovered");
       }
-    },
-    getPhraseNodes(node: HTMLElement, elementPhrase: PhrasesElementAppearsIn[keyof PhrasesElementAppearsIn]) {
-      const phraseLength = elementPhrase.length;
-      const hoverNodeIndex = elementPhrase.index;
-
-      let phraseStart = node;
-      for (let i = hoverNodeIndex; i > 0; i--)
-        phraseStart = phraseStart.previousSibling as HTMLElement;
-
-      const phraseNodes = [phraseStart];
-      let phraseEnd = phraseNodes[phraseNodes.length - 1];
-      for (let i = 1; i < phraseLength; i++) {
-        phraseNodes.push(phraseEnd.nextSibling as HTMLElement);
-        phraseEnd = phraseNodes[phraseNodes.length - 1];
-      }
-      return phraseNodes;
     },
   },
 };
@@ -206,7 +164,7 @@ span::selection {
 
 .word {
   border: 1px solid transparent;
-  padding: 0.1rem 0.2rem;
+  padding: 0.05rem 0.1rem;
   border-radius: 5px;
   user-select: auto;
 }
@@ -216,47 +174,37 @@ span::selection {
   cursor: pointer;
 }
 
-.word-new {
+.level-new:not(.phrase) {
   background-color: #aee0f4;
 }
 
-.phrase-new {
-
-}
-
-.phrase-new:hover {
+.level-new.phrase:hover {
   /*background-color: ghostwhite;*/
   cursor: default !important;
 }
 
-.word-level-1,
-.phrase-level-1 {
+.level-1 {
   background-color: #ffeda1;
 }
 
-.word-level-2,
-.phrase-level-2 {
+.level-2 {
   background-color: #fff2ab;
 }
 
-.word-level-3,
-.phrase-level-3 {
+.level-3 {
   background-color: #fff6c7;
 }
 
-.word-level-4,
-.phrase-level-4 {
+.level-4 {
   background-color: transparent;
   border-bottom: 1px dotted black;
 }
 
-.word-known,
-.word-learned,
-.word-ignored,
-.phrase-known,
-.phrase-learned {
+/*.level-known,
+.level-learned,
+.level-ignored {
   background-color: transparent;
-}
+}*/
 
 .word-wrapper {
   padding-top: 0.4rem;
@@ -264,12 +212,16 @@ span::selection {
   border: 1px solid transparent;
 }
 
-.word-wrapper:hover {
+.phrase:hover {
   cursor: pointer;
 }
 
+.phrase {
+  transition: padding 0.35s ease-out;
+}
+
 .phrase-start {
-  padding-left: 0.25rem;
+  padding-left: 0.1rem;
   border-start-start-radius: 5px;
   border-end-start-radius: 5px;
 }
@@ -279,14 +231,31 @@ span::selection {
 }
 
 .phrase-end {
-  padding-right: 0.25rem;
+  padding-right: 0.1rem;
   border-end-end-radius: 5px;
   border-start-end-radius: 5px;
 }
 
-.phrase {
-  transition: padding 0.25s ease-out;
+.phrase-start.phrase-hovered {
+  border-inline-start: 1px solid;
+}
 
+
+.phrase-end.phrase-hovered {
+  border-inline-end: 1px solid;
+}
+
+.phrase-start:not(.phrase-hovered) {
+  border-inline-start: 1px solid transparent;
+}
+
+.phrase-end:not(.phrase-hovered) {
+  border-inline-end: 1px solid transparent;
+}
+
+.phrase-multi.phrase-hovered{
+  border-top: 1px dotted;
+  border-bottom: 1px dotted;
 }
 
 .phrase-selected {
