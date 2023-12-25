@@ -74,7 +74,7 @@ export default {
       }
     },
     getWrapperClass(element: LessonElement) {
-      return `word-wrapper ${this.getPhraseIdClass(element)} ${this.getPhrasePositionClass(element)} ${this.getPhraseLevelClass(element)} ${Object.keys(element.phrases).length > 1 ? "phrase-multi" : ""}`;
+      return `word-wrapper ${this.getPhraseIdClass(element)} ${this.getPhraseLevelClass(element)} ${Object.keys(element.phrases).length > 1 ? "phrase-multi" : ""}`;
     },
     getPhraseIdClass(element: LessonElement) {
       return Object.values(element.phrases).map(p => `phrase-${p.phraseId}`).join(" ");
@@ -96,24 +96,6 @@ export default {
       };
       return levelMap[level];
     },
-    getPhrasePositionClass(element: LessonElement) {
-      if (Object.keys(element.phrases).length === 0)
-        return "";
-      let allStartWord = true, allEndWord = true;
-      for (let phrase of Object.keys(element.phrases)) {
-        const phraseData = element.phrases[phrase];
-        if (phraseData.index !== 0)
-          allStartWord = false;
-        if (phraseData.index !== phraseData.length - 1)
-          allEndWord = false;
-      }
-      if (allStartWord)
-        return "phrase-start";
-      else if (allEndWord)
-        return "phrase-end";
-      else
-        return "phrase-middle";
-    },
     wrapperHoverStart(event: Event) {
       const wrapperNode = event.target as HTMLElement;
       if (!wrapperNode.classList.contains("phrase") || wrapperNode.classList.contains("phrase-hovered"))
@@ -122,13 +104,11 @@ export default {
       const phrases = Object.values(element.phrases);
       if (phrases.length === 0)
         return;
-      if (phrases.length === 1) {
-        const phraseNodes = this.paragraphRef.querySelectorAll(`.phrase-${phrases[0].phraseId}`);
+      for (const phraseObj of phrases) {
+        const phraseNodes = this.paragraphRef.querySelectorAll(`.phrase-${phraseObj.phraseId}`);
         phraseNodes.forEach((pn) => pn.classList.add("phrase-hovered"));
-      } else {
-        const phraseNodes = this.paragraphRef.querySelectorAll(phrases.map(p => `.phrase-${p.phraseId}`).join(""));
-        phraseNodes.forEach((pn) => pn.classList.add("phrase-hovered"));
-        // wrapperNode.classList.add("phrase-hovered");
+        phraseNodes[0].classList.add("phrase-start");
+        phraseNodes[phraseNodes.length - 1].classList.add("phrase-end");
       }
     },
     wrapperHoverEnd(event: Event) {
@@ -139,14 +119,14 @@ export default {
       const phrases = Object.values(element.phrases);
       if (phrases.length === 0)
         return;
-      else if (phrases.length === 1) {
-        const phraseNodes = this.paragraphRef.querySelectorAll(`.phrase-${phrases[0].phraseId}`);
-        phraseNodes.forEach((pn) => pn.classList.remove("phrase-hovered"));
-      } else {
-        //TODO treat case where phrases are not in different directions
-        const phraseNodes = this.paragraphRef.querySelectorAll(phrases.map(p => `.phrase-${p.phraseId}`).join(""));
-        phraseNodes.forEach((pn) => pn.classList.remove("phrase-hovered"));
-        // wrapperNode.classList.remove("phrase-hovered");
+
+      for (const phraseObj of phrases) {
+        const phraseNodes = this.paragraphRef.querySelectorAll(`.phrase-${phraseObj.phraseId}`);
+        phraseNodes.forEach((pn) => {
+          pn.classList.remove("phrase-hovered");
+          pn.classList.remove("phrase-start");
+          pn.classList.remove("phrase-end");
+        });
       }
     },
   },
@@ -221,17 +201,12 @@ span::selection {
 }
 
 .phrase-start {
-  padding-left: 0.1rem;
   border-start-start-radius: 5px;
   border-end-start-radius: 5px;
 }
 
-.phrase-middle {
-  border: 1px solid transparent;
-}
 
 .phrase-end {
-  padding-right: 0.1rem;
   border-end-end-radius: 5px;
   border-start-end-radius: 5px;
 }
@@ -251,11 +226,6 @@ span::selection {
 
 .phrase-end:not(.phrase-hovered) {
   border-inline-end: 1px solid transparent;
-}
-
-.phrase-multi.phrase-hovered{
-  border-top: 1px dotted;
-  border-bottom: 1px dotted;
 }
 
 .phrase-selected {
