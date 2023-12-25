@@ -1,36 +1,32 @@
 <template>
-  <LoadingScreen v-if="isLoading||!lessonElements"/>
+  <LoadingScreen v-if="isLoading||!lessonTokens"/>
   <BaseCard class="base-card unselectable" v-else-if="lesson">
     <template v-slot:all>
       <div class="content-and-side-div">
-        <TheLessonContent
-            ref="theLessonContentRef"
-            :title="lesson.title"
-            :text="lesson.text"
-            :lessonElements="lessonElements"
-            :image="imageUrl"
-            :words="words"
-            :phrases="phrases"
-            class="lesson-content"
-            @onWordClicked="setSelectedVocab"
-            @onPhraseClicked="setSelectedVocab"
-            @onOverLappingPhrasesClicked="showOverlappingPhrases"
-            @onNewPhraseSelected="selectNewPhrase"
-            @onBackgroundClicked="clearSelectedVocab"
-            @onScroll="(position)=>lessonTextScrollPosition=position">
-        </TheLessonContent>
-        <ReaderSidePanel
-            class="side-panel"
-            :selected-overlapping-phrases="selectedOverLappingPhrases"
-            :selected-vocab="selectedVocab"
-            :lessonTextScrollPosition="lessonTextScrollPosition"
-            :selected-is-phrase="selectedIsPhrase"
-            @onMeaningAdded="onMeaningAdded"
-            @onVocabLevelSet="onVocabLevelSet"
-            @onMeaningDeleted="onMeaningDeleted"
-            @onOverlappingPhraseClicked="setSelectedVocab"
-            @onVocabNotesSet="onVocabNotesSet">
-        </ReaderSidePanel>
+        <TheLessonContent ref="theLessonContentRef"
+                          :title="lesson.title"
+                          :text="lesson.text"
+                          :lessonTokens="lessonTokens"
+                          :image="imageUrl"
+                          :words="words"
+                          :phrases="phrases"
+                          class="lesson-content"
+                          @onWordClicked="setSelectedVocab"
+                          @onPhraseClicked="setSelectedVocab"
+                          @onOverLappingPhrasesClicked="showOverlappingPhrases"
+                          @onNewPhraseSelected="selectNewPhrase"
+                          @onBackgroundClicked="clearSelectedVocab"
+                          @onScroll="(position)=>lessonTextScrollPosition=position"/>
+        <ReaderSidePanel class="side-panel"
+                         :selected-overlapping-phrases="selectedOverLappingPhrases"
+                         :selected-vocab="selectedVocab"
+                         :lessonTextScrollPosition="lessonTextScrollPosition"
+                         :selected-is-phrase="selectedIsPhrase"
+                         @onMeaningAdded="onMeaningAdded"
+                         @onVocabLevelSet="onVocabLevelSet"
+                         @onMeaningDeleted="onMeaningDeleted"
+                         @onOverlappingPhraseClicked="setSelectedVocab"
+                         @onVocabNotesSet="onVocabNotesSet"/>
       </div>
       <div class="bottom-div">
         <div>
@@ -57,9 +53,7 @@
 </template>
 <script lang="ts">
 import TheLessonContent from "@/components/page/reader/TheLessonContent.vue";
-import TheMeaningPanel from "@/components/shared/vocab-panel/TheMeaningPanel.vue";
 import constants from "@/constants.js";
-import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel.vue";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {LearnerVocabSchema, LessonSchema, MeaningSchema, VocabLevelSchema} from "dzelda-types";
@@ -69,23 +63,13 @@ import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import ReaderSidePanel from "@/components/page/reader/ReaderSidePanel.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import AuthHeader from "@/App.vue";
 import BaseCard from "@/components/ui/BaseCard.vue";
 
-export type PhrasesElementAppearsIn = { [text: string]: { phraseId: number, index: number, length: number } }
-export type LessonElement = { text: string, isWord: boolean, phrases: PhrasesElementAppearsIn }
+export type PhrasesTokenAppearsIn = { [text: string]: { phraseId: number, index: number, length: number } }
+export type LessonTokenObject = { text: string, isWord: boolean, phrases: PhrasesTokenAppearsIn }
 export default defineComponent({
   name: "LessonReaderPage",
-  components: {
-    AuthHeader,
-    InlineSvg,
-    BaseCard,
-    ReaderSidePanel,
-    LoadingScreen,
-    TheLessonContent,
-    TheMeaningPanel,
-    OverlappingPhrasesPanel
-  },
+  components: {InlineSvg, BaseCard, ReaderSidePanel, LoadingScreen, TheLessonContent},
   props: {
     pathParams: {type: Object as PropType<{ learningLanguage: string, lessonId: number }>, required: true}
   },
@@ -97,7 +81,7 @@ export default defineComponent({
       selectedVocab: null as LearnerVocabSchema | null,
       selectedIsPhrase: false,
       selectedOverLappingPhrases: null as string[] | null,
-      lessonElements: null as { title: LessonElement[], text: LessonElement[] } | null,
+      lessonTokens: null as { title: LessonTokenObject[], text: LessonTokenObject[] } | null,
       isLoadingLesson: true,
       isLoadingWords: true,
       isParsingLesson: true,
@@ -191,7 +175,7 @@ export default defineComponent({
       if (!(key in this.vocabs)) {
         //only for new phrases
         this.phrases[key] = vocab;
-        //TODO: find less expensive solution to update lessonElements where the new phrase was added
+        //TODO: find less expensive solution to update lessonTokens where the new phrase was added
         this.parseLesson();
       }
       this.onVocabLevelSet(vocab, vocab.level);
@@ -222,21 +206,21 @@ export default defineComponent({
     },
     async parseLesson() {
       this.isParsingLesson = true;
-      this.lessonElements = {
-        title: await this.parseStringToElements(this.lesson!.title),
-        text: await this.parseStringToElements(this.lesson!.text)
+      this.lessonTokens = {
+        title: await this.parseStringToTokens(this.lesson!.title),
+        text: await this.parseStringToTokens(this.lesson!.text)
       };
       this.isParsingLesson = false;
     },
-    async parseStringToElements(text: string): Promise<LessonElement[]> {
+    async parseStringToTokens(text: string): Promise<LessonTokenObject[]> {
       return new Promise((resolve) => {
         // wrap in whitespace to allow regex to detect phrases at the beginning of text
         text = ` ${text} `;
 
-        const textElements: LessonElement[] = this.getTextElements(text).map(element => ({
-          text: element,
-          isWord: !!this.words[element.toLowerCase()],
-          phrases: {} as PhrasesElementAppearsIn
+        const textTokens: LessonTokenObject[] = this.getTextTokens(text).map(tokenText => ({
+          text: tokenText,
+          isWord: !!this.words[tokenText.toLowerCase()],
+          phrases: {} as PhrasesTokenAppearsIn
         }));
 
         const phrases = Object.keys(this.phrases);
@@ -246,20 +230,20 @@ export default defineComponent({
           const regex = new RegExp(`[^\\p{L}\\d]${phrase}[^\\p{L}\\d]`, "igu");
           const matches = text.matchAll(regex);
           for (let match of matches) {
-            const beforePhraseIndex = this.getTextElements(text.substring(0, match.index)).length;
-            const phraseSlice = this.getTextElements(match[0]);
-            const phraseElements = textElements.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length);
-            phraseElements.forEach((pe, index) => pe.phrases[phrase] = {
+            const beforePhraseIndex = this.getTextTokens(text.substring(0, match.index)).length;
+            const phraseSlice = this.getTextTokens(match[0]);
+            const phraseTokens = textTokens.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length);
+            phraseTokens.forEach((pe, index) => pe.phrases[phrase] = {
               phraseId: this.phrases[phrase].id,
               index: index,
-              length: phraseElements.length,
+              length: phraseTokens.length,
             });
           }
         }
-        resolve(textElements);
+        resolve(textTokens);
       });
     },
-    getTextElements(paragraph: string) {
+    getTextTokens(paragraph: string) {
       //TODO get rid of this client side parsing, replace with same code as server shared or called through API
       return paragraph.split(/([^\p{L}\d])/gu).filter((word) => word !== "");
     }

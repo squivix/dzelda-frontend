@@ -4,20 +4,18 @@
       <BaseImage :image-url="image" :fall-back-url="icons.bookOpen"
                  alt-text="lesson image" class="lesson-image"/>
       <LessonParagraph class="title"
-                       :lesson-elements="lessonElements.title"
+                       :lessonTokens="lessonTokens.title"
                        :words="words"
                        :phrases="phrases"
-                       :paragraph-index="0"
                        component="h2"
                        @onWordClicked="onWordClicked"
                        @onPhraseClicked="onPhraseClicked"
                        @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"/>
     </div>
     <div class="lesson-text styled-scrollbars" @scroll="onTextScroll">
-      <LessonParagraph :lesson-elements="lessonElements.text"
+      <LessonParagraph :lessonTokens="lessonTokens.text"
                        :words="words"
                        :phrases="phrases"
-                       :paragraph-index="1"
                        @onWordClicked="onWordClicked"
                        @onPhraseClicked="onPhraseClicked"
                        @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"/>
@@ -30,7 +28,7 @@ import LessonParagraph from "@/components/page/reader/LessonParagraph.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {icons} from "@/icons.js";
 import {PropType} from "vue";
-import {LessonElement} from "@/pages/LessonReaderPage.vue";
+import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
 import {LearnerVocabSchema} from "dzelda-types";
 import InlineSvg from "vue-inline-svg";
 import {getTextSelectedElements} from "@/utils.js";
@@ -47,7 +45,7 @@ export default {
     audio: {type: String, required: false,},
     words: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true,},
     phrases: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
-    lessonElements: {type: Object as PropType<{ title: LessonElement[], text: LessonElement[] }>, required: true},
+    lessonTokens: {type: Object as PropType<{ title: LessonTokenObject[], text: LessonTokenObject[] }>, required: true},
   },
   data() {
     return {
@@ -91,12 +89,12 @@ export default {
     onSelectionChange() {
       const selectedWrappers = getTextSelectedElements(getSelection()!)?.filter(e => e.classList.contains("word-wrapper"));
       if (!selectedWrappers || selectedWrappers.length < 2)
-        return
+        return;
 
-      this.clearSelectedPhrases()
+      this.clearSelectedPhrases();
       let phraseText = "";
       for (const wrapperElement of selectedWrappers) {
-        wrapperElement.classList.add("phrase-selected")
+        wrapperElement.classList.add("phrase-selected");
         const wordNode = wrapperElement.childNodes[0] as HTMLElement;
         if (wordNode.classList.contains("word"))
           phraseText += wordNode.innerText.toLowerCase() + " ";
@@ -115,7 +113,7 @@ export default {
     }
   },
   mounted() {
-    useEventListener(document, "selectionchange", this.onSelectionChange)
+    useEventListener(document, "selectionchange", this.onSelectionChange);
   },
   setup() {
     return {icons};
