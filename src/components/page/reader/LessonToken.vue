@@ -39,7 +39,7 @@ export default defineComponent({
         classes.push("phrase");
         classes.push(...Object.values(this.token.phrases).map(p => `phrase-${p.phraseId}`));
         classes.push(this.getLevelClass(this.phrases![0].level));
-        if (this.isPhraseFirstClick)
+        if (!this.isPhraseFirstClick)
           classes.push("phrase-gone");
       }
       return classes.join(" ");
@@ -48,7 +48,7 @@ export default defineComponent({
       const classes = ["word", this.getLevelClass(this.word?.level)];
       if (this.phrasesCount == 0)
         classes.push("word-lone");
-      if (this.isPhraseFirstClick)
+      if (!this.isPhraseFirstClick)
         classes.push("word-hovered");
       return classes.join(" ");
     },
@@ -58,7 +58,7 @@ export default defineComponent({
   },
   methods: {
     onWordClicked(event: Event) {
-      if (this.phrasesCount == 0 || this.isPhraseFirstClick)
+      if (this.phrasesCount == 0 || !this.isPhraseFirstClick)
         this.$emit("onWordClicked", this.token.text);
       else {
         this.onWrapperClicked(event.target as HTMLElement);
@@ -235,7 +235,7 @@ span::selection {
   background-color: #268AFA;
 }
 
-.phrase-hovered:not(.phrase-gone) {
+.phrase-hovered{
   padding-top: 0.7rem;
   padding-bottom: 0.7rem;
   border-top: 1px solid;
