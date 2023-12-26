@@ -1,16 +1,17 @@
 <template>
   <component :is="component" class="paragraph" ref="paragraphRef">
-    <LessonToken v-for="(token, index) in lessonTokens"
-                 :key="index"
-                 :token="token"
-                 :word="words[token.text]"
-                 :phrases="Object.keys(token.phrases).map(pt=>phrases[pt])"
-                 :isPhraseFirstClick="isPhraseFirstClick"
-                 @onWordClicked="onWordClicked"
-                 @onPhraseClicked="onPhraseClicked"
-                 @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
-                 @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
-    <br>
+    <TokenGroup v-for="(tokenGroup,index) in lessonTokenGroups"
+                :isPhraseFirstClick="isPhraseFirstClick"
+                :phrases="phrases"
+                :words="words"
+                :tokenGroup="tokenGroup"
+                :shouldRender="getShouldRenderGroup(index)"
+                @onWordClicked="onWordClicked"
+                @onPhraseClicked="onPhraseClicked"
+                @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
+                @setIsPhraseFirstClick="setIsPhraseFirstClick"
+                @onGroupVisibilityChange="isVisible=>onGroupVisibilityChange(index, isVisible)"
+    />
   </component>
 </template>
 
@@ -19,10 +20,12 @@ import {PropType} from "vue";
 import {LearnerVocabSchema} from "dzelda-types";
 import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
 import LessonToken from "@/components/page/reader/LessonToken.vue";
+import {chuckArray} from "@/utils.js";
+import TokenGroup from "@/components/page/reader/TokenGroup.vue";
 
 export default {
   name: "LessonParagraph",
-  components: {LessonToken},
+  components: {TokenGroup, LessonToken},
   emits: ["onWordClicked", "onPhraseClicked", "onOverLappingPhrasesClicked"],
   props: {
     lessonTokens: {type: Array as PropType<LessonTokenObject[]>, required: true},
@@ -33,9 +36,20 @@ export default {
   data() {
     return {
       isPhraseFirstClick: true,
+      groupIndexToIsInView: {} as Record<number, boolean>,
+      groupSize: 100,
+      bufferSize: 1,
     };
   },
+  computed: {
+    lessonTokenGroups() {
+      return chuckArray(this.lessonTokens, this.groupSize);
+    }
+  },
   methods: {
+    getShouldRenderGroup(groupIndex: number) {
+      return this.groupIndexToIsInView?.[groupIndex] || this.groupIndexToIsInView?.[groupIndex + this.bufferSize] || this.groupIndexToIsInView?.[groupIndex - this.bufferSize];
+    },
     onWordClicked(wordText: string) {
       this.$emit("onWordClicked", wordText);
     },
@@ -47,6 +61,9 @@ export default {
     },
     setIsPhraseFirstClick(isPhraseFirstClick: boolean) {
       this.isPhraseFirstClick = isPhraseFirstClick;
+    },
+    onGroupVisibilityChange(index: number, isVisible: boolean) {
+      this.groupIndexToIsInView[index] = isVisible;
     }
   },
 };

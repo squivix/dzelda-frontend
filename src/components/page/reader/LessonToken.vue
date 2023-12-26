@@ -161,10 +161,10 @@ span::selection {
   background-color: #aee0f4;
 }
 
-.level-new.phrase:hover {
-  /*background-color: ghostwhite;*/
+/*.level-new.phrase:hover {
+  background-color: ghostwhite;
   cursor: default !important;
-}
+}*/
 
 .level-1 {
   background-color: #ffeda1;

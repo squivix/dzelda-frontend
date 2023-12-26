@@ -81,7 +81,7 @@ function rangeIntersectsNode(range: Range, node: Node) {
 // from https://stackoverflow.com/a/1483487
 export function getTextSelectedElements(selection: Selection) {
     if (selection.toString().length < 1)
-        return
+        return;
     if (selection.rangeCount > 0) {
         const range = selection.getRangeAt(0);
         let containerElement = range.commonAncestorContainer;
@@ -95,6 +95,15 @@ export function getTextSelectedElements(selection: Selection) {
         const elementList = [treeWalker.currentNode as HTMLElement];
         while (treeWalker.nextNode())
             elementList.push(treeWalker.currentNode as HTMLElement);
-        return elementList
+        return elementList;
     }
+}
+
+export function chuckArray<T>(array: T[], chunkSize: number): T[][] {
+    if (chunkSize <= 0)
+        throw Error("Chuck size must be positive");
+    const chunks: T[][] = [];
+    for (let i = 0; i < array.length; i += chunkSize)
+        chunks.push(array.slice(i, i + chunkSize));
+    return chunks;
 }

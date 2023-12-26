@@ -13,6 +13,7 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.json --composite false"
   },
   "dependencies": {
+    "@vueuse/components": "^10.7.0",
     "@vueuse/core": "^10.7.0",
     "chart.js": "^4.4.0",
     "data-uri-to-buffer": "^6.0.1",
