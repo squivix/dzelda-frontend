@@ -107,3 +107,41 @@ export function chuckArray<T>(array: T[], chunkSize: number): T[][] {
         chunks.push(array.slice(i, i + chunkSize));
     return chunks;
 }
+
+export function getChildrenInViewIndexes(container: HTMLElement) {
+    const containerTop = container.scrollTop;
+    const containerBottom = containerTop + container.clientHeight;
+
+    const children = container.children;
+    const childrenInViewIndexes: Set<number> = new Set();
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i] as HTMLElement;
+
+        const childTop = child.offsetTop;
+        const childBottom = childTop + child.offsetHeight;
+
+        // If child is in view
+        if (childTop <= containerBottom && childBottom >= containerBottom)
+            childrenInViewIndexes.add(i);
+    }
+    return childrenInViewIndexes;
+}
+
+export function padSequence(numbers: number[], leftPadding: number, rightPadding: number, minValue: number, maxValue: number) {
+    const sortedNumbers = [...numbers].sort();
+    const result: number[] = [];
+    for (let i = 1; i <= leftPadding; i++) {
+        const element = sortedNumbers[0] - i;
+        if (element < minValue)
+            break;
+        result.push(element);
+    }
+    result.push(...sortedNumbers);
+    for (let i = 1; i <= rightPadding; i++) {
+        const element = sortedNumbers[sortedNumbers.length - 1] + i;
+        if (element > maxValue)
+            break;
+        result.push(element);
+    }
+    return result;
+}

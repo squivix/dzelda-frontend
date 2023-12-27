@@ -3,40 +3,50 @@
     <div class="top-div">
       <BaseImage :image-url="image" :fall-back-url="icons.bookOpen"
                  alt-text="lesson image" class="lesson-image"/>
-      <LessonParagraph class="title"
-                       :lessonTokens="lessonTokens.title"
-                       :words="words"
-                       :phrases="phrases"
-                       component="h2"
-                       @onWordClicked="onWordClicked"
-                       @onPhraseClicked="onPhraseClicked"
-                       @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"/>
+      <h2 class="title">
+        <TokenGroup
+            :isPhraseFirstClick="isPhraseFirstClick"
+            :phrases="phrases"
+            :words="words"
+            :tokenGroup="lessonTokens.title"
+            :shouldRender="true"
+            @onWordClicked="onWordClicked"
+            @onPhraseClicked="onPhraseClicked"
+            @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
+            @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
+      </h2>
     </div>
-    <div class="lesson-text styled-scrollbars" @scroll="onTextScroll">
-      <LessonParagraph :lessonTokens="lessonTokens.text"
-                       :words="words"
-                       :phrases="phrases"
-                       @onWordClicked="onWordClicked"
-                       @onPhraseClicked="onPhraseClicked"
-                       @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"/>
-    </div>
+    <p class="lesson-text styled-scrollbars" ref="paragraphRef">
+      <TokenGroup v-for="(tokenGroup,index) in textTokenGroups"
+                  :isPhraseFirstClick="isPhraseFirstClick"
+                  :phrases="phrases"
+                  :words="words"
+                  :tokenGroup="tokenGroup"
+                  :shouldRender="!indexesToRender||indexesToRender.has(index)"
+                  @onWordClicked="onWordClicked"
+                  @onPhraseClicked="onPhraseClicked"
+                  @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
+                  @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
+    </p>
   </div>
 </template>
 
 <script lang="ts">
-import LessonParagraph from "@/components/page/reader/LessonParagraph.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import {icons} from "@/icons.js";
 import {PropType} from "vue";
 import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
 import {LearnerVocabSchema} from "dzelda-types";
-import InlineSvg from "vue-inline-svg";
-import {getTextSelectedElements} from "@/utils.js";
+import {chuckArray, getChildrenInViewIndexes, getTextSelectedElements, padSequence} from "@/utils.js";
 import {useEventListener} from "@vueuse/core";
+import {icons} from "@/icons.js";
+import TokenGroup from "@/components/page/reader/TokenGroup.vue";
+
+const TOKEN_GROUP_SIZE = 50;
+const TOKEN_GROUP_RENDER_BUFFER = 2;
 
 export default {
   name: "TheLessonContent",
-  components: {InlineSvg, BaseImage, LessonParagraph},
+  components: {BaseImage, TokenGroup},
   emits: ["onWordClicked", "onPhraseClicked", "onOverLappingPhrasesClicked", "onNewPhraseSelected", "onBackgroundClicked", "onScroll"],
   props: {
     title: {type: String, required: true,},
@@ -49,8 +59,23 @@ export default {
   },
   data() {
     return {
+      scrollObserver: null as IntersectionObserver | null,
+      indexesInView: undefined as Set<number> | undefined,
       isSelectingPhraseText: false,
+      isPhraseFirstClick: true,
     };
+  },
+  computed: {
+    paragraphRef(): HTMLElement | null {
+      return this.$refs["paragraphRef"] as HTMLElement;
+    },
+    indexesToRender() {
+      if (this.indexesInView && this.indexesInView.size > 0)
+        return new Set(padSequence([...this.indexesInView], TOKEN_GROUP_RENDER_BUFFER, TOKEN_GROUP_RENDER_BUFFER, 0, Infinity));
+    },
+    textTokenGroups() {
+      return chuckArray(this.lessonTokens.text, TOKEN_GROUP_SIZE);
+    }
   },
   methods: {
     onWordClicked(wordText: string) {
@@ -71,17 +96,6 @@ export default {
     },
     onNewPhraseSelected(phraseText: string) {
       this.$emit("onNewPhraseSelected", phraseText);
-    },
-    onTextScroll(event: Event) {
-      const lessonTextDiv = event.target as HTMLElement;
-      let position: "top" | "bottom" | "middle";
-      if (lessonTextDiv.scrollTop == 0)
-        position = "top";
-      else if (Math.abs(lessonTextDiv.scrollHeight - lessonTextDiv.scrollTop - lessonTextDiv.clientHeight) < 1)
-        position = "bottom";
-      else
-        position = "middle";
-      this.$emit("onScroll", position);
     },
     clearSelectedPhrases() {
       document.querySelectorAll(".phrase-selected").forEach((el) => el.classList.remove("phrase-selected"));
@@ -110,13 +124,26 @@ export default {
     },
     emptyTextSelection() {
       getSelection()?.empty();
-    }
+    },
+    setIsPhraseFirstClick(isPhraseFirstClick: boolean) {
+      this.isPhraseFirstClick = isPhraseFirstClick;
+    },
   },
   mounted() {
     useEventListener(document, "selectionchange", this.onSelectionChange);
+    this.scrollObserver = new IntersectionObserver(() => {
+      if (this.paragraphRef)
+        this.indexesInView = getChildrenInViewIndexes(this.paragraphRef);
+    });
+    for (const child of this.paragraphRef!.children)
+      this.scrollObserver.observe(child);
+  },
+  unmounted() {
+    if (this.scrollObserver)
+      this.scrollObserver.disconnect();
   },
   setup() {
-    return {icons};
+    return {icons}
   }
 }
 ;

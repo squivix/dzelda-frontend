@@ -15,12 +15,10 @@
                           @onPhraseClicked="setSelectedVocab"
                           @onOverLappingPhrasesClicked="showOverlappingPhrases"
                           @onNewPhraseSelected="selectNewPhrase"
-                          @onBackgroundClicked="clearSelectedVocab"
-                          @onScroll="(position)=>lessonTextScrollPosition=position"/>
+                          @onBackgroundClicked="clearSelectedVocab"/>
         <ReaderSidePanel class="side-panel"
                          :selected-overlapping-phrases="selectedOverLappingPhrases"
                          :selected-vocab="selectedVocab"
-                         :lessonTextScrollPosition="lessonTextScrollPosition"
                          :selected-is-phrase="selectedIsPhrase"
                          @onMeaningAdded="onMeaningAdded"
                          @onVocabLevelSet="onVocabLevelSet"
@@ -34,19 +32,13 @@
             Your browser does not support the audio element.
           </audio>
         </div>
-        <!-- TODO move to expanding button component-->
-        <button v-if="!lesson.isLastInCourse"
-                class="next-lesson-button secondary-filled-button icon-text-button capsule-button"
-                @click="fetchNextLesson">
-          <span :class="{'no-text': lessonTextScrollPosition == 'middle'}">Next Lesson</span>
-          <inline-svg :src="icons.arrowRight"/>
-        </button>
-        <router-link v-else
-                     :to="{name:'home'}"
-                     class="next-lesson-button secondary-filled-button icon-text-button capsule-button">
-          <inline-svg :src="icons.checkMark"/>
-          <span :class="{'no-text': lessonTextScrollPosition == 'middle'}">Finish Course</span>
-        </router-link>
+        <ExpandingIconButton v-if="!lesson.isLastInCourse"
+                             :isExpanded="isNextButtonExpanded"
+                             :iconSrc="icons.arrowRight" @onClick="goToNextLesson"
+                             iconPosition="right"
+                             text="Next Lesson" class="next-lesson-button"/>
+        <ExpandingIconButton v-else :isExpanded="isNextButtonExpanded" :iconSrc="icons.checkMark"
+                             text="Finish Course" :linkTo="{name:'home'}"/>
       </div>
     </template>
   </BaseCard>
@@ -64,12 +56,14 @@ import ReaderSidePanel from "@/components/page/reader/ReaderSidePanel.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
+import ExpandingIconButton from "@/components/ui/ExpandingIconButton.vue";
+import {useTimeoutFn} from "@vueuse/core";
 
 export type PhrasesTokenAppearsIn = { [text: string]: { phraseId: number, index: number, length: number } }
 export type LessonTokenObject = { text: string, isWord: boolean, phrases: PhrasesTokenAppearsIn }
 export default defineComponent({
   name: "LessonReaderPage",
-  components: {InlineSvg, BaseCard, ReaderSidePanel, LoadingScreen, TheLessonContent},
+  components: {ExpandingIconButton, InlineSvg, BaseCard, ReaderSidePanel, LoadingScreen, TheLessonContent},
   props: {
     pathParams: {type: Object as PropType<{ learningLanguage: string, lessonId: number }>, required: true}
   },
@@ -85,7 +79,7 @@ export default defineComponent({
       isLoadingLesson: true,
       isLoadingWords: true,
       isParsingLesson: true,
-      lessonTextScrollPosition: "top" as "top" | "bottom" | "middle",
+      isNextButtonExpanded: true,
     };
   },
   computed: {
@@ -113,6 +107,7 @@ export default defineComponent({
     await this.fetchLesson();
     await this.fetchWordsLevels();
     await this.parseLesson();
+    useTimeoutFn(() => this.isNextButtonExpanded = false, 3000);
   },
   methods: {
     async fetchLesson() {
@@ -121,7 +116,7 @@ export default defineComponent({
       this.lesson.text = this.lesson.text.replace(/[\r\n]{3,}/g, "\n\n");
       this.isLoadingLesson = false;
     },
-    async fetchNextLesson() {
+    async goToNextLesson() {
       const lesson = await this.lessonStore.fetchNextLesson({
         courseId: this.lesson!.course.id,
         lessonId: this.lesson!.id
@@ -291,18 +286,6 @@ export default defineComponent({
 
 .next-lesson-button {
   height: 2rem;
-}
-
-.next-lesson-button:hover {
-  text-decoration: none;
-}
-
-.next-lesson-button span {
-  transition: font-size 1s;
-}
-
-.no-text {
-  font-size: 0;
 }
 
 audio {

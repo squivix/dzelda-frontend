@@ -1,20 +1,16 @@
 <template>
-    <span v-intersection-observer="onIntersectionObserver" :class="{'in-view':shouldRender}" ref="tokenGroupRef">
-      <template v-if="shouldRender">
-        <LessonToken v-for="(token, index) in tokenGroup"
-                     :key="index"
-                     :token="token"
-                     :word="words[token.text]"
-                     :phrases="Object.keys(token.phrases).map(pt=>phrases[pt])"
-                     :isPhraseFirstClick="isPhraseFirstClick"
-                     @onWordClicked="onWordClicked"
-                     @onPhraseClicked="onPhraseClicked"
-                     @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
-                     @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
-      </template>
-      <span v-else class="placeholder" :style="{ height:`${elementHeight}px`}">
-        <inline-svg :src="icons.loadingSpinnerTailSpin"></inline-svg>
-      </span>
+    <span :class="{ 'in-view':shouldRender}" ref="tokenGroupRef">
+      <LessonToken v-show="shouldRender" v-for="(token, index) in tokenGroup"
+                   :key="index"
+                   :token="token"
+                   :word="words[token.text]"
+                   :phrases="Object.keys(token.phrases).map(pt=>phrases[pt])"
+                   :isPhraseFirstClick="isPhraseFirstClick"
+                   @onWordClicked="onWordClicked"
+                   @onPhraseClicked="onPhraseClicked"
+                   @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
+                   @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
+        <span v-if="!shouldRender" class="placeholder" :style="{ height:`${elementHeight}px`}"></span>
     </span>
 </template>
 
@@ -23,16 +19,14 @@ import {defineComponent, PropType} from "vue";
 import LessonToken from "@/components/page/reader/LessonToken.vue";
 import {LearnerVocabSchema} from "dzelda-types";
 import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
-import {vIntersectionObserver} from "@vueuse/components";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
-import {useDebounceFn} from "@vueuse/core";
+import {useResizeObserver, useWindowSize} from "@vueuse/core";
 
 export default defineComponent({
   name: "TokenGroup",
   components: {LoadingScreen, LessonToken, InlineSvg},
-  directives: {intersectionObserver: vIntersectionObserver},
   emits: ["onWordClicked", "onPhraseClicked", "onOverLappingPhrasesClicked", "setIsPhraseFirstClick", "onGroupVisibilityChange"],
   props: {
     tokenGroup: {type: Array as PropType<LessonTokenObject[]>, required: true},
@@ -40,17 +34,20 @@ export default defineComponent({
     phrases: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
     isPhraseFirstClick: {type: Boolean, required: true},
     shouldRender: {type: Boolean},
-  }, data() {
+  },
+  watch: {
+    shouldRender() {
+      if (this.windowResized && this.shouldRender)
+        this.elementHeight = (this.$refs.tokenGroupRef as HTMLElement).offsetHeight;
+    }
+  },
+  data() {
     return {
       elementHeight: 0,
+      windowResized: false
     };
   },
   methods: {
-    onIntersectionObserver([{isIntersecting}]: IntersectionObserverEntry[]) {
-      if (isIntersecting)
-        this.elementHeight = (this.$refs.tokenGroupRef as HTMLElement).offsetHeight;
-      this.$emit("onGroupVisibilityChange", isIntersecting);
-    },
     onWordClicked(wordText: string) {
       this.$emit("onWordClicked", wordText);
     },
@@ -64,14 +61,22 @@ export default defineComponent({
       this.$emit("setIsPhraseFirstClick", isPhraseFirstClick);
     }
   },
+  mounted() {
+    this.elementHeight = (this.$refs.tokenGroupRef as HTMLElement).offsetHeight;
+    useResizeObserver(document.body, () => this.windowResized = true);
+  },
   setup() {
-
     return {icons};
   }
 });
 </script>
 
 <style scoped>
+.group {
+  display: inline-block;
+  border: 1px solid black;
+}
+
 .placeholder {
   display: grid;
   place-items: center;
