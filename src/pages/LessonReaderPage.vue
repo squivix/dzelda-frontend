@@ -105,7 +105,7 @@ export default defineComponent({
   async mounted() {
     await this.lessonStore.addLessonToUserHistory({lessonId: this.pathParams.lessonId});
     await this.fetchLesson();
-    await this.fetchWordsLevels();
+    await this.fetchLessonVocabs();
     await this.parseLesson();
     useTimeoutFn(() => this.isNextButtonExpanded = false, 3000);
   },
@@ -123,7 +123,7 @@ export default defineComponent({
       });
       await this.$router.push({...this.$route, params: {lessonId: lesson!.id}});
     },
-    async fetchWordsLevels() {
+    async fetchLessonVocabs() {
       this.isLoadingWords = true;
       const lessonVocabs = await this.vocabStore.fetchLessonVocabs({lessonId: this.pathParams.lessonId}, {});
       const words: Record<string, LearnerVocabSchema> = {};
@@ -139,7 +139,7 @@ export default defineComponent({
       this.isLoadingWords = false;
     },
     setSelectedVocab(vocabText: string) {
-      this.selectedVocab = {...this.vocabs[vocabText.toLowerCase()], text: vocabText};
+      this.selectedVocab = this.vocabs[vocabText.toLowerCase()];
       this.selectedIsPhrase = !!this.phrases[vocabText.toLowerCase()];
       this.selectedOverLappingPhrases = null;
     },
@@ -149,6 +149,7 @@ export default defineComponent({
         level: VocabLevelSchema.NEW,
         isPhrase: true,
         notes: null,
+        //TODO why us this hardcoded??
         language: "en",
         meanings: [],
         learnerMeanings: []
@@ -167,11 +168,11 @@ export default defineComponent({
       const key = vocab.text.toLowerCase();
       if (vocab.level === constants.ALL_VOCAB_LEVELS.KNOWN || vocab.level === constants.ALL_VOCAB_LEVELS.IGNORED)
         vocab.level = constants.ALL_VOCAB_LEVELS.LEVEL_1;
-      if (!(key in this.vocabs)) {
+      if (!(key in this.vocabs) && vocab.isPhrase) {
         //only for new phrases
         this.phrases[key] = vocab;
-        //TODO: find less expensive solution to update lessonTokens where the new phrase was added
-        this.parseLesson();
+        this.parsePhraseInTokens(this.lesson!.title, this.lessonTokens!.title, vocab.text);
+        this.parsePhraseInTokens(this.lesson!.text, this.lessonTokens!.text, vocab.text);
       }
       this.onVocabLevelSet(vocab, vocab.level);
       this.vocabs[key].learnerMeanings.push(newMeaning);
@@ -209,39 +210,36 @@ export default defineComponent({
     },
     async parseStringToTokens(text: string): Promise<LessonTokenObject[]> {
       return new Promise((resolve) => {
-        // wrap in whitespace to allow regex to detect phrases at the beginning of text
-        text = ` ${text} `;
-
         const textTokens: LessonTokenObject[] = this.getTextTokens(text).map(tokenText => ({
           text: tokenText,
           isWord: !!this.words[tokenText.toLowerCase()],
           phrases: {} as PhrasesTokenAppearsIn
         }));
 
-        const phrases = Object.keys(this.phrases);
-        for (const phrase of phrases) {
-          //detect every phrase surrounded by non letters and non-numbers
-          //TODO also get rid of this client side parsing as well as all toLowerCases in reader page
-          const regex = new RegExp(`[^\\p{L}\\d]${phrase}[^\\p{L}\\d]`, "igu");
-          const matches = text.matchAll(regex);
-          for (let match of matches) {
-            const beforePhraseIndex = this.getTextTokens(text.substring(0, match.index)).length;
-            const phraseSlice = this.getTextTokens(match[0]);
-            const phraseTokens = textTokens.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length);
-            phraseTokens.forEach((pe, index) => pe.phrases[phrase] = {
-              phraseId: this.phrases[phrase].id,
-              index: index,
-              length: phraseTokens.length,
-            });
-          }
-        }
+        for (const phraseText of Object.keys(this.phrases))
+          this.parsePhraseInTokens(text, textTokens, phraseText);
         resolve(textTokens);
       });
+    },
+    parsePhraseInTokens(text: string, textTokens: LessonTokenObject[], phraseText: string) {
+      //detect every phrase surrounded by non letters and non-numbers
+      //TODO also get rid of this client side parsing as well as all toLowerCases in reader page
+      const regex = new RegExp(`([^\\p{L}\\d]|^)${phraseText}([^\\p{L}\\d]|$)`, "igu");
+      for (let match of text.matchAll(regex)) {
+        const beforePhraseIndex = this.getTextTokens(text.substring(0, match.index)).length;
+        const phraseSlice = this.getTextTokens(match[0]);
+        const phraseTokens = textTokens.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length);
+        phraseTokens.forEach((pe, index) => pe.phrases[phraseText] = {
+          phraseId: this.phrases[phraseText].id,
+          index: index,
+          length: phraseTokens.length,
+        });
+      }
     },
     getTextTokens(paragraph: string) {
       //TODO get rid of this client side parsing, replace with same code as server shared or called through API
       return paragraph.split(/([^\p{L}\d])/gu).filter((word) => word !== "");
-    }
+    },
   },
   setup() {
     return {

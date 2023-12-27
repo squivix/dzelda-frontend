@@ -22,7 +22,7 @@ export default {
     }
   },
   methods: {
-    onPhraseClick(phraseText) {
+    onPhraseClick(phraseText: string) {
       this.$emit("onPhraseClick", phraseText);
     }
   }

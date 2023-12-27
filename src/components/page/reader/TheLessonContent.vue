@@ -1,5 +1,5 @@
 <template>
-  <div @click="onBackgroundClicked" class="lesson-content" @mouseup="emptyTextSelection">
+  <div class="lesson-content" @mouseup="emptyTextSelection">
     <div class="top-div">
       <BaseImage :image-url="image" :fall-back-url="icons.bookOpen"
                  alt-text="lesson image" class="lesson-image"/>
@@ -131,6 +131,7 @@ export default {
   },
   mounted() {
     useEventListener(document, "selectionchange", this.onSelectionChange);
+    useEventListener(document.body, "click", this.onBackgroundClicked);
     this.scrollObserver = new IntersectionObserver(() => {
       if (this.paragraphRef)
         this.indexesInView = getChildrenInViewIndexes(this.paragraphRef);

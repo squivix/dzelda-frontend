@@ -3,11 +3,13 @@
     <TheMeaningPanel v-if="!selectedOverlappingPhrases"
                      :vocab="selectedVocab"
                      :is-phrase="selectedIsPhrase"
+                     @click.stop
                      @onMeaningAdded="onMeaningAdded"
                      @onVocabLevelSet="onVocabLevelSet"
                      @onMeaningDeleted="onMeaningDeleted"
                      @onVocabNotesSet="onVocabNotesSet"/>
     <OverlappingPhrasesPanel v-else
+                             @click.stop
                              :phrases="selectedOverlappingPhrases"
                              @onPhraseClick="onOverlappingPhraseClicked"/>
   </div>
