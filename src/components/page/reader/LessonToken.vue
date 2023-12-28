@@ -59,7 +59,7 @@ export default defineComponent({
   methods: {
     onWordClicked(event: Event) {
       if (this.phrasesCount == 0 || !this.isPhraseFirstClick)
-        this.$emit("onWordClicked", this.token.text);
+        this.$emit("onWordClicked", this.word!);
       else {
         this.onWrapperClicked(event.target as HTMLElement);
         this.$emit("setIsPhraseFirstClick", false);
@@ -76,11 +76,11 @@ export default defineComponent({
         return;
       //if word part of multiple phrases
       else if (this.phrases.length > 1)
-        this.$emit("onOverLappingPhrasesClicked", this.phrases.map(p => p.text));
+        this.$emit("onOverLappingPhrasesClicked", this.phrases);
       else {
         if (wrapperDomElem.classList.contains("phrase-new"))
           return;
-        this.$emit("onPhraseClicked", this.phrases[0].text);
+        this.$emit("onPhraseClicked", this.phrases[0]);
       }
     },
     wrapperHoverStart(event: Event) {

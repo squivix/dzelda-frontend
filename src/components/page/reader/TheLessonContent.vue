@@ -78,14 +78,14 @@ export default {
     }
   },
   methods: {
-    onWordClicked(wordText: string) {
-      this.$emit("onWordClicked", wordText);
+    onWordClicked(word: LearnerVocabSchema) {
+      this.$emit("onWordClicked", word);
     },
-    onPhraseClicked(phraseText: string) {
-      this.$emit("onPhraseClicked", phraseText);
+    onPhraseClicked(phrase: LearnerVocabSchema) {
+      this.$emit("onPhraseClicked", phrase);
     },
-    onOverLappingPhrasesClicked(phrasesText: string[]) {
-      this.$emit("onOverLappingPhrasesClicked", phrasesText);
+    onOverLappingPhrasesClicked(phrases: LearnerVocabSchema[]) {
+      this.$emit("onOverLappingPhrasesClicked", phrases);
     },
     onBackgroundClicked() {
       if (!this.isSelectingPhraseText) {
@@ -115,12 +115,11 @@ export default {
       }
       this.isSelectingPhraseText = true;
       if (this.words[phraseText])
-        this.onWordClicked(phraseText);
-      //new phrase
-      else if (!this.phrases[phraseText])
-        this.onNewPhraseSelected(phraseText);
+        this.onWordClicked(this.words[phraseText]);
+      else if (this.phrases[phraseText])
+        this.onPhraseClicked(this.phrases[phraseText]);
       else
-        this.onPhraseClicked(phraseText);
+        this.onNewPhraseSelected(phraseText);
     },
     emptyTextSelection() {
       getSelection()?.empty();
@@ -144,7 +143,7 @@ export default {
       this.scrollObserver.disconnect();
   },
   setup() {
-    return {icons}
+    return {icons};
   }
 }
 ;

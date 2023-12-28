@@ -23,69 +23,59 @@ import {useMeaningStore} from "@/stores/backend/meaningStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
+import {MeaningSchema, VocabLevelSchema} from "dzelda-types";
+import {PropType} from "vue";
 
 export default {
   name: "MeaningAddingControls",
   components: {InlineSvg},
-  emits: ["onMeaningAdded"],
+  emits: ["onMeaningAdded", "onNewPhraseAdded"],
   props: {
-    vocabId: {
-      type: Number,
-      required: false,
-    },
-    vocabText: {
-      type: String,
-      required: true,
-    },
-    isPhrase: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    suggestedMeanings: {
-      type: Array,
-      required: true,
-    }
+    vocabId: {type: Number, required: false},
+    vocabText: {type: String, required: true},
+    vocabLanguage: {type: String, required: true},
+    isPhrase: {type: Boolean, default: false},
+    suggestedMeanings: {type: Array as PropType<MeaningSchema[]>, required: true}
   },
   data() {
     return {
-      newMeaning: null,
+      newMeaning: "" as string | null,
     };
   },
   methods: {
-    addSuggestedMeaning(meaning) {
-      this.vocabStore.addVocabToUser({vocabId: this.vocabId}).then(async newVocab => {
-        await this.meaningStore.addMeaningToUser({meaningId: meaning.id});
-        this.$emit("onMeaningAdded", newVocab, meaning);
-      });
+    async addSuggestedMeaning(meaning: MeaningSchema) {
+      const newVocab = await this.vocabStore.addVocabToUser({vocabId: this.vocabId!});
+      await this.meaningStore.addMeaningToUser({meaningId: meaning.id});
+      this.$emit("onMeaningAdded", newVocab, meaning);
     },
     async addNewMeaning() {
-      if (this.newMeaning === undefined || this.newMeaning === "")
+      if (!this.newMeaning)
         return;
       let vocabId = this.vocabId;
       if (this.isPhrase && !this.vocabId) {
-        vocabId = (await this.vocabStore.createVocab({
+        const vocab = await this.vocabStore.createVocab({
           text: this.vocabText,
-          languageCode: this.$route.params.learningLanguage,
+          languageCode: this.vocabLanguage,
           isPhrase: true,
-        })).id;
+        });
+        vocabId = vocab.id;
       }
 
-      this.vocabStore.addVocabToUser({vocabId: vocabId,}).then(async (newVocab) => {
-        this.meaningStore.createMeaning({
-          text: this.newMeaning,
-          vocabId: newVocab.id,
-          //TODO: no language hard-coding
-          languageCode: "en",
-        }).then(async newMeaning => {
-          await this.meaningStore.addMeaningToUser({
-            meaningId: newMeaning.id
-          });
-          this.$emit("onMeaningAdded", newVocab, newMeaning);
-          this.newMeaning = "";
-        });
+      const newVocab = await this.vocabStore.addVocabToUser({vocabId: vocabId!});
+      if (this.isPhrase)
+        this.$emit("onNewPhraseAdded", newVocab);
+
+      const newMeaning = await this.meaningStore.createMeaning({
+        text: this.newMeaning,
+        vocabId: vocabId!,
+        //TODO: no language hard-coding
+        languageCode: "en",
       });
-    },
+      await this.meaningStore.addMeaningToUser({meaningId: newMeaning.id});
+      this.$emit("onMeaningAdded", vocabId!, newMeaning);
+      this.newMeaning = "";
+    }
+    ,
   },
   setup() {
     return {

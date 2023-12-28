@@ -5,25 +5,25 @@
       <li v-for="(phrase, index) in phrases"
           :key="index"
           @click="onPhraseClick(phrase)">
-        {{ phrase }}
+        {{ phrase.text }}
       </li>
     </ul>
   </div>
 </template>
 
 <script lang="ts">
+import {PropType} from "vue";
+import {LearnerVocabSchema} from "dzelda-types";
+
 export default {
   name: "OverlappingPhrasesPanel",
   emits: ["onPhraseClick"],
   props: {
-    phrases: {
-      type: Array,
-      required: true
-    }
+    phrases: {type: Array as PropType<LearnerVocabSchema[]>, required: true}
   },
   methods: {
-    onPhraseClick(phraseText: string) {
-      this.$emit("onPhraseClick", phraseText);
+    onPhraseClick(phrase: LearnerVocabSchema) {
+      this.$emit("onPhraseClick", phrase);
     }
   }
 };

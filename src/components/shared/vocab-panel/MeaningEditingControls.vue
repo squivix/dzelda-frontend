@@ -1,5 +1,5 @@
 <template>
-  <h5 v-if="savedMeanings.length>0">Saved Meanings</h5>
+  <h5>Saved Meanings</h5>
   <ol class="user-meanings">
     <li v-for="meaning in savedMeanings" :key="meaning.id">
       <form action="javascript:void(0);">
@@ -44,16 +44,16 @@ export default {
     async editMeaning(meaning) {
       const editedMeaning = this.$refs[`user-meaning-input-${meaning.id}`][0].value.trim();
       if (editedMeaning === undefined || editedMeaning === "")
-        await this.deleteMeaning(meaning)
+        await this.deleteMeaning(meaning);
       else if (editedMeaning === meaning.text)
         return;
 
-      await this.meaningStore.deleteMeaningFromUser({meaningId: meaning.id})
+      await this.meaningStore.deleteMeaningFromUser({meaningId: meaning.id});
       const newMeaning = await this.meaningStore.createMeaning({
         vocabId: this.vocabId,
         languageCode: "en",
         text: editedMeaning,
-      })
+      });
       await this.meaningStore.addMeaningToUser({meaningId: newMeaning.id});
       //TODO reflect this locally by some sort of event that sends newMeaning
     },
@@ -62,9 +62,9 @@ export default {
     return {
       icons,
       meaningStore: useMeaningStore()
-    }
+    };
   }
-}
+};
 </script>
 
 <style scoped>

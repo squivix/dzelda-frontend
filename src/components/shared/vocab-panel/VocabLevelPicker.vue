@@ -30,10 +30,12 @@
 </template>
 
 <script lang="ts">
-import constants from "@/constants.ts";
+import constants from "@/constants.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
+import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-types";
+import {PropType} from "vue";
 
 export default {
   name: "VocabLevelPicker",
@@ -41,24 +43,26 @@ export default {
   data() {
     return {constants};
   },
-  emits: ["onVocabLevelSet"],
+  emits: ["onVocabLevelSet", "onVocabRemovedFromUser"],
   props: {
-    vocabId: {
-      type: Number,
-      required: true
-    },
+    vocab: {type: Object as PropType<LearnerVocabSchema>, required: true},
     level: {
       type: Number,
       required: true
     }
   },
   methods: {
-    async setVocabLevel(level) {
-      await this.vocabStore.updateUserVocab(
-          {vocabId: this.vocabId},
-          {level: level}
-      );
-      this.$emit("onVocabLevelSet", level);
+    async setVocabLevel(level: VocabLevelSchema) {
+      if (this.vocab.isPhrase && level == VocabLevelSchema.IGNORED) {
+        await this.vocabStore.removeVocabFromUser({vocabId: this.vocab.id});
+        this.$emit("onVocabRemovedFromUser");
+      } else {
+        await this.vocabStore.updateUserVocab(
+            {vocabId: this.vocab.id},
+            {level: level}
+        );
+        this.$emit("onVocabLevelSet", level);
+      }
     },
   },
   setup() {

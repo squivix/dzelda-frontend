@@ -16,6 +16,11 @@ export const useVocabStore = defineStore("vocab", {
             const response = await store.fetchCustom((api) => api.users.getUsersMeVocabs(queryParams));
             return response.data;
         },
+        async fetchUserVocab(pathParams: { vocabId: number }) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.users.getUsersMeVocabsVocabId(pathParams.vocabId));
+            return response.data;
+        },
         async createVocab(body: { text: string, languageCode: string, isPhrase: boolean }) {
             useMessageBarStore().clearMessages();
             const store = useStore();
@@ -43,12 +48,16 @@ export const useVocabStore = defineStore("vocab", {
             }));
             return response.data;
         },
+        async removeVocabFromUser(pathParams: { vocabId: number }) {
+            useMessageBarStore().clearMessages();
+            const store = useStore();
+            await store.fetchCustom((api) => api.users.deleteUsersMeVocabsVocabId(pathParams.vocabId));
+        },
         async fetchLessonVocabs(pathParams: { lessonId: number }, queryParams: {}) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.lessons.getLessonsLessonIdVocabs(pathParams.lessonId, queryParams));
             return response.data;
         },
-
         async fetchSavedVocabsCountTimeSeries(pathParams: { username: string }, queryParams: {
             savedOnFrom?: string,
             savedOnTo?: string,

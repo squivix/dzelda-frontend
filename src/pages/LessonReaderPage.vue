@@ -17,14 +17,17 @@
                           @onNewPhraseSelected="selectNewPhrase"
                           @onBackgroundClicked="clearSelectedVocab"/>
         <ReaderSidePanel class="side-panel"
-                         :selected-overlapping-phrases="selectedOverLappingPhrases"
-                         :selected-vocab="selectedVocab"
-                         :selected-is-phrase="selectedIsPhrase"
+                         :selectedOverlappingPhrases="selectedOverLappingPhrases"
+                         :selectedVocab="selectedVocab"
+                         :selectedIsPhrase="selectedVocab?.isPhrase"
                          @onMeaningAdded="onMeaningAdded"
                          @onVocabLevelSet="onVocabLevelSet"
                          @onMeaningDeleted="onMeaningDeleted"
                          @onOverlappingPhraseClicked="setSelectedVocab"
-                         @onVocabNotesSet="onVocabNotesSet"/>
+                         @onVocabNotesSet="onVocabNotesSet"
+                         @onNewPhraseAdded="onNewPhraseAdded"
+                         @onVocabRemovedFromUser="onVocabRemovedFromUser"
+        />
       </div>
       <div class="bottom-div">
         <div>
@@ -53,7 +56,6 @@ import {useStore} from "@/stores/backend/rootStore.js";
 import {defineComponent, PropType} from "vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import ReaderSidePanel from "@/components/page/reader/ReaderSidePanel.vue";
-import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
 import ExpandingIconButton from "@/components/ui/ExpandingIconButton.vue";
@@ -61,20 +63,20 @@ import {useTimeoutFn} from "@vueuse/core";
 
 export type PhrasesTokenAppearsIn = { [text: string]: { phraseId: number, index: number, length: number } }
 export type LessonTokenObject = { text: string, isWord: boolean, phrases: PhrasesTokenAppearsIn }
+export type NewVocab = Omit<LearnerVocabSchema, "id">
 export default defineComponent({
   name: "LessonReaderPage",
-  components: {ExpandingIconButton, InlineSvg, BaseCard, ReaderSidePanel, LoadingScreen, TheLessonContent},
+  components: {ExpandingIconButton, BaseCard, ReaderSidePanel, LoadingScreen, TheLessonContent},
   props: {
-    pathParams: {type: Object as PropType<{ learningLanguage: string, lessonId: number }>, required: true}
+    pathParams: {type: Object as PropType<{ learningLanguage: string, lessonId: number }>, required: true},
   },
   data() {
     return {
       lesson: null as LessonSchema | null,
       words: {} as Record<string, LearnerVocabSchema>,
       phrases: {} as Record<string, LearnerVocabSchema>,
-      selectedVocab: null as LearnerVocabSchema | null,
-      selectedIsPhrase: false,
-      selectedOverLappingPhrases: null as string[] | null,
+      selectedVocab: null as LearnerVocabSchema | NewVocab | null,
+      selectedOverLappingPhrases: null as LearnerVocabSchema[] | null,
       lessonTokens: null as { title: LessonTokenObject[], text: LessonTokenObject[] } | null,
       isLoadingLesson: true,
       isLoadingWords: true,
@@ -98,13 +100,14 @@ export default defineComponent({
         return `${this.store.resourceUrl}/${audioPath}`;
       return "";
     },
-    vocabs() {
-      return {...this.words, ...this.phrases};
-    },
   },
   async mounted() {
-    await this.lessonStore.addLessonToUserHistory({lessonId: this.pathParams.lessonId});
     await this.fetchLesson();
+    if (this.lesson!.course.language != this.pathParams.learningLanguage) {
+      await this.$router.push({name: "not-found"});
+      return;
+    }
+    await this.lessonStore.addLessonToUserHistory({lessonId: this.pathParams.lessonId});
     await this.fetchLessonVocabs();
     await this.parseLesson();
     useTimeoutFn(() => this.isNextButtonExpanded = false, 3000);
@@ -121,7 +124,7 @@ export default defineComponent({
         courseId: this.lesson!.course.id,
         lessonId: this.lesson!.id
       });
-      await this.$router.push({...this.$route, params: {lessonId: lesson!.id}});
+      await this.$router.push({params: {lessonId: lesson!.id}});
     },
     async fetchLessonVocabs() {
       this.isLoadingWords = true;
@@ -138,10 +141,16 @@ export default defineComponent({
       this.phrases = phrases;
       this.isLoadingWords = false;
     },
-    setSelectedVocab(vocabText: string) {
-      this.selectedVocab = this.vocabs[vocabText.toLowerCase()];
-      this.selectedIsPhrase = !!this.phrases[vocabText.toLowerCase()];
+    setSelectedVocab(vocab: LearnerVocabSchema) {
+      this.selectedVocab = vocab;
       this.selectedOverLappingPhrases = null;
+    },
+    clearSelectedVocab() {
+      this.selectedVocab = null;
+      this.selectedOverLappingPhrases = null;
+    },
+    showOverlappingPhrases(phrases: LearnerVocabSchema[]) {
+      this.selectedOverLappingPhrases = phrases;
     },
     selectNewPhrase(phraseText: string) {
       this.selectedVocab = {
@@ -149,56 +158,45 @@ export default defineComponent({
         level: VocabLevelSchema.NEW,
         isPhrase: true,
         notes: null,
-        //TODO why us this hardcoded??
-        language: "en",
+        language: this.lesson!.course.language,
         meanings: [],
         learnerMeanings: []
       };
-      this.selectedIsPhrase = true;
       this.selectedOverLappingPhrases = null;
     },
-    clearSelectedVocab() {
-      this.selectedVocab = null;
-      this.selectedOverLappingPhrases = null;
-    },
-    showOverlappingPhrases(phrasesText: string[]) {
-      this.selectedOverLappingPhrases = phrasesText;
-    },
-    onMeaningAdded(vocab: LearnerVocabSchema, newMeaning: MeaningSchema) {
-      const key = vocab.text.toLowerCase();
-      if (vocab.level === constants.ALL_VOCAB_LEVELS.KNOWN || vocab.level === constants.ALL_VOCAB_LEVELS.IGNORED)
-        vocab.level = constants.ALL_VOCAB_LEVELS.LEVEL_1;
-      if (!(key in this.vocabs) && vocab.isPhrase) {
-        //only for new phrases
-        this.phrases[key] = vocab;
+    onNewPhraseAdded(vocab: LearnerVocabSchema) {
+      if (vocab.isPhrase) {
+        this.phrases[vocab.text] = vocab;
         this.parsePhraseInTokens(this.lesson!.title, this.lessonTokens!.title, vocab.text);
         this.parsePhraseInTokens(this.lesson!.text, this.lessonTokens!.text, vocab.text);
       }
-      this.onVocabLevelSet(vocab, vocab.level);
-      this.vocabs[key].learnerMeanings.push(newMeaning);
-      (this.vocabs[key] as LearnerVocabSchema).id = vocab.id;
-      this.setSelectedVocab(vocab.text);
     },
-    onVocabLevelSet(vocab: LearnerVocabSchema, level: VocabLevelSchema) {
-      const key = vocab.text.toLowerCase();
-      this.vocabs[key].level = level;
-      if (level === VocabLevelSchema.IGNORED || level === VocabLevelSchema.KNOWN) {
-        this.vocabs[key].learnerMeanings = [];
+    async onMeaningAdded(vocabId: number, newMeaning: MeaningSchema) {
+      const updatedVocab = await this.updateVocab(vocabId);
+      this.setSelectedVocab(updatedVocab);
+    },
+    onVocabRemovedFromUser(removedVocab: LearnerVocabSchema) {
+      if (removedVocab.isPhrase) {
+        this.phrases[removedVocab.text].level = VocabLevelSchema.NEW;
+        this.phrases[removedVocab.text].learnerMeanings = [];
+      } else {
+        this.words[removedVocab.text].level = VocabLevelSchema.NEW;
+        this.words[removedVocab.text].learnerMeanings = [];
+      }
+      this.clearSelectedVocab();
+    },
+    async onVocabLevelSet(vocabId: number, level: VocabLevelSchema) {
+      const updatedVocab = await this.updateVocab(vocabId);
+      if (level === VocabLevelSchema.IGNORED || level === VocabLevelSchema.KNOWN)
         this.clearSelectedVocab();
-        if (level === VocabLevelSchema.IGNORED && this.phrases[key])
-          this.phrases[key].level = VocabLevelSchema.NEW;
-      } else
-        this.setSelectedVocab(vocab.text);
+      else
+        this.setSelectedVocab(updatedVocab);
     },
-    onVocabNotesSet(vocab: LearnerVocabSchema, notes: string) {
-      const key = vocab.text.toLowerCase();
-      this.vocabs[key].notes = notes;
+    async onVocabNotesSet(vocab: LearnerVocabSchema, notes: string) {
+      await this.updateVocab(vocab.id);
     },
-    onMeaningDeleted(word: LearnerVocabSchema, deletedMeaning: MeaningSchema) {
-      const index = word.learnerMeanings.findIndex((meaning) => meaning.id === deletedMeaning.id);
-      word.learnerMeanings.splice(index, 1);
-      if (word.learnerMeanings.length === 0)
-        this.onVocabLevelSet(word, constants.ALL_VOCAB_LEVELS.NEW);
+    async onMeaningDeleted(vocab: LearnerVocabSchema, deletedMeaning: MeaningSchema) {
+      await this.updateVocab(vocab.id);
     },
     async parseLesson() {
       this.isParsingLesson = true;
@@ -240,6 +238,14 @@ export default defineComponent({
       //TODO get rid of this client side parsing, replace with same code as server shared or called through API
       return paragraph.split(/([^\p{L}\d])/gu).filter((word) => word !== "");
     },
+    async updateVocab(vocabId: number) {
+      const updatedVocab = await this.vocabStore.fetchUserVocab({vocabId: vocabId!});
+      if (updatedVocab.isPhrase)
+        this.phrases[updatedVocab.text] = updatedVocab;
+      else
+        this.words[updatedVocab.text] = updatedVocab;
+      return updatedVocab;
+    }
   },
   setup() {
     return {

@@ -1,16 +1,16 @@
 <template>
     <span :class="{ 'in-view':shouldRender}" ref="tokenGroupRef">
-      <LessonToken v-show="shouldRender" v-for="(token, index) in tokenGroup"
+      <LessonToken v-if="shouldRender" v-for="(token, index) in tokenGroup"
                    :key="index"
                    :token="token"
-                   :word="words[token.text]"
+                   :word="words[token.text.toLowerCase()]"
                    :phrases="Object.keys(token.phrases).map(pt=>phrases[pt])"
                    :isPhraseFirstClick="isPhraseFirstClick"
                    @onWordClicked="onWordClicked"
                    @onPhraseClicked="onPhraseClicked"
                    @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
                    @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
-        <span v-if="!shouldRender" class="placeholder" :style="{ height:`${elementHeight}px`}"></span>
+        <span v-else class="placeholder" :style="{ height:`${elementHeight}px`}"></span>
     </span>
 </template>
 
@@ -48,14 +48,14 @@ export default defineComponent({
     };
   },
   methods: {
-    onWordClicked(wordText: string) {
-      this.$emit("onWordClicked", wordText);
+    onWordClicked(word: LearnerVocabSchema) {
+      this.$emit("onWordClicked", word);
     },
-    onPhraseClicked(phraseText: string) {
-      this.$emit("onPhraseClicked", phraseText);
+    onPhraseClicked(phrase: LearnerVocabSchema) {
+      this.$emit("onPhraseClicked", phrase);
     },
-    onOverLappingPhrasesClicked(phrasesText: string[]) {
-      this.$emit("onOverLappingPhrasesClicked", phrasesText);
+    onOverLappingPhrasesClicked(phrases: LearnerVocabSchema[]) {
+      this.$emit("onOverLappingPhrasesClicked", phrases);
     },
     setIsPhraseFirstClick(isPhraseFirstClick: boolean) {
       this.$emit("setIsPhraseFirstClick", isPhraseFirstClick);

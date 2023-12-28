@@ -1,5 +1,5 @@
 <template>
-  <component :is="!!linkTo?'RouterLink':'button'" :to="linkTo" @click="!linkTo?onClick:undefined"
+  <component :is="!!linkTo?'RouterLink':'button'" :to="linkTo" @click="onClick"
              class="secondary-filled-button icon-text-button capsule-button">
     <template v-if="iconPosition=='left'">
       <inline-svg :src="iconSrc"/>

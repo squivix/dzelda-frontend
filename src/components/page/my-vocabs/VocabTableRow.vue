@@ -16,7 +16,7 @@
     <td class="level-picker-td">
       <!--                                <vocab-level-display :level="vocab.level"></vocab-level-display>-->
       <VocabLevelPicker :level="vocab.level"
-                        :vocab-id="vocab.id"
+                        :vocab="vocab"
                         @onVocabLevelSet="(level)=>onVocabLevelSet(vocab, level)"/>
     </td>
   </tr>

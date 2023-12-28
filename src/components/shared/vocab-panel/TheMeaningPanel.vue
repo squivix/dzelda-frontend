@@ -8,15 +8,18 @@
             :vocab="vocab"
             :is-phrase="isPhrase"
             @onMeaningAdded="onMeaningAdded"
-            @onVocabLevelSet="onVocabLevelSet">
+            @onVocabLevelSet="onVocabLevelSet"
+            @onNewPhraseAdded="onNewPhraseAdded">
         </NewVocabPanel>
         <ExistingVocabPanel
             v-else
-            :vocab="vocab"
+            :vocab="existingVocab!"
             @onAddMoreMeaningsClicked="onAddMoreMeaningsClicked"
             @onMeaningDeleted="onMeaningDeleted"
+            @onVocabRemovedFromUser="onVocabRemovedFromUser"
             @onVocabLevelSet="onVocabLevelSet"
-            @onVocabNotesSet="onVocabNotesSet">
+            @onVocabNotesSet="onVocabNotesSet"
+        >
         </ExistingVocabPanel>
       </div>
     </template>
@@ -36,17 +39,10 @@ import {NewVocab} from "@/pages/LessonReaderPage.vue";
 export default {
   name: "TheMeaningPanel",
   components: {NewVocabPanel, ExistingVocabPanel},
-  emits: ["onMeaningAdded", "onVocabLevelSet", "onMeaningDeleted", "onVocabNotesSet"],
+  emits: ["onMeaningAdded", "onVocabLevelSet", "onMeaningDeleted", "onVocabNotesSet", "onNewPhraseAdded", "onVocabRemovedFromUser"],
   props: {
-    vocab: {
-      type: Object as PropType<LearnerVocabSchema | NewVocab | null>,
-      required: false,
-    },
-    isPhrase: {
-      type: Boolean,
-      required: false,
-      default: false,
-    }
+    vocab: {type: Object as PropType<LearnerVocabSchema | NewVocab | null>, required: false},
+    isPhrase: {type: Boolean, default: false}
   },
   watch: {
     vocab() {
@@ -64,24 +60,37 @@ export default {
     },
     showAddPanel() {
       return this.isVocabNotSaved || this.addingMoreMeanings;
+    },
+    existingVocab(): LearnerVocabSchema | undefined {
+      if (this.isVocabNotSaved)
+        return undefined;
+      else
+        return this.vocab as LearnerVocabSchema;
+
     }
   },
   methods: {
     onAddMoreMeaningsClicked() {
       this.addingMoreMeanings = true;
     },
-    onMeaningAdded(vocab: LearnerVocabSchema, meaning: MeaningSchema) {
-      this.$emit("onMeaningAdded", vocab, meaning);
+    onMeaningAdded(vocabId: number, newMeaning: MeaningSchema) {
+      this.$emit("onMeaningAdded", vocabId, newMeaning);
       this.addingMoreMeanings = false;
     },
     onMeaningDeleted(meaning: MeaningSchema) {
       this.$emit("onMeaningDeleted", this.vocab, meaning);
     },
-    onVocabLevelSet(level: VocabLevelSchema) {
-      this.$emit("onVocabLevelSet", this.vocab, level);
+    onVocabRemovedFromUser(removedVocab:LearnerVocabSchema) {
+      this.$emit("onVocabRemovedFromUser", removedVocab);
+    },
+    onVocabLevelSet(vocabId: number, level: VocabLevelSchema) {
+      this.$emit("onVocabLevelSet", vocabId, level);
     },
     onVocabNotesSet(notes: string) {
       this.$emit("onVocabNotesSet", this.vocab, notes);
+    },
+    onNewPhraseAdded(vocab: LearnerVocabSchema) {
+      this.$emit("onNewPhraseAdded", vocab);
     }
   },
 };

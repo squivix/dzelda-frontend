@@ -2,11 +2,14 @@
   <div class="new-vocab-panel">
     <div class="top-sub-panel">
       <MeaningAddingControls
-          :vocab-id="vocab.id"
-          :vocab-text="vocab.text"
-          :is-phrase="isPhrase"
-          :suggested-meanings="suggestedMeanings"
-          @onMeaningAdded="onMeaningAdded"/>
+          :vocabId="vocab.id"
+          :vocabText="vocab.text"
+          :vocabLanguage="vocab.language"
+          :isPhrase="isPhrase"
+          :suggestedMeanings="suggestedMeanings"
+          @onMeaningAdded="onMeaningAdded"
+          @onNewPhraseAdded="onNewPhraseAdded"
+      />
 
       <DictionariesList :vocab-text="vocab.text"/>
     </div>
@@ -26,15 +29,16 @@ import MeaningAddingControls from "@/components/shared/vocab-panel/MeaningAdding
 import DictionariesList from "@/components/shared/vocab-panel/DictionaryList.vue";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {PropType} from "vue";
-import {LearnerVocabSchema} from "dzelda-types";
+import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-types";
+import {NewVocab} from "@/pages/LessonReaderPage.vue";
 
 export default {
   name: "NewVocabPanel",
   components: {MeaningAddingControls, DictionariesList},
-  emits: ["onMeaningAdded", "onVocabLevelSet"],
+  emits: ["onMeaningAdded", "onVocabLevelSet", "onNewPhraseAdded"],
   props: {
     vocab: {
-      type: Object as PropType<LearnerVocabSchema>,
+      type: Object as PropType<LearnerVocabSchema | NewVocab>,
       required: true,
     },
     isPhrase: {
@@ -59,24 +63,29 @@ export default {
   },
   methods: {
     async markWordAsKnown() {
-      await this.vocabStore.addVocabToUser({vocabId: this.vocab.id});
+      const vocab = this.vocab as LearnerVocabSchema;
+      await this.vocabStore.addVocabToUser({vocabId: vocab.id});
       await this.vocabStore.updateUserVocab(
-          {vocabId: this.vocab.id},
-          {level: constants.ALL_VOCAB_LEVELS.KNOWN}
+          {vocabId: vocab.id},
+          {level: VocabLevelSchema.KNOWN}
       );
-      this.$emit("onVocabLevelSet", constants.ALL_VOCAB_LEVELS.KNOWN);
+      this.$emit("onVocabLevelSet", vocab.id, VocabLevelSchema.KNOWN);
     },
     async markWordAsIgnored() {
-      await this.vocabStore.addVocabToUser({vocabId: this.vocab.id});
+      const vocab = this.vocab as LearnerVocabSchema;
+      await this.vocabStore.addVocabToUser({vocabId: vocab.id});
       await this.vocabStore.updateUserVocab(
-          {vocabId: this.vocab.id},
-          {level: constants.ALL_VOCAB_LEVELS.IGNORED}
+          {vocabId: vocab.id},
+          {level: VocabLevelSchema.IGNORED}
       );
-      this.$emit("onVocabLevelSet", constants.ALL_VOCAB_LEVELS.IGNORED);
+      this.$emit("onVocabLevelSet", vocab.id, VocabLevelSchema.IGNORED);
     },
-    onMeaningAdded(vocab, meaning) {
-      this.$emit("onMeaningAdded", vocab, meaning);
+    onMeaningAdded(vocabId: number, newMeaning: MeaningSchema) {
+      this.$emit("onMeaningAdded", vocabId, newMeaning);
     },
+    onNewPhraseAdded(vocab: LearnerVocabSchema) {
+      this.$emit("onNewPhraseAdded", vocab);
+    }
   },
   setup() {
     return {vocabStore: useVocabStore()};

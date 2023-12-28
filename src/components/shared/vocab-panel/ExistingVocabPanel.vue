@@ -11,9 +11,11 @@
 
     <h5>Set Level</h5>
     <VocabLevelPicker
-        :vocab-id="vocab.id"
+        :vocab="vocab"
         :level="vocab.level"
-        @onVocabLevelSet="onVocabLevelSet"/>
+        @onVocabLevelSet="onVocabLevelSet"
+        @onVocabRemovedFromUser="onVocabRemovedFromUser"
+    />
 
     <textarea class="notes"
               placeholder="Notes"
@@ -29,11 +31,13 @@ import MeaningEditingControls from "@/components/shared/vocab-panel/MeaningEditi
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
+import {PropType} from "vue";
+import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-types";
 
 export default {
   name: "ExistingVocabPanel",
   components: {MeaningEditingControls, InlineSvg, VocabLevelPicker},
-  emits: ["onAddMoreMeaningsClicked", "onMeaningDeleted", "onVocabLevelSet", "onVocabNotesSet"],
+  emits: ["onAddMoreMeaningsClicked", "onMeaningDeleted", "onVocabLevelSet", "onVocabNotesSet", "onVocabRemovedFromUser"],
   data() {
     return {
       notes: this.vocab.notes
@@ -44,10 +48,7 @@ export default {
     }
   },
   props: {
-    vocab: {
-      type: Object,
-      required: true,
-    },
+    vocab: {type: Object as PropType<LearnerVocabSchema>, required: true},
   },
   methods: {
     addMeaning() {
@@ -56,8 +57,11 @@ export default {
     onMeaningDeleted(meaning) {
       this.$emit("onMeaningDeleted", meaning);
     },
-    onVocabLevelSet(level) {
-      this.$emit("onVocabLevelSet", level);
+    onVocabLevelSet(level: VocabLevelSchema) {
+      this.$emit("onVocabLevelSet", this.vocab.id, level);
+    },
+    onVocabRemovedFromUser() {
+      this.$emit("onVocabRemovedFromUser", this.vocab);
     },
     async updateVocabNotes() {
       await this.vocabStore.updateUserVocab(
