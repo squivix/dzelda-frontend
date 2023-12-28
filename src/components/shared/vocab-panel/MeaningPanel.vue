@@ -34,7 +34,7 @@ import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-types"
 import {NewVocab} from "@/pages/LessonReaderPage.vue";
 
 export default {
-  name: "TheMeaningPanel",
+  name: "MeaningPanel",
   components: {NewVocabPanel, ExistingVocabPanel},
   emits: {
     onMeaningAdded: (vocabId: number, newMeaning: MeaningSchema) => true,

@@ -27,7 +27,7 @@ export default {
   methods: {
     openDictionaryLink(dictionary) {
       const link_template = dictionary.link;
-      const link = link_template.replace("<text>", this.vocabText)
+      const link = link_template.replace("<text>", this.vocabText);
       //TODO save paramaters of opened window locally
       const ref = window.open(link, "Dictionary", "left=20,top=20,width=800,height=500,toolbar=1,resizable=0");
       ref.focus();
@@ -37,10 +37,10 @@ export default {
   async mounted() {
     this.dictionaries = await this.dictionaryStore.fetchDictionaries({languageCode: this.$route.params.learningLanguage});
   },
-  created() {
-    this.dictionaryStore = useDictionaryStore();
+  setup() {
+    return {dictionaryStore: useDictionaryStore()};
   }
-}
+};
 </script>
 
 <style scoped>

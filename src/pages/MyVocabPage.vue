@@ -42,7 +42,7 @@
             </VocabTable>
           </div>
           <div class="meaning-panel-wrapper" v-if="vocabs&&vocabs.length>0">
-            <TheMeaningPanel
+            <MeaningPanel
                 :vocab="selectedVocab!"
                 @click.stop
                 @onMeaningAdded="onMeaningAdded"
@@ -53,7 +53,7 @@
               <template v-slot:no-selected-panel>
                 <h4>Select a word or phrase</h4>
               </template>
-            </TheMeaningPanel>
+            </MeaningPanel>
           </div>
         </div>
       </section>
@@ -70,7 +70,7 @@
 
 <script lang="ts">
 import constants from "@/constants";
-import TheMeaningPanel from "@/components/shared/vocab-panel/TheMeaningPanel.vue";
+import MeaningPanel from "@/components/shared/vocab-panel/MeaningPanel.vue";
 import VocabTable from "@/components/page/my-vocabs/VocabTable.vue";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
@@ -89,7 +89,7 @@ export default {
   name: "MyVocabPage",
   components: {
     InlineSvg, EmptyScreen, BaseCard, LoadingScreen, CourseFilters, SearchBar,
-    VocabFilters, VocabTable, PaginationControls, TheMeaningPanel
+    VocabFilters, VocabTable, PaginationControls, MeaningPanel
   },
   props: {
     pathParams: {

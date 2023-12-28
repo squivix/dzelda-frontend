@@ -22,7 +22,7 @@
                   :phrases="phrases"
                   :words="words"
                   :tokenGroup="tokenGroup"
-                  :shouldRender="!indexesToRender||indexesToRender.has(index)"
+                  :shouldRender="!groupIndexesToRender||groupIndexesToRender.has(index)"
                   @onWordClicked="onWordClicked"
                   @onPhraseClicked="onPhraseClicked"
                   @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
@@ -37,15 +37,15 @@ import {PropType} from "vue";
 import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
 import {LearnerVocabSchema} from "dzelda-types";
 import {chuckArray, getChildrenInViewIndexes, getTextSelectedElements, padSequence} from "@/utils.js";
-import {useEventListener} from "@vueuse/core";
+import {useDebounceFn, useEventListener} from "@vueuse/core";
 import {icons} from "@/icons.js";
 import TokenGroup from "@/components/page/reader/TokenGroup.vue";
 
-const TOKEN_GROUP_SIZE = 50;
+const TOKEN_GROUP_SIZE = 100;
 const TOKEN_GROUP_RENDER_BUFFER = 2;
 
 export default {
-  name: "TheLessonContent",
+  name: "LessonContent",
   components: {BaseImage, TokenGroup},
   emits: ["onWordClicked", "onPhraseClicked", "onOverLappingPhrasesClicked", "onNewPhraseSelected", "onBackgroundClicked", "onScroll"],
   props: {
@@ -60,7 +60,7 @@ export default {
   data() {
     return {
       scrollObserver: null as IntersectionObserver | null,
-      indexesInView: undefined as Set<number> | undefined,
+      groupIndexesInView: undefined as Set<number> | undefined,
       isSelectingPhraseText: false,
       isPhraseFirstClick: true,
     };
@@ -69,9 +69,9 @@ export default {
     paragraphRef(): HTMLElement | null {
       return this.$refs["paragraphRef"] as HTMLElement;
     },
-    indexesToRender() {
-      if (this.indexesInView && this.indexesInView.size > 0)
-        return new Set(padSequence([...this.indexesInView], TOKEN_GROUP_RENDER_BUFFER, TOKEN_GROUP_RENDER_BUFFER, 0, Infinity));
+    groupIndexesToRender() {
+      if (this.groupIndexesInView && this.groupIndexesInView.size > 0)
+        return new Set(padSequence([...this.groupIndexesInView], TOKEN_GROUP_RENDER_BUFFER, TOKEN_GROUP_RENDER_BUFFER, 0, Infinity));
     },
     textTokenGroups() {
       return chuckArray(this.lessonTokens.text, TOKEN_GROUP_SIZE);
@@ -131,10 +131,10 @@ export default {
   mounted() {
     useEventListener(document, "selectionchange", this.onSelectionChange);
     useEventListener(document.body, "click", this.onBackgroundClicked);
-    this.scrollObserver = new IntersectionObserver(() => {
+    this.scrollObserver = new IntersectionObserver(useDebounceFn(() => {
       if (this.paragraphRef)
-        this.indexesInView = getChildrenInViewIndexes(this.paragraphRef);
-    });
+        this.groupIndexesInView = getChildrenInViewIndexes(this.paragraphRef);
+    }, 200, {maxWait: 1000}));
     for (const child of this.paragraphRef!.children)
       this.scrollObserver.observe(child);
   },

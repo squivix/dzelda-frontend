@@ -1,6 +1,6 @@
 <template>
   <div class="side-panel">
-    <TheMeaningPanel v-if="!selectedOverlappingPhrases"
+    <MeaningPanel v-if="!selectedOverlappingPhrases"
                      :vocab="selectedVocab"
                      :is-phrase="selectedIsPhrase"
                      @click.stop
@@ -19,14 +19,14 @@
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import TheMeaningPanel from "@/components/shared/vocab-panel/TheMeaningPanel.vue";
+import MeaningPanel from "@/components/shared/vocab-panel/MeaningPanel.vue";
 import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel.vue";
 import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-types";
 import {NewVocab} from "@/pages/LessonReaderPage.vue";
 
 export default defineComponent({
   name: "ReaderSidePanel",
-  components: {OverlappingPhrasesPanel, TheMeaningPanel},
+  components: {OverlappingPhrasesPanel, MeaningPanel},
   props: {
     selectedOverlappingPhrases: {type: Array as PropType<LearnerVocabSchema[] | null>},
     selectedVocab: {type: Object as PropType<LearnerVocabSchema | NewVocab | null>},

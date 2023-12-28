@@ -123,6 +123,9 @@ export function getChildrenInViewIndexes(container: HTMLElement) {
         // If child is in view
         if (childTop <= containerBottom && childBottom >= containerBottom)
             childrenInViewIndexes.add(i);
+        // If child not in view and past siblings were ignore rest because we know in-view children are contiguous
+        else if (childrenInViewIndexes.size > 0)
+            break;
     }
     return childrenInViewIndexes;
 }

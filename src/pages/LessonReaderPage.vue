@@ -3,7 +3,7 @@
   <BaseCard class="base-card unselectable" v-else-if="lesson">
     <template v-slot:all>
       <div class="content-and-side-div">
-        <TheLessonContent ref="theLessonContentRef"
+        <LessonContent ref="theLessonContentRef"
                           :title="lesson.title"
                           :text="lesson.text"
                           :lessonTokens="lessonTokens"
@@ -47,7 +47,7 @@
   </BaseCard>
 </template>
 <script lang="ts">
-import TheLessonContent from "@/components/page/reader/TheLessonContent.vue";
+import LessonContent from "@/components/page/reader/LessonContent.vue";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {LearnerVocabSchema, LessonSchema, MeaningSchema, VocabLevelSchema} from "dzelda-types";
@@ -65,7 +65,7 @@ export type LessonTokenObject = { text: string, isWord: boolean, phrases: Phrase
 export type NewVocab = Omit<LearnerVocabSchema, "id">
 export default defineComponent({
   name: "LessonReaderPage",
-  components: {ExpandingIconButton, BaseCard, ReaderSidePanel, LoadingScreen, TheLessonContent},
+  components: {ExpandingIconButton, BaseCard, ReaderSidePanel, LoadingScreen, LessonContent},
   props: {
     pathParams: {type: Object as PropType<{ learningLanguage: string, lessonId: number }>, required: true},
   },
