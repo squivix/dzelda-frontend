@@ -2,7 +2,7 @@
   <div class="suggested-meanings-div" v-if="suggestedMeanings.length>0">
     <h5>Suggested Meanings</h5>
     <ol class="suggested-meanings styled-scrollbars">
-      <li v-for="meaning in suggestedMeanings" :key="meaning" @click="addSuggestedMeaning(meaning)">
+      <li v-for="meaning in suggestedMeanings" :key="meaning.id" @click="addSuggestedMeaning(meaning)">
         {{ meaning.text }}
       </li>
     </ol>
@@ -23,13 +23,16 @@ import {useMeaningStore} from "@/stores/backend/meaningStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import {MeaningSchema, VocabLevelSchema} from "dzelda-types";
+import {LearnerVocabSchema, MeaningSchema} from "dzelda-types";
 import {PropType} from "vue";
 
 export default {
   name: "MeaningAddingControls",
   components: {InlineSvg},
-  emits: ["onMeaningAdded", "onNewPhraseAdded"],
+  emits: {
+    onMeaningAdded: (vocabId: number, meaning: MeaningSchema) => true,
+    onNewPhraseAdded: (vocab: LearnerVocabSchema) => true,
+  },
   props: {
     vocabId: {type: Number, required: false},
     vocabText: {type: String, required: true},
@@ -46,7 +49,7 @@ export default {
     async addSuggestedMeaning(meaning: MeaningSchema) {
       const newVocab = await this.vocabStore.addVocabToUser({vocabId: this.vocabId!});
       await this.meaningStore.addMeaningToUser({meaningId: meaning.id});
-      this.$emit("onMeaningAdded", newVocab, meaning);
+      this.$emit("onMeaningAdded", newVocab.id, meaning);
     },
     async addNewMeaning() {
       if (!this.newMeaning)

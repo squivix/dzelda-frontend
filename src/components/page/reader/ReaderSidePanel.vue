@@ -4,17 +4,16 @@
                      :vocab="selectedVocab"
                      :is-phrase="selectedIsPhrase"
                      @click.stop
-                     @onMeaningAdded="onMeaningAdded"
-                     @onVocabLevelSet="onVocabLevelSet"
-                     @onMeaningDeleted="onMeaningDeleted"
-                     @onVocabNotesSet="onVocabNotesSet"
-                     @onNewPhraseAdded="onNewPhraseAdded"
-                     @onVocabRemovedFromUser="onVocabRemovedFromUser"
-    />
+                     @onMeaningAdded="(vocabId, newMeaning)=>$emit('onMeaningAdded', vocabId, newMeaning)"
+                     @onVocabLevelSet="(vocabId, level) =>$emit('onVocabLevelSet', vocabId, level)"
+                     @onMeaningDeleted="(vocabId, deletedMeaning)=>$emit('onMeaningDeleted', vocabId, deletedMeaning)"
+                     @onVocabNotesSet="(vocabId, notes)=>$emit('onVocabNotesSet', vocabId, notes)"
+                     @onNewPhraseAdded="(vocab)=>$emit('onNewPhraseAdded', vocab)"
+                     @onVocabRemovedFromUser="(removedVocab)=>$emit('onVocabRemovedFromUser', removedVocab)"/>
     <OverlappingPhrasesPanel v-else
                              @click.stop
                              :phrases="selectedOverlappingPhrases!"
-                             @onPhraseClick="onOverlappingPhraseClicked"/>
+                             @onPhraseClick="(phrase)=>$emit('onOverlappingPhraseClicked', phrase)"/>
   </div>
 </template>
 
@@ -34,33 +33,15 @@ export default defineComponent({
     selectedIsPhrase: {type: Boolean},
   },
   computed: {},
-  emits: ["onMeaningAdded", "onVocabLevelSet", "onMeaningDeleted", "onOverlappingPhraseClicked", "onVocabNotesSet", "onNewPhraseAdded", "onVocabRemovedFromUser"],
-  methods: {
-    onOverlappingPhraseClicked(phrase: LearnerVocabSchema) {
-      this.$emit("onOverlappingPhraseClicked", phrase);
-    },
-    onMeaningAdded(vocabId: number, newMeaning: MeaningSchema) {
-      this.$emit("onMeaningAdded", vocabId, newMeaning);
-    },
-    onVocabLevelSet(vocabId: number, level: VocabLevelSchema) {
-      this.$emit("onVocabLevelSet", vocabId, level);
-    },
-    onMeaningDeleted(word: LearnerVocabSchema, deletedMeaning: MeaningSchema) {
-      this.$emit("onMeaningDeleted", word, deletedMeaning);
-    },
-    onVocabNotesSet(vocab: LearnerVocabSchema, notes: string) {
-      this.$emit("onVocabNotesSet", vocab, notes);
-    },
-    onVocabRemovedFromUser(removedVocab:LearnerVocabSchema) {
-      this.$emit("onVocabRemovedFromUser",removedVocab);
-    },
-    onNewPhraseAdded(vocab: LearnerVocabSchema) {
-      this.$emit("onNewPhraseAdded", vocab);
-    }
+  emits: {
+    onMeaningAdded: (vocabId: number, newMeaning: MeaningSchema) => true,
+    onMeaningDeleted: (vocabId: number, meaning: MeaningSchema) => true,
+    onVocabLevelSet: (vocabId: number, level: VocabLevelSchema) => true,
+    onVocabNotesSet: (vocabId: number, notes: string) => true,
+    onNewPhraseAdded: (vocab: LearnerVocabSchema) => true,
+    onVocabRemovedFromUser: (removedVocab: LearnerVocabSchema) => true,
+    onOverlappingPhraseClicked: (phrase: LearnerVocabSchema) => true,
   },
-  setup() {
-    return {};
-  }
 });
 </script>
 
@@ -70,6 +51,4 @@ export default defineComponent({
   flex-direction: column;
   justify-content: space-between;
 }
-
-
 </style>

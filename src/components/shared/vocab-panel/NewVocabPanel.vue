@@ -11,7 +11,7 @@
           @onNewPhraseAdded="onNewPhraseAdded"
       />
 
-      <DictionariesList :vocab-text="vocab.text"/>
+      <DictionariesList :vocabText="vocab.text"/>
     </div>
     <div class="mark-buttons-div" v-if="!isPhrase && isLevelNew || isLevelIgnored">
       <button class="square-button hollow-button know-button" @click="markWordAsKnown">Mark as
@@ -24,7 +24,6 @@
 </template>
 
 <script lang="ts">
-import constants from "@/constants";
 import MeaningAddingControls from "@/components/shared/vocab-panel/MeaningAddingControls.vue";
 import DictionariesList from "@/components/shared/vocab-panel/DictionaryList.vue";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
@@ -35,7 +34,11 @@ import {NewVocab} from "@/pages/LessonReaderPage.vue";
 export default {
   name: "NewVocabPanel",
   components: {MeaningAddingControls, DictionariesList},
-  emits: ["onMeaningAdded", "onVocabLevelSet", "onNewPhraseAdded"],
+  emits: {
+    onMeaningAdded: (vocabId: number, newMeaning: MeaningSchema) => true,
+    onVocabLevelSet: (vocabId: number, level: VocabLevelSchema) => true,
+    onNewPhraseAdded: (vocab: LearnerVocabSchema) => true,
+  },
   props: {
     vocab: {
       type: Object as PropType<LearnerVocabSchema | NewVocab>,
@@ -55,10 +58,10 @@ export default {
       return this.vocab.meanings.filter((meaning) => !this.vocab.learnerMeanings.some((m) => m.id === meaning.id)).slice(0, 3);
     },
     isLevelNew() {
-      return this.vocab.level === constants.ALL_VOCAB_LEVELS.NEW;
+      return this.vocab.level === VocabLevelSchema.NEW;
     },
     isLevelIgnored() {
-      return this.vocab.level === constants.ALL_VOCAB_LEVELS.IGNORED;
+      return this.vocab.level === VocabLevelSchema.IGNORED;
     }
   },
   methods: {

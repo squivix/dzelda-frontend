@@ -48,7 +48,6 @@
 </template>
 <script lang="ts">
 import TheLessonContent from "@/components/page/reader/TheLessonContent.vue";
-import constants from "@/constants.js";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {LearnerVocabSchema, LessonSchema, MeaningSchema, VocabLevelSchema} from "dzelda-types";
@@ -175,6 +174,14 @@ export default defineComponent({
       const updatedVocab = await this.updateVocab(vocabId);
       this.setSelectedVocab(updatedVocab);
     },
+    async onMeaningDeleted(vocabId: number, deletedMeaning: MeaningSchema) {
+      const updatedVocab = await this.updateVocab(vocabId);
+      this.setSelectedVocab(updatedVocab);
+    },
+    async onVocabNotesSet(vocabId: number, notes: string) {
+      const updatedVocab = await this.updateVocab(vocabId);
+      this.setSelectedVocab(updatedVocab);
+    },
     onVocabRemovedFromUser(removedVocab: LearnerVocabSchema) {
       if (removedVocab.isPhrase) {
         this.phrases[removedVocab.text].level = VocabLevelSchema.NEW;
@@ -191,12 +198,6 @@ export default defineComponent({
         this.clearSelectedVocab();
       else
         this.setSelectedVocab(updatedVocab);
-    },
-    async onVocabNotesSet(vocab: LearnerVocabSchema, notes: string) {
-      await this.updateVocab(vocab.id);
-    },
-    async onMeaningDeleted(vocab: LearnerVocabSchema, deletedMeaning: MeaningSchema) {
-      await this.updateVocab(vocab.id);
     },
     async parseLesson() {
       this.isParsingLesson = true;
