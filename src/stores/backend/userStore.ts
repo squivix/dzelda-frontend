@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
-import {UserSchema} from "dzelda-types";
+import {UserSchema} from "dzelda-common";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {cleanUndefined} from "@/utils.js";
 

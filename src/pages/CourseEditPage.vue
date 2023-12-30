@@ -57,7 +57,7 @@
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {VueDraggableNext} from "vue-draggable-next";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
-import {CourseSchema, LanguageLevelSchema, LessonSchema} from "dzelda-types";
+import {CourseSchema, LanguageLevelSchema, LessonSchema} from "dzelda-common";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";

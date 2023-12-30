@@ -11,7 +11,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
-import {LessonSchema} from "dzelda-types";
+import {LessonSchema} from "dzelda-common";
 import LessonList from "@/components/shared/content/LessonList.vue";
 
 export default defineComponent({

@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {useUserStore} from "@/stores/backend/userStore.js";
-import {ApiClient, HttpResponse} from "dzelda-types";
+import {ApiClient, HttpResponse} from "dzelda-common";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 
 

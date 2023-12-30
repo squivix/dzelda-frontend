@@ -75,7 +75,7 @@ import VocabTable from "@/components/page/my-vocabs/VocabTable.vue";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {PropType} from "vue";
-import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-types";
+import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-common";
 import SearchBar from "@/components/ui/SearchBar.vue";
 import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
 import VocabFilters from "@/components/shared/filters/VocabFilters.vue";

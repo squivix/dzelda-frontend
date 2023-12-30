@@ -45,7 +45,7 @@
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import {LessonSchema, VocabLevelSchema, VocabsByLevelSchema} from "dzelda-types";
+import {LessonSchema, VocabLevelSchema, VocabsByLevelSchema} from "dzelda-common";
 import {PropType} from "vue";
 import {useStore} from "@/stores/backend/rootStore.js";
 import constants from "@/constants.js";

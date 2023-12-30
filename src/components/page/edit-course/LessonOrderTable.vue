@@ -34,7 +34,7 @@ import {defineComponent, PropType} from "vue";
 import {VueDraggableNext as VueDraggable} from "vue-draggable-next";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import {LessonSchema} from "dzelda-types";
+import {LessonSchema} from "dzelda-common";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 
 export default defineComponent({

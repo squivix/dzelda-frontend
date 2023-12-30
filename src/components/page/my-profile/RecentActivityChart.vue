@@ -25,7 +25,7 @@ import {defineComponent, PropType} from "vue";
 import {Line as LineChart} from "vue-chartjs";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import BaseLineChart from "@/components/ui/BaseLineChart.vue";
-import {UserSchema, VocabLevelSchema} from "dzelda-types";
+import {UserSchema, VocabLevelSchema} from "dzelda-common";
 import {ChartData, ChartDataset} from "chart.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {toSentenceCase} from "@/utils.js";

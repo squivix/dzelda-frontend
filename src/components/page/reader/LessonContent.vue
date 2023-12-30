@@ -34,12 +34,12 @@
 <script lang="ts">
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {PropType} from "vue";
-import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
-import {LearnerVocabSchema} from "dzelda-types";
+import {LearnerVocabSchema} from "dzelda-common";
 import {chuckArray, getChildrenInViewIndexes, getTextSelectedElements, padSequence} from "@/utils.js";
 import {useDebounceFn, useEventListener} from "@vueuse/core";
 import {icons} from "@/icons.js";
 import TokenGroup from "@/components/page/reader/TokenGroup.vue";
+import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
 
 const TOKEN_GROUP_SIZE = 100;
 const TOKEN_GROUP_RENDER_BUFFER = 2;
@@ -111,8 +111,9 @@ export default {
         wrapperElement.classList.add("phrase-selected");
         const wordNode = wrapperElement.childNodes[0] as HTMLElement;
         if (wordNode.classList.contains("word"))
-          phraseText += wordNode.innerText.toLowerCase() + " ";
+          phraseText += `${wordNode.dataset.parsedText} `;
       }
+      phraseText = phraseText.trim();
       this.isSelectingPhraseText = true;
       if (this.words[phraseText])
         this.onWordClicked(this.words[phraseText]);
@@ -134,7 +135,7 @@ export default {
     this.scrollObserver = new IntersectionObserver(useDebounceFn(() => {
       if (this.paragraphRef)
         this.groupIndexesInView = getChildrenInViewIndexes(this.paragraphRef);
-    }, 200, {maxWait: 1000}));
+    }, 100, {maxWait: 1000}));
     for (const child of this.paragraphRef!.children)
       this.scrollObserver.observe(child);
   },

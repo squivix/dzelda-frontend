@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
-import {LearnerLanguageSchema} from "dzelda-types";
+import {LearnerLanguageSchema} from "dzelda-common";
 import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export const useLanguageStore = defineStore("language", {

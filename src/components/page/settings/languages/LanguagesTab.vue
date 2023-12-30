@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
-import {LanguageSchema, LearnerLanguageSchema} from "dzelda-types";
+import {LanguageSchema, LearnerLanguageSchema} from "dzelda-common";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import SeriousConfirmDialog from "@/components/shared/SeriousConfirmDialog.vue";

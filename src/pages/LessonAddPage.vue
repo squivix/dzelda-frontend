@@ -56,7 +56,7 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
-import {CourseSchema} from "dzelda-types";
+import {CourseSchema} from "dzelda-common";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {icons} from "@/icons.js";
 import SubmitButton from "@/components/ui/SubmitButton.vue";

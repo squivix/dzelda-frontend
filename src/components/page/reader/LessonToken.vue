@@ -5,6 +5,7 @@
           @mouseleave="wrapperHoverEnd">
       <span :class="wordClass"
             v-if="token.isWord"
+            :data-parsed-text="token.parsedText"
             @click.stop="onWordClicked($event)">
           {{ token.text }}
       </span>
@@ -19,9 +20,10 @@
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
-import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-types";
+import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
 import {ALL_VOCAB_LEVELS} from "@/constants.js";
+import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
+
 
 export default defineComponent({
   name: "LessonToken",
@@ -37,7 +39,7 @@ export default defineComponent({
       const classes = ["word-wrapper"];
       if (this.phrasesCount != 0) {
         classes.push("phrase");
-        classes.push(...Object.values(this.token.phrases).map(p => `phrase-${p.phraseId}`));
+        classes.push(...this.token.phrases.map(p => `phrase-${p.phraseId}-${p.phraseOccurrenceIndex}`));
         classes.push(this.getLevelClass(this.phrases![0].level));
         if (!this.isPhraseFirstClick)
           classes.push("phrase-gone");
@@ -87,11 +89,11 @@ export default defineComponent({
       const wrapperNode = event.target as HTMLElement;
       if (!wrapperNode.classList.contains("phrase") || wrapperNode.classList.contains("phrase-hovered"))
         return;
-      const phrases = Object.values(this.token.phrases);
+      const phrases = this.token.phrases;
       if (phrases.length === 0)
         return;
-      for (const phraseObj of phrases) {
-        const phraseNodes = document.querySelectorAll(`.phrase-${phraseObj.phraseId}`);
+      for (const po of phrases) {
+        const phraseNodes = document.querySelectorAll(`.phrase-${po.phraseId}-${po.phraseOccurrenceIndex}`);
         phraseNodes.forEach((pn) => pn.classList.add("phrase-hovered"));
         phraseNodes[0].classList.add("phrase-start");
         phraseNodes[phraseNodes.length - 1].classList.add("phrase-end");
@@ -102,11 +104,11 @@ export default defineComponent({
       const wrapperNode = event.target as HTMLElement;
       if (!wrapperNode.classList.contains("phrase"))
         return;
-      const phrases = Object.values(this.token.phrases);
+      const phrases = this.token.phrases;
       if (phrases.length === 0)
         return;
-      for (const phraseObj of phrases) {
-        const phraseNodes = document.querySelectorAll(`.phrase-${phraseObj.phraseId}`);
+      for (const po of phrases) {
+        const phraseNodes = document.querySelectorAll(`.phrase-${po.phraseId}-${po.phraseOccurrenceIndex}`);
         phraseNodes.forEach((pn) => {
           pn.classList.remove("phrase-hovered");
           pn.classList.remove("phrase-start");
@@ -235,7 +237,7 @@ span::selection {
   background-color: #268AFA;
 }
 
-.phrase-hovered{
+.phrase-hovered {
   padding-top: 0.7rem;
   padding-bottom: 0.7rem;
   border-top: 1px solid;

@@ -17,7 +17,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
-import {LearnerLanguageSchema} from "dzelda-types";
+import {LearnerLanguageSchema} from "dzelda-common";
 
 export default defineComponent({
   name: "LanguageRow",

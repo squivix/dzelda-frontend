@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
-import {VocabLevelSchema} from "dzelda-types";
+import {VocabLevelSchema} from "dzelda-common";
 import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export const useVocabStore = defineStore("vocab", {

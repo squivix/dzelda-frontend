@@ -21,7 +21,7 @@
 import {defineComponent, PropType} from "vue";
 import MeaningPanel from "@/components/shared/vocab-panel/MeaningPanel.vue";
 import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel.vue";
-import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-types";
+import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-common";
 import {NewVocab} from "@/pages/LessonReaderPage.vue";
 
 export default defineComponent({

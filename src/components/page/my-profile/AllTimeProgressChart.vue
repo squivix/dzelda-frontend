@@ -19,7 +19,7 @@ import BaseBarChart from "@/components/ui/BaseBarChart.vue";
 import {ChartData} from "chart.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
-import {UserSchema, VocabLevelSchema} from "dzelda-types";
+import {UserSchema, VocabLevelSchema} from "dzelda-common";
 
 export default defineComponent({
   name: "AllTimeProgressChart",

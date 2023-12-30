@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {cleanUndefined} from "@/utils.js";
-import {LanguageLevelSchema} from "dzelda-types";
+import {LanguageLevelSchema} from "dzelda-common";
 import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export const useCourseStore = defineStore("course", {

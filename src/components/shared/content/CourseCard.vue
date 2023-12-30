@@ -42,7 +42,7 @@ import {useStore} from "@/stores/backend/rootStore.js";
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {PropType} from "vue";
-import {CourseSchema} from "dzelda-types";
+import {CourseSchema} from "dzelda-common";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import BaseCard from "@/components/ui/BaseCard.vue";

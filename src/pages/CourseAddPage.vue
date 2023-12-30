@@ -54,7 +54,7 @@ import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {LANGUAGE_LEVELS} from "@/constants.js";
 import {toSentenceCase} from "@/utils.js";
-import {LanguageLevelSchema} from "dzelda-types";
+import {LanguageLevelSchema} from "dzelda-common";
 
 export default {
   name: "CourseAddPage",

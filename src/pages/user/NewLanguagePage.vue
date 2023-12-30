@@ -31,7 +31,7 @@
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
-import {LanguageSchema} from "dzelda-types";
+import {LanguageSchema} from "dzelda-common";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import LanguageCard from "@/components/page/new-language/LanguageCard.vue";

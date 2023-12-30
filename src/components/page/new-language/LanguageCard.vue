@@ -17,7 +17,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
 import InlineSvg from "vue-inline-svg";
-import {LanguageSchema} from "dzelda-types";
+import {LanguageSchema} from "dzelda-common";
 import {icons} from "@/icons.js";
 
 export default defineComponent({

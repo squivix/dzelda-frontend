@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import {PropType} from "vue";
-import {LearnerVocabSchema} from "dzelda-types";
+import {LearnerVocabSchema} from "dzelda-common";
 
 export default {
   name: "OverlappingPhrasesPanel",

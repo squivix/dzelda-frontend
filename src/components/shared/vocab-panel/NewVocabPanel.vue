@@ -28,7 +28,7 @@ import MeaningAddingControls from "@/components/shared/vocab-panel/MeaningAdding
 import DictionariesList from "@/components/shared/vocab-panel/DictionaryList.vue";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {PropType} from "vue";
-import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-types";
+import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-common";
 import {NewVocab} from "@/pages/LessonReaderPage.vue";
 
 export default {

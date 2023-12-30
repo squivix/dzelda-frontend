@@ -34,7 +34,7 @@ import constants from "@/constants.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-types";
+import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
 import {PropType} from "vue";
 
 export default {

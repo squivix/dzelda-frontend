@@ -17,7 +17,7 @@
     "@vueuse/core": "^10.7.0",
     "chart.js": "^4.4.0",
     "data-uri-to-buffer": "^6.0.1",
-    "dzelda-types": "git+https://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:x-oauth-basic@github.com/squivix/dzelda-types.git#main",
+    "dzelda-common": "git+https://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:x-oauth-basic@github.com/squivix/dzelda-common.git#main",
     "path-browserify": "^1.0.1",
     "pinia": "^2.1.4",
     "pretty-bytes": "^6.1.1",

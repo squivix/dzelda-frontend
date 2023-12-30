@@ -56,7 +56,7 @@ import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
-import {CourseSchema} from "dzelda-types";
+import {CourseSchema} from "dzelda-common";
 import CourseCard from "@/components/shared/content/CourseCard.vue";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
 

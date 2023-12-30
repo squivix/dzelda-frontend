@@ -148,3 +148,8 @@ export function padSequence(numbers: number[], leftPadding: number, rightPadding
     }
     return result;
 }
+
+//types
+export type ArrayElement<Type> = Type extends Array<infer Item> ? Item : Type;
+
+

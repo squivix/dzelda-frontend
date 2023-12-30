@@ -16,7 +16,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
 import LessonListItem from "@/components/shared/content/LessonListItem.vue";
-import {LessonSchema} from "dzelda-types";
+import {LessonSchema} from "dzelda-common";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";

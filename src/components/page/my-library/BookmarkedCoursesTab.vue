@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import {CourseSchema} from "dzelda-types";
+import {CourseSchema} from "dzelda-common";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
 import CourseList from "@/components/shared/content/CourseList.vue";
 import {icons} from "@/icons.js";

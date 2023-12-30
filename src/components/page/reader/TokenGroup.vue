@@ -3,8 +3,8 @@
       <LessonToken v-if="shouldRender" v-for="(token, index) in tokenGroup"
                    :key="index"
                    :token="token"
-                   :word="words[token.text.toLowerCase()]"
-                   :phrases="Object.keys(token.phrases).map(pt=>phrases[pt])"
+                   :word="words[token.parsedText!]"
+                   :phrases="token.phrases.map(pt=>phrases[pt.text])"
                    :isPhraseFirstClick="isPhraseFirstClick"
                    @onWordClicked="onWordClicked"
                    @onPhraseClicked="onPhraseClicked"
@@ -17,12 +17,12 @@
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
 import LessonToken from "@/components/page/reader/LessonToken.vue";
-import {LearnerVocabSchema} from "dzelda-types";
-import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
+import {LearnerVocabSchema} from "dzelda-common";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
-import {useResizeObserver, useWindowSize} from "@vueuse/core";
+import {useResizeObserver} from "@vueuse/core";
+import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
 
 export default defineComponent({
   name: "TokenGroup",

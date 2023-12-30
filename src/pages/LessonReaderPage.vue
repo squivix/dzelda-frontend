@@ -4,18 +4,18 @@
     <template v-slot:all>
       <div class="content-and-side-div">
         <LessonContent ref="theLessonContentRef"
-                          :title="lesson.title"
-                          :text="lesson.text"
-                          :lessonTokens="lessonTokens"
-                          :image="imageUrl"
-                          :words="words"
-                          :phrases="phrases"
-                          class="lesson-content"
-                          @onWordClicked="setSelectedVocab"
-                          @onPhraseClicked="setSelectedVocab"
-                          @onOverLappingPhrasesClicked="showOverlappingPhrases"
-                          @onNewPhraseSelected="selectNewPhrase"
-                          @onBackgroundClicked="clearSelectedVocab"/>
+                       :title="lesson.title"
+                       :text="lesson.text"
+                       :lessonTokens="lessonTokens"
+                       :image="imageUrl"
+                       :words="words"
+                       :phrases="phrases"
+                       class="lesson-content"
+                       @onWordClicked="setSelectedVocab"
+                       @onPhraseClicked="setSelectedVocab"
+                       @onOverLappingPhrasesClicked="showOverlappingPhrases"
+                       @onNewPhraseSelected="selectNewPhrase"
+                       @onBackgroundClicked="clearSelectedVocab"/>
         <ReaderSidePanel class="side-panel"
                          :selectedOverlappingPhrases="selectedOverLappingPhrases"
                          :selectedVocab="selectedVocab"
@@ -50,7 +50,15 @@
 import LessonContent from "@/components/page/reader/LessonContent.vue";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
-import {LearnerVocabSchema, LessonSchema, MeaningSchema, VocabLevelSchema} from "dzelda-types";
+import {
+  getParser,
+  LearnerVocabSchema,
+  LessonSchema,
+  MeaningSchema,
+  TokenWithPhrases,
+  TokeObjectPhrases,
+  VocabLevelSchema
+} from "dzelda-common";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {defineComponent, PropType} from "vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
@@ -60,9 +68,12 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import ExpandingIconButton from "@/components/ui/ExpandingIconButton.vue";
 import {useTimeoutFn} from "@vueuse/core";
 
-export type PhrasesTokenAppearsIn = { [text: string]: { phraseId: number, index: number, length: number } }
-export type LessonTokenObject = { text: string, isWord: boolean, phrases: PhrasesTokenAppearsIn }
 export type NewVocab = Omit<LearnerVocabSchema, "id">
+export type LessonTokenObject = Omit<TokenWithPhrases, "phrases"> & {
+  parsedText: string,
+  phrases: Array<TokeObjectPhrases[number] & { phraseId: number }>
+}
+
 export default defineComponent({
   name: "LessonReaderPage",
   components: {ExpandingIconButton, BaseCard, ReaderSidePanel, LoadingScreen, LessonContent},
@@ -77,6 +88,7 @@ export default defineComponent({
       selectedVocab: null as LearnerVocabSchema | NewVocab | null,
       selectedOverLappingPhrases: null as LearnerVocabSchema[] | null,
       lessonTokens: null as { title: LessonTokenObject[], text: LessonTokenObject[] } | null,
+      matchIndexToTokenIndex: {title: {}, text: {}} as { title: Record<number, number>, text: Record<number, number> },
       isLoadingLesson: true,
       isLoadingWords: true,
       isParsingLesson: true,
@@ -166,8 +178,8 @@ export default defineComponent({
     onNewPhraseAdded(vocab: LearnerVocabSchema) {
       if (vocab.isPhrase) {
         this.phrases[vocab.text] = vocab;
-        this.parsePhraseInTokens(this.lesson!.title, this.lessonTokens!.title, vocab.text);
-        this.parsePhraseInTokens(this.lesson!.text, this.lessonTokens!.text, vocab.text);
+        this.parsePhraseInTokens(this.lesson!.title, this.lesson!.parsedTitle, this.matchIndexToTokenIndex.title, this.lessonTokens!.title, vocab.text);
+        this.parsePhraseInTokens(this.lesson!.text, this.lesson!.parsedText, this.matchIndexToTokenIndex.text, this.lessonTokens!.text, vocab.text);
       }
     },
     async onMeaningAdded(vocabId: number, newMeaning: MeaningSchema) {
@@ -202,42 +214,51 @@ export default defineComponent({
     async parseLesson() {
       this.isParsingLesson = true;
       this.lessonTokens = {
-        title: await this.parseStringToTokens(this.lesson!.title),
-        text: await this.parseStringToTokens(this.lesson!.text)
+        title: await this.parseStringToTokens(this.lesson!.title, this.matchIndexToTokenIndex.title),
+        text: await this.parseStringToTokens(this.lesson!.text, this.matchIndexToTokenIndex.text)
       };
       this.isParsingLesson = false;
     },
-    async parseStringToTokens(text: string): Promise<LessonTokenObject[]> {
+    async parseStringToTokens(text: string, matchIndexToTokenIndex: Record<number, number>): Promise<LessonTokenObject[]> {
       return new Promise((resolve) => {
-        const textTokens: LessonTokenObject[] = this.getTextTokens(text).map(tokenText => ({
-          text: tokenText,
-          isWord: !!this.words[tokenText.toLowerCase()],
-          phrases: {} as PhrasesTokenAppearsIn
-        }));
+        const parser = getParser(this.lesson!.course.language);
+        const tokens = parser.detectPhrases(text, Object.keys(this.phrases)) as LessonTokenObject[];
 
-        for (const phraseText of Object.keys(this.phrases))
-          this.parsePhraseInTokens(text, textTokens, phraseText);
-        resolve(textTokens);
+        let matchIndex = 0;
+        for (let i = 0; i < tokens.length; i++) {
+          if (tokens[i].isWord) {
+            matchIndexToTokenIndex[matchIndex] = i;
+            matchIndex += tokens[i].parsedText!.length + 1;
+          }
+          tokens[i].phrases.forEach((phrase) => {
+            phrase.phraseId = this.phrases[phrase.text].id;
+          });
+        }
+        resolve(tokens);
       });
     },
-    parsePhraseInTokens(text: string, textTokens: LessonTokenObject[], phraseText: string) {
+    parsePhraseInTokens(text: string, parsedText: string, matchIndexToTokenIndex: Record<number, number>, tokens: LessonTokenObject[], phraseText: string) {
       //detect every phrase surrounded by non letters and non-numbers
-      //TODO also get rid of this client side parsing as well as all toLowerCases in reader page
-      const regex = new RegExp(`([^\\p{L}\\d]|^)${phraseText}([^\\p{L}\\d]|$)`, "igu");
-      for (let match of text.matchAll(regex)) {
-        const beforePhraseIndex = this.getTextTokens(text.substring(0, match.index)).length;
-        const phraseSlice = this.getTextTokens(match[0]);
-        const phraseTokens = textTokens.slice(beforePhraseIndex, beforePhraseIndex + phraseSlice.length);
-        phraseTokens.forEach((pe, index) => pe.phrases[phraseText] = {
+      const regex = new RegExp(`(?<=\\s|^)${phraseText}(?=\\s|$)`, "gu");
+      const phraseWords = phraseText.split(" ");
+      let occurrenceIndex = 0;
+      for (let match of parsedText.matchAll(regex)) {
+        const startIndex = matchIndexToTokenIndex[match!.index!];
+        let i = startIndex;
+        let wordIndex = 0;
+        while (wordIndex < phraseWords.length) {
+          if (tokens[i].isWord)
+            wordIndex++;
+          i++;
+        }
+        const phraseTokens = tokens.slice(startIndex, i);
+        phraseTokens.forEach((pt) => pt.phrases.push({
+          text: phraseText,
           phraseId: this.phrases[phraseText].id,
-          index: index,
-          length: phraseTokens.length,
-        });
+          phraseOccurrenceIndex: occurrenceIndex
+        }));
+        occurrenceIndex++;
       }
-    },
-    getTextTokens(paragraph: string) {
-      //TODO get rid of this client side parsing, replace with same code as server shared or called through API
-      return paragraph.split(/([^\p{L}\d])/gu).filter((word) => word !== "");
     },
     async updateVocab(vocabId: number) {
       const updatedVocab = await this.vocabStore.fetchUserVocab({vocabId: vocabId!});

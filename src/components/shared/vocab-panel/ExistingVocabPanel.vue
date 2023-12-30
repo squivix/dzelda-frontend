@@ -32,7 +32,7 @@ import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {PropType} from "vue";
-import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-types";
+import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
 
 export default {
   name: "ExistingVocabPanel",
