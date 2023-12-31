@@ -37,8 +37,10 @@ export default defineComponent({
   },
   watch: {
     shouldRender() {
-      if (this.windowResized && this.shouldRender)
+      if (this.windowResized && this.shouldRender) {
         this.elementHeight = (this.$refs.tokenGroupRef as HTMLElement).offsetHeight;
+        this.windowResized = false;
+      }
     }
   },
   data() {
