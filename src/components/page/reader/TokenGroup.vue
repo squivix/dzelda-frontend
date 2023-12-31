@@ -1,5 +1,6 @@
 <template>
-    <span :class="{ 'in-view':shouldRender}" ref="tokenGroupRef">
+    <!--  TODO come up with a way to align token group borders with line ends to avoid inline element caused scroll jumps and jitteriness or alternatively switch to block elements and accept awkward paragraph breaks mid-sentence -->
+  <div :class="{'in-view':shouldRender}" ref="tokenGroupRef">
       <LessonToken v-if="shouldRender" v-for="(token, index) in tokenGroup"
                    :key="index"
                    :token="token"
@@ -11,7 +12,7 @@
                    @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
                    @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
         <span v-else class="placeholder" :style="{ height:`${elementHeight}px`}"></span>
-    </span>
+    </div>
 </template>
 
 <script lang="ts">
@@ -75,8 +76,7 @@ export default defineComponent({
 
 <style scoped>
 .group {
-  display: inline-block;
-  border: 1px solid black;
+  border-right: 20px solid black;
 }
 
 .placeholder {

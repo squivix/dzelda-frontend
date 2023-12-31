@@ -135,7 +135,7 @@ export default {
     this.scrollObserver = new IntersectionObserver(useDebounceFn(() => {
       if (this.paragraphRef)
         this.groupIndexesInView = getChildrenInViewIndexes(this.paragraphRef);
-    }, 200));
+    }, 0));
     for (const child of this.paragraphRef!.children)
       this.scrollObserver.observe(child);
   },
@@ -188,6 +188,10 @@ p {
   .lesson-image {
     width: 100px;
     height: 100px;
+  }
+  .fallback-image :deep(svg){
+    width: 80px;
+    height: 80px;
   }
 
   .title {
