@@ -39,8 +39,7 @@ export const useStore = defineStore("main", {
                 if (response.status >= 500)
                     await this.router.push({name: "server-side-error"});
                 else if (response.status == 401 && !options?.ignore401) {
-                    userStore.token = null;
-                    delete localStorage.authToken;
+                    userStore.authToken = null;
                     this.router.push({name: "home"});
                 }
                 return response;

@@ -66,7 +66,7 @@ import ReaderSidePanel from "@/components/page/reader/ReaderSidePanel.vue";
 import {icons} from "@/icons.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
 import ExpandingIconButton from "@/components/ui/ExpandingIconButton.vue";
-import {useTimeoutFn} from "@vueuse/core";
+import {useTimeoutFn, useWebWorkerFn} from "@vueuse/core";
 
 export type NewVocab = Omit<LearnerVocabSchema, "id">
 export type LessonTokenObject = Omit<TokenWithPhrases, "phrases"> & {
@@ -178,8 +178,8 @@ export default defineComponent({
     onNewPhraseAdded(vocab: LearnerVocabSchema) {
       if (vocab.isPhrase) {
         this.phrases[vocab.text] = vocab;
-        this.parsePhraseInTokens(this.lesson!.title, this.lesson!.parsedTitle, this.matchIndexToTokenIndex.title, this.lessonTokens!.title, vocab.text);
-        this.parsePhraseInTokens(this.lesson!.text, this.lesson!.parsedText, this.matchIndexToTokenIndex.text, this.lessonTokens!.text, vocab.text);
+        this.parsePhraseInTokens(this.lesson!.title, this.lesson!.parsedTitle!, this.matchIndexToTokenIndex.title, this.lessonTokens!.title, vocab.text);
+        this.parsePhraseInTokens(this.lesson!.text, this.lesson!.parsedText!, this.matchIndexToTokenIndex.text, this.lessonTokens!.text, vocab.text);
       }
     },
     async onMeaningAdded(vocabId: number, newMeaning: MeaningSchema) {
@@ -214,32 +214,30 @@ export default defineComponent({
     async parseLesson() {
       this.isParsingLesson = true;
       this.lessonTokens = {
-        title: await this.parseStringToTokens(this.lesson!.title, this.matchIndexToTokenIndex.title),
-        text: await this.parseStringToTokens(this.lesson!.text, this.matchIndexToTokenIndex.text)
+        title: this.parseStringToTokens(this.lesson!.title, this.matchIndexToTokenIndex.title),
+        text: this.parseStringToTokens(this.lesson!.text, this.matchIndexToTokenIndex.text)
       };
       this.isParsingLesson = false;
     },
-    async parseStringToTokens(text: string, matchIndexToTokenIndex: Record<number, number>): Promise<LessonTokenObject[]> {
-      return new Promise((resolve) => {
-        const parser = getParser(this.lesson!.course.language);
-        const tokens = parser.detectPhrases(text, Object.keys(this.phrases)) as LessonTokenObject[];
+    parseStringToTokens(text: string, matchIndexToTokenIndex: Record<number, number>): LessonTokenObject[] {
+      const parser = getParser(this.lesson!.course.language);
+      const tokens = parser.detectPhrases(text, Object.keys(this.phrases)) as LessonTokenObject[];
 
-        let matchIndex = 0;
-        for (let i = 0; i < tokens.length; i++) {
-          if (tokens[i].isWord) {
-            matchIndexToTokenIndex[matchIndex] = i;
-            matchIndex += tokens[i].parsedText!.length + 1;
-          }
-          tokens[i].phrases.forEach((phrase) => {
-            phrase.phraseId = this.phrases[phrase.text].id;
-          });
+      let matchIndex = 0;
+      for (let i = 0; i < tokens.length; i++) {
+        if (tokens[i].isWord) {
+          matchIndexToTokenIndex[matchIndex] = i;
+          matchIndex += tokens[i].parsedText!.length + 1;
         }
-        resolve(tokens);
-      });
+        tokens[i].phrases.forEach((phrase) => {
+          phrase.phraseId = this.phrases[phrase.text].id;
+        });
+      }
+      return tokens;
     },
     parsePhraseInTokens(text: string, parsedText: string, matchIndexToTokenIndex: Record<number, number>, tokens: LessonTokenObject[], phraseText: string) {
       //detect every phrase surrounded by non letters and non-numbers
-      const regex = new RegExp(`(?<=\\s|^)${phraseText}(?=\\s|$)`, "gu");
+      const regex = new RegExp(`(?=((?<=\\s|^)${phraseText}(?=\\s|$)))`, "gu");
       const phraseWords = phraseText.split(" ");
       let occurrenceIndex = 0;
       for (let match of parsedText.matchAll(regex)) {

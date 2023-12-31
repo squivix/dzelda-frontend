@@ -7,8 +7,4 @@ export const requiresAuthGuard: NavigationGuardWithThis<undefined> = (to) => {
     const isAuthenticated = userStore.isAuthenticated;
     if (to.meta.requiresAuth && !isAuthenticated)
         return {name: "login"};
-
-    //save token if it's not saved
-    if (to.meta.requiresAuth && isAuthenticated && !userStore.token)
-        userStore.token = localStorage.authToken;
 };

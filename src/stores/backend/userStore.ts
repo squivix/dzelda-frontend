@@ -4,20 +4,18 @@ import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 import {UserSchema} from "dzelda-common";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {cleanUndefined} from "@/utils.js";
+import {useStorage} from "@vueuse/core";
 
 export const useUserStore = defineStore("auth", {
     state() {
         return {
             userAccount: null as UserSchema | null,
-            token: null as null | string,
+            authToken: useStorage("authToken", null as null | string),
         };
     },
     getters: {
-        authToken(state) {
-            return state.token ?? localStorage.authToken;
-        },
-        isAuthenticated() {
-            return !!this.authToken;
+        isAuthenticated(state) {
+            return !!state.authToken;
         },
     },
     actions: {
@@ -60,16 +58,14 @@ export const useUserStore = defineStore("auth", {
             if (!response.ok)
                 return response.error;
 
-            localStorage.authToken = response.data.authToken;
-            this.token = response.data.authToken;
+            this.authToken = response.data.authToken;
             return;
         },
         async signOut() {
             useMessageBarStore().clearMessages();
             const store = useStore();
             await store.fetchCustom((api) => api.sessions.deleteSessions());
-            delete localStorage.authToken;
-            this.token = null;
+            this.authToken = null;
             this.userAccount = null;
             const languageStore = useLanguageStore();
             languageStore.clearUserData();
@@ -148,8 +144,7 @@ export const useUserStore = defineStore("auth", {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.deleteUsersMe());
             if (response.ok) {
-                delete localStorage.authToken;
-                this.token = null;
+                this.authToken = null;
                 this.userAccount = null;
                 const messageBarStore = useMessageBarStore();
                 messageBarStore.addMessage({text: "Account deleted.", type: MessageType.INFO});

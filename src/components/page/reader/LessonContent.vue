@@ -135,7 +135,7 @@ export default {
     this.scrollObserver = new IntersectionObserver(useDebounceFn(() => {
       if (this.paragraphRef)
         this.groupIndexesInView = getChildrenInViewIndexes(this.paragraphRef);
-    }, 100, {maxWait: 1000}));
+    }, 200));
     for (const child of this.paragraphRef!.children)
       this.scrollObserver.observe(child);
   },
