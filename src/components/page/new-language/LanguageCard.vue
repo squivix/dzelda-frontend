@@ -93,7 +93,4 @@ p {
   align-self: flex-end;
 }
 
-.is-learning-check svg {
-  fill: var(--on-secondary-color);
-}
 </style>

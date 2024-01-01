@@ -99,7 +99,7 @@ export default {
 }
 
 .delete-user-meaning-button svg {
-  fill: dimgrey;
+  color: dimgrey;
   width: 10px;
   height: 10px;
 }

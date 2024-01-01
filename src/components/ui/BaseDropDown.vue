@@ -1,7 +1,7 @@
 <template>
   <div class="dropdown">
     <label :for="`dropdown-checkbox-${id}`" class="dropdown-label link" @click.prevent.stop="triggerIsShown">
-      <slot name="button">
+      <slot name="button" :isDroppedDown="isDroppedDown">
 
       </slot>
     </label>
@@ -9,7 +9,7 @@
     <input :id="`dropdown-checkbox-${id}`"
            type="checkbox" class="dropdown-checkbox"
            ref="dropdown-checkbox"
-           v-model="isShown">
+           v-model="isDroppedDown">
     <component :is="isPointy?'base-pointy-div':'div'"
                :class="{menu:true, 'pointy-menu':isPointy, 'centered-menu':centered, 'round-menu':round}">
       <slot name="menu">
@@ -33,7 +33,7 @@ export default {
   },
   data() {
     return {
-      isShown: false
+      isDroppedDown: false
     };
   },
   watch: {
@@ -43,10 +43,10 @@ export default {
   },
   methods: {
     triggerIsShown() {
-      this.isShown = !this.isShown;
+      this.isDroppedDown = !this.isDroppedDown;
     },
     hide() {
-      this.isShown = false;
+      this.isDroppedDown = false;
     },
   },
   mounted() {

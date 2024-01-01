@@ -34,7 +34,6 @@ export default defineComponent({
   methods: {
     async fetchChartData() {
       this.isLoading = true;
-      //TODO add another data series for known/learned words
       const rawData = await this.vocabStore.fetchSavedVocabsCount({username: this.user.username}, {
         groupBy: "language",
         level: [VocabLevelSchema.LEARNED, VocabLevelSchema.KNOWN]

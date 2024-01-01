@@ -17,11 +17,11 @@
 
       <div class="right-side-div" v-if="userAccount?.isEmailConfirmed">
         <BaseDropDown v-if="currentLanguage" class="language-dropdown" id="language">
-          <template v-slot:button>
+          <template v-slot:button="{isDroppedDown}">
             <img :src="currentLanguage.flagCircular??''" alt="Current Language Icon"
                  class="language-icon current-language-icon">
             <span class="icon-wrapper language-menu-arrow">
-            <inline-svg :src="icons.arrowDown"/>
+            <inline-svg :src="isDroppedDown?icons.arrowUp:icons.arrowDown"/>
           </span>
           </template>
           <template v-slot:menu>
@@ -42,9 +42,9 @@
         </BaseDropDown>
         <BaseDropDown v-if="userLanguages && userLanguages.length > 0" :is-pointy="true" id="add-menu">
           <template v-slot:button>
-                    <span class="add-button icon-wrapper">
-                      <inline-svg :src="icons.plus"/>
-                    </span>
+            <span class="add-button icon-wrapper">
+              <inline-svg :src="icons.plus"/>
+            </span>
           </template>
           <template v-slot:menu>
             <ol class="add-menu dropdown-list">
@@ -231,7 +231,7 @@ h1 {
 }
 
 .add-button svg {
-  fill: var(--on-secondary-color);
+  color: var(--on-secondary-color);
 }
 
 

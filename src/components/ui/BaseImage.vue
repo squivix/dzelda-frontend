@@ -54,7 +54,6 @@ export default {
 .fallback-image svg {
   width: 120px;
   height: 120px;
-  /*TODO replace all fills inside the svgs with current color so we don't have to specify fill in the css only color*/
   color: var(--on-primary-color);
 }
 

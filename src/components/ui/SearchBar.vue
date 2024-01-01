@@ -57,7 +57,7 @@ export default defineComponent({
 }
 
 .search-button svg {
-  fill: var(--on-primary-color);
+  color: var(--on-primary-color);
 }
 
 </style>

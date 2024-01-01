@@ -1,8 +1,8 @@
 <template>
+  <router-link
+      :to="{name:'course', params:{courseId:course.id}}">
   <BaseCard>
     <template v-slot:all>
-      <router-link
-          :to="{name:'course', params:{courseId:course.id}}">
         <article class="course-article">
           <BaseImage :image-url="imageUrl" :fall-back-url="icons.books"
                      alt-text="course image"></BaseImage>
@@ -13,13 +13,11 @@
             <BaseDropDown :id="`course-card-${course.id}`"
                           group="course-cards"
                           :centered="false"
-                          :round="false">
+                          :round="false" v-if="course.addedBy==userStore.userAccount?.username">
               <template v-slot:button>
                 <inline-svg :src="icons.dotsStacked" class="more-button"/>
               </template>
               <template v-slot:menu>
-
-                <!--TODO:Only show link if user is authorized to edit course-->
                 <ol class="dropdown-list">
                   <li>
                     <router-link :to="{ name: 'edit-course' , params:{courseId:course.id}}">
@@ -32,9 +30,9 @@
             </BaseDropDown>
           </div>
         </article>
-      </router-link>
     </template>
   </BaseCard>
+  </router-link>
 </template>
 
 <script lang="ts">
@@ -46,6 +44,7 @@ import {CourseSchema} from "dzelda-common";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
+import {useUserStore} from "@/stores/backend/userStore.js";
 
 export default {
   name: "CourseCard",
@@ -68,6 +67,7 @@ export default {
     return {
       icons,
       store: useStore(),
+      userStore: useUserStore(),
     };
   }
 };

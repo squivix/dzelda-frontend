@@ -35,7 +35,7 @@ import signOut from "@/assets/images/sign-out.svg";
 import upload from "@/assets/images/upload.svg";
 import userProfile from "@/assets/images/user-profile.svg";
 import vocabsList from "@/assets/images/vocabs-list.svg";
-//TODO use currentColor in all svgs so color setting from css works
+
 export const icons = {
     arrowDown,
     arrowLeft,

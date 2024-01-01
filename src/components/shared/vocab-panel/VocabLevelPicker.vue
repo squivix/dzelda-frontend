@@ -105,6 +105,5 @@ export default {
 .levels .highlighted {
   background-color: var(--primary-color);
   color: var(--on-primary-color);
-  fill: var(--on-primary-color);
 }
 </style>
