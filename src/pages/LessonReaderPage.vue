@@ -66,10 +66,11 @@ import ReaderSidePanel from "@/components/page/reader/ReaderSidePanel.vue";
 import {icons} from "@/icons.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
 import ExpandingIconButton from "@/components/ui/ExpandingIconButton.vue";
-import {useTimeoutFn, useWebWorkerFn} from "@vueuse/core";
+import {useTimeoutFn} from "@vueuse/core";
 
 export type NewVocab = Omit<LearnerVocabSchema, "id">
 export type LessonTokenObject = Omit<TokenWithPhrases, "phrases"> & {
+  index: number,
   parsedText: string,
   phrases: Array<TokeObjectPhrases[number] & { phraseId: number }>
 }
@@ -213,13 +214,12 @@ export default defineComponent({
     },
     async parseLesson() {
       this.isParsingLesson = true;
-      this.lessonTokens = {
-        title: this.parseStringToTokens(this.lesson!.title, this.matchIndexToTokenIndex.title),
-        text: this.parseStringToTokens(this.lesson!.text, this.matchIndexToTokenIndex.text)
-      };
+      const titleTokens = this.parseStringToTokens(this.lesson!.title, this.matchIndexToTokenIndex.title, 0)
+      const textTokens = this.parseStringToTokens(this.lesson!.text, this.matchIndexToTokenIndex.text, titleTokens.length)
+      this.lessonTokens = {title: titleTokens, text: textTokens};
       this.isParsingLesson = false;
     },
-    parseStringToTokens(text: string, matchIndexToTokenIndex: Record<number, number>): LessonTokenObject[] {
+    parseStringToTokens(text: string, matchIndexToTokenIndex: Record<number, number>, firstIndex: number): LessonTokenObject[] {
       const parser = getParser(this.lesson!.course.language);
       const tokens = parser.detectPhrases(text, Object.keys(this.phrases)) as LessonTokenObject[];
 
@@ -232,6 +232,7 @@ export default defineComponent({
         tokens[i].phrases.forEach((phrase) => {
           phrase.phraseId = this.phrases[phrase.text].id;
         });
+        tokens[i].index = firstIndex + i;
       }
       return tokens;
     },
