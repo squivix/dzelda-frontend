@@ -1,6 +1,7 @@
 <template>
   <div>
     <h2>404 Page not found</h2>
+    <router-link :to="{name:'home'}">Go to home page</router-link>
   </div>
 </template>
 
@@ -22,7 +23,7 @@ div {
 
 h2 {
   font-size: 1.25rem;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.5rem;
 }
 
 p {
