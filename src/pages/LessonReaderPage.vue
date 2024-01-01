@@ -19,7 +19,6 @@
         <ReaderSidePanel class="side-panel"
                          :selectedOverlappingPhrases="selectedOverLappingPhrases"
                          :selectedVocab="selectedVocab"
-                         :selectedIsPhrase="selectedVocab?.isPhrase"
                          @onMeaningAdded="onMeaningAdded"
                          @onVocabLevelSet="onVocabLevelSet"
                          @onMeaningDeleted="onMeaningDeleted"

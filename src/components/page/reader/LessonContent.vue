@@ -10,6 +10,8 @@
             :words="words"
             :tokenGroup="lessonTokens.title"
             :shouldRender="true"
+            :selectedWordToken="selectedWordToken"
+            :selectedPhraseTokens="selectedPhraseTokens"
             @onWordClicked="onWordClicked"
             @onPhraseClicked="onPhraseClicked"
             @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
@@ -23,6 +25,8 @@
                   :words="words"
                   :tokenGroup="tokenGroup"
                   :shouldRender="!groupIndexesToRender||groupIndexesToRender.has(index)"
+                  :selectedWordToken="selectedWordToken"
+                  :selectedPhraseTokens="selectedPhraseTokens"
                   @onWordClicked="onWordClicked"
                   @onPhraseClicked="onPhraseClicked"
                   @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
@@ -64,7 +68,19 @@ export default {
       groupIndexesInView: undefined as Set<number> | undefined,
       isSelectingPhraseText: false,
       isPhraseFirstClick: true,
+      selectedWordToken: undefined as number | undefined,
+      selectedPhraseTokens: new Set<number>()
     };
+  },
+  watch: {
+    selectedWordToken() {
+      if (this.selectedWordToken)
+        this.selectedPhraseTokens.clear();
+    },
+    selectedPhraseTokens() {
+      if (this.selectedPhraseTokens.size > 0)
+        this.selectedWordToken = undefined;
+    }
   },
   computed: {
     paragraphRef(): HTMLElement | null {
@@ -79,18 +95,23 @@ export default {
     }
   },
   methods: {
-    onWordClicked(word: LearnerVocabSchema) {
+    onWordClicked(word: LearnerVocabSchema, wordToken: LessonTokenObject) {
+      this.selectedWordToken = wordToken.index;
       this.$emit("onWordClicked", word);
     },
-    onPhraseClicked(phrase: LearnerVocabSchema) {
+    onPhraseClicked(phrase: LearnerVocabSchema, clickedToken: LessonTokenObject) {
+      this.selectedPhraseTokens = this.getPhraseTokens(clickedToken, [phrase]);
       this.$emit("onPhraseClicked", phrase);
     },
-    onOverLappingPhrasesClicked(phrases: LearnerVocabSchema[]) {
+    onOverLappingPhrasesClicked(phrases: LearnerVocabSchema[], clickedToken: LessonTokenObject) {
+      // this.selectedPhraseTokens = this.getPhraseTokens(clickedToken, phrases);
       this.$emit("onOverLappingPhrasesClicked", phrases);
     },
     onBackgroundClicked() {
       if (!this.isSelectingPhraseText) {
         this.clearSelectedPhrases();
+        this.selectedWordToken = undefined;
+        this.selectedPhraseTokens.clear();
         this.$emit("onBackgroundClicked");
       }
       this.isSelectingPhraseText = false;
@@ -99,25 +120,28 @@ export default {
       this.$emit("onNewPhraseSelected", phraseText);
     },
     clearSelectedPhrases() {
-      document.querySelectorAll(".phrase-selected").forEach((el) => el.classList.remove("phrase-selected"));
+      document.querySelectorAll(".text-selected").forEach((el) => el.classList.remove("text-selected"));
     },
     onSelectionChange() {
-      const selectedWrappers = getTextSelectedElements(getSelection()!)?.filter(e => e.classList.contains("word-wrapper"));
-      if (!selectedWrappers || selectedWrappers.length < 2)
+      const selectedWrappers = getTextSelectedElements(getSelection()!)?.filter(e => e.classList.contains("word-wrapper")).slice(0, 30);
+      if (!selectedWrappers || selectedWrappers.length < 1)
         return;
-
       this.clearSelectedPhrases();
       let phraseText = "";
+      const selectedTokenIndexes: number[] = [];
       for (const wrapperElement of selectedWrappers) {
-        wrapperElement.classList.add("phrase-selected");
+        wrapperElement.classList.add("text-selected");
         const wordNode = wrapperElement.childNodes[0] as HTMLElement;
-        if (wordNode.classList.contains("word"))
-          phraseText += `${wordNode.dataset.parsedText} `;
+        if (wordNode.classList.contains("word")) {
+          const token = this.getTokenFromIndex(Number(wrapperElement.dataset.tokenIndex));
+          selectedTokenIndexes.push(token.index);
+          phraseText += `${token.parsedText} `;
+        }
       }
       phraseText = phraseText.trim();
       this.isSelectingPhraseText = true;
       if (this.words[phraseText])
-        this.onWordClicked(this.words[phraseText]);
+        this.onWordClicked(this.words[phraseText], selectedTokenIndexes[0]);
       else if (this.phrases[phraseText])
         this.onPhraseClicked(this.phrases[phraseText]);
       else
@@ -126,6 +150,21 @@ export default {
     emptyTextSelection() {
       getSelection()?.empty();
     },
+    getTokenFromIndex(tokenIndex: number) {
+      if (tokenIndex < this.lessonTokens.title.length)
+        return this.lessonTokens.title[tokenIndex];
+      else
+        return this.lessonTokens.text[tokenIndex - this.lessonTokens.title.length];
+    },
+    getPhraseTokens(clickedToken: LessonTokenObject, phrases: LearnerVocabSchema[]) {
+      const phraseTokens = new Set<number>();
+      const phraseIds = new Set<number>(phrases.map(p => p.id));
+      document.querySelectorAll(clickedToken.phrases
+          .filter(p => phraseIds.has(p.phraseId))
+          .map(p => `.phrase-${p.phraseId}-${p.phraseOccurrenceIndex}`).join(", "))
+          .forEach((n) => phraseTokens.add(Number((n as HTMLElement).dataset.tokenIndex)));
+      return phraseTokens;
+    },
     setIsPhraseFirstClick(isPhraseFirstClick: boolean) {
       this.isPhraseFirstClick = isPhraseFirstClick;
     },
@@ -133,6 +172,9 @@ export default {
   mounted() {
     useEventListener(document, "selectionchange", this.onSelectionChange);
     useEventListener(document.body, "click", this.onBackgroundClicked);
+    useEventListener(document, "keydown", (event) => {
+      if (event.ctrlKey && event.key === "a") event.preventDefault();
+    });
     this.scrollObserver = new IntersectionObserver(useDebounceFn(() => {
       if (this.paragraphRef)
         this.groupIndexesInView = getChildrenInViewIndexes(this.paragraphRef);
@@ -190,7 +232,8 @@ p {
     width: 100px;
     height: 100px;
   }
-  .fallback-image :deep(svg){
+
+  .fallback-image :deep(svg) {
     width: 80px;
     height: 80px;
   }

@@ -1,18 +1,20 @@
 <template>
-    <!--  TODO come up with a way to align token group borders with line ends to avoid inline element caused scroll jumps and jitteriness or alternatively switch to block elements and accept awkward paragraph breaks mid-sentence -->
+  <!--  TODO come up with a way to align token group borders with line ends to avoid inline element caused scroll jumps and jitteriness or alternatively switch to block elements and accept awkward paragraph breaks mid-sentence -->
   <div :class="{'in-view':shouldRender}" ref="tokenGroupRef">
-      <LessonToken v-if="shouldRender" v-for="(token, index) in tokenGroup"
-                   :key="index"
-                   :token="token"
-                   :word="words[token.parsedText!]"
-                   :phrases="token.phrases.map(pt=>phrases[pt.text])"
-                   :isPhraseFirstClick="isPhraseFirstClick"
-                   @onWordClicked="onWordClicked"
-                   @onPhraseClicked="onPhraseClicked"
-                   @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
-                   @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
-        <span v-else class="placeholder" :style="{ height:`${elementHeight}px`}"></span>
-    </div>
+    <LessonToken v-if="shouldRender" v-for="(token, index) in tokenGroup"
+                 :key="index"
+                 :token="token"
+                 :word="words[token.parsedText!]"
+                 :phrases="token.phrases.map(pt=>phrases[pt.text])"
+                 :isPhraseFirstClick="isPhraseFirstClick"
+                 :isWordSelected="selectedWordToken==token.index"
+                 :isPhraseSelected="selectedPhraseTokens.has(token.index)"
+                 @onWordClicked="onWordClicked"
+                 @onPhraseClicked="onPhraseClicked"
+                 @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
+                 @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
+    <span v-else class="placeholder" :style="{ height:`${elementHeight}px`}"></span>
+  </div>
 </template>
 
 <script lang="ts">
@@ -35,6 +37,8 @@ export default defineComponent({
     phrases: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
     isPhraseFirstClick: {type: Boolean, required: true},
     shouldRender: {type: Boolean},
+    selectedWordToken: {type: Number},
+    selectedPhraseTokens: {type: Object as PropType<Set<number>>, required: true},
   },
   watch: {
     shouldRender() {
@@ -51,14 +55,14 @@ export default defineComponent({
     };
   },
   methods: {
-    onWordClicked(word: LearnerVocabSchema) {
-      this.$emit("onWordClicked", word);
+    onWordClicked(word: LearnerVocabSchema, wordToken: LessonTokenObject) {
+      this.$emit("onWordClicked", word, wordToken);
     },
-    onPhraseClicked(phrase: LearnerVocabSchema) {
-      this.$emit("onPhraseClicked", phrase);
+    onPhraseClicked(phrase: LearnerVocabSchema, clickedToken: LessonTokenObject) {
+      this.$emit("onPhraseClicked", phrase, clickedToken);
     },
-    onOverLappingPhrasesClicked(phrases: LearnerVocabSchema[]) {
-      this.$emit("onOverLappingPhrasesClicked", phrases);
+    onOverLappingPhrasesClicked(phrases: LearnerVocabSchema[], clickedToken: LessonTokenObject) {
+      this.$emit("onOverLappingPhrasesClicked", phrases, clickedToken);
     },
     setIsPhraseFirstClick(isPhraseFirstClick: boolean) {
       this.$emit("setIsPhraseFirstClick", isPhraseFirstClick);

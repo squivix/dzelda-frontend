@@ -2,7 +2,7 @@
   <div class="side-panel">
     <MeaningPanel v-if="!selectedOverlappingPhrases"
                      :vocab="selectedVocab"
-                     :is-phrase="selectedIsPhrase"
+                     :is-phrase="selectedVocab?.isPhrase"
                      @click.stop
                      @onMeaningAdded="(vocabId, newMeaning)=>$emit('onMeaningAdded', vocabId, newMeaning)"
                      @onVocabLevelSet="(vocabId, level) =>$emit('onVocabLevelSet', vocabId, level)"
@@ -30,7 +30,6 @@ export default defineComponent({
   props: {
     selectedOverlappingPhrases: {type: Array as PropType<LearnerVocabSchema[] | null>},
     selectedVocab: {type: Object as PropType<LearnerVocabSchema | NewVocab | null>},
-    selectedIsPhrase: {type: Boolean},
   },
   computed: {},
   emits: {

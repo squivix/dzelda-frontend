@@ -2,10 +2,10 @@
     <span :class="wrapperClass"
           @click.stop="onWrapperClicked($event.target as HTMLElement)"
           @mouseenter="wrapperHoverStart"
-          @mouseleave="wrapperHoverEnd">
+          @mouseleave="wrapperHoverEnd"
+          :data-token-index="token.index">
       <span :class="wordClass"
             v-if="token.isWord"
-            :data-parsed-text="token.parsedText"
             @click.stop="onWordClicked($event)">
           {{ token.text }}
       </span>
@@ -32,6 +32,8 @@ export default defineComponent({
     word: {type: Object as PropType<LearnerVocabSchema>, required: false},
     phrases: {type: Object as PropType<LearnerVocabSchema[]>, required: false},
     isPhraseFirstClick: {type: Boolean, required: true},
+    isWordSelected: {type: Boolean, required: true},
+    isPhraseSelected: {type: Boolean, required: true},
   },
   emits: ["onWordClicked", "onPhraseClicked", "onOverLappingPhrasesClicked", "setIsPhraseFirstClick"],
   computed: {
@@ -41,8 +43,8 @@ export default defineComponent({
         classes.push("phrase");
         classes.push(...this.token.phrases.map(p => `phrase-${p.phraseId}-${p.phraseOccurrenceIndex}`));
         classes.push(this.getLevelClass(this.phrases![0].level));
-        if (!this.isPhraseFirstClick)
-          classes.push("phrase-gone");
+        if (this.isPhraseSelected)
+          classes.push("phrase-selected");
       }
       return classes.join(" ");
     },
@@ -52,6 +54,8 @@ export default defineComponent({
         classes.push("word-lone");
       if (!this.isPhraseFirstClick)
         classes.push("word-hovered");
+      if (this.isWordSelected)
+        classes.push("word-selected");
       return classes.join(" ");
     },
     phrasesCount() {
@@ -61,7 +65,7 @@ export default defineComponent({
   methods: {
     onWordClicked(event: Event) {
       if (this.phrasesCount == 0 || !this.isPhraseFirstClick)
-        this.$emit("onWordClicked", this.word!);
+        this.$emit("onWordClicked", this.word!, this.token);
       else {
         this.onWrapperClicked(event.target as HTMLElement);
         this.$emit("setIsPhraseFirstClick", false);
@@ -78,11 +82,11 @@ export default defineComponent({
         return;
       //if word part of multiple phrases
       else if (this.phrases.length > 1)
-        this.$emit("onOverLappingPhrasesClicked", this.phrases);
+        this.$emit("onOverLappingPhrasesClicked", this.phrases, this.token);
       else {
         if (wrapperDomElem.classList.contains("phrase-new"))
           return;
-        this.$emit("onPhraseClicked", this.phrases[0]);
+        this.$emit("onPhraseClicked", this.phrases[0], this.token);
       }
     },
     wrapperHoverStart(event: Event) {
@@ -138,7 +142,7 @@ span {
   user-select: text;
 }
 
-span::selection {
+span::selection, br::selection {
   background: transparent;
 }
 
@@ -233,7 +237,7 @@ span::selection {
   border-inline-end: 1px solid transparent;
 }
 
-.phrase-selected {
+.text-selected {
   background-color: #268AFA;
 }
 
@@ -242,5 +246,28 @@ span::selection {
   padding-bottom: 0.7rem;
   border-top: 1px solid;
   border-bottom: 1px solid;
+}
+
+
+.word-selected.level-1,
+.word-selected.level-2,
+.word-selected.level-3,
+.word-selected.level-4,
+.phrase-selected.level-1,
+.phrase-selected.level-2,
+.phrase-selected.level-3,
+.phrase-selected.level-4 {
+  background-color: #e58d00 !important;
+  color: #FFF !important;
+}
+
+.word-selected, .phrase-selected,
+.phrase-selected .level-new,
+.phrase-selected .level-1,
+.phrase-selected .level-2,
+.phrase-selected .level-3,
+.phrase-selected .level-4 {
+  background-color: #3498db !important;
+  color: #fff !important;
 }
 </style>
