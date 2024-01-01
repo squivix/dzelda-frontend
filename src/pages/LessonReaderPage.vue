@@ -19,8 +19,9 @@
         <ReaderSidePanel class="side-panel"
                          :selectedOverlappingPhrases="selectedOverLappingPhrases"
                          :selectedVocab="selectedVocab"
-                         @onMeaningAdded="onMeaningAdded"
                          @onVocabLevelSet="onVocabLevelSet"
+                         @onMeaningAdded="onMeaningAdded"
+                         @onMeaningEdited="onMeaningEdited"
                          @onMeaningDeleted="onMeaningDeleted"
                          @onOverlappingPhraseClicked="setSelectedVocab"
                          @onVocabNotesSet="onVocabNotesSet"
@@ -186,6 +187,10 @@ export default defineComponent({
       const updatedVocab = await this.updateVocab(vocabId);
       this.setSelectedVocab(updatedVocab);
     },
+    async onMeaningEdited(vocabId: number, editedMeaning: MeaningSchema) {
+      const updatedVocab = await this.updateVocab(vocabId);
+      this.setSelectedVocab(updatedVocab);
+    },
     async onMeaningDeleted(vocabId: number, deletedMeaning: MeaningSchema) {
       const updatedVocab = await this.updateVocab(vocabId);
       this.setSelectedVocab(updatedVocab);
@@ -213,8 +218,8 @@ export default defineComponent({
     },
     async parseLesson() {
       this.isParsingLesson = true;
-      const titleTokens = this.parseStringToTokens(this.lesson!.title, this.matchIndexToTokenIndex.title, 0)
-      const textTokens = this.parseStringToTokens(this.lesson!.text, this.matchIndexToTokenIndex.text, titleTokens.length)
+      const titleTokens = this.parseStringToTokens(this.lesson!.title, this.matchIndexToTokenIndex.title, 0);
+      const textTokens = this.parseStringToTokens(this.lesson!.text, this.matchIndexToTokenIndex.text, titleTokens.length);
       this.lessonTokens = {title: titleTokens, text: textTokens};
       this.isParsingLesson = false;
     },

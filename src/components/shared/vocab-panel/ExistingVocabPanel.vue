@@ -2,6 +2,7 @@
   <div class="existing-vocab-panel">
     <MeaningEditingControls
         @onMeaningDeleted="onMeaningDeleted"
+        @onMeaningEdited="onMeaningEdited"
         :vocab-id="vocab.id"
         :saved-meanings="vocab.learnerMeanings"/>
 
@@ -32,12 +33,12 @@ import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {PropType} from "vue";
-import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
+import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-common";
 
 export default {
   name: "ExistingVocabPanel",
   components: {MeaningEditingControls, InlineSvg, VocabLevelPicker},
-  emits: ["onAddMoreMeaningsClicked", "onMeaningDeleted", "onVocabLevelSet", "onVocabNotesSet", "onVocabRemovedFromUser"],
+  emits: ["onAddMoreMeaningsClicked", "onMeaningDeleted", "onMeaningEdited", "onVocabLevelSet", "onVocabNotesSet", "onVocabRemovedFromUser"],
   data() {
     return {
       notes: this.vocab.notes
@@ -54,7 +55,10 @@ export default {
     addMeaning() {
       this.$emit("onAddMoreMeaningsClicked");
     },
-    onMeaningDeleted(meaning) {
+    onMeaningEdited(meaning: MeaningSchema) {
+      this.$emit("onMeaningEdited", meaning);
+    },
+    onMeaningDeleted(meaning: MeaningSchema) {
       this.$emit("onMeaningDeleted", meaning);
     },
     onVocabLevelSet(level: VocabLevelSchema) {

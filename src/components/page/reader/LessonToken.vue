@@ -77,7 +77,6 @@ export default defineComponent({
         wrapperDomElem = wrapperDomElem.parentElement!;
       if (!wrapperDomElem.classList.contains("word-wrapper"))
         return;
-
       if (!this.phrases || this.phrases.length == 0)
         return;
       //if word part of multiple phrases

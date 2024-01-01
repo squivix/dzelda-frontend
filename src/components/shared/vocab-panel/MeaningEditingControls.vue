@@ -1,13 +1,14 @@
 <template>
   <h5>Saved Meanings</h5>
   <ol class="user-meanings">
-    <li v-for="meaning in savedMeanings" :key="meaning.id">
-      <form action="javascript:void(0);">
+    <li v-for="(meaning,meaningIndex) in savedMeanings" :key="meaning.id">
+      <form @submit.prevent="editMeaning(meaning,editedMeanings[meaningIndex])">
         <button class="delete-user-meaning-button" @click="deleteMeaning(meaning)" type="button">
           <inline-svg :src="icons.cross"/>
         </button>
-        <input :value="meaning.text" :ref="`user-meaning-input-${meaning.id}`"/>
-        <button class="edit-user-meaning-button" @click="editMeaning(meaning)" type="submit">
+        <input v-model="editedMeanings[meaningIndex]"/>
+        <button class="edit-user-meaning-button"
+                type="submit">
           <inline-svg :src="icons.checkMark"/>
         </button>
       </form>
@@ -19,31 +20,36 @@
 import {useMeaningStore} from "@/stores/backend/meaningStore.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
+import {PropType} from "vue";
+import {MeaningSchema} from "dzelda-common";
 
 export default {
   name: "MeaningEditingControls",
   components: {InlineSvg},
-  emits: ["onMeaningDeleted"],
+  emits: ["onMeaningDeleted", "onMeaningEdited"],
   props: {
-    vocabId: {
-      type: Number,
-      required: true
-    },
-    savedMeanings: {
-      type: Array,
-      required: true
+    vocabId: {type: Number, required: true},
+    savedMeanings: {type: Array as PropType<MeaningSchema[]>, required: true}
+  },
+  data() {
+    return {
+      editedMeanings: [] as string[],
+    };
+  },
+  watch: {
+    savedMeanings() {
+      this.editedMeanings = this.savedMeanings.map(m => m.text);
     }
   },
   methods: {
-    async deleteMeaning(meaning) {
+    async deleteMeaning(meaning: MeaningSchema) {
       await this.meaningStore.deleteMeaningFromUser({
         meaningId: meaning.id
       });
       this.$emit("onMeaningDeleted", meaning);
     },
-    async editMeaning(meaning) {
-      const editedMeaning = this.$refs[`user-meaning-input-${meaning.id}`][0].value.trim();
-      if (editedMeaning === undefined || editedMeaning === "")
+    async editMeaning(meaning: MeaningSchema, editedMeaning: string) {
+      if (!editedMeaning)
         await this.deleteMeaning(meaning);
       else if (editedMeaning === meaning.text)
         return;
@@ -55,8 +61,11 @@ export default {
         text: editedMeaning,
       });
       await this.meaningStore.addMeaningToUser({meaningId: newMeaning.id});
-      //TODO reflect this locally by some sort of event that sends newMeaning
+      this.$emit("onMeaningEdited", meaning);
     },
+  },
+  mounted() {
+    this.editedMeanings = this.savedMeanings.map(m => m.text);
   },
   setup() {
     return {

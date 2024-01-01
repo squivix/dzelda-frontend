@@ -1,5 +1,5 @@
 <template>
-  <div class="lesson-content" @mouseup="emptyTextSelection">
+  <div class="lesson-content" @mouseup="onMouseUp">
     <div class="top-div">
       <BaseImage :image-url="image" :fall-back-url="icons.bookOpen"
                  alt-text="lesson image" class="lesson-image"/>
@@ -10,8 +10,8 @@
             :words="words"
             :tokenGroup="lessonTokens.title"
             :shouldRender="true"
-            :selectedWordToken="selectedWordToken"
-            :selectedPhraseTokens="selectedPhraseTokens"
+            :selectedWordToken="selectedWordIndex"
+            :selectedPhraseTokens="selectedPhraseIndex"
             @onWordClicked="onWordClicked"
             @onPhraseClicked="onPhraseClicked"
             @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
@@ -25,8 +25,8 @@
                   :words="words"
                   :tokenGroup="tokenGroup"
                   :shouldRender="!groupIndexesToRender||groupIndexesToRender.has(index)"
-                  :selectedWordToken="selectedWordToken"
-                  :selectedPhraseTokens="selectedPhraseTokens"
+                  :selectedWordToken="selectedWordIndex"
+                  :selectedPhraseTokens="selectedPhraseIndex"
                   @onWordClicked="onWordClicked"
                   @onPhraseClicked="onPhraseClicked"
                   @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
@@ -68,18 +68,19 @@ export default {
       groupIndexesInView: undefined as Set<number> | undefined,
       isSelectingPhraseText: false,
       isPhraseFirstClick: true,
-      selectedWordToken: undefined as number | undefined,
-      selectedPhraseTokens: new Set<number>()
+      selectedWordIndex: undefined as number | undefined,
+      selectedPhraseIndex: new Set<number>(),
+      selectedTokens: [] as LessonTokenObject[],
     };
   },
   watch: {
-    selectedWordToken() {
-      if (this.selectedWordToken)
-        this.selectedPhraseTokens.clear();
+    selectedWordIndex() {
+      if (this.selectedWordIndex)
+        this.selectedPhraseIndex.clear();
     },
-    selectedPhraseTokens() {
-      if (this.selectedPhraseTokens.size > 0)
-        this.selectedWordToken = undefined;
+    selectedPhraseIndex() {
+      if (this.selectedPhraseIndex.size > 0)
+        this.selectedWordIndex = undefined;
     }
   },
   computed: {
@@ -96,11 +97,11 @@ export default {
   },
   methods: {
     onWordClicked(word: LearnerVocabSchema, wordToken: LessonTokenObject) {
-      this.selectedWordToken = wordToken.index;
+      this.selectedWordIndex = wordToken.index;
       this.$emit("onWordClicked", word);
     },
     onPhraseClicked(phrase: LearnerVocabSchema, clickedToken: LessonTokenObject) {
-      this.selectedPhraseTokens = this.getPhraseTokens(clickedToken, [phrase]);
+      this.selectedPhraseIndex = this.getPhraseTokens(clickedToken, [phrase]);
       this.$emit("onPhraseClicked", phrase);
     },
     onOverLappingPhrasesClicked(phrases: LearnerVocabSchema[], clickedToken: LessonTokenObject) {
@@ -110,8 +111,9 @@ export default {
     onBackgroundClicked() {
       if (!this.isSelectingPhraseText) {
         this.clearSelectedPhrases();
-        this.selectedWordToken = undefined;
-        this.selectedPhraseTokens.clear();
+        this.selectedWordIndex = undefined;
+        this.selectedPhraseIndex.clear();
+        this.selectedTokens = [];
         this.$emit("onBackgroundClicked");
       }
       this.isSelectingPhraseText = false;
@@ -127,25 +129,31 @@ export default {
       if (!selectedWrappers || selectedWrappers.length < 1)
         return;
       this.clearSelectedPhrases();
-      let phraseText = "";
-      const selectedTokenIndexes: number[] = [];
+      const selectedWords: LessonTokenObject[] = [];
       for (const wrapperElement of selectedWrappers) {
         wrapperElement.classList.add("text-selected");
         const wordNode = wrapperElement.childNodes[0] as HTMLElement;
         if (wordNode.classList.contains("word")) {
           const token = this.getTokenFromIndex(Number(wrapperElement.dataset.tokenIndex));
-          selectedTokenIndexes.push(token.index);
-          phraseText += `${token.parsedText} `;
+          selectedWords.push(token);
         }
       }
-      phraseText = phraseText.trim();
+      this.selectedTokens = selectedWords;
       this.isSelectingPhraseText = true;
-      if (this.words[phraseText])
-        this.onWordClicked(this.words[phraseText], selectedTokenIndexes[0]);
-      else if (this.phrases[phraseText])
-        this.onPhraseClicked(this.phrases[phraseText]);
-      else
-        this.onNewPhraseSelected(phraseText);
+    },
+    onMouseUp() {
+      this.emptyTextSelection();
+      if(this.selectedTokens.length==0)
+        return;
+      const selectedText = this.selectedTokens.map(t => t.parsedText).join(" ");
+      if (this.words[selectedText]) {
+        this.onWordClicked(this.words[selectedText], this.selectedTokens[0]);
+        this.clearSelectedPhrases();
+      } else if (this.phrases[selectedText]) {
+        this.onPhraseClicked(this.phrases[selectedText], this.selectedTokens[0]);
+        this.clearSelectedPhrases();
+      } else
+        this.onNewPhraseSelected(selectedText);
     },
     emptyTextSelection() {
       getSelection()?.empty();

@@ -1,15 +1,16 @@
 <template>
   <div class="side-panel">
     <MeaningPanel v-if="!selectedOverlappingPhrases"
-                     :vocab="selectedVocab"
-                     :is-phrase="selectedVocab?.isPhrase"
-                     @click.stop
-                     @onMeaningAdded="(vocabId, newMeaning)=>$emit('onMeaningAdded', vocabId, newMeaning)"
-                     @onVocabLevelSet="(vocabId, level) =>$emit('onVocabLevelSet', vocabId, level)"
-                     @onMeaningDeleted="(vocabId, deletedMeaning)=>$emit('onMeaningDeleted', vocabId, deletedMeaning)"
-                     @onVocabNotesSet="(vocabId, notes)=>$emit('onVocabNotesSet', vocabId, notes)"
-                     @onNewPhraseAdded="(vocab)=>$emit('onNewPhraseAdded', vocab)"
-                     @onVocabRemovedFromUser="(removedVocab)=>$emit('onVocabRemovedFromUser', removedVocab)"/>
+                  :vocab="selectedVocab"
+                  :is-phrase="selectedVocab?.isPhrase"
+                  @click.stop
+                  @onVocabLevelSet="(vocabId, level) =>$emit('onVocabLevelSet', vocabId, level)"
+                  @onMeaningAdded="(vocabId, newMeaning)=>$emit('onMeaningAdded', vocabId, newMeaning)"
+                  @onMeaningEdited="(vocabId, editedMeaning)=>$emit('onMeaningEdited', vocabId, editedMeaning)"
+                  @onMeaningDeleted="(vocabId, deletedMeaning)=>$emit('onMeaningDeleted', vocabId, deletedMeaning)"
+                  @onVocabNotesSet="(vocabId, notes)=>$emit('onVocabNotesSet', vocabId, notes)"
+                  @onNewPhraseAdded="(vocab)=>$emit('onNewPhraseAdded', vocab)"
+                  @onVocabRemovedFromUser="(removedVocab)=>$emit('onVocabRemovedFromUser', removedVocab)"/>
     <OverlappingPhrasesPanel v-else
                              @click.stop
                              :phrases="selectedOverlappingPhrases!"
@@ -34,6 +35,7 @@ export default defineComponent({
   computed: {},
   emits: {
     onMeaningAdded: (vocabId: number, newMeaning: MeaningSchema) => true,
+    onMeaningEdited: (vocabId: number, editedMeaning: MeaningSchema) => true,
     onMeaningDeleted: (vocabId: number, meaning: MeaningSchema) => true,
     onVocabLevelSet: (vocabId: number, level: VocabLevelSchema) => true,
     onVocabNotesSet: (vocabId: number, notes: string) => true,

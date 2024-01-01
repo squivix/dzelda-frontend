@@ -14,6 +14,7 @@
             v-else
             :vocab="existingVocab!"
             @onAddMoreMeaningsClicked="onAddMoreMeaningsClicked"
+            @onMeaningEdited="onMeaningEdited"
             @onMeaningDeleted="onMeaningDeleted"
             @onVocabRemovedFromUser="onVocabRemovedFromUser"
             @onVocabLevelSet="onVocabLevelSet"
@@ -38,6 +39,7 @@ export default {
   components: {NewVocabPanel, ExistingVocabPanel},
   emits: {
     onMeaningAdded: (vocabId: number, newMeaning: MeaningSchema) => true,
+    onMeaningEdited: (vocabId: number, meaning: MeaningSchema) => true,
     onMeaningDeleted: (vocabId: number, meaning: MeaningSchema) => true,
     onVocabLevelSet: (vocabId: number, level: VocabLevelSchema) => true,
     onVocabNotesSet: (vocabId: number, notes: string) => true,
@@ -79,6 +81,10 @@ export default {
     onMeaningAdded(vocabId: number, newMeaning: MeaningSchema) {
       this.$emit("onMeaningAdded", vocabId, newMeaning);
       this.addingMoreMeanings = false;
+    },
+    onMeaningEdited(meaning: MeaningSchema) {
+      const vocab = this.vocab as LearnerVocabSchema;
+      this.$emit("onMeaningEdited", vocab.id, meaning);
     },
     onMeaningDeleted(meaning: MeaningSchema) {
       const vocab = this.vocab as LearnerVocabSchema;
