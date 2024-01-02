@@ -88,10 +88,20 @@ export default defineComponent({
         from.setFullYear(to.getFullYear() - 1);
         interval = "month";
       } else if (this.period == RecentActivityPeriod.ALL_TIME) {
-        console.log(this.user.profile.languagesLearning);
-        //TODO set from to earliest language started learning date and select appropriate interval
-        // from.setFullYear(to.getFullYear() - 1);
-        // interval = "month";
+        const userLanguages = [...(await this.languageStore.fetchUserLanguages())];
+        from = new Date(userLanguages[0].startedLearningOn);
+        for (const language of userLanguages) {
+          const startedLearningOn = new Date(language.startedLearningOn);
+          if (startedLearningOn.getTime() < from.getTime())
+            from = startedLearningOn;
+        }
+        const daysBetween = (to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24);
+        if (daysBetween <= 30)
+          interval = "day";
+        else if (daysBetween <= 30 * 24)
+          interval = "month";
+        else
+          interval = "year";
       }
       const rawData = await this.vocabStore.fetchSavedVocabsCountTimeSeries({
         username: this.user.username,

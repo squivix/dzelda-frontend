@@ -84,7 +84,7 @@ import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {useEventListener} from "@vueuse/core";
-//TODO stop showing ignored vocabs
+
 export default {
   name: "MyVocabPage",
   components: {

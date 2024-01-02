@@ -40,8 +40,8 @@
     <SeriousConfirmDialog :is-shown="isConfirmDeleteDialogShown"
                           :yes-text="`Yes, delete all my ${languageToBeRemoved?.name} data`"
                           :expected-text="`delete language`"
-                          @on-yes-clicked="removeLanguage"
-                          @on-no-clicked="isConfirmDeleteDialogShown=false">
+                          @onYesClicked="removeLanguage"
+                          @onNoClicked="isConfirmDeleteDialogShown=false">
       <p>Are you sure you want to remove {{ languageToBeRemoved?.name }} from your languages?
         <br>
         <br>
@@ -154,9 +154,10 @@ h2 {
   color: black;
 }
 
-.new-language-button:hover, .new-language-button:hover .empty-icon{
+.new-language-button:hover, .new-language-button:hover .empty-icon {
   color: #183153;
 }
+
 @media screen and (max-width: 750px) {
   h2 {
     display: none

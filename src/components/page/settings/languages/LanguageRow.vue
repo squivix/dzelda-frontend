@@ -5,7 +5,7 @@
     <td>
       <SubmitButton class="inv-button link"
                     @click="onRemoveLanguageClicked"
-                    :is-submitting="isSubmittingRemoveLanguage">
+                    :isSubmitting="isSubmittingRemoveLanguage">
         Remove
       </SubmitButton>
       <!--          TODO reset progress-->
@@ -31,7 +31,7 @@ export default defineComponent({
   },
   computed: {
     addedOn() {
-      return this.language.addedOn.split("T")[0];
+      return new Date(this.language.startedLearningOn).toLocaleString();
     }
   },
   methods: {

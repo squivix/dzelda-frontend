@@ -19,7 +19,7 @@
         <BaseDropDown v-if="currentLanguage" class="language-dropdown" id="language">
           <template v-slot:button="{isDroppedDown}">
             <img :src="currentLanguage.flagCircular??''" alt="Current Language Icon"
-                 class="language-icon current-language-icon">
+                 class="current-language-icon">
             <span class="icon-wrapper language-menu-arrow">
             <inline-svg :src="isDroppedDown?icons.arrowUp:icons.arrowDown"/>
           </span>
@@ -28,7 +28,8 @@
             <ol class="language-grid dropdown-list">
               <li v-for="language in otherLanguages">
                 <router-link :to="{params:{learningLanguage:language.code}}">
-                  <img class="image-icon" :src="language.flagCircular!" :alt="`${language.code} language flag`">
+                  <img class="image-icon language-icon" :src="language.flagCircular!"
+                       :alt="`${language.code} language flag`">
                   <span>{{ language.name }}</span>
                 </router-link>
               </li>
@@ -237,7 +238,6 @@ h1 {
 
 .language-grid {
   display: grid;
-  width: 15vw;
   min-width: 120px;
   max-width: 240px;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -253,6 +253,11 @@ h1 {
   background-color: var(--on-primary-color);
   border-radius: 50%;
   padding: 0.2rem;
+}
+
+.language-icon {
+  width: 25px;
+  height: 25px;
 }
 
 .language-menu-arrow {

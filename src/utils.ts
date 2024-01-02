@@ -60,7 +60,6 @@ export function toSentenceCase(s: string) {
     if (s.length > 0)
         return `${s[0].toUpperCase()}${s.slice(1)}`;
     return s;
-
 }
 
 function rangeIntersectsNode(range: Range, node: Node) {
