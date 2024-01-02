@@ -88,7 +88,7 @@ export default defineComponent({
         savedOnInterval: interval,
         level: [VocabLevelSchema.LEVEL1, VocabLevelSchema.LEVEL2, VocabLevelSchema.LEVEL3, VocabLevelSchema.LEVEL4]
       });
-      // TODO deal with timezone mess: currently graph always shows because utc is returned from serverside but presentation should be made local
+      // TODO deal with timezone mess: currently graph is confusing because utc is returned from serverside but presentation should be made local
       const languages: { [k: string]: ChartDataset<"line", { x: any, y: any }[]> } = {};
       for (const row of rawData) {
         if (!(row.language! in languages))

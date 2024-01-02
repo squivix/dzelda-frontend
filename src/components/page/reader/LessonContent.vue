@@ -10,8 +10,7 @@
             :words="words"
             :tokenGroup="lessonTokens.title"
             :shouldRender="true"
-            :selectedWordToken="selectedWordIndex"
-            :selectedPhraseTokens="selectedPhraseIndex"
+            :selectedTokens="selectedTokens"
             @onWordClicked="onWordClicked"
             @onPhraseClicked="onPhraseClicked"
             @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
@@ -25,8 +24,7 @@
                   :words="words"
                   :tokenGroup="tokenGroup"
                   :shouldRender="!groupIndexesToRender||groupIndexesToRender.has(index)"
-                  :selectedWordToken="selectedWordIndex"
-                  :selectedPhraseTokens="selectedPhraseIndex"
+                  :selectedTokens="selectedTokens"
                   @onWordClicked="onWordClicked"
                   @onPhraseClicked="onPhraseClicked"
                   @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
@@ -70,18 +68,9 @@ export default {
       isPhraseFirstClick: true,
       selectedWordIndex: undefined as number | undefined,
       selectedPhraseIndex: new Set<number>(),
-      selectedTokens: [] as LessonTokenObject[],
+      selectedTokens: new Set<number>(),
+      selectedTextTokens: [] as LessonTokenObject[],
     };
-  },
-  watch: {
-    selectedWordIndex() {
-      if (this.selectedWordIndex)
-        this.selectedPhraseIndex.clear();
-    },
-    selectedPhraseIndex() {
-      if (this.selectedPhraseIndex.size > 0)
-        this.selectedWordIndex = undefined;
-    }
   },
   computed: {
     paragraphRef(): HTMLElement | null {
@@ -97,23 +86,24 @@ export default {
   },
   methods: {
     onWordClicked(word: LearnerVocabSchema, wordToken: LessonTokenObject) {
-      this.selectedWordIndex = wordToken.index;
+      this.selectedTokens = new Set([wordToken.index]);
       this.$emit("onWordClicked", word);
     },
     onPhraseClicked(phrase: LearnerVocabSchema, clickedToken: LessonTokenObject) {
-      this.selectedPhraseIndex = this.getPhraseTokens(clickedToken, [phrase]);
+      this.selectedTokens = this.getPhraseTokens(clickedToken, [phrase]);
       this.$emit("onPhraseClicked", phrase);
     },
     onOverLappingPhrasesClicked(phrases: LearnerVocabSchema[], clickedToken: LessonTokenObject) {
-      // this.selectedPhraseTokens = this.getPhraseTokens(clickedToken, phrases);
+      this.selectedTokens.clear();
+      //this.selectedTokens = this.getPhraseTokens(clickedToken, phrases);
       this.$emit("onOverLappingPhrasesClicked", phrases);
     },
     onBackgroundClicked() {
       if (!this.isSelectingPhraseText) {
         this.clearSelectedPhrases();
-        this.selectedWordIndex = undefined;
-        this.selectedPhraseIndex.clear();
-        this.selectedTokens = [];
+        this.isPhraseFirstClick = true;
+        this.selectedTokens.clear();
+        this.selectedTextTokens = [];
         this.$emit("onBackgroundClicked");
       }
       this.isSelectingPhraseText = false;
@@ -138,19 +128,19 @@ export default {
           selectedWords.push(token);
         }
       }
-      this.selectedTokens = selectedWords;
+      this.selectedTextTokens = selectedWords;
       this.isSelectingPhraseText = true;
     },
     onMouseUp() {
       this.emptyTextSelection();
-      if(this.selectedTokens.length==0)
+      if (this.selectedTextTokens.length == 0)
         return;
-      const selectedText = this.selectedTokens.map(t => t.parsedText).join(" ");
+      const selectedText = this.selectedTextTokens.map(t => t.parsedText).join(" ");
       if (this.words[selectedText]) {
-        this.onWordClicked(this.words[selectedText], this.selectedTokens[0]);
+        this.onWordClicked(this.words[selectedText], this.selectedTextTokens[0]);
         this.clearSelectedPhrases();
       } else if (this.phrases[selectedText]) {
-        this.onPhraseClicked(this.phrases[selectedText], this.selectedTokens[0]);
+        this.onPhraseClicked(this.phrases[selectedText], this.selectedTextTokens[0]);
         this.clearSelectedPhrases();
       } else
         this.onNewPhraseSelected(selectedText);

@@ -9,7 +9,7 @@
   </div>
 
   <form class="new-meaning-form" action="javascript:void(0);">
-    <input placeholder="Add new meaning here" v-model="newMeaning"/>
+    <input ref="meaningTextInputRef" placeholder="Add new meaning here" v-model="newMeaning"/>
     <button class="new-meaning-button"
             @click="addNewMeaning"
             type="submit">
@@ -77,8 +77,10 @@ export default {
       await this.meaningStore.addMeaningToUser({meaningId: newMeaning.id});
       this.$emit("onMeaningAdded", vocabId!, newMeaning);
       this.newMeaning = "";
+    },
+    focusNewMeaningInput() {
+      (this.$refs["meaningTextInputRef"] as HTMLElement).focus();
     }
-    ,
   },
   setup() {
     return {

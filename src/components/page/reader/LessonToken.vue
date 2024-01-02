@@ -103,6 +103,7 @@ export default defineComponent({
       }
     },
     wrapperHoverEnd(event: Event) {
+      // TODO only do this when the hovering gooes out of phrase entirely not just its wrapper
       this.$emit("setIsPhraseFirstClick", true);
       const wrapperNode = event.target as HTMLElement;
       if (!wrapperNode.classList.contains("phrase"))
@@ -257,16 +258,20 @@ span::selection, br::selection {
 .phrase-selected.level-3,
 .phrase-selected.level-4 {
   background-color: #e58d00 !important;
-  color: #FFF !important;
+
 }
 
-.word-selected, .phrase-selected,
+.word-selected, .phrase-selected{
+  background-color: #3498db !important;
+  color: #fff;
+}
+
 .phrase-selected .level-new,
 .phrase-selected .level-1,
 .phrase-selected .level-2,
 .phrase-selected .level-3,
-.phrase-selected .level-4 {
-  background-color: #3498db !important;
-  color: #fff !important;
+.phrase-selected .level-4{
+  color: black;
+
 }
 </style>

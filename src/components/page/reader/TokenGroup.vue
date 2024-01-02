@@ -7,8 +7,8 @@
                  :word="words[token.parsedText!]"
                  :phrases="token.phrases.map(pt=>phrases[pt.text])"
                  :isPhraseFirstClick="isPhraseFirstClick"
-                 :isWordSelected="selectedWordToken==token.index"
-                 :isPhraseSelected="selectedPhraseTokens.has(token.index)"
+                 :isWordSelected="selectedTokens.size==1 && selectedTokens.has(token.index)"
+                 :isPhraseSelected="selectedTokens.size>1 && selectedTokens.has(token.index)"
                  @onWordClicked="onWordClicked"
                  @onPhraseClicked="onPhraseClicked"
                  @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
@@ -37,8 +37,7 @@ export default defineComponent({
     phrases: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
     isPhraseFirstClick: {type: Boolean, required: true},
     shouldRender: {type: Boolean},
-    selectedWordToken: {type: Number},
-    selectedPhraseTokens: {type: Object as PropType<Set<number>>, required: true},
+    selectedTokens: {type: Object as PropType<Set<number>>, required: true},
   },
   watch: {
     shouldRender() {
@@ -46,7 +45,7 @@ export default defineComponent({
         this.elementHeight = (this.$refs.tokenGroupRef as HTMLElement).offsetHeight;
         this.windowResized = false;
       }
-    }
+    },
   },
   data() {
     return {
