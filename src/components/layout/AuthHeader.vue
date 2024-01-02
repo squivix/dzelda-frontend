@@ -100,13 +100,13 @@
 <script lang="ts">
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import logo from "@/assets/images/logo.png";
+import {icons} from "@/icons.js";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {defineComponent} from "vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import InlineSvg from "vue-inline-svg";
-import {icons} from "@/icons.js";
 import NavBar from "@/components/layout/header/NavBar.vue";
 import NavDropDown from "@/components/layout/header/NavDropDown.vue";
 
@@ -185,7 +185,7 @@ header h1:hover {
 }
 
 h1 {
-  font: var(--app-title-font);
+  font: 900 2rem sans-serif;
 }
 
 .logo-image {

@@ -96,7 +96,6 @@ export default {
           groupStartIndex = groupEndIndex;
         }
       }
-      console.log(tokenGroups);
       return tokenGroups;
     }
   },
