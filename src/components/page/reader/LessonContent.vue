@@ -43,9 +43,9 @@ import {icons} from "@/icons.js";
 import TokenGroup from "@/components/page/reader/TokenGroup.vue";
 import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
 
-const TOKEN_BASE_GROUP_SIZE = 100;
-const TOKEN_NEWLINE_SEARCH_RANGE = 20;
-const TOKEN_GROUP_RENDER_BUFFER = 2;
+const TOKEN_MAX_GROUP_SIZE = 200;
+const TOKEN_MIN_GROUP_SIZE = 100;
+const TOKEN_GROUP_RENDER_BUFFER = 1;
 
 export default {
   name: "LessonContent",
@@ -79,7 +79,25 @@ export default {
         return new Set(padSequence([...this.groupIndexesInView], TOKEN_GROUP_RENDER_BUFFER, TOKEN_GROUP_RENDER_BUFFER, 0, Infinity));
     },
     textTokenGroups() {
-      return chuckArray(this.lessonTokens.text, TOKEN_BASE_GROUP_SIZE);
+      const tokenGroups = [];
+      let lastNewLineIndex = -1;
+      let groupStartIndex = 0;
+      for (let i = 0; i < this.lessonTokens.text.length; i++) {
+        if (this.lessonTokens.text[i].text == "\n")
+          lastNewLineIndex = i;
+        if ((i - groupStartIndex) == TOKEN_MAX_GROUP_SIZE) {
+          let groupEndIndex;
+          if (lastNewLineIndex != -1 && lastNewLineIndex > TOKEN_MIN_GROUP_SIZE) {
+            groupEndIndex = lastNewLineIndex;
+            lastNewLineIndex = -1;
+          } else
+            groupEndIndex = groupStartIndex + TOKEN_MIN_GROUP_SIZE;
+          tokenGroups.push(this.lessonTokens.text.slice(groupStartIndex, groupEndIndex));
+          groupStartIndex = groupEndIndex;
+        }
+      }
+      console.log(tokenGroups);
+      return tokenGroups;
     }
   },
   methods: {

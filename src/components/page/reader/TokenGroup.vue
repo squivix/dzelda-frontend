@@ -1,5 +1,5 @@
 <template>
-  <!--  TODO come up with a way to align token group borders with line ends to avoid inline element caused scroll jumps and jitteriness or alternatively switch to block elements and accept awkward paragraph breaks mid-sentence -->
+
   <div :class="{'in-view':shouldRender}" ref="tokenGroupRef">
     <LessonToken v-if="shouldRender" v-for="(token, index) in tokenGroup"
                  :key="index"
