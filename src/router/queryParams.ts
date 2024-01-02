@@ -24,8 +24,8 @@ export const courseFilters = {
 export const vocabFilters = {
     level: {
         schema: z.union([
-            z.string().regex(new RegExp(Object.values(constants.ALL_VOCAB_LEVELS).map(String).join("|"))),
-            z.array(z.string().regex(new RegExp(Object.values(constants.ALL_VOCAB_LEVELS).map(String).join("|"))))
+            z.string().regex(new RegExp(`^(${Object.values(constants.ALL_VOCAB_LEVELS).map(String).join("|")})$`)),
+            z.array(z.string().regex(new RegExp(`^(${Object.values(constants.ALL_VOCAB_LEVELS).map(String).join("|")})$`)))
         ]).optional()
     }
 };

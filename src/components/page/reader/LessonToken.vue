@@ -261,7 +261,7 @@ span::selection, br::selection {
 
 }
 
-.word-selected, .phrase-selected{
+.word-selected, .phrase-selected {
   background-color: #3498db !important;
   color: #fff;
 }
@@ -270,7 +270,7 @@ span::selection, br::selection {
 .phrase-selected .level-1,
 .phrase-selected .level-2,
 .phrase-selected .level-3,
-.phrase-selected .level-4{
+.phrase-selected .level-4 {
   color: black;
 
 }

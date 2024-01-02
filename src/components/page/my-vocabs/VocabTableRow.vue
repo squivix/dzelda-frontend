@@ -1,9 +1,7 @@
 <template>
-  <tr>
-    <td @click.stop="onVocabClicked" class="link-parent">
-      <button class="inv-button link">
-        {{ vocab.text }}
-      </button>
+  <tr @click.stop="onVocabClicked">
+    <td class="vocab-text">
+      {{ vocab.text }}
     </td>
     <td>
       <ul>
@@ -57,19 +55,23 @@ tr {
   padding-left: 1rem;
 }
 
+tr:hover {
+  cursor: pointer;
+}
+
+tr:hover > .vocab-text{
+  text-decoration: underline;
+}
+
 tr:nth-child(odd) {
   background-color: whitesmoke;
 }
-
+.vocab-text{
+  font-size: 1.25rem;
+}
 td {
-  padding: 1rem 0.25rem;
+  padding: 0.75rem 0.25rem;
 }
-
-td button {
-  font-size: 1rem;
-  text-align: start;
-}
-
 .level-picker-td {
   width: 20%;
 }

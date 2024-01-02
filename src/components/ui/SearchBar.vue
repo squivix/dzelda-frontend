@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="onSearchSubmitted" class="search-form">
-    <input type="text" class="search-input" placeholder="Search" v-model.trim="searchQuery">
+    <input type="text" class="search-input" placeholder="Search" v-model.trim="searchQuery" @click.stop>
     <button class="search-button icon-wrapper">
       <inline-svg :src="icons.search"/>
     </button>

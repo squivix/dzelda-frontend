@@ -3,22 +3,20 @@
     <template v-if="vocab">
       <h4 class="vocab-text">{{ vocab.text }}</h4>
       <div :class="{'meaning-sub-panel':true,'new-vocab-panel':showAddPanel, 'existing-vocab-panel':!showAddPanel}">
-        <NewVocabPanel
-            v-if="showAddPanel"
-            :vocab="vocab"
-            :is-phrase="isPhrase"
-            @onMeaningAdded="onMeaningAdded"
-            @onVocabLevelSet="onVocabLevelSet"
-            @onNewPhraseAdded="onNewPhraseAdded"/>
-        <ExistingVocabPanel
-            v-else
-            :vocab="existingVocab!"
-            @onAddMoreMeaningsClicked="onAddMoreMeaningsClicked"
-            @onMeaningEdited="onMeaningEdited"
-            @onMeaningDeleted="onMeaningDeleted"
-            @onVocabRemovedFromUser="onVocabRemovedFromUser"
-            @onVocabLevelSet="onVocabLevelSet"
-            @onVocabNotesSet="onVocabNotesSet"/>
+        <NewVocabPanel v-if="showAddPanel"
+                       :vocab="vocab"
+                       :is-phrase="isPhrase"
+                       @onMeaningAdded="onMeaningAdded"
+                       @onVocabLevelSet="onVocabLevelSet"
+                       @onNewPhraseAdded="onNewPhraseAdded"/>
+        <ExistingVocabPanel v-else
+                            :vocab="existingVocab!"
+                            @onAddMoreMeaningsClicked="onAddMoreMeaningsClicked"
+                            @onMeaningEdited="onMeaningEdited"
+                            @onMeaningDeleted="onMeaningDeleted"
+                            @onVocabRemovedFromUser="onVocabRemovedFromUser"
+                            @onVocabLevelSet="onVocabLevelSet"
+                            @onVocabNotesSet="onVocabNotesSet"/>
       </div>
     </template>
     <slot name="no-selected-panel" v-else>

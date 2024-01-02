@@ -12,7 +12,7 @@
       <VocabTableRow v-for="vocab in vocabs" :key="vocab.id"
                      :vocab="vocab"
                      @onVocabClicked="()=>$emit('onVocabClicked', vocab)"
-                     @onVocabLevelSet="(level)=>$emit('onVocabLevelSet', level)"/>
+                     @onVocabLevelSet="(level)=>$emit('onVocabLevelSet', vocab.id, level)"/>
       </tbody>
     </table>
   </div>
@@ -20,16 +20,15 @@
 
 <script lang="ts">
 import VocabTableRow from "@/components/page/my-vocabs/VocabTableRow.vue";
+import {PropType} from "vue";
+import {LearnerVocabSchema} from "dzelda-common";
 
 export default {
   name: "VocabTable",
   emits: ["onVocabClicked", "onVocabLevelSet"],
   components: {VocabTableRow},
   props: {
-    vocabs: {
-      type: Array,
-      required: true,
-    },
+    vocabs: {type: Array as PropType<LearnerVocabSchema[]>, required: true,},
   },
   methods: {}
 };
@@ -40,6 +39,7 @@ export default {
 .vocab-table-wrapper {
   overflow-y: auto;
   max-height: 100vh;
+  min-height: 50vh;
 }
 
 table {

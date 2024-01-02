@@ -1,5 +1,4 @@
-import {NavigationGuardWithThis, RouteLocationNormalized, RouteMeta, RouteRecordRaw} from "vue-router";
-import {EnumLike} from "zod";
+import {RouteLocationNormalized, RouteMeta, RouteRecordRaw} from "vue-router";
 
 export function setDefaultRouteMeta(routes: RouteRecordRaw[], defaultMeta: RouteMeta) {
     for (const route of routes) {

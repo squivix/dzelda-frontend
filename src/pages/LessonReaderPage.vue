@@ -183,6 +183,7 @@ export default defineComponent({
         this.parsePhraseInTokens(this.lesson!.text, this.lesson!.parsedText!, this.matchIndexToTokenIndex.text, this.lessonTokens!.text, vocab.text);
       }
     },
+    //TODO optimistically load updates to vocabs
     async onMeaningAdded(vocabId: number, newMeaning: MeaningSchema) {
       const updatedVocab = await this.updateVocab(vocabId);
       this.setSelectedVocab(updatedVocab);
