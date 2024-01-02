@@ -1,11 +1,11 @@
 <template>
-  <button @click="$emit('onClick')" :disabled="isSubmitting">
+  <button @click="$emit('onClick')" :disabled="!enabled||isSubmitting">
     <InlineSvg v-show="isSubmitting" :src="icons.loadingSpinnerOval"/>
-    <p>
+    <span>
       <slot v-if="!isSubmitting || keepText">
 
       </slot>
-    </p>
+    </span>
   </button>
 </template>
 
@@ -19,6 +19,7 @@ export default defineComponent({
   emits: ["onClick"],
   components: {InlineSvg},
   props: {
+    enabled: {type: Boolean, default: true},
     isSubmitting: {type: Boolean, default: false},
     keepText: {type: Boolean, default: true}
   },

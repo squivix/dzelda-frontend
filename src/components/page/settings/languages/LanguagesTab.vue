@@ -23,7 +23,12 @@
       <LanguageRow v-for="language in userLanguages"
                    :key="language.id"
                    :language="language"
-                   @onRemoveLanguageClicked="onRemoveLanguageClicked"/>
+                   :isButtonsDisabled="isSubmitting"
+                   :isSubmittingRemoveLanguage="isSubmitting&&languageToBeRemoved?.id==language.id"
+                   :isSubmittingResetLanguage="isSubmitting&&languageToBeReset?.id==language.id"
+                   @onRemoveLanguageClicked="onRemoveLanguageClicked"
+                   @onResetLanguageClicked="onResetLanguageClicked"
+      />
       </tbody>
       <tfoot>
       <tr>
@@ -37,12 +42,23 @@
       </tfoot>
     </table>
 
-    <SeriousConfirmDialog :is-shown="isConfirmDeleteDialogShown"
-                          :yes-text="`Yes, delete all my ${languageToBeRemoved?.name} data`"
-                          :expected-text="`delete language`"
+    <SeriousConfirmDialog :isShown="isConfirmRemoveDialogShown"
+                          :yesText="`Yes, delete all my ${languageToBeRemoved?.name} data`"
+                          :expectedText="`delete language`"
                           @onYesClicked="removeLanguage"
-                          @onNoClicked="isConfirmDeleteDialogShown=false">
+                          @onNoClicked="isConfirmRemoveDialogShown=false">
       <p>Are you sure you want to remove {{ languageToBeRemoved?.name }} from your languages?
+        <br>
+        <br>
+        This action cannot be undone. All your {{ languageToBeRemoved?.name }} data will be permanently deleted.</p>
+    </SeriousConfirmDialog>
+
+    <SeriousConfirmDialog :isShown="isConfirmResetDialogShown"
+                          :yesText="`Yes, delete all my ${languageToBeRemoved?.name} data`"
+                          :expectedText="`reset language`"
+                          @onYesClicked="resetLanguage"
+                          @onNoClicked="isConfirmResetDialogShown=false">
+      <p>Are you sure you want to reset your {{ languageToBeRemoved?.name }} progress?
         <br>
         <br>
         This action cannot be undone. All your {{ languageToBeRemoved?.name }} data will be permanently deleted.</p>
@@ -60,6 +76,7 @@ import SubmitButton from "@/components/ui/SubmitButton.vue";
 import LanguageRow from "@/components/page/settings/languages/LanguageRow.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
+import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export default {
   name: "LanguagesTab",
@@ -68,9 +85,11 @@ export default {
     return {
       allLanguages: null as LanguageSchema[] | null,
       userLanguages: null as LearnerLanguageSchema[] | null,
-      isConfirmDeleteDialogShown: false,
+      isSubmitting: false,
       languageToBeRemoved: null as LanguageSchema | null,
-      isSubmittingRemoveLanguage: false
+      languageToBeReset: null as LanguageSchema | null,
+      isConfirmRemoveDialogShown: false,
+      isConfirmResetDialogShown: false,
     };
   },
 
@@ -79,7 +98,7 @@ export default {
       if (!this.allLanguages || !this.userLanguages)
         return null;
       else
-        return this.allLanguages.filter(lang => !this.userLanguages.find(userLang => userLang.code === lang.code));
+        return this.allLanguages.filter(lang => !this.userLanguages!.find(userLang => userLang.code === lang.code));
     }
   },
   methods: {
@@ -90,18 +109,40 @@ export default {
       return await this.languageStore.fetchUserLanguages();
     },
     onRemoveLanguageClicked(language: LanguageSchema) {
+      this.isConfirmRemoveDialogShown = true;
       this.languageToBeRemoved = language;
-      this.isConfirmDeleteDialogShown = true;
+    },
+    onResetLanguageClicked(language: LanguageSchema) {
+      this.isConfirmResetDialogShown = true;
+      this.languageToBeReset = language;
     },
     async removeLanguage() {
       if (this.languageToBeRemoved) {
-        this.isConfirmDeleteDialogShown = false;
+        this.isConfirmRemoveDialogShown = false;
+        this.isSubmitting = true;
         await this.languageStore.deleteLanguageFromUser({
           languageCode: this.languageToBeRemoved.code,
         });
+        this.isSubmitting = false;
+        this.languageToBeRemoved = null;
+        this.messageBarStore.addMessage({text: "Language deleted", type: MessageType.SUCCESS});
         this.userLanguages = await this.fetchUserLanguages();
       }
     },
+    async resetLanguage() {
+      if (this.languageToBeReset) {
+        this.isConfirmResetDialogShown = false;
+        this.isSubmitting = true;
+        await this.languageStore.resetUserLanguageProgress({
+          languageCode: this.languageToBeReset.code,
+        });
+        this.isSubmitting = false;
+        this.languageToBeReset = null;
+        this.messageBarStore.addMessage({text: "Language progress reset", type: MessageType.SUCCESS});
+        this.userLanguages = await this.fetchUserLanguages();
+      }
+    },
+
   },
   async mounted() {
     this.allLanguages = await this.fetchAllLanguages();
@@ -110,6 +151,7 @@ export default {
   setup() {
     return {
       icons,
+      messageBarStore: useMessageBarStore(),
       languageStore: useLanguageStore()
     };
   }

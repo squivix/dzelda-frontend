@@ -103,7 +103,7 @@ export default defineComponent({
       }
     },
     wrapperHoverEnd(event: Event) {
-      // TODO only do this when the hovering gooes out of phrase entirely not just its wrapper
+      // TODO only do this when the hovering goes out of phrase entirely not just its wrapper
       this.$emit("setIsPhraseFirstClick", true);
       const wrapperNode = event.target as HTMLElement;
       if (!wrapperNode.classList.contains("phrase"))
