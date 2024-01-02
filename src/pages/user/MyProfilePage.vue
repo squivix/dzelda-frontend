@@ -4,8 +4,8 @@
       <div class="profile-stats">
         <ProfileForm class="profile-wrapper"/>
         <div class="stats-wrapper">
-          <RecentActivityChart :user="userStore.userAccount"/>
-          <AllTimeProgressChart :user="userStore.userAccount"/>
+          <RecentActivityChart :user="userStore.userAccount" :languages="languages"/>
+          <AllTimeProgressChart :user="userStore.userAccount" :languages="languages"/>
         </div>
 
       </div>
@@ -24,15 +24,22 @@ import RecentActivityChart from "@/components/page/my-profile/RecentActivityChar
 import AllTimeProgressChart from "@/components/page/my-profile/AllTimeProgressChart.vue";
 import BadgesSection from "@/components/page/my-profile/BadgesSection.vue";
 import BaseCard from "@/components/ui/BaseCard.vue";
+import {useLanguageStore} from "@/stores/backend/languageStore.js";
+import {LanguageSchema} from "dzelda-common";
 
 export default {
   name: "MyProfilePage",
   components: {BaseCard, BadgesSection, ProfileForm, AllTimeProgressChart, RecentActivityChart, BaseImage, InlineSvg},
   data() {
-    return {};
+    return {
+      languages: undefined as LanguageSchema[] | undefined,
+    };
+  },
+  async mounted() {
+    this.languages = await this.languageStore.fetchLanguages();
   },
   setup() {
-    return {icons, userStore: useUserStore()};
+    return {icons, languageStore: useLanguageStore(), userStore: useUserStore()};
   },
 };
 </script>

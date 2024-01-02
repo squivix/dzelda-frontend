@@ -19,17 +19,33 @@ import BaseBarChart from "@/components/ui/BaseBarChart.vue";
 import {ChartData} from "chart.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
-import {UserSchema, VocabLevelSchema} from "dzelda-common";
+import {LanguageSchema, UserSchema, VocabLevelSchema} from "dzelda-common";
+import {useUserStore} from "@/stores/backend/userStore.js";
+import {useLanguageStore} from "@/stores/backend/languageStore.js";
+import {cleanUndefined} from "@/utils.js";
 
 export default defineComponent({
   name: "AllTimeProgressChart",
   components: {LoadingScreen, BaseBarChart},
-  props: {user: {type: Object as PropType<UserSchema>, required: true}},
+  props: {
+    user: {type: Object as PropType<UserSchema>, required: true},
+    languages: {type: Array as PropType<LanguageSchema[]>, required: false}
+  },
   data() {
     return {
       isLoading: true,
       chartData: null as ChartData<"bar", any> | null,
     };
+  },
+  computed: {
+    languageMap() {
+      const map: Record<string, LanguageSchema> = {};
+      if (!this.languages)
+        return map;
+      for (const language of this.languages)
+        map[language.name] = language;
+      return map;
+    }
   },
   methods: {
     async fetchChartData() {
@@ -38,15 +54,24 @@ export default defineComponent({
         groupBy: "language",
         level: [VocabLevelSchema.LEARNED, VocabLevelSchema.KNOWN]
       });
-      this.chartData = {datasets: [{data: rawData.map((r) => ({x: r.language, y: r.vocabsCount}))}]};
+      this.chartData = {
+        datasets: [cleanUndefined({
+          data: rawData.map((r) => ({x: r.language, y: r.vocabsCount})),
+          backgroundColor: rawData.map((r) => this.languageMap[r.language!]?.color),
+          borderColor: rawData.map((r) => this.languageMap[r.language!]?.color),
+        })]
+      };
       this.isLoading = false;
     }
   },
-  mounted() {
-    this.fetchChartData();
+  async mounted() {
+    await this.fetchChartData();
   },
   setup() {
-    return {vocabStore: useVocabStore()};
+    return {
+      vocabStore: useVocabStore(),
+      languageStore: useLanguageStore(),
+    };
   }
 });
 </script>

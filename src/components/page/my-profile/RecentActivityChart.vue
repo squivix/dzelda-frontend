@@ -25,11 +25,12 @@ import {defineComponent, PropType} from "vue";
 import {Line as LineChart} from "vue-chartjs";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import BaseLineChart from "@/components/ui/BaseLineChart.vue";
-import {UserSchema, VocabLevelSchema} from "dzelda-common";
+import {LanguageSchema, UserSchema, VocabLevelSchema} from "dzelda-common";
 import {ChartData, ChartDataset} from "chart.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
-import {toSentenceCase} from "@/utils.js";
+import {cleanUndefined, toSentenceCase} from "@/utils.js";
 import {useWindowSize} from "@vueuse/core";
+import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 enum RecentActivityPeriod {
   LAST_WEEK = "last-week",
@@ -42,7 +43,10 @@ enum RecentActivityPeriod {
 export default defineComponent({
   name: "RecentActivityChart",
   components: {LoadingScreen, BaseLineChart, LineChart},
-  props: {user: {type: Object as PropType<UserSchema>, required: true}},
+  props: {
+    user: {type: Object as PropType<UserSchema>, required: true},
+    languages: {type: Array as PropType<LanguageSchema[]>, required: false}
+  },
   data() {
     return {
       period: RecentActivityPeriod.LAST_WEEK,
@@ -50,6 +54,16 @@ export default defineComponent({
       chartData: null as ChartData<"line"> | null,
       xLabel: undefined as string | undefined,
     };
+  },
+  computed: {
+    languageMap() {
+      const map: Record<string, LanguageSchema> = {};
+      if (!this.languages)
+        return map;
+      for (const language of this.languages)
+        map[language.name] = language;
+      return map;
+    }
   },
   watch: {
     period() {
@@ -88,11 +102,18 @@ export default defineComponent({
         savedOnInterval: interval,
         level: [VocabLevelSchema.LEVEL1, VocabLevelSchema.LEVEL2, VocabLevelSchema.LEVEL3, VocabLevelSchema.LEVEL4]
       });
+
       // TODO deal with timezone mess: currently graph is confusing because utc is returned from serverside but presentation should be made local
+
       const languages: { [k: string]: ChartDataset<"line", { x: any, y: any }[]> } = {};
       for (const row of rawData) {
         if (!(row.language! in languages))
-          languages[row.language!] = {label: row.language!, data: []};
+          languages[row.language!] = cleanUndefined({
+            label: row.language!,
+            data: [],
+            backgroundColor: this.languageMap[row.language!]?.color,
+            borderColor: this.languageMap[row.language!]?.color
+          });
         languages[row.language!].data.push({x: this.formatDate(row.date!), y: row.vocabsCount});
       }
       this.chartData = {datasets: Object.values(languages)};
@@ -112,8 +133,8 @@ export default defineComponent({
       }
     }
   },
-  mounted() {
-    this.fetchChartData();
+  async mounted() {
+    await this.fetchChartData();
   },
   setup() {
     const {width: windowWidth, height: windowHeight} = useWindowSize();
@@ -121,6 +142,7 @@ export default defineComponent({
       windowWidth,
       windowHeight,
       vocabStore: useVocabStore(),
+      languageStore: useLanguageStore(),
       RecentActivityPeriod
     };
   }
