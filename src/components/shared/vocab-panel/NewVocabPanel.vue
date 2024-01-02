@@ -6,11 +6,12 @@
           :vocabText="vocab.text"
           :vocabLanguage="vocab.language"
           :isPhrase="isPhrase"
-          :suggestedMeanings="suggestedMeanings"
+          :suggestedMeanings="suggestedMeaningsSegment"
+          :shouldShowAllMeaningsButton="suggestedMeanings.length>3"
           @onMeaningAdded="onMeaningAdded"
           @onNewPhraseAdded="onNewPhraseAdded"
+          @onShowAllSuggestionsClicked="()=>isShowingAllSuggestedMeanings=true"
       />
-
       <DictionariesList :vocabText="vocab.text"/>
     </div>
     <div class="mark-buttons-div" v-if="!isPhrase && isLevelNew || isLevelIgnored">
@@ -50,13 +51,21 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      isShowingAllSuggestedMeanings: false,
+    };
   },
   computed: {
     suggestedMeanings() {
-      //TODO add button to show all meanings
-      return this.vocab.meanings.filter((meaning) => !this.vocab.learnerMeanings.some((m) => m.id === meaning.id)).slice(0, 3);
+      return this.vocab.meanings.filter((meaning) => !this.vocab.learnerMeanings.some((m) => m.id === meaning.id));
     },
+    suggestedMeaningsSegment() {
+      if (this.isShowingAllSuggestedMeanings)
+        return this.suggestedMeanings;
+      else
+        return this.suggestedMeanings.slice(0, 3);
+    },
+
     isLevelNew() {
       return this.vocab.level === VocabLevelSchema.NEW;
     },

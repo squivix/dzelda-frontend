@@ -1,13 +1,16 @@
 <template>
-  <div class="suggested-meanings-div" v-if="suggestedMeanings.length>0">
+  <div class="suggested-meanings-wrapper" v-if="suggestedMeanings.length>0">
     <h5>Suggested Meanings</h5>
     <ol class="suggested-meanings styled-scrollbars">
       <li v-for="meaning in suggestedMeanings" :key="meaning.id" @click="addSuggestedMeaning(meaning)">
         {{ meaning.text }}
       </li>
     </ol>
+    <button v-if="shouldShowAllMeaningsButton" class="inv-button show-all-suggestions-button"
+            @click="onShowAllSuggestionsClicked">
+      <span>Show all suggestions</span>
+    </button>
   </div>
-
   <form class="new-meaning-form" action="javascript:void(0);">
     <input ref="meaningTextInputRef" placeholder="Add new meaning here" v-model="newMeaning"/>
     <button class="new-meaning-button"
@@ -32,13 +35,15 @@ export default {
   emits: {
     onMeaningAdded: (vocabId: number, meaning: MeaningSchema) => true,
     onNewPhraseAdded: (vocab: LearnerVocabSchema) => true,
+    onShowAllSuggestionsClicked: () => true,
   },
   props: {
     vocabId: {type: Number, required: false},
     vocabText: {type: String, required: true},
     vocabLanguage: {type: String, required: true},
     isPhrase: {type: Boolean, default: false},
-    suggestedMeanings: {type: Array as PropType<MeaningSchema[]>, required: true}
+    suggestedMeanings: {type: Array as PropType<MeaningSchema[]>, required: true},
+    shouldShowAllMeaningsButton: {type: Boolean, default: false}
   },
   data() {
     return {
@@ -78,6 +83,9 @@ export default {
       this.$emit("onMeaningAdded", vocabId!, newMeaning);
       this.newMeaning = "";
     },
+    onShowAllSuggestionsClicked() {
+      this.$emit("onShowAllSuggestionsClicked");
+    },
     focusNewMeaningInput() {
       (this.$refs["meaningTextInputRef"] as HTMLElement).focus();
     }
@@ -93,10 +101,10 @@ export default {
 </script>
 
 <style scoped>
-.suggested-meanings-div {
+.suggested-meanings-wrapper {
   display: flex;
   flex-direction: column;
-  row-gap: 0.5rem;
+  row-gap: 0.75rem;
 }
 
 .suggested-meanings {
@@ -116,6 +124,13 @@ export default {
   color: var(--on-primary-color);
   border-radius: 5px;
   width: 100%;
+}
+
+.show-all-suggestions-button span {
+  padding-bottom: 0.25rem;
+  font-weight: bold;
+  color: var(--secondary-color);
+  border-bottom: 3px solid var(--secondary-color);
 }
 
 .new-meaning-form {
