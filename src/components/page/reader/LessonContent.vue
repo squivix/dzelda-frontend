@@ -66,8 +66,6 @@ export default {
       groupIndexesInView: undefined as Set<number> | undefined,
       isSelectingPhraseText: false,
       isPhraseFirstClick: true,
-      selectedWordIndex: undefined as number | undefined,
-      selectedPhraseIndex: new Set<number>(),
       selectedTokens: new Set<number>(),
       selectedTextTokens: [] as LessonTokenObject[],
     };
@@ -87,10 +85,12 @@ export default {
   methods: {
     onWordClicked(word: LearnerVocabSchema, wordToken: LessonTokenObject) {
       this.selectedTokens = new Set([wordToken.index]);
+      this.clearTokenTextSelection();
       this.$emit("onWordClicked", word);
     },
     onPhraseClicked(phrase: LearnerVocabSchema, clickedToken: LessonTokenObject) {
       this.selectedTokens = this.getPhraseTokens(clickedToken, [phrase]);
+      this.clearTokenTextSelection();
       this.$emit("onPhraseClicked", phrase);
     },
     onOverLappingPhrasesClicked(phrases: LearnerVocabSchema[], clickedToken: LessonTokenObject) {
@@ -100,7 +100,7 @@ export default {
     },
     onBackgroundClicked() {
       if (!this.isSelectingPhraseText) {
-        this.clearSelectedPhrases();
+        this.clearTokenTextSelection();
         this.isPhraseFirstClick = true;
         this.selectedTokens.clear();
         this.selectedTextTokens = [];
@@ -111,14 +111,14 @@ export default {
     onNewPhraseSelected(phraseText: string) {
       this.$emit("onNewPhraseSelected", phraseText);
     },
-    clearSelectedPhrases() {
+    clearTokenTextSelection() {
       document.querySelectorAll(".text-selected").forEach((el) => el.classList.remove("text-selected"));
     },
     onSelectionChange() {
       const selectedWrappers = getTextSelectedElements(getSelection()!)?.filter(e => e.classList.contains("word-wrapper")).slice(0, 30);
       if (!selectedWrappers || selectedWrappers.length < 1)
         return;
-      this.clearSelectedPhrases();
+      this.clearTokenTextSelection();
       const selectedWords: LessonTokenObject[] = [];
       for (const wrapperElement of selectedWrappers) {
         wrapperElement.classList.add("text-selected");
@@ -132,21 +132,16 @@ export default {
       this.isSelectingPhraseText = true;
     },
     onMouseUp() {
-      this.emptyTextSelection();
+      getSelection()?.empty();
       if (this.selectedTextTokens.length == 0)
         return;
       const selectedText = this.selectedTextTokens.map(t => t.parsedText).join(" ");
-      if (this.words[selectedText]) {
+      if (this.words[selectedText])
         this.onWordClicked(this.words[selectedText], this.selectedTextTokens[0]);
-        this.clearSelectedPhrases();
-      } else if (this.phrases[selectedText]) {
+      else if (this.phrases[selectedText])
         this.onPhraseClicked(this.phrases[selectedText], this.selectedTextTokens[0]);
-        this.clearSelectedPhrases();
-      } else
+      else
         this.onNewPhraseSelected(selectedText);
-    },
-    emptyTextSelection() {
-      getSelection()?.empty();
     },
     getTokenFromIndex(tokenIndex: number) {
       if (tokenIndex < this.lessonTokens.title.length)
