@@ -11,6 +11,7 @@
       <tbody class="vocab-tbody">
       <VocabTableRow v-for="vocab in vocabs" :key="vocab.id"
                      :vocab="vocab"
+                     :isSelected="selectedVocab?.id==vocab.id"
                      @onVocabClicked="()=>$emit('onVocabClicked', vocab)"
                      @onVocabLevelSet="(level)=>$emit('onVocabLevelSet', vocab.id, level)"/>
       </tbody>
@@ -29,6 +30,7 @@ export default {
   components: {VocabTableRow},
   props: {
     vocabs: {type: Array as PropType<LearnerVocabSchema[]>, required: true,},
+    selectedVocab: {type: Object as PropType<LearnerVocabSchema | null>},
   },
   methods: {}
 };

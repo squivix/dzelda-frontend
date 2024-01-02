@@ -1,9 +1,9 @@
 <template>
-  <tr @click.stop="onVocabClicked">
+  <tr @click.stop="onVocabClicked" :class="{'selected-vocab':isSelected}">
     <td class="vocab-text">
       {{ vocab.text }}
     </td>
-    <td>
+    <td class="vocab-meanings">
       <ul>
         <li v-for="meaning in vocab.learnerMeanings"
             :key="meaning.id">
@@ -30,10 +30,8 @@ export default {
   emits: ["onVocabClicked", "onVocabLevelSet"],
   components: {VocabLevelPicker},
   props: {
-    vocab: {
-      type: Object as PropType<LearnerVocabSchema>,
-      required: true,
-    }
+    vocab: {type: Object as PropType<LearnerVocabSchema>, required: true},
+    isSelected: {type: Boolean, default: false}
   },
   methods: {
     onVocabClicked() {
@@ -59,19 +57,26 @@ tr:hover {
   cursor: pointer;
 }
 
-tr:hover > .vocab-text{
+tr.selected-vocab {
+  background-color: #CBE5FE !important;
+}
+
+tr:hover > .vocab-text {
   text-decoration: underline;
 }
 
 tr:nth-child(odd) {
   background-color: whitesmoke;
 }
-.vocab-text{
+
+.vocab-text {
   font-size: 1.25rem;
 }
+
 td {
   padding: 0.75rem 0.25rem;
 }
+
 .level-picker-td {
   width: 20%;
 }

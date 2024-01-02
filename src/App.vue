@@ -1,20 +1,15 @@
 <template>
-  <div id="the-root">
-    <component v-if="$route.meta.showHeader" :is="userStore.isAuthenticated ? 'auth-header' : 'guest-header'"/>
-    <TheMessageBarQueue class="message-bar-queue"/>
+  <component v-if="$route.meta.showHeader" :is="userStore.isAuthenticated ? 'auth-header' : 'guest-header'"/>
+  <TheMessageBarQueue class="message-bar-queue"/>
 
-    <aside class="left-side"></aside>
+  <main>
+    <router-view v-slot="{ Component, route }">
+      <component :is="Component" :key="route.path"/>
+    </router-view>
+  </main>
 
-    <main>
-      <router-view v-slot="{ Component, route }">
-        <component :is="Component" :key="route.path"/>
-      </router-view>
-    </main>
+  <TheFooter v-if="$route.meta.showFooter"/>
 
-    <aside class="right-side"></aside>
-
-    <TheFooter v-if="$route.meta.showFooter"/>
-  </div>
 </template>
 <script lang="ts">
 import GuestHeader from "@/components/layout/GuestHeader.vue";
@@ -42,32 +37,20 @@ export default {
 </style>
 
 <style scoped>
-#the-root {
-  display: grid;
-  grid-template: auto auto 1fr auto / auto 1fr auto;
-  height: 100%;
-}
-
 header {
   grid-column: 1 / 4;
 }
 
 .message-bar-queue {
-  grid-column: 2 / 2;
   margin-bottom: 3rem;
+  grid-column: 1 / 4;
 }
 
-.left-side {
-  grid-column: 1 / 2;
-}
 
 main {
-  grid-column: 2 / 3;
-  justify-self: center;
-}
-
-.right-side {
-  grid-column: 3 / 4;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 footer {

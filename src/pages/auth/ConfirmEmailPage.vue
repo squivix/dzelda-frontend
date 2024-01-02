@@ -25,8 +25,10 @@ export default defineComponent({
   },
   beforeRouteEnter() {
     const userStore = useUserStore();
-    if (userStore.userAccount!.isEmailConfirmed && !userStore.userAccount!.isPendingEmailChange)
+    if (userStore.userAccount!.isEmailConfirmed && !userStore.userAccount!.isPendingEmailChange) {
+      useMessageBarStore().addMessage({type: MessageType.INFO, text: "Email is already confirmed"});
       return {name: "home"};
+    }
   },
   async mounted() {
     if (!this.queryParams.token) {

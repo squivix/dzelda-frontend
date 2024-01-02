@@ -37,6 +37,7 @@
             </EmptyScreen>
             <VocabTable v-else
                         :vocabs="vocabs"
+                        :selectedVocab="selectedVocab"
                         @onVocabClicked="setSelectedVocab"
                         @onVocabLevelSet="onVocabLevelSet">
             </VocabTable>
@@ -246,7 +247,7 @@ section {
 .meaning-panel-wrapper {
   flex-grow: 1;
   max-width: 500px;
-  flex-basis: 350px;
+  flex-basis: 500px;
   align-self: flex-start;
 }
 
