@@ -46,6 +46,11 @@ export default defineComponent({
       isSubmitting: false,
     };
   },
+  beforeRouteEnter() {
+    const userStore = useUserStore();
+    if (userStore.userAccount!.isEmailConfirmed && !userStore.userAccount!.isPendingEmailChange)
+      return {name: "home"};
+  },
   methods: {
     async submitResendForm() {
       this.errorMessage = "";
@@ -61,11 +66,6 @@ export default defineComponent({
           this.errorMessage = (error.fields as { email: string }).email;
       }
     }
-  },
-  beforeRouteEnter() {
-    const userStore = useUserStore();
-    if (userStore.userAccount!.isEmailConfirmed)
-      return {name: "home"};
   },
   setup() {
     return {
