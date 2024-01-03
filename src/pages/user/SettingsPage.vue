@@ -4,6 +4,11 @@
       <div class="content">
         <nav class="nav-panel">
           <ul>
+            <li :class="{'current-tab':$route.name=='interface-settings'}">
+              <router-link :to="{name:'interface-settings'}">
+                Interface
+              </router-link>
+            </li>
             <li :class="{'current-tab':$route.name=='account-settings'}">
               <router-link :to="{name:'account-settings'}">
                 Account

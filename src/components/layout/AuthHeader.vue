@@ -239,8 +239,7 @@ h1 {
 .language-grid {
   display: grid;
   min-width: 120px;
-  max-width: 240px;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
 }
 
 :deep(.language-add-button) {

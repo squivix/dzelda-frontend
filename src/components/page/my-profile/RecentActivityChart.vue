@@ -28,7 +28,7 @@ import BaseLineChart from "@/components/ui/BaseLineChart.vue";
 import {LanguageSchema, UserSchema, VocabLevelSchema} from "dzelda-common";
 import {ChartData, ChartDataset} from "chart.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
-import {cleanUndefined, toSentenceCase} from "@/utils.js";
+import {cleanUndefined, daysToMs, toSentenceCase} from "@/utils.js";
 import {useWindowSize} from "@vueuse/core";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
@@ -95,7 +95,7 @@ export default defineComponent({
           if (startedLearningOn.getTime() < from.getTime())
             from = startedLearningOn;
         }
-        const daysBetween = (to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24);
+        const daysBetween = (to.getTime() - from.getTime()) / daysToMs(1);
         if (daysBetween <= 30)
           interval = "day";
         else if (daysBetween <= 30 * 24)

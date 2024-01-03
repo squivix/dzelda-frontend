@@ -10,9 +10,8 @@
           :shouldShowAllMeaningsButton="suggestedMeanings.length>3"
           @onMeaningAdded="onMeaningAdded"
           @onNewPhraseAdded="onNewPhraseAdded"
-          @onShowAllSuggestionsClicked="()=>isShowingAllSuggestedMeanings=true"
-      />
-      <DictionariesList :vocabText="vocab.text"/>
+          @onShowAllSuggestionsClicked="()=>isShowingAllSuggestedMeanings=true"/>
+      <DictionariesList :vocabText="vocab.text" :languageCode="vocab.language"/>
     </div>
     <div class="mark-buttons-div" v-if="!isPhrase && isLevelNew || isLevelIgnored">
       <button class="square-button hollow-button know-button" @click="markWordAsKnown">Mark as
@@ -41,14 +40,8 @@ export default {
     onNewPhraseAdded: (vocab: LearnerVocabSchema) => true,
   },
   props: {
-    vocab: {
-      type: Object as PropType<LearnerVocabSchema | NewVocab>,
-      required: true,
-    },
-    isPhrase: {
-      type: Boolean,
-      required: true,
-    }
+    vocab: {type: Object as PropType<LearnerVocabSchema | NewVocab>, required: true,},
+    isPhrase: {type: Boolean, required: true,}
   },
   data() {
     return {
@@ -110,6 +103,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  row-gap:1rem;
   height: 100%;
 }
 

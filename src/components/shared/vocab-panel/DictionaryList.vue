@@ -1,6 +1,6 @@
 <template>
-  <div class="dictionaries-wrapper">
-    <h5 v-if="dictionaries.length>0">Dictionaries</h5>
+  <div class="dictionaries-wrapper" v-if="dictionaries.length>0">
+    <h5 >Dictionaries</h5>
     <ol class="dictionaries styled-scrollbars" v-for="dictionary in dictionaries" :key="dictionary.id">
       <li @click="openDictionaryLink(dictionary)">{{ dictionary.name }}</li>
     </ol>
@@ -9,33 +9,30 @@
 
 <script lang="ts">
 import {useDictionaryStore} from "@/stores/backend/dictionaryStore.js";
+import {DictionarySchema} from "dzelda-common";
 
 export default {
   name: "DictionaryList",
   components: {},
   props: {
-    vocabText: {
-      type: String,
-      required: true
-    }
+    languageCode: {type: String, required: true},
+    vocabText: {type: String, required: true},
   },
   data() {
     return {
-      dictionaries: [],
+      dictionaries: [] as DictionarySchema[],
     };
   },
   methods: {
-    openDictionaryLink(dictionary) {
-      const link_template = dictionary.link;
-      const link = link_template.replace("<text>", this.vocabText);
-      //TODO save paramaters of opened window locally
-      const ref = window.open(link, "Dictionary", "left=20,top=20,width=800,height=500,toolbar=1,resizable=0");
-      ref.focus();
+    openDictionaryLink(dictionary: DictionarySchema) {
+      const link = dictionary.link.replace("<text>", this.vocabText);
+      const ref = window.open(link, "Dictionary", "left=0,top=0,width=800,height=500,toolbar=1,resizable=0");
+      ref!.focus();
     }
   }
   ,
   async mounted() {
-    this.dictionaries = await this.dictionaryStore.fetchDictionaries({languageCode: this.$route.params.learningLanguage});
+    this.dictionaries = await this.dictionaryStore.fetchDictionaries({languageCode: this.languageCode});
   },
   setup() {
     return {dictionaryStore: useDictionaryStore()};

@@ -4,10 +4,11 @@
       <label for="per-page-select" v-if="perPageSelectLabel">{{ perPageSelectLabel }}</label>
       <select id="per-page-select"
               :value="pageSize??perPageSelectOptions[0]"
-              @change="setPageSize($event.target!.value)">
+              @change="setPageSize(Number(($event.target! as HTMLSelectElement).value))">
         <option v-for="option in perPageSelectOptions" :key="option" :value="option">{{ option }}</option>
       </select>
     </form>
+    <!--  TODO show more pages if there's space for them-->
     <BasePageSelector v-if="!!pageCount"
                       :current-page="page"
                       :pageCount="pageCount"

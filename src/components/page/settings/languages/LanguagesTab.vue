@@ -83,7 +83,6 @@ export default {
   components: {LoadingScreen, EmptyScreen, LanguageRow, SubmitButton, SeriousConfirmDialog, InlineSvg},
   data() {
     return {
-      allLanguages: null as LanguageSchema[] | null,
       userLanguages: null as LearnerLanguageSchema[] | null,
       isSubmitting: false,
       languageToBeRemoved: null as LanguageSchema | null,
@@ -92,22 +91,7 @@ export default {
       isConfirmResetDialogShown: false,
     };
   },
-
-  computed: {
-    otherLanguages() {
-      if (!this.allLanguages || !this.userLanguages)
-        return null;
-      else
-        return this.allLanguages.filter(lang => !this.userLanguages!.find(userLang => userLang.code === lang.code));
-    }
-  },
   methods: {
-    async fetchAllLanguages() {
-      return await this.languageStore.fetchLanguages({isSupported: true});
-    },
-    async fetchUserLanguages() {
-      return await this.languageStore.fetchUserLanguages();
-    },
     onRemoveLanguageClicked(language: LanguageSchema) {
       this.isConfirmRemoveDialogShown = true;
       this.languageToBeRemoved = language;
@@ -126,7 +110,7 @@ export default {
         this.isSubmitting = false;
         this.languageToBeRemoved = null;
         this.messageBarStore.addMessage({text: "Language deleted", type: MessageType.SUCCESS});
-        this.userLanguages = await this.fetchUserLanguages();
+        this.userLanguages = await this.languageStore.fetchUserLanguages({ignoreCache: true});
       }
     },
     async resetLanguage() {
@@ -139,14 +123,13 @@ export default {
         this.isSubmitting = false;
         this.languageToBeReset = null;
         this.messageBarStore.addMessage({text: "Language progress reset", type: MessageType.SUCCESS});
-        this.userLanguages = await this.fetchUserLanguages();
+        this.userLanguages = await this.languageStore.fetchUserLanguages({ignoreCache: true});
       }
     },
 
   },
   async mounted() {
-    this.allLanguages = await this.fetchAllLanguages();
-    this.userLanguages = await this.fetchUserLanguages();
+    this.userLanguages = await this.languageStore.fetchUserLanguages();
   },
   setup() {
     return {
@@ -166,7 +149,7 @@ export default {
 }
 
 h2 {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
 }
 
 .languages th {

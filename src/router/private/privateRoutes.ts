@@ -26,6 +26,7 @@ import LessonHistoryTab from "@/components/page/my-library/LessonHistoryTab.vue"
 import * as queryParams from "@/router/queryParams.js";
 import * as pathParams from "@/router/pathParams.js";
 import {excludeProperties} from "@/utils.js";
+import InterfaceTab from "@/components/page/settings/interface/InterfaceTab.vue";
 
 export const privateRoutes: RouteRecordRaw[] = [
     {
@@ -224,10 +225,15 @@ export const privateRoutes: RouteRecordRaw[] = [
     {
         path: "/settings",
         component: SettingsPage,
-        redirect: {name: "account-settings",},
+        redirect: {name: "interface-settings",},
         name: "settings",
         meta: {showFooter: true},
         children: [
+            {
+                path: "/settings/interface",
+                name: "interface-settings",
+                component: InterfaceTab,
+            },
             {
                 path: "/settings/account",
                 name: "account-settings",

@@ -148,7 +148,20 @@ export function padSequence(numbers: number[], leftPadding: number, rightPadding
     return result;
 }
 
-//types
-export type ArrayElement<Type> = Type extends Array<infer Item> ? Item : Type;
+export function secondsToMs(seconds: number) {
+    return seconds * 1000;
+}
+
+export function minsToMs(mins: number) {
+    return mins * 60 * 1000;
+}
+
+export function hoursToMs(hours: number) {
+    return hours * 60 * 60 * 1000;
+}
+
+export function daysToMs(days: number) {
+    return days * 24 * 60 * 60 * 1000;
+}
 
 

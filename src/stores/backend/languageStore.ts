@@ -24,11 +24,12 @@ export const useLanguageStore = defineStore("language", {
                 sortOrder?: "asc" | "desc"
             }, ignoreCache?: boolean
         } = {}) {
-            //TODO make caching depend on request params
-            if (!ignoreCache && this.userLanguages !== null)
-                return this.userLanguages;
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.getUsersUsernameLanguages("me", queryParams));
+            const response = await store.fetchCustom((api) => api.users.getUsersUsernameLanguages("me", queryParams),
+                {
+                    cacheKey: `fetchUserLanguages(${JSON.stringify(queryParams)})`,
+                    clearCache: ignoreCache
+                });
             this.userLanguages = response.data;
             return response.data;
         },
@@ -50,7 +51,7 @@ export const useLanguageStore = defineStore("language", {
                     this.userLanguages.splice(index, 1);
             }
         },
-        async resetUserLanguageProgress(pathParams: { languageCode: string }){
+        async resetUserLanguageProgress(pathParams: { languageCode: string }) {
             useMessageBarStore().clearMessages();
             const store = useStore();
             await store.fetchCustom((api) => api.users.deleteUsersMeLanguagesLanguageCodeProgress(pathParams.languageCode));

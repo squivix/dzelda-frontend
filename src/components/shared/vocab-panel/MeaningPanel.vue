@@ -116,6 +116,7 @@ export default {
 .vocab-text {
   font-size: 1.5rem;
   margin-bottom: 1rem;
+  user-select: text;
 }
 
 .meaning-sub-panel {

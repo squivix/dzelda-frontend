@@ -132,7 +132,7 @@ export default {
       const response = await this.vocabStore.fetchUserVocabs({
         languageCode: this.pathParams.learningLanguage,
         searchQuery: this.queryParams.searchQuery || undefined,
-        level: this.queryParams.level ?? [VocabLevelSchema.LEVEL1, VocabLevelSchema.LEVEL2, VocabLevelSchema.LEVEL3, VocabLevelSchema.LEVEL4, VocabLevelSchema.LEARNED, VocabLevelSchema.KNOWN],
+        level: this.queryParams.level ?? [VocabLevelSchema.LEVEL1, VocabLevelSchema.LEVEL2, VocabLevelSchema.LEVEL3, VocabLevelSchema.LEVEL4, VocabLevelSchema.LEARNED],
         page: this.queryParams.page,
         pageSize: this.queryParams.pageSize,
       });
