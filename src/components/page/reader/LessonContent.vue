@@ -96,6 +96,8 @@ export default {
           groupStartIndex = groupEndIndex;
         }
       }
+      //last group
+      tokenGroups.push(this.lessonTokens.text.slice(groupStartIndex));
       return tokenGroups;
     }
   },
