@@ -17,8 +17,8 @@
                              class="link-parent">
                   <p class="course-title">{{ lesson.course.title }}</p>
                 </router-link>
+                <p v-if="'timeViewed' in lesson" class="time-viewed">{{ timeViewed }}</p>
               </div>
-
               <div class="stats">
                 <div class="stats-count">
                   <span class="vocabs-indicator new-vocabs"></span>
@@ -45,30 +45,25 @@
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import {LessonSchema, VocabLevelSchema, VocabsByLevelSchema} from "dzelda-common";
+import {LessonHistoryEntrySchema, LessonSchema, VocabLevelSchema, VocabsByLevelSchema} from "dzelda-common";
 import {PropType} from "vue";
 import {useStore} from "@/stores/backend/rootStore.js";
 import constants from "@/constants.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
+import {format} from "timeago.js";
 
 export default {
   name: "LessonListItem",
   components: {InlineSvg, BaseImage, BaseCard},
   props: {
-    lesson: {
-      type: Object as PropType<LessonSchema>,
-      required: true
-    },
-    showCourse: {
-      type: Boolean,
-      required: false,
-      default: true,
-    }
+    lesson: {type: Object as PropType<LessonSchema | LessonHistoryEntrySchema>, required: true},
+    showCourse: {type: Boolean, required: false, default: true}
   },
   computed: {
-    VocabLevelSchema() {
-      return VocabLevelSchema;
+    timeViewed() {
+      if ("timeViewed" in this.lesson)
+        return format(this.lesson.timeViewed);
     },
     imageUrl() {
       const imagePath = this.lesson.image || this.lesson.course.image;
@@ -196,7 +191,13 @@ h4 {
 
 .course-title {
   color: grey;
+  margin-bottom: 0.5rem;
 }
+
+.time-viewed {
+  color: gray;
+}
+
 
 a:hover {
   text-decoration: none;
@@ -225,9 +226,10 @@ a:hover {
   .item-content {
     flex-direction: column;
     align-items: center;
-    width: 100% ;
+    width: 100%;
   }
-  .title-stats{
+
+  .title-stats {
     align-self: stretch;
   }
 }
