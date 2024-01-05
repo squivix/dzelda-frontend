@@ -64,7 +64,6 @@ export default {
     return {
       scrollObserver: null as IntersectionObserver | null,
       groupIndexesInView: undefined as Set<number> | undefined,
-      isSelectingPhraseText: false,
       isPhraseFirstClick: true,
       selectedTokens: new Set<number>(),
       selectedTextTokens: [] as LessonTokenObject[],
@@ -118,14 +117,11 @@ export default {
       this.$emit("onOverLappingPhrasesClicked", phrases);
     },
     onBackgroundClicked() {
-      if (!this.isSelectingPhraseText) {
-        this.clearTokenTextSelection();
-        this.isPhraseFirstClick = true;
-        this.selectedTokens.clear();
-        this.selectedTextTokens = [];
-        this.$emit("onBackgroundClicked");
-      }
-      this.isSelectingPhraseText = false;
+      this.clearTokenTextSelection();
+      this.isPhraseFirstClick = true;
+      this.selectedTokens.clear();
+      this.selectedTextTokens = [];
+      this.$emit("onBackgroundClicked");
     },
     onNewPhraseSelected(phraseText: string) {
       this.$emit("onNewPhraseSelected", phraseText);
@@ -148,7 +144,6 @@ export default {
         }
       }
       this.selectedTextTokens = selectedWords;
-      this.isSelectingPhraseText = true;
     },
     onMouseUp() {
       getSelection()?.empty();
