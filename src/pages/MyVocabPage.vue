@@ -37,25 +37,22 @@
             </EmptyScreen>
             <VocabTable v-else
                         :vocabs="vocabs"
+                        @mousedown.stop
                         :selectedVocab="selectedVocab"
-                        @onVocabClicked="setSelectedVocab"
-                        @onVocabLevelSet="onVocabLevelSet">
+                        @onVocabClicked="setSelectedVocab">
             </VocabTable>
           </div>
-          <div class="meaning-panel-wrapper" v-if="vocabs&&vocabs.length>0">
-            <MeaningPanel
-                :vocab="selectedVocab!"
-                @click.stop
-                @onMeaningAdded="onMeaningAdded"
-                @onMeaningEdited="onMeaningEdited"
-                @onVocabLevelSet="onVocabLevelSet"
-                @onVocabNotesSet="onVocabNotesSet"
-                @onMeaningDeleted="onMeaningDeleted"
-                :class="{'meaning-panel':!!selectedVocab}">
+          <div class="vocab-panel-wrapper" v-if="vocabs&&vocabs.length>0">
+            <VocabPanel :class="{'vocab-panel':!!selectedVocab}"
+                        :vocab="selectedVocab"
+                        @mousedown.stop
+                        @onVocabUpdated="updateVocabData"
+                        @onVocabDeleted="removeVocabFromResults"
+                        :onVocabRefetched="updateVocab">
               <template v-slot:no-selected-panel>
                 <h4>Select a word or phrase</h4>
               </template>
-            </MeaningPanel>
+            </VocabPanel>
           </div>
         </div>
       </section>
@@ -71,7 +68,6 @@
 </template>
 
 <script lang="ts">
-import MeaningPanel from "@/components/shared/vocab-panel/MeaningPanel.vue";
 import VocabTable from "@/components/page/my-vocabs/VocabTable.vue";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
@@ -85,21 +81,23 @@ import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {useEventListener} from "@vueuse/core";
+import VocabPanel from "@/components/shared/vocab-panel/VocabPanel.vue";
 
 export default {
   name: "MyVocabPage",
   components: {
     InlineSvg, EmptyScreen, BaseCard, LoadingScreen, SearchBar,
-    VocabFilters, VocabTable, PaginationControls, MeaningPanel
+    VocabFilters, VocabTable, PaginationControls, VocabPanel
   },
   props: {
-    pathParams: {
-      type: Object as PropType<{ learningLanguage: string }>,
-      required: true
-    },
+    pathParams: {type: Object as PropType<{ learningLanguage: string }>, required: true},
     queryParams: {
-      type: Object as PropType<{ page: number, pageSize: number, searchQuery: string, level: VocabLevelSchema[] }>,
-      required: true,
+      type: Object as PropType<{
+        page: number,
+        pageSize: number,
+        searchQuery: string,
+        level: VocabLevelSchema[]
+      }>, required: true,
     },
   },
   data() {
@@ -122,7 +120,7 @@ export default {
     }
   },
   async mounted() {
-    useEventListener(document, "click", this.clearSelectedVocab);
+    useEventListener(document, "mousedown", this.clearSelectedVocab);
     await this.fetchVocabsPage();
   },
   methods: {
@@ -140,37 +138,50 @@ export default {
       this.pageCount = response.pageCount!;
       this.loading = false;
     },
+    updateVocabData(vocab: LearnerVocabSchema, updatedVocabData: Partial<LearnerVocabSchema>) {
+      if ([VocabLevelSchema.IGNORED, VocabLevelSchema.KNOWN].includes(updatedVocabData.level!)) {
+        this.removeVocabFromResults(vocab);
+        return;
+      }
+      const updatedVocab = {...vocab, ...updatedVocabData};
+      for (let i = 0; i < this.vocabs!.length; i++)
+        if (this.vocabs![i].id == updatedVocab.id)
+          this.vocabs!.splice(i, 1, updatedVocab);
+      if (this.selectedVocab && this.selectedVocab.text === vocab.text) {
+        if ([VocabLevelSchema.IGNORED, VocabLevelSchema.KNOWN].includes(updatedVocabData.level!))
+          this.clearSelectedVocab();
+        else
+          this.setSelectedVocab(updatedVocab);
+      }
+    },
+    removeVocabFromResults(vocab: LearnerVocabSchema) {
+      for (let i = 0; i < this.vocabs!.length; i++)
+        if (this.vocabs![i].id == vocab.id) {
+          if (this.selectedVocab?.id == this.vocabs![i].id)
+            this.setSelectedVocab(this.vocabs![i + 1]);
+          this.vocabs!.splice(i, 1);
+          if (this.vocabs?.length == 0)
+            this.fetchVocabsPage();
+          return;
+        }
+    },
+    async updateVocab(updatedVocab: LearnerVocabSchema) {
+      for (let i = 0; i < this.vocabs!.length; i++)
+        if (this.vocabs![i].id == updatedVocab.id)
+          this.vocabs!.splice(i, 1, updatedVocab);
+      if (this.selectedVocab && this.selectedVocab.text === updatedVocab.text) {
+        if ([VocabLevelSchema.IGNORED, VocabLevelSchema.KNOWN].includes(updatedVocab.level!))
+          this.clearSelectedVocab();
+        else
+          this.setSelectedVocab(updatedVocab);
+      }
+      return updatedVocab;
+    },
     setSelectedVocab(vocab: LearnerVocabSchema) {
       this.selectedVocab = vocab;
     },
     clearSelectedVocab() {
       this.selectedVocab = null;
-    },
-    //TODO optimistically load updates to vocabs
-    async onMeaningAdded(vocabId: number, newMeaning: MeaningSchema) {
-      const updatedVocab = await this.updateVocab(vocabId);
-      this.setSelectedVocab(updatedVocab);
-    },
-    async onMeaningEdited(vocabId: number, meaning: MeaningSchema) {
-      const updatedVocab = await this.updateVocab(vocabId);
-      this.setSelectedVocab(updatedVocab);
-    },
-    async onVocabLevelSet(vocabId: number, level: VocabLevelSchema) {
-      if (level === VocabLevelSchema.IGNORED) {
-        this.vocabs!.splice(this.vocabs!.findIndex((v) => v.id === vocabId), 1);
-        this.clearSelectedVocab();
-      } else {
-        const updatedVocab = await this.updateVocab(vocabId);
-        this.setSelectedVocab(updatedVocab);
-      }
-    },
-    async onVocabNotesSet(vocabId: number, notes: string) {
-      const updatedVocab = await this.updateVocab(vocabId);
-      this.setSelectedVocab(updatedVocab);
-    },
-    async onMeaningDeleted(vocabId: number, meaning: MeaningSchema) {
-      const updatedVocab = await this.updateVocab(vocabId);
-      this.setSelectedVocab(updatedVocab);
     },
     toggleFilters() {
       this.isFiltersShown = !this.isFiltersShown;
@@ -181,13 +192,6 @@ export default {
       });
       this.isFiltersShown = false;
     },
-    async updateVocab(vocabId: number) {
-      const updatedVocab = await this.vocabStore.fetchUserVocab({vocabId: vocabId!});
-      for (let i = 0; i < this.vocabs!.length; i++)
-        if (this.vocabs![i].id == updatedVocab.id)
-          this.vocabs![i] = updatedVocab;
-      return updatedVocab;
-    }
   },
   setup() {
     return {
@@ -201,9 +205,6 @@ export default {
 
 <style scoped>
 
-.my-vocab-base-card {
-}
-
 section {
   display: flex;
   flex-direction: column;
@@ -214,6 +215,7 @@ section {
   display: flex;
   flex-direction: row;
   column-gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .table-wrapper {
@@ -244,14 +246,13 @@ section {
   cursor: pointer;
 }
 
-.meaning-panel-wrapper {
-  flex-grow: 1;
-  max-width: 500px;
-  flex-basis: 500px;
+.vocab-panel-wrapper {
+  max-width: 350px;
+  flex-basis: 350px;
   align-self: flex-start;
 }
 
-.meaning-panel {
+.vocab-panel {
   border: 1px solid lightgray;
   padding: 0.5rem;
   border-radius: 5px;
@@ -275,7 +276,7 @@ section {
     row-gap: 1rem;
   }
 
-  .meaning-panel-wrapper {
+  .vocab-panel-wrapper {
     max-width: unset;
     width: 100%;
   }

@@ -44,16 +44,16 @@ export default {
 .dictionaries-wrapper {
   display: flex;
   flex-direction: column;
-  row-gap: 0.5rem;
+  row-gap: 0.75rem;
 }
 
 .dictionaries {
   display: flex;
   flex-direction: column;
-  row-gap: 0.75rem;
+  row-gap: 0.5rem;
   overflow-y: auto;
   padding-right: 0.5rem;
-  max-height: 25vh;
+  max-height: 200px;
 }
 
 .dictionaries > li {

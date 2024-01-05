@@ -1,23 +1,24 @@
 <template>
   <div class="new-vocab-panel">
     <div class="top-sub-panel">
-      <MeaningAddingControls
-          :vocabId="vocab.id"
-          :vocabText="vocab.text"
-          :vocabLanguage="vocab.language"
-          :isPhrase="isPhrase"
-          :suggestedMeanings="suggestedMeaningsSegment"
-          :shouldShowAllMeaningsButton="suggestedMeanings.length>3"
-          @onMeaningAdded="onMeaningAdded"
-          @onNewPhraseAdded="onNewPhraseAdded"
-          @onShowAllSuggestionsClicked="()=>isShowingAllSuggestedMeanings=true"/>
+      <MeaningAddingControls :vocabId="(vocab as any).id as number|undefined"
+                             :vocabText="vocab.text"
+                             :vocabLanguage="vocab.language"
+                             :isPhrase="vocab.isPhrase"
+                             :suggestedMeanings="suggestedMeaningsSegment"
+                             :shouldShowAllMeaningsButton="suggestedMeanings.length>3"
+                             :isShowingAllSuggestedMeanings="isShowingAllSuggestedMeanings"
+                             :isSubmittingNewMeaning="isSubmittingNewMeaning"
+                             @onSuggestedMeaningClicked="(newMeaning)=>$emit('onSuggestedMeaningClicked',newMeaning)"
+                             @onNewMeaningSubmitted="(newMeaningText)=>$emit('onNewMeaningSubmitted', newMeaningText)"
+                             @onShowAllSuggestionsClicked="()=>isShowingAllSuggestedMeanings=true"/>
       <DictionariesList :vocabText="vocab.text" :languageCode="vocab.language"/>
     </div>
-    <div class="mark-buttons-div" v-if="!isPhrase && isLevelNew || isLevelIgnored">
-      <button class="square-button hollow-button know-button" @click="markWordAsKnown">Mark as
+    <div class="mark-buttons-div" v-if="!vocab.isPhrase && isLevelNew || isLevelIgnored||isLevelKnown">
+      <button class="square-button hollow-button know-button" @click="$emit('onMarkAsKnownClicked')">Mark as
         known
       </button>
-      <button class="square-button hollow-button ignore-button" @click="markWordAsIgnored">Ignore
+      <button class="square-button hollow-button ignore-button" @click="$emit('onMarkAsIgnoredClicked')">Ignore
       </button>
     </div>
   </div>
@@ -35,13 +36,14 @@ export default {
   name: "NewVocabPanel",
   components: {MeaningAddingControls, DictionariesList},
   emits: {
-    onMeaningAdded: (vocabId: number, newMeaning: MeaningSchema) => true,
-    onVocabLevelSet: (vocabId: number, level: VocabLevelSchema) => true,
-    onNewPhraseAdded: (vocab: LearnerVocabSchema) => true,
+    onSuggestedMeaningClicked: (meaning: MeaningSchema) => true,
+    onNewMeaningSubmitted: (newMeaningText: string) => true,
+    onMarkAsKnownClicked: () => true,
+    onMarkAsIgnoredClicked: () => true,
   },
   props: {
     vocab: {type: Object as PropType<LearnerVocabSchema | NewVocab>, required: true,},
-    isPhrase: {type: Boolean, required: true,}
+    isSubmittingNewMeaning: {type: Boolean, default: false},
   },
   data() {
     return {
@@ -58,39 +60,15 @@ export default {
       else
         return this.suggestedMeanings.slice(0, 3);
     },
-
     isLevelNew() {
       return this.vocab.level === VocabLevelSchema.NEW;
     },
     isLevelIgnored() {
       return this.vocab.level === VocabLevelSchema.IGNORED;
-    }
-  },
-  methods: {
-    async markWordAsKnown() {
-      const vocab = this.vocab as LearnerVocabSchema;
-      await this.vocabStore.addVocabToUser({vocabId: vocab.id});
-      await this.vocabStore.updateUserVocab(
-          {vocabId: vocab.id},
-          {level: VocabLevelSchema.KNOWN}
-      );
-      this.$emit("onVocabLevelSet", vocab.id, VocabLevelSchema.KNOWN);
     },
-    async markWordAsIgnored() {
-      const vocab = this.vocab as LearnerVocabSchema;
-      await this.vocabStore.addVocabToUser({vocabId: vocab.id});
-      await this.vocabStore.updateUserVocab(
-          {vocabId: vocab.id},
-          {level: VocabLevelSchema.IGNORED}
-      );
-      this.$emit("onVocabLevelSet", vocab.id, VocabLevelSchema.IGNORED);
+    isLevelKnown() {
+      return this.vocab.level === VocabLevelSchema.KNOWN;
     },
-    onMeaningAdded(vocabId: number, newMeaning: MeaningSchema) {
-      this.$emit("onMeaningAdded", vocabId, newMeaning);
-    },
-    onNewPhraseAdded(vocab: LearnerVocabSchema) {
-      this.$emit("onNewPhraseAdded", vocab);
-    }
   },
   setup() {
     return {vocabStore: useVocabStore()};
@@ -103,7 +81,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  row-gap:1rem;
+  row-gap: 1rem;
   height: 100%;
 }
 

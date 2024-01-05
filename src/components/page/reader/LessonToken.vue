@@ -1,5 +1,6 @@
 <template>
     <span :class="wrapperClass"
+          @mousedown.stop
           @click.stop="onWrapperClicked($event.target as HTMLElement)"
           @mouseenter="wrapperHoverStart"
           @mouseleave="wrapperHoverEnd"
@@ -272,6 +273,5 @@ span::selection, br::selection {
 .phrase-selected .level-3,
 .phrase-selected .level-4 {
   color: black;
-
 }
 </style>

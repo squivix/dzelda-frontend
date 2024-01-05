@@ -183,10 +183,10 @@ export default {
   },
   mounted() {
     useEventListener(document, "selectionchange", this.onSelectionChange);
-    useEventListener(document.body, "click", this.onBackgroundClicked);
-    useEventListener(document, "keydown", (event) => {
-      if (event.ctrlKey && event.key === "a") event.preventDefault();
-    });
+    useEventListener(document.body, "mousedown", this.onBackgroundClicked);
+    // useEventListener(document, "keydown", (event) => {
+    //   if (event.ctrlKey && event.key === "a") event.preventDefault();
+    // });
     this.scrollObserver = new IntersectionObserver(useDebounceFn(() => {
       if (this.paragraphRef)
         this.groupIndexesInView = getChildrenInViewIndexes(this.paragraphRef);

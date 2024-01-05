@@ -11,12 +11,6 @@
         </li>
       </ul>
     </td>
-    <td class="level-picker-td">
-      <!--                                <vocab-level-display :level="vocab.level"></vocab-level-display>-->
-      <VocabLevelPicker :level="vocab.level"
-                        :vocab="vocab"
-                        @onVocabLevelSet="(level)=>onVocabLevelSet(vocab, level)"/>
-    </td>
   </tr>
 </template>
 
@@ -27,7 +21,7 @@ import {PropType} from "vue";
 
 export default {
   name: "VocabTableRow",
-  emits: ["onVocabClicked", "onVocabLevelSet"],
+  emits: ["onVocabClicked"],
   components: {VocabLevelPicker},
   props: {
     vocab: {type: Object as PropType<LearnerVocabSchema>, required: true},
@@ -37,9 +31,6 @@ export default {
     onVocabClicked() {
       this.$emit("onVocabClicked");
     },
-    onVocabLevelSet(level: VocabLevelSchema) {
-      this.$emit("onVocabLevelSet", level);
-    }
   },
   mounted() {
   }

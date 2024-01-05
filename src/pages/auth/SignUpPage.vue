@@ -84,7 +84,6 @@ export default {
   width: 80vw;
   max-width: 800px;
   display: block;
-  margin: auto;
 }
 
 form {

@@ -31,11 +31,12 @@ export const useVocabStore = defineStore("vocab", {
             }));
             return response.data;
         },
-        async addVocabToUser(body: { vocabId: number }) {
+        async addVocabToUser(body: { vocabId: number, level?: VocabLevelSchema }) {
             useMessageBarStore().clearMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.postUsersMeVocabs({
-                vocabId: body.vocabId
+                vocabId: body.vocabId,
+                level: body.level
             }));
             return response.data;
         },

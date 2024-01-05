@@ -5,15 +5,13 @@
       <tr>
         <th>Vocab</th>
         <th>Meanings</th>
-        <th class="level-picker-th">Level</th>
       </tr>
       </thead>
       <tbody class="vocab-tbody">
       <VocabTableRow v-for="vocab in vocabs" :key="vocab.id"
                      :vocab="vocab"
                      :isSelected="selectedVocab?.id==vocab.id"
-                     @onVocabClicked="()=>$emit('onVocabClicked', vocab)"
-                     @onVocabLevelSet="(level)=>$emit('onVocabLevelSet', vocab.id, level)"/>
+                     @onVocabClicked="()=>$emit('onVocabClicked', vocab)"/>
       </tbody>
     </table>
   </div>
@@ -26,12 +24,13 @@ import {LearnerVocabSchema} from "dzelda-common";
 
 export default {
   name: "VocabTable",
-  emits: ["onVocabClicked", "onVocabLevelSet"],
+  emits: ["onVocabClicked"],
   components: {VocabTableRow},
   props: {
-    vocabs: {type: Array as PropType<LearnerVocabSchema[]>, required: true,},
+    vocabs: {type: Array as PropType<LearnerVocabSchema[]>, required: true},
     selectedVocab: {type: Object as PropType<LearnerVocabSchema | null>},
   },
+
   methods: {}
 };
 </script>

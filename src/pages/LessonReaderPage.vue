@@ -19,15 +19,11 @@
         <ReaderSidePanel class="side-panel"
                          :selectedOverlappingPhrases="selectedOverLappingPhrases"
                          :selectedVocab="selectedVocab"
-                         @onVocabLevelSet="onVocabLevelSet"
-                         @onMeaningAdded="onMeaningAdded"
-                         @onMeaningEdited="onMeaningEdited"
-                         @onMeaningDeleted="onMeaningDeleted"
+                         @onVocabUpdated="updateVocabData"
+                         @onVocabDeleted="deleteVocabData"
+                         @onNewVocabCreated="onNewVocabCreated"
                          @onOverlappingPhraseClicked="setSelectedVocab"
-                         @onVocabNotesSet="onVocabNotesSet"
-                         @onNewPhraseAdded="onNewPhraseAdded"
-                         @onVocabRemovedFromUser="onVocabRemovedFromUser"
-        />
+                         :onVocabRefetched="updateVocab"/>
       </div>
       <div class="bottom-div">
         <div>
@@ -54,7 +50,6 @@ import {
   getParser,
   LearnerVocabSchema,
   LessonSchema,
-  MeaningSchema,
   TokenWithPhrases,
   TokeObjectPhrases,
   VocabLevelSchema
@@ -176,45 +171,50 @@ export default defineComponent({
       };
       this.selectedOverLappingPhrases = null;
     },
-    onNewPhraseAdded(vocab: LearnerVocabSchema) {
+    onNewVocabCreated(vocab: LearnerVocabSchema) {
       if (vocab.isPhrase) {
         this.phrases[vocab.text] = vocab;
         this.parsePhraseInTokens(this.lesson!.title, this.lesson!.parsedTitle!, this.matchIndexToTokenIndex.title, this.lessonTokens!.title, vocab.text);
         this.parsePhraseInTokens(this.lesson!.text, this.lesson!.parsedText!, this.matchIndexToTokenIndex.text, this.lessonTokens!.text, vocab.text);
       }
     },
-    //TODO optimistically load updates to vocabs
-    async onMeaningAdded(vocabId: number, newMeaning: MeaningSchema) {
-      const updatedVocab = await this.updateVocab(vocabId);
-      this.setSelectedVocab(updatedVocab);
-    },
-    async onMeaningEdited(vocabId: number, editedMeaning: MeaningSchema) {
-      const updatedVocab = await this.updateVocab(vocabId);
-      this.setSelectedVocab(updatedVocab);
-    },
-    async onMeaningDeleted(vocabId: number, deletedMeaning: MeaningSchema) {
-      const updatedVocab = await this.updateVocab(vocabId);
-      this.setSelectedVocab(updatedVocab);
-    },
-    async onVocabNotesSet(vocabId: number, notes: string) {
-      const updatedVocab = await this.updateVocab(vocabId);
-      this.setSelectedVocab(updatedVocab);
-    },
-    onVocabRemovedFromUser(removedVocab: LearnerVocabSchema) {
-      if (removedVocab.isPhrase) {
-        this.phrases[removedVocab.text].level = VocabLevelSchema.NEW;
-        this.phrases[removedVocab.text].learnerMeanings = [];
-      } else {
-        this.words[removedVocab.text].level = VocabLevelSchema.NEW;
-        this.words[removedVocab.text].learnerMeanings = [];
-      }
-      this.clearSelectedVocab();
-    },
-    async onVocabLevelSet(vocabId: number, level: VocabLevelSchema) {
-      const updatedVocab = await this.updateVocab(vocabId);
-      if (level === VocabLevelSchema.IGNORED || level === VocabLevelSchema.KNOWN)
-        this.clearSelectedVocab();
+    updateVocabData(vocab: LearnerVocabSchema, updatedVocabData: Partial<LearnerVocabSchema>) {
+      const updatedVocab = {...vocab, ...updatedVocabData};
+      if (vocab.isPhrase)
+        this.phrases[vocab.text] = updatedVocab;
       else
+        this.words[vocab.text] = updatedVocab;
+      if (this.selectedVocab && this.selectedVocab.text === vocab.text) {
+        if ([VocabLevelSchema.IGNORED, VocabLevelSchema.KNOWN].includes(updatedVocabData.level!))
+          this.clearSelectedVocab();
+        else
+          this.setSelectedVocab(updatedVocab);
+      }
+    },
+    deleteVocabData(vocab: LearnerVocabSchema) {
+      const newVocab = {
+        id: vocab.id,
+        text: vocab.text,
+        level: VocabLevelSchema.NEW,
+        isPhrase: vocab.isPhrase,
+        notes: null,
+        language: vocab.language,
+        meanings: vocab.meanings,
+        learnerMeanings: []
+      };
+      if (vocab.isPhrase)
+        this.phrases[vocab.text] = newVocab;
+      else
+        this.words[vocab.text] = newVocab;
+      if (this.selectedVocab && this.selectedVocab.text === vocab.text)
+        this.clearSelectedVocab();
+    },
+    async updateVocab(updatedVocab: LearnerVocabSchema) {
+      if (updatedVocab.isPhrase)
+        this.phrases[updatedVocab.text] = updatedVocab;
+      else
+        this.words[updatedVocab.text] = updatedVocab;
+      if (this.selectedVocab && this.selectedVocab.text == updatedVocab.text)
         this.setSelectedVocab(updatedVocab);
     },
     async parseLesson() {
@@ -264,14 +264,6 @@ export default defineComponent({
         occurrenceIndex++;
       }
     },
-    async updateVocab(vocabId: number) {
-      const updatedVocab = await this.vocabStore.fetchUserVocab({vocabId: vocabId!});
-      if (updatedVocab.isPhrase)
-        this.phrases[updatedVocab.text] = updatedVocab;
-      else
-        this.words[updatedVocab.text] = updatedVocab;
-      return updatedVocab;
-    }
   },
   setup() {
     return {
@@ -308,10 +300,6 @@ export default defineComponent({
   justify-content: space-between;
   align-items: center;
   width: 100%;
-}
-
-.meaning-panel-wrapper:deep(.meaning-sub-panel) {
-  height: 100%;
 }
 
 .next-lesson-button {

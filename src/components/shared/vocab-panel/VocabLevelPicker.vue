@@ -43,7 +43,7 @@ export default {
   data() {
     return {constants};
   },
-  emits: ["onVocabLevelSet", "onVocabRemovedFromUser"],
+  emits: ["onVocabLevelButtonClicked"],
   props: {
     vocab: {type: Object as PropType<LearnerVocabSchema>, required: true},
     level: {
@@ -53,16 +53,9 @@ export default {
   },
   methods: {
     async setVocabLevel(level: VocabLevelSchema) {
-      if (this.vocab.isPhrase && level == VocabLevelSchema.IGNORED) {
-        await this.vocabStore.removeVocabFromUser({vocabId: this.vocab.id});
-        this.$emit("onVocabRemovedFromUser");
-      } else {
-        await this.vocabStore.updateUserVocab(
-            {vocabId: this.vocab.id},
-            {level: level}
-        );
-        this.$emit("onVocabLevelSet", level);
-      }
+      if (level === this.vocab.level)
+        return;
+      this.$emit("onVocabLevelButtonClicked", level);
     },
   },
   setup() {

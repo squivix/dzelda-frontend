@@ -1,18 +1,14 @@
 <template>
   <div class="side-panel">
-    <MeaningPanel v-if="!selectedOverlappingPhrases"
-                  :vocab="selectedVocab"
-                  :is-phrase="selectedVocab?.isPhrase"
-                  @click.stop
-                  @onVocabLevelSet="(vocabId, level) =>$emit('onVocabLevelSet', vocabId, level)"
-                  @onMeaningAdded="(vocabId, newMeaning)=>$emit('onMeaningAdded', vocabId, newMeaning)"
-                  @onMeaningEdited="(vocabId, editedMeaning)=>$emit('onMeaningEdited', vocabId, editedMeaning)"
-                  @onMeaningDeleted="(vocabId, deletedMeaning)=>$emit('onMeaningDeleted', vocabId, deletedMeaning)"
-                  @onVocabNotesSet="(vocabId, notes)=>$emit('onVocabNotesSet', vocabId, notes)"
-                  @onNewPhraseAdded="(vocab)=>$emit('onNewPhraseAdded', vocab)"
-                  @onVocabRemovedFromUser="(removedVocab)=>$emit('onVocabRemovedFromUser', removedVocab)"/>
+    <VocabPanel v-if="!selectedOverlappingPhrases"
+                :vocab="selectedVocab"
+                @mousedown.stop
+                :onVocabRefetched="onVocabRefetched"
+                @onVocabUpdated="(vocab, updatedData)=>$emit('onVocabUpdated',vocab, updatedData)"
+                @onVocabDeleted="(vocab)=>$emit('onVocabDeleted',vocab)"
+                @onNewVocabCreated="(vocab)=>$emit('onNewVocabCreated', vocab)"/>
     <OverlappingPhrasesPanel v-else
-                             @click.stop
+                             @mousedown.stop
                              :phrases="selectedOverlappingPhrases!"
                              @onPhraseClick="(phrase)=>$emit('onOverlappingPhraseClicked', phrase)"/>
   </div>
@@ -20,27 +16,24 @@
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import MeaningPanel from "@/components/shared/vocab-panel/MeaningPanel.vue";
 import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel.vue";
-import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-common";
+import {LearnerVocabSchema, MeaningSchema} from "dzelda-common";
 import {NewVocab} from "@/pages/LessonReaderPage.vue";
+import VocabPanel from "@/components/shared/vocab-panel/VocabPanel.vue";
 
 export default defineComponent({
   name: "ReaderSidePanel",
-  components: {OverlappingPhrasesPanel, MeaningPanel},
+  components: {OverlappingPhrasesPanel, VocabPanel},
   props: {
     selectedOverlappingPhrases: {type: Array as PropType<LearnerVocabSchema[] | null>},
-    selectedVocab: {type: Object as PropType<LearnerVocabSchema | NewVocab | null>},
+    selectedVocab: {type: Object as PropType<LearnerVocabSchema | NewVocab | null>, default: null},
+    onVocabRefetched: {type: Function as PropType<(updatedVocab: LearnerVocabSchema) => void>},
   },
   computed: {},
   emits: {
-    onMeaningAdded: (vocabId: number, newMeaning: MeaningSchema) => true,
-    onMeaningEdited: (vocabId: number, editedMeaning: MeaningSchema) => true,
-    onMeaningDeleted: (vocabId: number, meaning: MeaningSchema) => true,
-    onVocabLevelSet: (vocabId: number, level: VocabLevelSchema) => true,
-    onVocabNotesSet: (vocabId: number, notes: string) => true,
-    onNewPhraseAdded: (vocab: LearnerVocabSchema) => true,
-    onVocabRemovedFromUser: (removedVocab: LearnerVocabSchema) => true,
+    onVocabUpdated: (vocab: LearnerVocabSchema, updatedData: Partial<LearnerVocabSchema>) => true,
+    onVocabDeleted: (vocab: LearnerVocabSchema) => true,
+    onNewVocabCreated: (vocab: LearnerVocabSchema) => true,
     onOverlappingPhraseClicked: (phrase: LearnerVocabSchema) => true,
   },
 });

@@ -1,19 +1,23 @@
 <template>
   <h5>Saved Meanings</h5>
-  <ol class="user-meanings">
+  <ol class="user-meanings" v-if="savedMeanings.length>0">
     <li v-for="(meaning,meaningIndex) in savedMeanings" :key="meaning.id">
-      <form @submit.prevent="editMeaning(meaning,editedMeanings[meaningIndex])">
-        <button class="delete-user-meaning-button" @click="deleteMeaning(meaning)" type="button">
+      <form @submit.prevent="submitEditMeaning(meaning,editedMeanings[meaningIndex])">
+        <SubmitButton :keepText="false"
+                      class="delete-user-meaning-button"
+                      @click="submitDeleteMeaning(meaning)" type="button">
           <inline-svg :src="icons.cross"/>
-        </button>
+        </SubmitButton>
         <input v-model="editedMeanings[meaningIndex]"/>
-        <button class="edit-user-meaning-button"
-                type="submit">
+        <SubmitButton :isSubmitting="isSubmittingEditMeaningSet.has(meaning.id)" :keepText="false"
+                      class="edit-user-meaning-button"
+                      type="submit">
           <inline-svg :src="icons.checkMark"/>
-        </button>
+        </SubmitButton>
       </form>
     </li>
   </ol>
+  <p class="empty-message" v-else>None</p>
 </template>
 
 <script lang="ts">
@@ -22,14 +26,16 @@ import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import {PropType} from "vue";
 import {MeaningSchema} from "dzelda-common";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default {
   name: "MeaningEditingControls",
-  components: {InlineSvg},
-  emits: ["onMeaningDeleted", "onMeaningEdited"],
+  components: {InlineSvg, SubmitButton},
+  emits: ["onMeaningEditSubmitted", "onMeaningDeleteClicked"],
   props: {
     vocabId: {type: Number, required: true},
-    savedMeanings: {type: Array as PropType<MeaningSchema[]>, required: true}
+    savedMeanings: {type: Array as PropType<MeaningSchema[]>, required: true},
+    isSubmittingEditMeaningSet: {type: Object as PropType<Set<number>>, required: true}
   },
   data() {
     return {
@@ -42,26 +48,15 @@ export default {
     }
   },
   methods: {
-    async deleteMeaning(meaning: MeaningSchema) {
-      await this.meaningStore.deleteMeaningFromUser({
-        meaningId: meaning.id
-      });
-      this.$emit("onMeaningDeleted", meaning);
-    },
-    async editMeaning(meaning: MeaningSchema, editedMeaning: string) {
-      if (!editedMeaning)
-        await this.deleteMeaning(meaning);
-      else if (editedMeaning === meaning.text)
+    submitEditMeaning(meaning: MeaningSchema, editedMeaning: string) {
+      if (editedMeaning == "")
+        this.submitDeleteMeaning(meaning);
+      if (editedMeaning === meaning.text)
         return;
-
-      await this.meaningStore.deleteMeaningFromUser({meaningId: meaning.id});
-      const newMeaning = await this.meaningStore.createMeaning({
-        vocabId: this.vocabId,
-        languageCode: "en",
-        text: editedMeaning,
-      });
-      await this.meaningStore.addMeaningToUser({meaningId: newMeaning.id});
-      this.$emit("onMeaningEdited", meaning);
+      this.$emit("onMeaningEditSubmitted", meaning, editedMeaning);
+    },
+    submitDeleteMeaning(meaning: MeaningSchema) {
+      this.$emit("onMeaningDeleteClicked", meaning);
     },
   },
   mounted() {
@@ -134,5 +129,9 @@ export default {
 
 .edit-user-meaning-button:hover {
   cursor: pointer;
+}
+
+.empty-message {
+  font-size: 0.8rem;
 }
 </style>

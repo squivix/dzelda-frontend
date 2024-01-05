@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {cleanUndefined} from "@/utils.js";
-import {LanguageLevelSchema} from "dzelda-common";
+import {HttpResponse, LanguageLevelSchema} from "dzelda-common";
 import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export const useCourseStore = defineStore("course", {
@@ -56,14 +56,14 @@ export const useCourseStore = defineStore("course", {
                     isPublic: body.isPublic,
                     level: body.level,
                 },
-                image: body.image
-            })));
+                image: body.image as File | undefined
+            }))) as Awaited<ReturnType<typeof store.apiClient.courses.postCourses>>;
         },
         async fetchCourse(pathParams: {
             courseId: number
         }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.courses.getCoursesCourseId(pathParams.courseId));
+            const response = await store.fetchCustom((api) => api.courses.getCoursesCourseId(pathParams.courseId)) as Awaited<ReturnType<typeof store.apiClient.courses.getCoursesCourseId>>;
 
             if (response.status == 404)
                 await this.router.push({name: "not-found"});
@@ -92,7 +92,7 @@ export const useCourseStore = defineStore("course", {
                         isPublic: body.isPublic,
                         lessonsOrder: body.lessonsOrder,
                     },
-                    image: body.image
+                    image: body.image as File | undefined
                 })));
         },
         async addCourseToUserBookmarks(body: {

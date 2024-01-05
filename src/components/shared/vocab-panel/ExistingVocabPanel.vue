@@ -1,8 +1,9 @@
 <template>
   <div class="existing-vocab-panel">
     <MeaningEditingControls
-        @onMeaningDeleted="onMeaningDeleted"
-        @onMeaningEdited="onMeaningEdited"
+        @onMeaningEditSubmitted="onMeaningEditSubmitted"
+        @onMeaningDeleteClicked="onMeaningDeleteClicked"
+        :isSubmittingEditMeaningSet="isSubmittingEditMeaningSet"
         :vocab-id="vocab.id"
         :saved-meanings="vocab.learnerMeanings"/>
 
@@ -11,12 +12,9 @@
     </button>
 
     <h5>Set Level</h5>
-    <VocabLevelPicker
-        :vocab="vocab"
-        :level="vocab.level"
-        @onVocabLevelSet="onVocabLevelSet"
-        @onVocabRemovedFromUser="onVocabRemovedFromUser"
-    />
+    <VocabLevelPicker :vocab="vocab"
+                      :level="vocab.level"
+                      @onVocabLevelButtonClicked="onVocabLevelButtonClicked"/>
 
     <textarea class="notes"
               placeholder="Notes"
@@ -38,41 +36,38 @@ import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-common
 export default {
   name: "ExistingVocabPanel",
   components: {MeaningEditingControls, InlineSvg, VocabLevelPicker},
-  emits: ["onAddMoreMeaningsClicked", "onMeaningDeleted", "onMeaningEdited", "onVocabLevelSet", "onVocabNotesSet", "onVocabRemovedFromUser"],
-  data() {
-    return {
-      notes: this.vocab.notes
-    };
-  }, watch: {
-    vocab() {
-      this.notes = this.vocab.notes;
-    }
-  },
+  emits: ["onAddMoreMeaningsClicked", "onMeaningDeleteClicked", "onMeaningEditSubmitted", "onVocabLevelButtonClicked", "onVocabNotesEditSubmitted"],
   props: {
     vocab: {type: Object as PropType<LearnerVocabSchema>, required: true},
+    isSubmittingEditMeaningSet: {type: Object as PropType<Set<number>>, required: true}
+  },
+  data() {
+    return {
+      notes: this.vocab.notes ?? ""
+    };
+  },
+  watch: {
+    vocab() {
+      this.notes = this.vocab.notes ?? "";
+    }
   },
   methods: {
     addMeaning() {
       this.$emit("onAddMoreMeaningsClicked");
     },
-    onMeaningEdited(meaning: MeaningSchema) {
-      this.$emit("onMeaningEdited", meaning);
+    onMeaningEditSubmitted(meaning: MeaningSchema, newMeaningText: string) {
+      this.$emit("onMeaningEditSubmitted", meaning, newMeaningText);
     },
-    onMeaningDeleted(meaning: MeaningSchema) {
-      this.$emit("onMeaningDeleted", meaning);
+    onMeaningDeleteClicked(meaning: MeaningSchema) {
+      this.$emit("onMeaningDeleteClicked", meaning);
     },
-    onVocabLevelSet(level: VocabLevelSchema) {
-      this.$emit("onVocabLevelSet", this.vocab.id, level);
+    onVocabLevelButtonClicked(level: VocabLevelSchema) {
+      this.$emit("onVocabLevelButtonClicked", level);
     },
-    onVocabRemovedFromUser() {
-      this.$emit("onVocabRemovedFromUser", this.vocab);
-    },
-    async updateVocabNotes() {
-      await this.vocabStore.updateUserVocab(
-          {vocabId: this.vocab.id},
-          {notes: this.notes}
-      );
-      this.$emit("onVocabNotesSet", this.notes);
+    updateVocabNotes() {
+      if (this.notes == this.vocab.notes)
+        return;
+      this.$emit("onVocabNotesEditSubmitted", this.vocab, this.notes);
     }
   },
   setup() {

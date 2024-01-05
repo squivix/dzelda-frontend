@@ -2,22 +2,27 @@
   <div class="suggested-meanings-wrapper" v-if="suggestedMeanings.length>0">
     <h5>Suggested Meanings</h5>
     <ol class="suggested-meanings styled-scrollbars">
-      <li v-for="meaning in suggestedMeanings" :key="meaning.id" @click="addSuggestedMeaning(meaning)">
-        {{ meaning.text }}
+      <li v-for="meaning in suggestedMeanings" :key="meaning.id">
+        <SubmitButton class="inv-button suggested-meaning"
+                      @click="addSuggestedMeaning(meaning)">
+          {{ meaning.text }}
+        </SubmitButton>
       </li>
     </ol>
-    <button v-if="shouldShowAllMeaningsButton" class="inv-button show-all-suggestions-button"
+    <button v-if="shouldShowAllMeaningsButton&&!isShowingAllSuggestedMeanings" class="inv-button show-all-suggestions-button"
             @click="onShowAllSuggestionsClicked">
       <span>Show all suggestions</span>
     </button>
   </div>
   <form class="new-meaning-form" action="javascript:void(0);">
-    <input ref="meaningTextInputRef" placeholder="Add new meaning here" v-model="newMeaning"/>
-    <button class="new-meaning-button"
-            @click="addNewMeaning"
-            type="submit">
+    <input ref="meaningTextInputRef" placeholder="Add new meaning here" v-model="newMeaningText"/>
+    <SubmitButton class="new-meaning-button"
+                  :isSubmitting="isSubmittingNewMeaning"
+                  :keepText="false"
+                  @click="addNewMeaning"
+                  type="submit">
       <inline-svg :src="icons.plus"/>
-    </button>
+    </SubmitButton>
   </form>
 </template>
 
@@ -28,13 +33,14 @@ import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import {LearnerVocabSchema, MeaningSchema} from "dzelda-common";
 import {PropType} from "vue";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default {
   name: "MeaningAddingControls",
-  components: {InlineSvg},
+  components: {SubmitButton, InlineSvg},
   emits: {
-    onMeaningAdded: (vocabId: number, meaning: MeaningSchema) => true,
-    onNewPhraseAdded: (vocab: LearnerVocabSchema) => true,
+    onSuggestedMeaningClicked: (meaning: MeaningSchema) => true,
+    onNewMeaningSubmitted: (newMeaningText: string) => true,
     onShowAllSuggestionsClicked: () => true,
   },
   props: {
@@ -43,45 +49,23 @@ export default {
     vocabLanguage: {type: String, required: true},
     isPhrase: {type: Boolean, default: false},
     suggestedMeanings: {type: Array as PropType<MeaningSchema[]>, required: true},
-    shouldShowAllMeaningsButton: {type: Boolean, default: false}
+    shouldShowAllMeaningsButton: {type: Boolean, default: false},
+    isShowingAllSuggestedMeanings: {type: Boolean, default: false},
+    isSubmittingNewMeaning: {type: Boolean, default: false},
   },
   data() {
     return {
-      newMeaning: "" as string | null,
+      newMeaningText: "" as string | null,
     };
   },
   methods: {
     async addSuggestedMeaning(meaning: MeaningSchema) {
-      const newVocab = await this.vocabStore.addVocabToUser({vocabId: this.vocabId!});
-      await this.meaningStore.addMeaningToUser({meaningId: meaning.id});
-      this.$emit("onMeaningAdded", newVocab.id, meaning);
+      this.$emit("onSuggestedMeaningClicked", meaning);
     },
     async addNewMeaning() {
-      if (!this.newMeaning)
+      if (!this.newMeaningText)
         return;
-      let vocabId = this.vocabId;
-      if (this.isPhrase && !this.vocabId) {
-        const vocab = await this.vocabStore.createVocab({
-          text: this.vocabText,
-          languageCode: this.vocabLanguage,
-          isPhrase: true,
-        });
-        vocabId = vocab.id;
-      }
-
-      const newVocab = await this.vocabStore.addVocabToUser({vocabId: vocabId!});
-      if (this.isPhrase)
-        this.$emit("onNewPhraseAdded", newVocab);
-
-      const newMeaning = await this.meaningStore.createMeaning({
-        text: this.newMeaning,
-        vocabId: vocabId!,
-        //TODO: no language hard-coding
-        languageCode: "en",
-      });
-      await this.meaningStore.addMeaningToUser({meaningId: newMeaning.id});
-      this.$emit("onMeaningAdded", vocabId!, newMeaning);
-      this.newMeaning = "";
+      this.$emit("onNewMeaningSubmitted", this.newMeaningText);
     },
     onShowAllSuggestionsClicked() {
       this.$emit("onShowAllSuggestionsClicked");
@@ -110,13 +94,13 @@ export default {
 .suggested-meanings {
   display: flex;
   flex-direction: column;
-  row-gap: 0.75rem;
+  row-gap: 0.5rem;
   overflow-y: auto;
-  max-height: 20vh;
+  max-height: 200px;
   padding-right: 0.5rem;
 }
 
-.suggested-meanings > li {
+.suggested-meaning {
   background-color: var(--primary-color);
   padding: 15px 10px;
   cursor: pointer;
@@ -124,6 +108,9 @@ export default {
   color: var(--on-primary-color);
   border-radius: 5px;
   width: 100%;
+  text-align: start;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .show-all-suggestions-button span {
@@ -148,8 +135,10 @@ export default {
 }
 
 .new-meaning-button {
-  width: 40px;
-  height: 40px;
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
   background-color: #FFD263;
   border: 1px solid #FFD263;
   color: black;
