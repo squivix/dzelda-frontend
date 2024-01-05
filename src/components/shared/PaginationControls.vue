@@ -8,12 +8,9 @@
         <option v-for="option in perPageSelectOptions" :key="option" :value="option">{{ option }}</option>
       </select>
     </form>
-    <!--  TODO show more pages if there's space for them-->
     <BasePageSelector v-if="!!pageCount"
                       :current-page="page"
                       :pageCount="pageCount"
-                      :shownCount="Math.min(2,pageCount)"
-                      :beforeCurrentCount="1"
                       @onPageClicked="goToPage">
     </BasePageSelector>
   </div>

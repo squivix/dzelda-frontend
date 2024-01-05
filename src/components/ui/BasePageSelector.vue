@@ -45,13 +45,13 @@ export default {
   emits: ["onPageClicked"],
   props: {
     pageCount: {type: Number, required: true,},
-    shownCount: {type: Number, required: false, default: 5},
     currentPage: {type: Number, required: true},
-    beforeCurrentCount: {type: Number, required: false, default: 3}
   },
   data() {
     return {
-      pages: null
+      pages: null as number[] | null,
+      beforeCurrentCount: 2,
+      afterCurrentCount: 2,
     };
   },
   watch: {
@@ -67,7 +67,7 @@ export default {
     updatePages(currentPage: number) {
       let pages = [];
       let start = Math.max(1, currentPage - this.beforeCurrentCount);
-      let end = Math.min(this.pageCount + 1, start + this.shownCount + this.beforeCurrentCount);
+      let end = Math.min(this.pageCount + 1, start + Math.min(this.beforeCurrentCount + this.afterCurrentCount + 1, this.pageCount));
       for (let i = start; i < end; i++)
         pages.push(i);
       this.pages = pages;
@@ -103,7 +103,7 @@ li {
   border: 1px solid grey;
   border-radius: 3px;
   padding: 0.75rem 0;
-  width: 10vw;
+  width: 8vw;
   max-width: 40px;
   height: 100%;
 }

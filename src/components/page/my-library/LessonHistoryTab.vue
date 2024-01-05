@@ -33,7 +33,7 @@ import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-// TODO sort by last opened date, and show in lesson list item
+
 export default defineComponent({
   name: "LessonHistoryTab",
   components: {InlineSvg, EmptyScreen, CourseFilters, LoadingScreen, PaginationControls, LessonListItem},
