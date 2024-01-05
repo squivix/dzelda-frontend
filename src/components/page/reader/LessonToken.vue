@@ -40,10 +40,10 @@ export default defineComponent({
   computed: {
     wrapperClass() {
       const classes = ["word-wrapper"];
-      if (this.phrasesCount != 0) {
+      if (this.savedPhrasesCount != 0) {
         classes.push("phrase");
         classes.push(...this.token.phrases.map(p => `phrase-${p.phraseId}-${p.phraseOccurrenceIndex}`));
-        classes.push(this.getLevelClass(this.phrases![0].level));
+        classes.push(this.getLevelClass(Math.max(...this.phrases!.map(p => p.level))));
         if (this.isPhraseSelected)
           classes.push("phrase-selected");
       }
@@ -51,7 +51,7 @@ export default defineComponent({
     },
     wordClass() {
       const classes = ["word", this.getLevelClass(this.word?.level)];
-      if (this.phrasesCount == 0)
+      if (this.savedPhrasesCount == 0)
         classes.push("word-lone");
       if (!this.isPhraseFirstClick)
         classes.push("word-hovered");
@@ -59,13 +59,16 @@ export default defineComponent({
         classes.push("word-selected");
       return classes.join(" ");
     },
-    phrasesCount() {
-      return !this.phrases ? 0 : this.phrases.length;
+    savedPhrases() {
+      return this.phrases?.filter(p => p.level !== VocabLevelSchema.NEW);
+    },
+    savedPhrasesCount() {
+      return !this.savedPhrases ? 0 : this.savedPhrases.length;
     }
   },
   methods: {
     onWordClicked(event: Event) {
-      if (this.phrasesCount == 0 || !this.isPhraseFirstClick)
+      if (this.savedPhrasesCount == 0 || !this.isPhraseFirstClick)
         this.$emit("onWordClicked", this.word!, this.token);
       else {
         this.onWrapperClicked(event.target as HTMLElement);
@@ -78,15 +81,16 @@ export default defineComponent({
         wrapperDomElem = wrapperDomElem.parentElement!;
       if (!wrapperDomElem.classList.contains("word-wrapper"))
         return;
-      if (!this.phrases || this.phrases.length == 0)
+
+      if (!this.savedPhrases || this.savedPhrases.length == 0)
         return;
       //if word part of multiple phrases
-      else if (this.phrases.length > 1)
+      else if (this.savedPhrases.length > 1)
         this.$emit("onOverLappingPhrasesClicked", this.phrases, this.token);
       else {
         if (wrapperDomElem.classList.contains("phrase-new"))
           return;
-        this.$emit("onPhraseClicked", this.phrases[0], this.token);
+        this.$emit("onPhraseClicked", this.savedPhrases[0], this.token);
       }
     },
     wrapperHoverStart(event: Event) {
@@ -96,7 +100,11 @@ export default defineComponent({
       const phrases = this.token.phrases;
       if (phrases.length === 0)
         return;
+      const phraseMap: Record<string, LearnerVocabSchema> = {};
+      this.phrases!.forEach(p => phraseMap[p.text] = p);
       for (const po of phrases) {
+        if (phraseMap[po.text].level == VocabLevelSchema.NEW)
+          continue;
         const phraseNodes = document.querySelectorAll(`.phrase-${po.phraseId}-${po.phraseOccurrenceIndex}`);
         phraseNodes.forEach((pn) => pn.classList.add("phrase-hovered"));
         phraseNodes[0].classList.add("phrase-start");
