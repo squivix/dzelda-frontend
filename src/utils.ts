@@ -98,7 +98,7 @@ export function getTextSelectedElements(selection: Selection) {
     }
 }
 
-export function chuckArray<T>(array: T[], chunkSize: number): T[][] {
+export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
     if (chunkSize <= 0)
         throw Error("Chuck size must be positive");
     const chunks: T[][] = [];

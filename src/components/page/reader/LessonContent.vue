@@ -36,12 +36,12 @@
 <script lang="ts">
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {PropType} from "vue";
-import {LearnerVocabSchema} from "dzelda-common";
-import {chuckArray, getChildrenInViewIndexes, getTextSelectedElements, padSequence} from "@/utils.js";
+import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
+import {getChildrenInViewIndexes, getTextSelectedElements, padSequence} from "@/utils.js";
 import {useDebounceFn, useEventListener} from "@vueuse/core";
 import {icons} from "@/icons.js";
 import TokenGroup from "@/components/page/reader/TokenGroup.vue";
-import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
+import {LessonTokenObject, NewVocab} from "@/pages/LessonReaderPage.vue";
 
 const TOKEN_MAX_GROUP_SIZE = 200;
 const TOKEN_MIN_GROUP_SIZE = 100;
@@ -59,6 +59,7 @@ export default {
     words: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true,},
     phrases: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
     lessonTokens: {type: Object as PropType<{ title: LessonTokenObject[], text: LessonTokenObject[] }>, required: true},
+    selectedVocab: {type: Object as PropType<LearnerVocabSchema | NewVocab | null>, default: null},
   },
   data() {
     return {
@@ -100,6 +101,12 @@ export default {
       return tokenGroups;
     }
   },
+  watch: {
+    selectedVocab() {
+      if (this.selectedVocab == null)
+        this.selectedTokens.clear();
+    }
+  },
   methods: {
     onWordClicked(word: LearnerVocabSchema, wordToken: LessonTokenObject) {
       this.selectedTokens = new Set([wordToken.index]);
@@ -120,13 +127,13 @@ export default {
       this.clearTokenTextSelection();
       this.isPhraseFirstClick = true;
       this.selectedTokens.clear();
-      this.selectedTextTokens = [];
       this.$emit("onBackgroundClicked");
     },
     onNewPhraseSelected(phraseText: string) {
       this.$emit("onNewPhraseSelected", phraseText);
     },
     clearTokenTextSelection() {
+      this.selectedTextTokens = [];
       document.querySelectorAll(".text-selected").forEach((el) => el.classList.remove("text-selected"));
     },
     onSelectionChange() {
@@ -152,7 +159,7 @@ export default {
       const selectedText = this.selectedTextTokens.map(t => t.parsedText).join(" ");
       if (this.words[selectedText])
         this.onWordClicked(this.words[selectedText], this.selectedTextTokens[0]);
-      else if (this.phrases[selectedText])
+      else if (this.phrases[selectedText] && this.phrases[selectedText].level !== VocabLevelSchema.NEW)
         this.onPhraseClicked(this.phrases[selectedText], this.selectedTextTokens[0]);
       else
         this.onNewPhraseSelected(selectedText);
@@ -179,9 +186,6 @@ export default {
   mounted() {
     useEventListener(document, "selectionchange", this.onSelectionChange);
     useEventListener(document.body, "mousedown", this.onBackgroundClicked);
-    // useEventListener(document, "keydown", (event) => {
-    //   if (event.ctrlKey && event.key === "a") event.preventDefault();
-    // });
     this.scrollObserver = new IntersectionObserver(useDebounceFn(() => {
       if (this.paragraphRef)
         this.groupIndexesInView = getChildrenInViewIndexes(this.paragraphRef);

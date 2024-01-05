@@ -10,6 +10,7 @@
                        :image="imageUrl"
                        :words="words"
                        :phrases="phrases"
+                       :selectedVocab="selectedVocab"
                        class="lesson-content"
                        @onWordClicked="setSelectedVocab"
                        @onPhraseClicked="setSelectedVocab"
@@ -116,7 +117,7 @@ export default defineComponent({
     }
     await this.lessonStore.addLessonToUserHistory({lessonId: this.pathParams.lessonId});
     await this.fetchLessonVocabs();
-    await this.parseLesson();
+    this.parseLesson();
     useTimeoutFn(() => this.isNextButtonExpanded = false, 3000);
   },
   methods: {
@@ -160,15 +161,18 @@ export default defineComponent({
       this.selectedOverLappingPhrases = phrases;
     },
     selectNewPhrase(phraseText: string) {
-      this.selectedVocab = {
-        text: phraseText,
-        level: VocabLevelSchema.NEW,
-        isPhrase: true,
-        notes: null,
-        language: this.lesson!.course.language,
-        meanings: [],
-        learnerMeanings: []
-      };
+      if (this.phrases[phraseText] && this.phrases[phraseText].level == VocabLevelSchema.NEW)
+        this.selectedVocab = this.phrases[phraseText];
+      else
+        this.selectedVocab = {
+          text: phraseText,
+          level: VocabLevelSchema.NEW,
+          isPhrase: true,
+          notes: null,
+          language: this.lesson!.course.language,
+          meanings: [],
+          learnerMeanings: []
+        };
       this.selectedOverLappingPhrases = null;
     },
     onNewVocabCreated(vocab: LearnerVocabSchema) {
@@ -209,7 +213,7 @@ export default defineComponent({
       if (this.selectedVocab && this.selectedVocab.text === vocab.text)
         this.clearSelectedVocab();
     },
-    async updateVocab(updatedVocab: LearnerVocabSchema) {
+    updateVocab(updatedVocab: LearnerVocabSchema) {
       if (updatedVocab.isPhrase)
         this.phrases[updatedVocab.text] = updatedVocab;
       else
@@ -217,7 +221,7 @@ export default defineComponent({
       if (this.selectedVocab && this.selectedVocab.text == updatedVocab.text)
         this.setSelectedVocab(updatedVocab);
     },
-    async parseLesson() {
+    parseLesson() {
       this.isParsingLesson = true;
       const titleTokens = this.parseStringToTokens(this.lesson!.title, this.matchIndexToTokenIndex.title, 0);
       const textTokens = this.parseStringToTokens(this.lesson!.text, this.matchIndexToTokenIndex.text, titleTokens.length);
@@ -227,7 +231,6 @@ export default defineComponent({
     parseStringToTokens(text: string, matchIndexToTokenIndex: Record<number, number>, firstIndex: number): LessonTokenObject[] {
       const parser = getParser(this.lesson!.course.language);
       const tokens = parser.detectPhrases(text, Object.keys(this.phrases)) as LessonTokenObject[];
-
       let matchIndex = 0;
       for (let i = 0; i < tokens.length; i++) {
         if (tokens[i].isWord) {
@@ -275,7 +278,6 @@ export default defineComponent({
   }
 });
 </script>
-
 <style scoped>
 .base-card {
   width: 80vw;

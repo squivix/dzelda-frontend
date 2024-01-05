@@ -40,7 +40,7 @@ export default defineComponent({
   computed: {
     wrapperClass() {
       const classes = ["word-wrapper"];
-      if (this.savedPhrasesCount != 0) {
+      if (this.phrasesCount != 0) {
         classes.push("phrase");
         classes.push(...this.token.phrases.map(p => `phrase-${p.phraseId}-${p.phraseOccurrenceIndex}`));
         classes.push(this.getLevelClass(Math.max(...this.phrases!.map(p => p.level))));
@@ -51,7 +51,7 @@ export default defineComponent({
     },
     wordClass() {
       const classes = ["word", this.getLevelClass(this.word?.level)];
-      if (this.savedPhrasesCount == 0)
+      if (this.phrasesCount == 0)
         classes.push("word-lone");
       if (!this.isPhraseFirstClick)
         classes.push("word-hovered");
@@ -64,7 +64,10 @@ export default defineComponent({
     },
     savedPhrasesCount() {
       return !this.savedPhrases ? 0 : this.savedPhrases.length;
-    }
+    },
+    phrasesCount() {
+      return !this.phrases ? 0 : this.phrases.length;
+    },
   },
   methods: {
     onWordClicked(event: Event) {
