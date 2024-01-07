@@ -1,33 +1,24 @@
 <template>
-    <span :class="wrapperClass"
-          @mousedown.stop
-          @click.stop="onWrapperClicked($event.target as HTMLElement)"
-          @mouseenter="wrapperHoverStart"
-          @mouseleave="wrapperHoverEnd"
-          :data-token-index="token.index">
-      <span :class="wordClass"
-            v-if="token.isWord"
-            @click.stop="onWordClicked($event)">
-          {{ token.text }}
-      </span>
-      <span @click.stop="onWrapperClicked($event.target as HTMLElement)" v-else>
-        <br v-if="token.text=='\n'">
-        <template v-else>
-            {{ token.text }}
-        </template>
-      </span>
-    </span>
+  <BaseToken :token="token"
+             :wordClass="wordClass"
+             :wrapperClass="wrapperClass"
+             @onWordClicked="onWordClicked"
+             @onWrapperClicked="onWrapperClicked"
+             @wrapperHoverStart="wrapperHoverStart"
+             @wrapperHoverEnd="wrapperHoverEnd"/>
 </template>
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
 import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
-import {ALL_VOCAB_LEVELS} from "@/constants.js";
 import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
+import BaseToken from "@/components/page/reader/BaseToken.vue";
+import {getLevelClass} from "@/utils.js";
 
 
 export default defineComponent({
   name: "LessonToken",
+  components: {BaseToken},
   props: {
     token: {type: Object as PropType<LessonTokenObject>, required: true},
     word: {type: Object as PropType<LearnerVocabSchema>, required: false},
@@ -43,15 +34,15 @@ export default defineComponent({
       if (this.phrasesCount != 0) {
         classes.push("phrase");
         classes.push(...this.token.phrases.map(p => `phrase-${p.phraseId}-${p.phraseOccurrenceIndex}`));
-        classes.push(this.getLevelClass(Math.max(...this.phrases!.map(p => p.level))));
+        classes.push(getLevelClass(Math.max(...this.phrases!.map(p => p.level))));
         if (this.isPhraseSelected)
           classes.push("phrase-selected");
       }
       return classes.join(" ");
     },
     wordClass() {
-      const classes = ["word", this.getLevelClass(this.word?.level)];
-      if (this.phrasesCount == 0)
+      const classes = ["word", getLevelClass(this.word?.level)];
+      if (this.savedPhrasesCount == 0)
         classes.push("word-lone");
       if (!this.isPhraseFirstClick)
         classes.push("word-hovered");
@@ -70,11 +61,11 @@ export default defineComponent({
     },
   },
   methods: {
-    onWordClicked(event: Event) {
+    onWordClicked(target: HTMLElement) {
       if (this.savedPhrasesCount == 0 || !this.isPhraseFirstClick)
         this.$emit("onWordClicked", this.word!, this.token);
       else {
-        this.onWrapperClicked(event.target as HTMLElement);
+        this.onWrapperClicked(target);
         this.$emit("setIsPhraseFirstClick", false);
       }
     },
@@ -89,15 +80,15 @@ export default defineComponent({
         return;
       //if word part of multiple phrases
       else if (this.savedPhrases.length > 1)
-        this.$emit("onOverLappingPhrasesClicked", this.phrases, this.token);
+        this.$emit("onOverLappingPhrasesClicked", this.savedPhrases, this.token);
       else {
         if (wrapperDomElem.classList.contains("phrase-new"))
           return;
         this.$emit("onPhraseClicked", this.savedPhrases[0], this.token);
       }
     },
-    wrapperHoverStart(event: Event) {
-      const wrapperNode = event.target as HTMLElement;
+    wrapperHoverStart(target: HTMLElement) {
+      const wrapperNode = target;
       if (!wrapperNode.classList.contains("phrase") || wrapperNode.classList.contains("phrase-hovered"))
         return;
       const phrases = this.token.phrases;
@@ -114,10 +105,9 @@ export default defineComponent({
         phraseNodes[phraseNodes.length - 1].classList.add("phrase-end");
       }
     },
-    wrapperHoverEnd(event: Event) {
+    wrapperHoverEnd(wrapperNode: HTMLElement) {
       // TODO only do this when the hovering goes out of phrase entirely not just its wrapper
       this.$emit("setIsPhraseFirstClick", true);
-      const wrapperNode = event.target as HTMLElement;
       if (!wrapperNode.classList.contains("phrase"))
         return;
       const phrases = this.token.phrases;
@@ -132,157 +122,10 @@ export default defineComponent({
         });
       }
     },
-    getLevelClass(level?: VocabLevelSchema) {
-      const levelMap = {
-        [ALL_VOCAB_LEVELS.NEW]: "level-new",
-        [ALL_VOCAB_LEVELS.LEVEL_1]: "level-1 ",
-        [ALL_VOCAB_LEVELS.LEVEL_2]: "level-2 ",
-        [ALL_VOCAB_LEVELS.LEVEL_3]: "level-3",
-        [ALL_VOCAB_LEVELS.LEVEL_4]: "level-4",
-        [ALL_VOCAB_LEVELS.LEARNED]: "level-learned",
-        [ALL_VOCAB_LEVELS.KNOWN]: "level-known",
-      };
-      return level !== undefined ? levelMap[level] : "";
-    },
   }
 });
 </script>
 
 <style scoped>
 
-span {
-  user-select: text;
-}
-
-span::selection, br::selection {
-  background: transparent;
-}
-
-.word {
-  border: 1px solid transparent;
-  padding: 0.05rem 0.1rem;
-  border-radius: 5px;
-  user-select: auto;
-}
-
-.word-hovered:hover {
-  border: 1px solid darkblue;
-  cursor: pointer;
-}
-
-.word-lone:hover {
-  border: 1px solid darkblue;
-  cursor: pointer;
-}
-
-.level-new:not(.phrase) {
-  background-color: #aee0f4;
-}
-
-/*.level-new.phrase:hover {
-  background-color: ghostwhite;
-  cursor: default !important;
-}*/
-
-.level-1 {
-  background-color: #ffeda1;
-}
-
-.level-2 {
-  background-color: #fff2ab;
-}
-
-.level-3 {
-  background-color: #fff6c7;
-}
-
-.level-4 {
-  background-color: transparent;
-  border-bottom: 1px dotted black;
-}
-
-/*.level-known,
-.level-learned,
-.level-ignored {
-  background-color: transparent;
-}*/
-
-.word-wrapper {
-  padding-top: 0.4rem;
-  padding-bottom: 0.4rem;
-  border: 1px solid transparent;
-}
-
-.phrase:hover {
-  cursor: pointer;
-}
-
-.phrase {
-  transition: padding 0.35s ease-out;
-}
-
-.phrase-start {
-  border-start-start-radius: 5px;
-  border-end-start-radius: 5px;
-}
-
-
-.phrase-end {
-  border-end-end-radius: 5px;
-  border-start-end-radius: 5px;
-}
-
-.phrase-start.phrase-hovered {
-  border-inline-start: 1px solid;
-}
-
-
-.phrase-end.phrase-hovered {
-  border-inline-end: 1px solid;
-}
-
-.phrase-start:not(.phrase-hovered) {
-  border-inline-start: 1px solid transparent;
-}
-
-.phrase-end:not(.phrase-hovered) {
-  border-inline-end: 1px solid transparent;
-}
-
-.text-selected {
-  background-color: #268AFA;
-}
-
-.phrase-hovered {
-  padding-top: 0.7rem;
-  padding-bottom: 0.7rem;
-  border-top: 1px solid;
-  border-bottom: 1px solid;
-}
-
-
-.word-selected.level-1,
-.word-selected.level-2,
-.word-selected.level-3,
-.word-selected.level-4,
-.phrase-selected.level-1,
-.phrase-selected.level-2,
-.phrase-selected.level-3,
-.phrase-selected.level-4 {
-  background-color: #e58d00 !important;
-
-}
-
-.word-selected, .phrase-selected {
-  background-color: #3498db !important;
-  color: #fff;
-}
-
-.phrase-selected .level-new,
-.phrase-selected .level-1,
-.phrase-selected .level-2,
-.phrase-selected .level-3,
-.phrase-selected .level-4 {
-  color: black;
-}
 </style>

@@ -9,12 +9,30 @@
     --on-primary-color: #ffffff;
     --on-secondary-color: #ffffff;
     --border-color: lightgray;
+    --background-color: white;
+}
 
+[data-theme=dark] {
+    --primary-color: #0288d1;
+    --primary-color-light: #5eb8ff;
+    --primary-color-dark: #005b9f;
+    --secondary-color: #43a047;
+    --secondary-color-light: #76d275;
+    --secondary-color-dark: #00701a;
+
+    --on-primary-color: #ffffff;
+    --on-secondary-color: #ffffff;
+    --border-color: lightgray;
+    --background-color: black;
 }
 
 * {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     box-sizing: border-box;
+}
+
+body {
+    background-color: var(--background-color);
 }
 
 #app {

@@ -9,7 +9,8 @@
         </SubmitButton>
       </li>
     </ol>
-    <button v-if="shouldShowAllMeaningsButton&&!isShowingAllSuggestedMeanings" class="inv-button show-all-suggestions-button"
+    <button v-if="shouldShowAllMeaningsButton&&!isShowingAllSuggestedMeanings"
+            class="inv-button show-all-suggestions-button"
             @click="onShowAllSuggestionsClicked">
       <span>Show all suggestions</span>
     </button>
@@ -57,6 +58,11 @@ export default {
     return {
       newMeaningText: "" as string | null,
     };
+  },
+  watch: {
+    vocabId() {
+      this.newMeaningText = "";
+    }
   },
   methods: {
     async addSuggestedMeaning(meaning: MeaningSchema) {

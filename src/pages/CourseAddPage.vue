@@ -85,9 +85,6 @@ export default {
       this.isSubmitting = false;
       if (response.ok) {
         const newCourse = response.data;
-        //TODO redir query param
-        // if (this.$route.query["redir"])
-        //   await this.$router.push({path: this.$route.query["redir"]});
         await this.$router.push({name: "edit-course", params: {courseId: newCourse.id}});
       } else {
         if ("fields" in response.error)
@@ -167,7 +164,7 @@ export default {
 }
 
 @media screen and (max-width: 750px) {
-  .add-course-form{
+  .add-course-form {
     flex-direction: column;
   }
 }

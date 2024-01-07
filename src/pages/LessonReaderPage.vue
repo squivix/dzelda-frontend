@@ -3,27 +3,26 @@
   <BaseCard class="base-card unselectable" v-else-if="lesson">
     <template v-slot:all>
       <div class="content-and-side-div">
-        <LessonContent ref="theLessonContentRef"
-                       :title="lesson.title"
-                       :text="lesson.text"
+        <LessonContent ref="lessonContentRef"
                        :lessonTokens="lessonTokens"
+                       :selectedTokens="isSelectedNewPhrase?[]:selectedTokens"
                        :image="imageUrl"
                        :words="words"
                        :phrases="phrases"
-                       :selectedVocab="selectedVocab"
                        class="lesson-content"
-                       @onWordClicked="setSelectedVocab"
-                       @onPhraseClicked="setSelectedVocab"
+                       @onWordClicked="setSelectedTokens"
+                       @onPhraseClicked="setSelectedTokens"
+                       @onNewPhraseSelected="setSelectedTokens"
                        @onOverLappingPhrasesClicked="showOverlappingPhrases"
-                       @onNewPhraseSelected="selectNewPhrase"
-                       @onBackgroundClicked="clearSelectedVocab"/>
+                       @onBackgroundClicked="clearSelectedTokens"/>
         <ReaderSidePanel class="side-panel"
-                         :selectedOverlappingPhrases="selectedOverLappingPhrases"
+                         :selectedOverLappingPhrasesTokens="selectedOverLappingPhrasesTokens"
                          :selectedVocab="selectedVocab"
+                         :phrases="phrases"
                          @onVocabUpdated="updateVocabData"
                          @onVocabDeleted="deleteVocabData"
                          @onNewVocabCreated="onNewVocabCreated"
-                         @onOverlappingPhraseClicked="setSelectedVocab"
+                         @onOverlappingPhraseClicked="setSelectedTokens"
                          :onVocabRefetched="updateVocab"/>
       </div>
       <div class="bottom-div">
@@ -63,6 +62,7 @@ import {icons} from "@/icons.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
 import ExpandingIconButton from "@/components/ui/ExpandingIconButton.vue";
 import {useTimeoutFn} from "@vueuse/core";
+import {ALL_VOCAB_LEVELS} from "@/constants.js";
 
 export type NewVocab = Omit<LearnerVocabSchema, "id">
 export type LessonTokenObject = Omit<TokenWithPhrases, "phrases"> & {
@@ -82,8 +82,8 @@ export default defineComponent({
       lesson: null as LessonSchema | null,
       words: {} as Record<string, LearnerVocabSchema>,
       phrases: {} as Record<string, LearnerVocabSchema>,
-      selectedVocab: null as LearnerVocabSchema | NewVocab | null,
-      selectedOverLappingPhrases: null as LearnerVocabSchema[] | null,
+      selectedTokens: [] as LessonTokenObject[],
+      selectedOverLappingPhrasesTokens: null as LessonTokenObject[][] | null,
       lessonTokens: null as { title: LessonTokenObject[], text: LessonTokenObject[] } | null,
       matchIndexToTokenIndex: {title: {}, text: {}} as { title: Record<number, number>, text: Record<number, number> },
       isLoadingLesson: true,
@@ -93,6 +93,33 @@ export default defineComponent({
     };
   },
   computed: {
+    ALL_VOCAB_LEVELS() {
+      return ALL_VOCAB_LEVELS;
+    },
+    selectedVocab() {
+      if (this.selectedTokens.length == 0)
+        return null;
+      const selectedText = this.selectedTokens.filter(t => t.isWord).map(t => t.parsedText).join(" ");
+      if (this.words[selectedText])
+        return this.words[selectedText];
+      else if (this.phrases[selectedText])
+        return this.phrases[selectedText];
+      else
+        return {
+          text: selectedText,
+          level: VocabLevelSchema.NEW,
+          isPhrase: true,
+          notes: null,
+          language: this.lesson!.course.language,
+          meanings: [],
+          learnerMeanings: []
+        };
+    },
+    isSelectedNewPhrase() {
+      if (!this.selectedVocab)
+        return false;
+      return (this.selectedVocab.isPhrase && this.selectedVocab.level == VocabLevelSchema.NEW);
+    },
     isLoading() {
       return this.isLoadingLesson || this.isLoadingWords || this.isParsingLesson;
     },
@@ -149,37 +176,26 @@ export default defineComponent({
       this.phrases = phrases;
       this.isLoadingWords = false;
     },
-    setSelectedVocab(vocab: LearnerVocabSchema) {
-      this.selectedVocab = vocab;
-      this.selectedOverLappingPhrases = null;
+    setSelectedTokens(selectedTokens: LessonTokenObject[]) {
+      console.log(selectedTokens);
+      this.selectedTokens = selectedTokens;
+      this.selectedOverLappingPhrasesTokens = null;
     },
-    clearSelectedVocab() {
-      this.selectedVocab = null;
-      this.selectedOverLappingPhrases = null;
+    clearSelectedTokens() {
+      this.selectedTokens = [];
+      this.selectedOverLappingPhrasesTokens = null;
     },
-    showOverlappingPhrases(phrases: LearnerVocabSchema[]) {
-      this.selectedOverLappingPhrases = phrases;
-    },
-    selectNewPhrase(phraseText: string) {
-      if (this.phrases[phraseText] && this.phrases[phraseText].level == VocabLevelSchema.NEW)
-        this.selectedVocab = this.phrases[phraseText];
-      else
-        this.selectedVocab = {
-          text: phraseText,
-          level: VocabLevelSchema.NEW,
-          isPhrase: true,
-          notes: null,
-          language: this.lesson!.course.language,
-          meanings: [],
-          learnerMeanings: []
-        };
-      this.selectedOverLappingPhrases = null;
+    showOverlappingPhrases(overlappingPhrasesTokens: LessonTokenObject[][]) {
+      this.clearSelectedTokens();
+      this.selectedOverLappingPhrasesTokens = overlappingPhrasesTokens;
     },
     onNewVocabCreated(vocab: LearnerVocabSchema) {
       if (vocab.isPhrase) {
         this.phrases[vocab.text] = vocab;
-        this.parsePhraseInTokens(this.lesson!.title, this.lesson!.parsedTitle!, this.matchIndexToTokenIndex.title, this.lessonTokens!.title, vocab.text);
-        this.parsePhraseInTokens(this.lesson!.text, this.lesson!.parsedText!, this.matchIndexToTokenIndex.text, this.lessonTokens!.text, vocab.text);
+        this.parsePhraseInTokens(this.lesson!.parsedTitle!, this.matchIndexToTokenIndex.title, this.lessonTokens!.title, vocab.text);
+        this.parsePhraseInTokens(this.lesson!.parsedText!, this.matchIndexToTokenIndex.text, this.lessonTokens!.text, vocab.text);
+        if (this.$refs.lessonContentRef)
+          (this.$refs.lessonContentRef as InstanceType<typeof LessonContent>).clearTokenTextSelection();
       }
     },
     updateVocabData(vocab: LearnerVocabSchema, updatedVocabData: Partial<LearnerVocabSchema>) {
@@ -190,9 +206,7 @@ export default defineComponent({
         this.words[vocab.text] = updatedVocab;
       if (this.selectedVocab && this.selectedVocab.text === vocab.text) {
         if ([VocabLevelSchema.IGNORED, VocabLevelSchema.KNOWN].includes(updatedVocabData.level!))
-          this.clearSelectedVocab();
-        else
-          this.setSelectedVocab(updatedVocab);
+          this.clearSelectedTokens();
       }
     },
     deleteVocabData(vocab: LearnerVocabSchema) {
@@ -211,15 +225,15 @@ export default defineComponent({
       else
         this.words[vocab.text] = newVocab;
       if (this.selectedVocab && this.selectedVocab.text === vocab.text)
-        this.clearSelectedVocab();
+        this.clearSelectedTokens();
     },
     updateVocab(updatedVocab: LearnerVocabSchema) {
       if (updatedVocab.isPhrase)
         this.phrases[updatedVocab.text] = updatedVocab;
       else
         this.words[updatedVocab.text] = updatedVocab;
-      if (this.selectedVocab && this.selectedVocab.text == updatedVocab.text)
-        this.setSelectedVocab(updatedVocab);
+      // if (this.selectedVocab && this.selectedVocab.text == updatedVocab.text)
+      //   this.setSelectedVocab(updatedVocab);
     },
     parseLesson() {
       this.isParsingLesson = true;
@@ -244,7 +258,7 @@ export default defineComponent({
       }
       return tokens;
     },
-    parsePhraseInTokens(text: string, parsedText: string, matchIndexToTokenIndex: Record<number, number>, tokens: LessonTokenObject[], phraseText: string) {
+    parsePhraseInTokens(parsedText: string, matchIndexToTokenIndex: Record<number, number>, tokens: LessonTokenObject[], phraseText: string) {
       //detect every phrase surrounded by non letters and non-numbers
       const regex = new RegExp(`(?=((?<=\\s|^)${phraseText}(?=\\s|$)))`, "gu");
       const phraseWords = phraseText.split(" ");
@@ -294,7 +308,7 @@ export default defineComponent({
   display: grid;
   grid-template-columns: 2fr 1.3fr;
   grid-template-rows: 70vh;
-  column-gap: 2rem;
+  column-gap: 1rem;
 }
 
 .bottom-div {

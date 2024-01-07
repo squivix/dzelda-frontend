@@ -41,7 +41,7 @@ import {getChildrenInViewIndexes, getTextSelectedElements, padSequence} from "@/
 import {useDebounceFn, useEventListener} from "@vueuse/core";
 import {icons} from "@/icons.js";
 import TokenGroup from "@/components/page/reader/TokenGroup.vue";
-import {LessonTokenObject, NewVocab} from "@/pages/LessonReaderPage.vue";
+import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
 
 const TOKEN_MAX_GROUP_SIZE = 200;
 const TOKEN_MIN_GROUP_SIZE = 100;
@@ -52,24 +52,21 @@ export default {
   components: {BaseImage, TokenGroup},
   emits: ["onWordClicked", "onPhraseClicked", "onOverLappingPhrasesClicked", "onNewPhraseSelected", "onBackgroundClicked", "onScroll"],
   props: {
-    title: {type: String, required: true,},
-    text: {type: String, required: true,},
+    lessonTokens: {type: Object as PropType<{ title: LessonTokenObject[], text: LessonTokenObject[] }>, required: true},
+    selectedTokens: {type: Array as PropType<LessonTokenObject[]>, required: true},
     image: {type: String, required: true,},
-    audio: {type: String, required: false,},
     words: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true,},
     phrases: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
-    lessonTokens: {type: Object as PropType<{ title: LessonTokenObject[], text: LessonTokenObject[] }>, required: true},
-    selectedVocab: {type: Object as PropType<LearnerVocabSchema | NewVocab | null>, default: null},
   },
   data() {
     return {
       scrollObserver: null as IntersectionObserver | null,
       groupIndexesInView: undefined as Set<number> | undefined,
       isPhraseFirstClick: true,
-      selectedTokens: new Set<number>(),
       selectedTextTokens: [] as LessonTokenObject[],
     };
   },
+  expose: ["clearTokenTextSelection"],
   computed: {
     paragraphRef(): HTMLElement | null {
       return this.$refs["paragraphRef"] as HTMLElement;
@@ -101,36 +98,40 @@ export default {
       return tokenGroups;
     }
   },
-  watch: {
-    selectedVocab() {
-      if (this.selectedVocab == null)
-        this.selectedTokens.clear();
-    }
-  },
   methods: {
     onWordClicked(word: LearnerVocabSchema, wordToken: LessonTokenObject) {
-      this.selectedTokens = new Set([wordToken.index]);
       this.clearTokenTextSelection();
-      this.$emit("onWordClicked", word);
+      this.$emit("onWordClicked", [wordToken]);
     },
     onPhraseClicked(phrase: LearnerVocabSchema, clickedToken: LessonTokenObject) {
-      this.selectedTokens = this.getPhraseTokens(clickedToken, [phrase]);
       this.clearTokenTextSelection();
-      this.$emit("onPhraseClicked", phrase);
+      this.$emit("onPhraseClicked", this.getPhraseTokens(clickedToken, [phrase]));
     },
     onOverLappingPhrasesClicked(phrases: LearnerVocabSchema[], clickedToken: LessonTokenObject) {
-      this.selectedTokens.clear();
-      //this.selectedTokens = this.getPhraseTokens(clickedToken, phrases);
-      this.$emit("onOverLappingPhrasesClicked", phrases);
+      const phraseMap: Record<string, LessonTokenObject[]> = {};
+      const phraseTokens = this.getPhraseTokens(clickedToken, phrases);
+      const phraseIds = new Set(phrases.map(p => p.id));
+      for (const token of phraseTokens) {
+        for (const tp of token.phrases) {
+          if (!phraseIds.has(tp.phraseId))
+            continue;
+          const key = `${tp.phraseId}-${tp.phraseOccurrenceIndex}`;
+          if (key in phraseMap)
+            phraseMap[key].push({...token, phrases: [tp]});
+          else
+            phraseMap[key] = [{...token, phrases: [tp]}];
+        }
+      }
+      const completePhraseTokens = Object.values(phraseMap).filter(pts => pts.filter(t => t.isWord).map(t => t.parsedText).join(" ") in this.phrases);
+      this.$emit("onOverLappingPhrasesClicked", completePhraseTokens);
+    },
+    onNewPhraseSelected(newPhraseTokens: LessonTokenObject[]) {
+      this.$emit("onNewPhraseSelected", newPhraseTokens);
     },
     onBackgroundClicked() {
       this.clearTokenTextSelection();
       this.isPhraseFirstClick = true;
-      this.selectedTokens.clear();
       this.$emit("onBackgroundClicked");
-    },
-    onNewPhraseSelected(phraseText: string) {
-      this.$emit("onNewPhraseSelected", phraseText);
     },
     clearTokenTextSelection() {
       this.selectedTextTokens = [];
@@ -141,28 +142,26 @@ export default {
       if (!selectedWrappers || selectedWrappers.length < 1)
         return;
       this.clearTokenTextSelection();
-      const selectedWords: LessonTokenObject[] = [];
+      const selected: LessonTokenObject[] = [];
       for (const wrapperElement of selectedWrappers) {
         wrapperElement.classList.add("text-selected");
-        const wordNode = wrapperElement.childNodes[0] as HTMLElement;
-        if (wordNode.classList.contains("word")) {
-          const token = this.getTokenFromIndex(Number(wrapperElement.dataset.tokenIndex));
-          selectedWords.push(token);
-        }
+        const token = this.getTokenFromIndex(Number(wrapperElement.dataset.tokenIndex));
+        selected.push(token);
       }
-      this.selectedTextTokens = selectedWords;
+      this.selectedTextTokens = selected;
     },
     onMouseUp() {
       getSelection()?.empty();
       if (this.selectedTextTokens.length == 0)
         return;
-      const selectedText = this.selectedTextTokens.map(t => t.parsedText).join(" ");
+      const selectedWordTokens = this.selectedTextTokens.filter(t => t.isWord);
+      const selectedText = selectedWordTokens.map(t => t.parsedText).join(" ");
       if (this.words[selectedText])
-        this.onWordClicked(this.words[selectedText], this.selectedTextTokens[0]);
+        this.onWordClicked(this.words[selectedText], selectedWordTokens[0]);
       else if (this.phrases[selectedText] && this.phrases[selectedText].level !== VocabLevelSchema.NEW)
-        this.onPhraseClicked(this.phrases[selectedText], this.selectedTextTokens[0]);
+        this.onPhraseClicked(this.phrases[selectedText], selectedWordTokens[0]);
       else
-        this.onNewPhraseSelected(selectedText);
+        this.onNewPhraseSelected(this.selectedTextTokens);
     },
     getTokenFromIndex(tokenIndex: number) {
       if (tokenIndex < this.lessonTokens.title.length)
@@ -171,12 +170,12 @@ export default {
         return this.lessonTokens.text[tokenIndex - this.lessonTokens.title.length];
     },
     getPhraseTokens(clickedToken: LessonTokenObject, phrases: LearnerVocabSchema[]) {
-      const phraseTokens = new Set<number>();
+      const phraseTokens: LessonTokenObject[] = [];
       const phraseIds = new Set<number>(phrases.map(p => p.id));
       document.querySelectorAll(clickedToken.phrases
           .filter(p => phraseIds.has(p.phraseId))
           .map(p => `.phrase-${p.phraseId}-${p.phraseOccurrenceIndex}`).join(", "))
-          .forEach((n) => phraseTokens.add(Number((n as HTMLElement).dataset.tokenIndex)));
+          .forEach((n) => phraseTokens.push(this.getTokenFromIndex(Number((n as HTMLElement).dataset.tokenIndex))));
       return phraseTokens;
     },
     setIsPhraseFirstClick(isPhraseFirstClick: boolean) {
@@ -223,7 +222,7 @@ export default {
 
 .title {
   font-size: 1.5rem;
-  line-height: 2.5rem;
+  line-height: 2.75rem;
 }
 
 .lesson-text {

@@ -1,3 +1,6 @@
+import {VocabLevelSchema} from "dzelda-common";
+import {ALL_VOCAB_LEVELS} from "@/constants.js";
+
 export function shallowObjectEquals(obj1: Record<string, any>, obj2: Record<string, any>): boolean {
     return Object.keys(obj1).length === Object.keys(obj2).length && Object.keys(obj1).every(key => obj1[key] === obj2[key]);
 }
@@ -20,7 +23,7 @@ export function excludeProperties<T, K extends keyof T>(obj: T, keysToOmit: K[])
     return result as Omit<T, K>;
 }
 
-export function cleanUndefined<T>(obj: T): T{
+export function cleanUndefined<T>(obj: T): T {
     if (typeof obj !== "object" || obj === null)
         return obj;
 
@@ -98,15 +101,6 @@ export function getTextSelectedElements(selection: Selection) {
     }
 }
 
-export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
-    if (chunkSize <= 0)
-        throw Error("Chuck size must be positive");
-    const chunks: T[][] = [];
-    for (let i = 0; i < array.length; i += chunkSize)
-        chunks.push(array.slice(i, i + chunkSize));
-    return chunks;
-}
-
 export function getChildrenInViewIndexes(container: HTMLElement) {
     const containerTop = container.scrollTop;
     const containerBottom = containerTop + container.clientHeight;
@@ -146,6 +140,19 @@ export function padSequence(numbers: number[], leftPadding: number, rightPadding
         result.push(element);
     }
     return result;
+}
+
+export function getLevelClass(level?: VocabLevelSchema) {
+    const levelMap = {
+        [ALL_VOCAB_LEVELS.NEW]: "level-new",
+        [ALL_VOCAB_LEVELS.LEVEL_1]: "level-1 ",
+        [ALL_VOCAB_LEVELS.LEVEL_2]: "level-2 ",
+        [ALL_VOCAB_LEVELS.LEVEL_3]: "level-3",
+        [ALL_VOCAB_LEVELS.LEVEL_4]: "level-4",
+        [ALL_VOCAB_LEVELS.LEARNED]: "level-learned",
+        [ALL_VOCAB_LEVELS.KNOWN]: "level-known",
+    };
+    return level !== undefined ? levelMap[level] : "";
 }
 
 export function secondsToMs(seconds: number) {

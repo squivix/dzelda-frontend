@@ -1,6 +1,6 @@
 <template>
   <div class="side-panel">
-    <VocabPanel v-if="!selectedOverlappingPhrases"
+    <VocabPanel v-if="!selectedOverLappingPhrasesTokens"
                 :vocab="selectedVocab"
                 @mousedown.stop
                 :onVocabRefetched="onVocabRefetched"
@@ -9,8 +9,9 @@
                 @onNewVocabCreated="(vocab)=>$emit('onNewVocabCreated', vocab)"/>
     <OverlappingPhrasesPanel v-else
                              @mousedown.stop
-                             :phrases="selectedOverlappingPhrases!"
-                             @onPhraseClick="(phrase)=>$emit('onOverlappingPhraseClicked', phrase)"/>
+                             :phrases="phrases"
+                             :overLappingPhrasesTokens="selectedOverLappingPhrasesTokens!"
+                             @onPhraseClick="(phraseTokens)=>$emit('onOverlappingPhraseClicked', phraseTokens)"/>
   </div>
 </template>
 
@@ -18,23 +19,25 @@
 import {defineComponent, PropType} from "vue";
 import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel.vue";
 import {LearnerVocabSchema, MeaningSchema} from "dzelda-common";
-import {NewVocab} from "@/pages/LessonReaderPage.vue";
+import {LessonTokenObject, NewVocab} from "@/pages/LessonReaderPage.vue";
 import VocabPanel from "@/components/shared/vocab-panel/VocabPanel.vue";
+import LessonContent from "@/components/page/reader/LessonContent.vue";
 
 export default defineComponent({
   name: "ReaderSidePanel",
-  components: {OverlappingPhrasesPanel, VocabPanel},
+  components: {LessonContent, OverlappingPhrasesPanel, VocabPanel},
   props: {
-    selectedOverlappingPhrases: {type: Array as PropType<LearnerVocabSchema[] | null>},
+    selectedOverLappingPhrasesTokens: {type: Array as PropType<LessonTokenObject[][] | null>},
     selectedVocab: {type: Object as PropType<LearnerVocabSchema | NewVocab | null>, default: null},
     onVocabRefetched: {type: Function as PropType<(updatedVocab: LearnerVocabSchema) => void>},
+    phrases: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
   },
   computed: {},
   emits: {
     onVocabUpdated: (vocab: LearnerVocabSchema, updatedData: Partial<LearnerVocabSchema>) => true,
     onVocabDeleted: (vocab: LearnerVocabSchema) => true,
     onNewVocabCreated: (vocab: LearnerVocabSchema) => true,
-    onOverlappingPhraseClicked: (phrase: LearnerVocabSchema) => true,
+    onOverlappingPhraseClicked: (phraseTokens: LessonTokenObject[]) => true,
   },
 });
 </script>

@@ -5,7 +5,6 @@
       <select>
         <option value="light">Light</option>
         <option value="dark">Dark</option>
-        <option value="browser">Same as browser</option>
       </select>
       <SubmitButton type="button" class="primary-filled-button capsule-button">Save</SubmitButton>
     </form>
@@ -26,7 +25,7 @@ export default defineComponent({
     }
   },
   setup() {
-    return {localSettingsStore: useLocalSettingsStore()}
+    return {localSettingsStore: useLocalSettingsStore()};
   }
 });
 </script>
