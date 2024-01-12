@@ -56,7 +56,7 @@ export default defineComponent({
     src() {
       //if no new audio use old audio
       if (this.modelValue === undefined)
-        return this.oldAudioPath ? `${this.store.resourceUrl}/${this.oldAudioPath}` : "";
+        return this.oldAudioPath;
       //if old audio was cleared use nothing
       else if (this.modelValue === "")
         return "";

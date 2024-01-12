@@ -68,6 +68,7 @@ import {PropType} from "vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {LANGUAGE_LEVELS} from "@/constants.js";
 import {toSentenceCase} from "../utils.js";
+import {useStore} from "@/stores/backend/rootStore.js";
 
 export default {
   name: "CourseEditPage",
@@ -96,6 +97,16 @@ export default {
   methods: {
     async submitEditCourse() {
       this.isSubmitting = true;
+      let imageUrl;
+      if (this.image)
+        imageUrl = await this.store.uploadFile({
+          fileField: "courseImage",
+          fileExtension: "jpg",
+          file: new File([this.image], "image.jpg"),
+        });
+      else
+        imageUrl = this.image;
+
       const response = await this.courseStore.updateCourse(
           {courseId: this.pathParams.courseId},
           {
@@ -104,7 +115,7 @@ export default {
             level: this.level!,
             isPublic: this.isPublic!,
             lessonsOrder: this.lessons!.map(lesson => lesson.id),
-            image: this.image
+            image: imageUrl
           }
       );
       this.isSubmitting = false;
@@ -133,7 +144,7 @@ export default {
     this.lessons = course.lessons;
   },
   setup() {
-    return {LANGUAGE_LEVELS, toSentenceCase, icons, courseStore: useCourseStore(),};
+    return {LANGUAGE_LEVELS, toSentenceCase, icons, store: useStore(), courseStore: useCourseStore(),};
   }
 };
 </script>

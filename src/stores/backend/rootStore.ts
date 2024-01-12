@@ -69,7 +69,20 @@ export const useStore = defineStore("main", {
                     this.cache[cacheKey] = {timeCached: new Date(), data: response.data, expiryTimeInMs: expiryTimeInMs ?? DEFAULT_CACHE_TIME};
                 return response;
             },
-
+            async uploadFile({fileField, fileExtension, file}: { fileField: string, fileExtension: string, file: File }) {
+                const store = useStore();
+                const response = await store.fetchCustom((api) => api.fileUploadRequests.postFileUploadRequest({
+                    fileField: fileField,
+                    fileExtension: fileExtension,
+                }));
+                const {uploadUrl, uploadFormFields, objectKey} = response.data;
+                const form = new FormData();
+                Object.entries(uploadFormFields).forEach(([field, value]) => form.append(field, value));
+                form.append("file", file);
+                //TODO react to upload errors and timeouts
+                await fetch(uploadUrl, {method: "POST", body: form});
+                return objectKey;
+            },
         }
     })
 ;

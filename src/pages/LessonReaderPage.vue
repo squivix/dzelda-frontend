@@ -124,16 +124,10 @@ export default defineComponent({
       return this.isLoadingLesson || this.isLoadingWords || this.isParsingLesson;
     },
     imageUrl() {
-      const imagePath = this.lesson!.image || this.lesson!.course.image;
-      if (imagePath)
-        return `${this.store.resourceUrl}/${imagePath}`;
-      return "";
+      return (this.lesson!.image || this.lesson!.course.image) ?? "";
     },
     audioUrl() {
-      const audioPath = this.lesson!.audio;
-      if (audioPath)
-        return `${this.store.resourceUrl}/${audioPath}`;
-      return "";
+      return this.lesson?.audio ?? "";
     },
   },
   async mounted() {

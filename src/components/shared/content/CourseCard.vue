@@ -1,8 +1,8 @@
 <template>
   <router-link
       :to="{name:'course', params:{courseId:course.id}}">
-  <BaseCard>
-    <template v-slot:all>
+    <BaseCard>
+      <template v-slot:all>
         <article class="course-article">
           <BaseImage :image-url="imageUrl" :fall-back-url="icons.books"
                      alt-text="course image"></BaseImage>
@@ -30,8 +30,8 @@
             </BaseDropDown>
           </div>
         </article>
-    </template>
-  </BaseCard>
+      </template>
+    </BaseCard>
   </router-link>
 </template>
 
@@ -60,7 +60,7 @@ export default {
   },
   computed: {
     imageUrl() {
-      return this.course.image ? `${this.store.resourceUrl}/${this.course.image}` : "";
+      return this.course.image;
     },
   },
   setup() {

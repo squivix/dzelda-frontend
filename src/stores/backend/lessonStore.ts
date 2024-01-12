@@ -33,20 +33,16 @@ export const useLessonStore = defineStore("lesson", {
             title: string,
             text: string,
             courseId: number,
-            image: File | Blob | undefined,
-            audio: File | undefined
+            image: string | undefined,
+            audio: string | undefined
         }) {
             useMessageBarStore().clearMessages();
             const store = useStore();
-            if (body.image instanceof Blob)
-                body.image = new File([body.image], "image");
             return await store.fetchCustom((api) => api.lessons.postLessons(cleanUndefined({
-                data: {
-                    title: body.title,
-                    text: body.text,
-                    courseId: body.courseId,
-                },
-                image: body.image as File | undefined,
+                title: body.title,
+                text: body.text,
+                courseId: body.courseId,
+                image: body.image,
                 audio: body.audio,
             })));
         },

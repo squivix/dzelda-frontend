@@ -55,6 +55,7 @@ import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {LANGUAGE_LEVELS} from "@/constants.js";
 import {toSentenceCase} from "@/utils.js";
 import {LanguageLevelSchema} from "dzelda-common";
+import {useStore} from "@/stores/backend/rootStore.js";
 
 export default {
   name: "CourseAddPage",
@@ -74,12 +75,21 @@ export default {
     async onSubmit() {
       this.isSubmitting = true;
       this.errorFields = {title: "", description: "", image: ""};
+      let imageUrl;
+      if (this.image)
+        imageUrl = await this.store.uploadFile({
+          fileField: "courseImage",
+          fileExtension: "jpg",
+          file: new File([this.image], "image.jpg"),
+        });
+      else
+        imageUrl = this.image;
       const response = await this.courseStore.createCourse({
         languageCode: this.$route.params.learningLanguage as string,
         title: this.title,
         description: this.description,
         isPublic: this.isPublic,
-        image: this.image,
+        image: imageUrl,
         level: this.level as LanguageLevelSchema
       });
       this.isSubmitting = false;
@@ -97,6 +107,7 @@ export default {
     return {
       icons,
       LANGUAGE_LEVELS, toSentenceCase,
+      store: useStore(),
       courseStore: useCourseStore(),
     };
   }

@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {cleanUndefined} from "@/utils.js";
-import {HttpResponse, LanguageLevelSchema} from "dzelda-common";
+import {LanguageLevelSchema} from "dzelda-common";
 import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export const useCourseStore = defineStore("course", {
@@ -40,23 +40,19 @@ export const useCourseStore = defineStore("course", {
             languageCode: string,
             title: string,
             description: string,
-            image: File | Blob | undefined,
+            image: string | undefined,
             isPublic: boolean,
             level: LanguageLevelSchema | undefined
         }) {
             useMessageBarStore().clearMessages();
             const store = useStore();
-            if (body.image instanceof Blob)
-                body.image = new File([body.image], "image");
             return await store.fetchCustom((api) => api.courses.postCourses(cleanUndefined({
-                data: {
-                    languageCode: body.languageCode,
-                    title: body.title,
-                    description: body.description,
-                    isPublic: body.isPublic,
-                    level: body.level,
-                },
-                image: body.image as File | undefined
+                languageCode: body.languageCode,
+                title: body.title,
+                description: body.description,
+                isPublic: body.isPublic,
+                level: body.level,
+                image: body.image as string | undefined,
             }))) as Awaited<ReturnType<typeof store.apiClient.courses.postCourses>>;
         },
         async fetchCourse(pathParams: {
@@ -76,23 +72,19 @@ export const useCourseStore = defineStore("course", {
             description: string,
             isPublic: boolean,
             level: "beginner1" | "beginner2" | "intermediate1" | "intermediate2" | "advanced1" | "advanced2"
-            image: File | Blob | undefined | "",
+            image: string | undefined,
             lessonsOrder: number[]
         }) {
             useMessageBarStore().clearMessages();
             const store = useStore();
-            if (body.image instanceof Blob)
-                body.image = new File([body.image], "image");
             return await store.fetchCustom((api) => api.courses.putCoursesCourseId(pathParams.courseId,
                 cleanUndefined({
-                    data: {
-                        title: body.title,
-                        description: body.description,
-                        level: body.level,
-                        isPublic: body.isPublic,
-                        lessonsOrder: body.lessonsOrder,
-                    },
-                    image: body.image as File | undefined
+                    title: body.title,
+                    description: body.description,
+                    level: body.level,
+                    isPublic: body.isPublic,
+                    lessonsOrder: body.lessonsOrder,
+                    image: body.image
                 })));
         },
         async addCourseToUserBookmarks(body: {

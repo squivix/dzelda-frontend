@@ -103,12 +103,30 @@ export default {
     async addLesson() {
       this.errorFields = {title: "", text: "", image: "", audio: "", courseId: ""};
       this.isSubmitting = true;
+      let imageUrl, audioUrl;
+      if (this.image)
+        imageUrl = await this.store.uploadFile({
+          fileField: "lessonImage",
+          fileExtension: "jpg",
+          file: new File([this.image], "image.jpg"),
+        });
+      else
+        imageUrl = this.image;
+      if (this.audio)
+        audioUrl = await this.store.uploadFile({
+          fileField: "lessonAudio",
+          fileExtension: "mp3",
+          file: this.audio
+        });
+      else
+        audioUrl = this.audio;
+
       const response = await this.lessonStore.createLesson({
         courseId: this.selectedCourse as number,
         title: this.title,
         text: this.text,
-        image: this.image,
-        audio: this.audio
+        image: imageUrl,
+        audio: audioUrl
       });
       this.isSubmitting = false;
       if (response.ok) {

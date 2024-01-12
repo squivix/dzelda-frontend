@@ -43,7 +43,7 @@ export default defineComponent({
     src() {
       //if no new image use old image
       if (this.modelValue === undefined)
-        return this.oldImagePath ? `${this.store.resourceUrl}/${this.oldImagePath}` : "";
+        return this.oldImagePath;
       //if old image was cleared use nothing
       else if (this.modelValue === "")
         return "";
