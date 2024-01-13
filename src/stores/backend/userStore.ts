@@ -67,8 +67,7 @@ export const useUserStore = defineStore("auth", {
             await store.fetchCustom((api) => api.sessions.deleteSessions());
             this.authToken = null;
             this.userAccount = null;
-            const languageStore = useLanguageStore();
-            languageStore.clearUserData();
+            store.clearUserData();
         },
         async requestEmailConfirmToken(body: {
             email?: string
@@ -152,13 +151,11 @@ export const useUserStore = defineStore("auth", {
             }
             return response.ok;
         },
-        async updateUserProfile(body: { bio: string, profilePicture: File | "" | undefined }) {
+        async updateUserProfile(body: { bio: string, profilePicture: string | undefined }) {
             useMessageBarStore().clearMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.putUsersMeProfile(cleanUndefined({
-                data: {
-                    bio: body.bio
-                },
+                bio: body.bio,
                 profilePicture: body.profilePicture
             })));
 

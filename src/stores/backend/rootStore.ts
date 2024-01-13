@@ -3,16 +3,13 @@ import {useUserStore} from "@/stores/backend/userStore.js";
 import {ApiClient, HttpResponse} from "dzelda-common";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 import {secondsToMs} from "@/utils.js";
+import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 const DEFAULT_CACHE_TIME = secondsToMs(30);
 export const useStore = defineStore("main", {
         state() {
-            const baseUrl = import.meta.env._BACKEND_URL;
-            const resourceUrl = `${baseUrl}`;
-            const apiUrl = `${baseUrl}/api/v1`;
+            const apiUrl = `${import.meta.env._BACKEND_URL}/api/v1`;
             return {
-                baseUrl,
-                resourceUrl,
                 apiUrl,
                 apiClient: new ApiClient<string>({
                     baseUrl: apiUrl,
@@ -33,6 +30,7 @@ export const useStore = defineStore("main", {
                 expiryTimeInMs?: number,
                 ignore401?: boolean
             } = {}): typeof cacheKey extends undefined ? Promise<HttpResponse<T, E>> : Promise<{
+                ok: true,
                 cacheHit: true,
                 data: T
             } | HttpResponse<T, E>> {
@@ -47,7 +45,7 @@ export const useStore = defineStore("main", {
                         if (new Date().getTime() - this.cache[cacheKey].timeCached.getTime() > cacheHit.expiryTimeInMs)
                             delete this.cache[cacheKey];
                         else
-                            return {cacheHit: true, data: this.cache[cacheKey].data};
+                            return {ok: true, cacheHit: true, data: this.cache[cacheKey].data};
                     }
                 }
                 try {
@@ -69,21 +67,36 @@ export const useStore = defineStore("main", {
                     this.cache[cacheKey] = {timeCached: new Date(), data: response.data, expiryTimeInMs: expiryTimeInMs ?? DEFAULT_CACHE_TIME};
                 return response;
             },
-            async uploadFile({fileField, fileExtension, file}: { fileField: string, fileExtension: string, file: File }) {
+            async uploadFile({fileField, fileExtension, file}: { fileField: string, fileExtension: string, file: File }): Promise<string | undefined> {
                 const store = useStore();
-                const response = await store.fetchCustom((api) => api.fileUploadRequests.postFileUploadRequest({
+                const response1 = await store.fetchCustom((api) => api.fileUploadRequests.postFileUploadRequest({
                     fileField: fileField,
                     fileExtension: fileExtension,
                 }));
-                const {uploadUrl, uploadFormFields, objectKey} = response.data;
+                if (!response1.ok) {
+                    const messageBarStore = useMessageBarStore();
+                    messageBarStore.addMessage({text: "Failed to request file upload, please try again", type: MessageType.ERROR});
+                    return;
+                }
+                const {uploadUrl, uploadFormFields, objectKey} = response1.data;
                 const form = new FormData();
                 Object.entries(uploadFormFields).forEach(([field, value]) => form.append(field, value));
                 form.append("file", file);
-                //TODO react to upload errors and timeouts
-                await fetch(uploadUrl, {method: "POST", body: form});
+                const response2 = await fetch(uploadUrl, {method: "POST", body: form});
+                if (!response2.ok) {
+                    const messageBarStore = useMessageBarStore();
+                    messageBarStore.addMessage({text: "Failed to upload file, please try again", type: MessageType.ERROR});
+                    return;
+                }
                 return objectKey;
             },
+            clearUserData() {
+                const languageStore = useLanguageStore();
+                this.cache = {};
+                languageStore.clearUserData();
+            }
         }
     })
 ;
+
 

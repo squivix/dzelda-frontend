@@ -66,10 +66,7 @@ export default {
         return format(this.lesson.timeViewed);
     },
     imageUrl() {
-      const imagePath = this.lesson.image || this.lesson.course.image;
-      if (imagePath)
-        return `${this.store.resourceUrl}/${imagePath}`;
-      return "";
+      return (this.lesson.image || this.lesson.course.image) ?? "";
     },
     newVocabsPercentage() {
       const total = this.lesson.vocabsByLevel![VocabLevelSchema.NEW] + this.savedVocabsCount;

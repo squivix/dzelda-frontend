@@ -171,7 +171,6 @@ export default defineComponent({
       this.isLoadingWords = false;
     },
     setSelectedTokens(selectedTokens: LessonTokenObject[]) {
-      console.log(selectedTokens);
       this.selectedTokens = selectedTokens;
       this.selectedOverLappingPhrasesTokens = null;
     },

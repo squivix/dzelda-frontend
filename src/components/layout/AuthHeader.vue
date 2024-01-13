@@ -130,10 +130,7 @@ export default defineComponent({
       return this.userLanguages ? this.userLanguages!.filter(lang => lang.code !== this.currentLanguage!.code) : [];
     },
     profilePicture() {
-      const profilePicturePath = this.userAccount?.profile.profilePicture;
-      if (profilePicturePath)
-        return `${this.store.resourceUrl}/${profilePicturePath}`;
-      return "";
+      return this.userAccount?.profile.profilePicture ?? "";
     },
     doShowNavBar() {
       return this.userAccount?.isEmailConfirmed && this.userLanguages && this.userLanguages.length > 0;

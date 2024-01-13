@@ -35,7 +35,7 @@
                         type="submit"
                         class="primary-filled-button capsule-button"
                         :is-submitting="isSubmitting">
-            Save
+            {{ submittingMessage ?? "Save" }}
           </SubmitButton>
         </div>
       </form>
@@ -69,21 +69,34 @@ export default {
       image: undefined as Blob | undefined,
       errorFields: {title: "", description: "", image: ""},
       isSubmitting: false,
+      submittingMessage: undefined as string | undefined,
     };
+  },
+  watch: {
+    isSubmitting() {
+      if (!this.isSubmitting)
+        this.submittingMessage = undefined;
+    }
   },
   methods: {
     async onSubmit() {
       this.isSubmitting = true;
       this.errorFields = {title: "", description: "", image: ""};
       let imageUrl;
-      if (this.image)
+      if (this.image) {
+        this.submittingMessage = "Uploading image";
         imageUrl = await this.store.uploadFile({
           fileField: "courseImage",
           fileExtension: "jpg",
           file: new File([this.image], "image.jpg"),
         });
-      else
+        if (!imageUrl) {
+          this.isSubmitting = false;
+          return;
+        }
+      } else
         imageUrl = this.image;
+      this.submittingMessage = "Creating course";
       const response = await this.courseStore.createCourse({
         languageCode: this.$route.params.learningLanguage as string,
         title: this.title,

@@ -8,7 +8,8 @@
       <button type="button" class="square-button primary-hollow-button reset-button" @click="clearForm">Cancel</button>
       <SubmitButton class="save-button square-button primary-filled-button"
                     type="submit"
-                    :is-submitting="isSubmitting">Save
+                    :is-submitting="isSubmitting">
+        {{ submittingMessage ?? "Save" }}
       </SubmitButton>
     </div>
 
@@ -48,8 +49,15 @@ export default defineComponent({
       isEditing: false,
       profilePicture: undefined as File | undefined | "",
       isSubmitting: false,
+      submittingMessage: undefined as string | undefined,
       errorFields: {bio: "", profilePicture: ""}
     };
+  },
+  watch: {
+    isSubmitting() {
+      if (!this.isSubmitting)
+        this.submittingMessage = undefined;
+    }
   },
   methods: {
     editForm() {
@@ -63,9 +71,25 @@ export default defineComponent({
     async updateProfile() {
       this.errorFields = {bio: "", profilePicture: ""};
       this.isSubmitting = true;
+      let profilePictureUrl;
+      if (this.profilePicture) {
+        this.submittingMessage = "Uploading profile picture";
+        profilePictureUrl = await this.store.uploadFile({
+          fileField: "profilePicture",
+          fileExtension: "jpg",
+          file: new File([this.profilePicture], "image.jpg"),
+        });
+        if (!profilePictureUrl) {
+          this.isSubmitting = false;
+          return;
+        }
+      } else
+        profilePictureUrl = this.profilePicture;
+
+      this.submittingMessage = "Updating profile";
       const response = await this.userStore.updateUserProfile({
         bio: this.bio,
-        profilePicture: this.profilePicture
+        profilePicture: profilePictureUrl
       });
       this.isSubmitting = false;
 

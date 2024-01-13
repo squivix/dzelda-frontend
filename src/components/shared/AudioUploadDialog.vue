@@ -27,7 +27,7 @@ export default defineComponent({
     id: {type: String, required: true},
     isShown: {type: Boolean},
     fileTitle: {type: String},
-    acceptedFileExtensions: {type: Array as PropType<string[]>, default: [".mp3"]},
+    acceptedFileExtensions: {type: Array as PropType<string[]>, default: [".mp3", ".m4a"]},
     maxFileSizeInBytes: {type: Number},
   },
   data() {

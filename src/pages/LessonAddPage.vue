@@ -44,7 +44,7 @@
                           type="submit"
                           class="primary-filled-button capsule-button"
                           :is-submitting="isSubmitting">
-              Save & open
+              {{ submittingMessage ?? "Save" }}
             </SubmitButton>
           </div>
         </div>
@@ -65,6 +65,7 @@ import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {PropType} from "vue";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import AudioUploadInput from "@/components/shared/AudioUploadInput.vue";
+import path from "path";
 
 export default {
   name: "LessonAddPage",
@@ -83,6 +84,7 @@ export default {
       audio: undefined as File | undefined,
       audioUrl: null as string | null,
       isSubmitting: false,
+      submittingMessage: undefined as string | undefined,
       errorFields: {title: "", text: "", image: "", audio: "", courseId: ""},
     };
   },
@@ -90,7 +92,7 @@ export default {
     selectedCourse(newVal) {
       if (newVal === "New Course")
         this.$router.push({name: "add-course"});
-    }
+    },
   },
   methods: {
     async fetchEditableCourses() {
@@ -104,23 +106,34 @@ export default {
       this.errorFields = {title: "", text: "", image: "", audio: "", courseId: ""};
       this.isSubmitting = true;
       let imageUrl, audioUrl;
-      if (this.image)
+      if (this.image) {
+        this.submittingMessage = "Uploading image";
         imageUrl = await this.store.uploadFile({
           fileField: "lessonImage",
           fileExtension: "jpg",
           file: new File([this.image], "image.jpg"),
         });
-      else
+        if (!imageUrl) {
+          this.isSubmitting = false;
+          return;
+        }
+      } else
         imageUrl = this.image;
-      if (this.audio)
+      if (this.audio) {
+        this.submittingMessage = "Uploading audio";
         audioUrl = await this.store.uploadFile({
           fileField: "lessonAudio",
-          fileExtension: "mp3",
+          fileExtension: path.extname(this.audio.name),
           file: this.audio
         });
-      else
+        if (!audioUrl) {
+          this.isSubmitting = false;
+          return;
+        }
+      } else
         audioUrl = this.audio;
 
+      this.submittingMessage = "Creating lesson";
       const response = await this.lessonStore.createLesson({
         courseId: this.selectedCourse as number,
         title: this.title,
