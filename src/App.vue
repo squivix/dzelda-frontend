@@ -9,7 +9,6 @@
   </main>
 
   <TheFooter v-if="$route.meta.showFooter"/>
-
 </template>
 <script lang="ts">
 import GuestHeader from "@/components/layout/GuestHeader.vue";
@@ -17,6 +16,7 @@ import TheFooter from "@/components/layout/TheFooter.vue";
 import AuthHeader from "@/components/layout/AuthHeader.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import TheMessageBarQueue from "@/components/layout/TheMessageBarQueue.vue";
+import {useLocalSettingsStore} from "@/stores/settingsStore.js";
 
 
 export default {
@@ -26,8 +26,16 @@ export default {
     AuthHeader,
     TheFooter,
   },
+  watch: {
+    "localSettingsStore.theme": function () {
+      document.body.dataset["theme"] = this.localSettingsStore.theme;
+    }
+  },
+  mounted() {
+    document.body.dataset["theme"] = this.localSettingsStore.theme;
+  },
   setup() {
-    return {userStore: useUserStore()};
+    return {userStore: useUserStore(), localSettingsStore: useLocalSettingsStore()};
   }
 };
 </script>

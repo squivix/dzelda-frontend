@@ -1,6 +1,6 @@
 <template>
-  <div class="dropdown">
-    <label :for="`dropdown-checkbox-${id}`" class="dropdown-label link" @click.prevent.stop="triggerIsShown">
+  <div class="dropdown" ref="dropdown">
+    <label :for="`dropdown-checkbox-${id}`" class="dropdown-label link" @click.prevent="triggerIsShown">
       <slot name="button" :isDroppedDown="isDroppedDown">
 
       </slot>
@@ -9,6 +9,7 @@
     <input :id="`dropdown-checkbox-${id}`"
            type="checkbox" class="dropdown-checkbox"
            ref="dropdown-checkbox"
+           name="dropdown-checkbox"
            v-model="isDroppedDown">
     <component :is="isPointy?'base-pointy-div':'div'"
                :class="{menu:true, 'pointy-menu':isPointy, 'centered-menu':centered, 'round-menu':round}">
@@ -21,6 +22,7 @@
 <script lang="ts">
 
 import BasePointyDiv from "@/components/ui/BasePointyDiv.vue";
+import {onClickOutside, useEventListener} from "@vueuse/core";
 
 export default {
   name: "BaseDropDown",
@@ -47,13 +49,10 @@ export default {
     },
     hide() {
       this.isDroppedDown = false;
-    },
+    }
   },
   mounted() {
-    document.addEventListener("click", this.hide);
-  },
-  unmounted() {
-    document.removeEventListener("click", this.hide);
+    onClickOutside(this.$refs["dropdown"] as HTMLInputElement, this.hide);
   },
 };
 </script>

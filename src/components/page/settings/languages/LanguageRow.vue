@@ -64,4 +64,10 @@ td {
   display: flex;
   column-gap: 1rem;
 }
+
+@media screen and (max-width: 400px) {
+  .actions-cell {
+    flex-direction: column;
+  }
+}
 </style>

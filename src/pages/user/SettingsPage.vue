@@ -94,6 +94,7 @@ export default {
   .nav-panel > ul {
     display: flex;
     flex-direction: row;
+    overflow-x: auto;
   }
 
   .nav-panel > ul > li {

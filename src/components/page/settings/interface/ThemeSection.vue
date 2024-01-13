@@ -1,13 +1,10 @@
 <template>
   <section>
     <h3>Theme</h3>
-    <form @submit.prevent="submitThemeChange">
-      <select>
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-      </select>
-      <SubmitButton type="button" class="primary-filled-button capsule-button">Save</SubmitButton>
-    </form>
+    <select v-model="theme">
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+    </select>
   </section>
 </template>
 
@@ -18,10 +15,14 @@ import {useLocalSettingsStore} from "@/stores/settingsStore.js";
 
 export default defineComponent({
   name: "ThemeSection",
-  components: {SubmitButton},
-  methods: {
-    submitThemeChange() {
-
+  data() {
+    return {
+      theme: (this.localSettingsStore as any).theme as "light" | "dark"
+    };
+  },
+  watch: {
+    theme() {
+      this.localSettingsStore.theme = this.theme;
     }
   },
   setup() {
@@ -31,10 +32,8 @@ export default defineComponent({
 </script>
 
 <style scoped>
-form {
-  display: flex;
-  flex-direction: row;
-  column-gap: 1rem;
-  align-items: center;
+select {
+  align-self: flex-start;
+  width: 100px;
 }
 </style>
