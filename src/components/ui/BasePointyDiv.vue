@@ -29,7 +29,7 @@ export default {
 
 <style scoped>
 .pointy-div {
-  background-color: white;
+  background-color: var(--background-color);
   /*border: 1px solid gray;*/
   min-width: 30px;
   box-sizing: border-box;
@@ -55,6 +55,6 @@ export default {
 
 .pointy-div:after {
   top: -10px;
-  border-bottom-color: white;
+  border-bottom-color: var(--background-color);
 }
 </style>

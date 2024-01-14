@@ -25,7 +25,7 @@ export default {
 </script>
 <style scoped>
 div {
-  border: 1px solid var(--border-color);
+  border: 1px solid lightgray;
   border-radius: 3px;
   box-shadow: rgba(0, 0, 0, 0.1) 0 0 5px 0, rgba(0, 0, 0, 0.1) 0 0 1px 0;
   padding: 4.5rem 3vw;

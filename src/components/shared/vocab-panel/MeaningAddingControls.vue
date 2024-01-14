@@ -97,6 +97,10 @@ export default {
   row-gap: 0.75rem;
 }
 
+h5{
+  font-weight: bold;
+}
+
 .suggested-meanings {
   display: flex;
   flex-direction: column;
@@ -107,7 +111,7 @@ export default {
 }
 
 .suggested-meaning {
-  background-color: var(--primary-color);
+  background-color: var(--meaning-item-color);
   padding: 15px 10px;
   cursor: pointer;
   font-size: 1.15rem;

@@ -14,7 +14,8 @@ export default defineComponent({
 
 <style scoped>
 .card {
-  background-color: #CBE5FE;
+  background-color: var(--panel-new-color);
+  color: var(--panel-new-text-color);
   padding: 1rem;
   box-sizing: border-box;
   box-shadow: rgba(99, 99, 99, 0.2) 0 2px 8px 0;

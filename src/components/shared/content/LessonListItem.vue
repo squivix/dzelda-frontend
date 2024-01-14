@@ -142,11 +142,11 @@ article {
 }
 
 .new-vocabs {
-  background-color: #aee0f4;
+  background-color: var(--vocab-new-color);
 }
 
 .saved-vocabs {
-  background-color: #ffeda1;
+  background-color: var(--vocab-level-1-color);
 }
 
 .stats {
@@ -177,11 +177,9 @@ h4 {
   font-size: 1.35rem;
   margin-top: 20px;
   padding-bottom: 5px;
-  color: black;
   /*3 lines max*/
   overflow: hidden;
   text-overflow: ellipsis;
-  display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }

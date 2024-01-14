@@ -5,10 +5,10 @@
       Edit
     </button>
     <div class="buttons-div" v-else>
-      <button type="button" class="square-button primary-hollow-button reset-button" @click="clearForm">Cancel</button>
+      <button v-if="!isSubmitting" type="button" class="square-button primary-hollow-button reset-button" @click="clearForm">Cancel</button>
       <SubmitButton class="save-button square-button primary-filled-button"
                     type="submit"
-                    :is-submitting="isSubmitting">
+                    :isSubmitting="isSubmitting">
         {{ submittingMessage ?? "Save" }}
       </SubmitButton>
     </div>
@@ -73,7 +73,7 @@ export default defineComponent({
       this.isSubmitting = true;
       let profilePictureUrl;
       if (this.profilePicture) {
-        this.submittingMessage = "Uploading profile picture";
+        this.submittingMessage = "Uploading";
         profilePictureUrl = await this.store.uploadFile({
           fileField: "profilePicture",
           fileExtension: "jpg",
@@ -86,7 +86,7 @@ export default defineComponent({
       } else
         profilePictureUrl = this.profilePicture;
 
-      this.submittingMessage = "Updating profile";
+      this.submittingMessage = "Saving";
       const response = await this.userStore.updateUserProfile({
         bio: this.bio,
         profilePicture: profilePictureUrl

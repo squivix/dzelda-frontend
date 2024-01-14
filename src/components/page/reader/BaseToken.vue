@@ -75,7 +75,7 @@ span::selection, br::selection {
 }
 
 .level-new:not(.phrase) {
-  background-color: #aee0f4;
+  background-color: var(--vocab-new-color);
 }
 
 /*.level-new.phrase:hover {
@@ -84,15 +84,15 @@ span::selection, br::selection {
 }*/
 
 .level-1 {
-  background-color: #ffeda1;
+  background-color: var(--vocab-level-1-color);
 }
 
 .level-2 {
-  background-color: #fff2ab;
+  background-color: var(--vocab-level-2-color);
 }
 
 .level-3 {
-  background-color: #fff6c7;
+  background-color: var(--vocab-level-3-color);
 }
 
 .level-4 {
@@ -149,7 +149,7 @@ span::selection, br::selection {
 }
 
 .text-selected {
-  background-color: #268AFA;
+  background-color: var(--selected-text-color);
 }
 
 .phrase-hovered {
@@ -159,6 +159,10 @@ span::selection, br::selection {
   border-bottom: 1px solid;
 }
 
+.word-selected, .phrase-selected {
+  background-color: var(--selected-new-vocab-color) !important;
+  color: var(--on-background-color-inverse);
+}
 
 .word-selected.level-1,
 .word-selected.level-2,
@@ -168,20 +172,16 @@ span::selection, br::selection {
 .phrase-selected.level-2,
 .phrase-selected.level-3,
 .phrase-selected.level-4 {
-  background-color: #e58d00 !important;
+  background-color: var(--selected-saved-vocab-color) !important;
 
 }
 
-.word-selected, .phrase-selected {
-  background-color: #3498db !important;
-  color: #fff;
-}
 
 .phrase-selected .level-new,
 .phrase-selected .level-1,
 .phrase-selected .level-2,
 .phrase-selected .level-3,
 .phrase-selected .level-4 {
-  color: black;
+  color: var(--on-background-color);
 }
 </style>

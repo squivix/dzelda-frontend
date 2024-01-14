@@ -67,7 +67,6 @@ export default {
   margin-top: 0.1rem;
   text-align: center;
   border: none;
-  background-color: var(--on-primary-color);
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.4s linear, visibility 0s linear 0.4s;

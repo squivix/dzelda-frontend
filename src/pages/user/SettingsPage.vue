@@ -58,12 +58,12 @@ export default {
   display: block;
   width: 100%;
   text-decoration: none;
-  color: black;
+  color: var(--on-background-color);
   padding: 1rem 1rem;
 }
 
 .current-tab {
-  background-color: gainsboro;
+  background-color: var(--tab-highlight-color);
 }
 
 .settings-tab {
@@ -71,7 +71,8 @@ export default {
 }
 
 .vertical-divider {
-  border-left: 3px solid silver;
+  border: none;
+  border-left: 3px solid var(--divider-color);
   border-radius: 5px;
   margin: 0 1rem 0 0;
 }

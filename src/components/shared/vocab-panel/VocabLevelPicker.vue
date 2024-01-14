@@ -72,12 +72,11 @@ export default {
   display: flex;
   flex-direction: row;
   width: 100%;
-  justify-content: space-evenly;
   align-content: stretch;
 }
 
 .levels > li {
-  background-color: #cfe8ed;
+  background-color: var(--panel-new-color);
   flex-grow: 1;
   border: 1px solid #408adb;
   padding: 10px;
@@ -86,13 +85,13 @@ export default {
 }
 
 .levels > li:first-child {
-  border-start-start-radius: 20px;
-  border-end-start-radius: 20px;
+  border-start-start-radius: 5px;
+  border-end-start-radius: 5px;
 }
 
 .levels > li:last-child {
-  border-end-end-radius: 20px;
-  border-start-end-radius: 20px;
+  border-end-end-radius: 5px;
+  border-start-end-radius: 5px;
 }
 
 .levels .highlighted {

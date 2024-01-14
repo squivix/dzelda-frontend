@@ -110,7 +110,7 @@ a:hover {
 h4 {
   font-size: 1.25rem;
   max-lines: 2;
-  color: black;
+  color: var(--on-background-color);
   /*3 lines max*/
   overflow: hidden;
   text-overflow: ellipsis;
@@ -119,8 +119,13 @@ h4 {
   -webkit-box-orient: vertical;
 }
 
+.more-button {
+  color: gray;
+  text-decoration: none
+}
+
 .more-button:hover {
-  cursor: pointer;
+  cursor: pointer;;
 }
 
 :deep(.dropdown-label) {

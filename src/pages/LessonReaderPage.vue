@@ -99,14 +99,17 @@ export default defineComponent({
     selectedVocab() {
       if (this.selectedTokens.length == 0)
         return null;
-      const selectedText = this.selectedTokens.filter(t => t.isWord).map(t => t.parsedText).join(" ");
-      if (this.words[selectedText])
-        return this.words[selectedText];
-      else if (this.phrases[selectedText])
-        return this.phrases[selectedText];
+      const selectedWords = this.selectedTokens.filter(t => t.isWord).map(t => t.parsedText);
+      if (selectedWords.length == 0)
+        return null;
+      const selectedWordsText = selectedWords.join(" ");
+      if (this.words[selectedWordsText])
+        return this.words[selectedWordsText];
+      else if (this.phrases[selectedWordsText])
+        return this.phrases[selectedWordsText];
       else
         return {
-          text: selectedText,
+          text: selectedWordsText,
           level: VocabLevelSchema.NEW,
           isPhrase: true,
           notes: null,

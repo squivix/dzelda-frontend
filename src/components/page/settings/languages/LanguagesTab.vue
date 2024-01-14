@@ -160,7 +160,7 @@ h2 {
 }
 
 .languages tbody:deep(tr:nth-child(odd)) {
-  background-color: whitesmoke;
+  background-color: var(--zebra-stripe-color);
 }
 
 

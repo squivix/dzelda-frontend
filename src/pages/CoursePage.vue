@@ -1,22 +1,31 @@
 <template>
   <BaseCard v-if="!loading && course" :title="course.title" class="course-base-card main-page-base-card">
-    <template v-slot:all>
-      <header>
-        <h1>{{ course.title }}</h1>
-        <button class="bookmark-button inv-button" @click="toggleCourseIsBookmarked">
-
-          <inline-svg :src="icons.bookmark"
-                      :class="`${course.isBookmarked?'bookmark-filled':'bookmark-hollow'}`"/>
-        </button>
-      </header>
-      <p>{{ course.description }}</p>
-      <h2>Lessons</h2>
-      <ol class="lesson-list">
-        <li v-for="lesson in course.lessons" :key="lesson.id" class="lesson">
-          <LessonListItem :lesson="{...lesson, course}" :show-course="false">
-          </LessonListItem>
-        </li>
-      </ol>
+    <template v-slot:content>
+      <div class="page-wrapper">
+        <div class="side-pane">
+          <h3>Description</h3>
+          <textarea class="description" readonly>{{ course.description }}</textarea>
+          <div class="buttons-div">
+            <button class="bookmark-button inv-button" @click="toggleCourseIsBookmarked">
+              <inline-svg :src="icons.bookmark"
+                          :class="`${course.isBookmarked?'bookmark-filled':'bookmark-hollow'}`"/>
+            </button>
+            <router-link :to="{ name: 'edit-course' , params:{courseId:course.id}}" v-if="course.addedBy==userStore.userAccount?.username">
+              <inline-svg :src="icons.pen"/>
+            </router-link>
+          </div>
+        </div>
+        <div class="lessons-pane">
+          <h2>Lessons</h2>
+          <ol class="lesson-list" v-if="course.lessons.length>0">
+            <li v-for="lesson in course.lessons" :key="lesson.id" class="lesson">
+              <LessonListItem :lesson="{...lesson, course}" :show-course="false">
+              </LessonListItem>
+            </li>
+          </ol>
+          <EmptyScreen v-else message="No lessons in course"></EmptyScreen>
+        </div>
+      </div>
     </template>
   </BaseCard>
 </template>
@@ -29,10 +38,12 @@ import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {CourseSchema} from "dzelda-common";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
+import {useUserStore} from "@/stores/backend/userStore.js";
+import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 
 export default {
   name: "CoursePage",
-  components: {InlineSvg, LessonListItem, BaseCard},
+  components: {EmptyScreen, InlineSvg, LessonListItem, BaseCard},
   data() {
     return {
       course: null as CourseSchema | null,
@@ -60,7 +71,8 @@ export default {
     return {
       icons,
       courseStore: useCourseStore(),
-      lessonStore: useLessonStore()
+      lessonStore: useLessonStore(),
+      userStore: useUserStore(),
     };
   }
 };
@@ -75,9 +87,38 @@ export default {
   align-items: stretch;
 }
 
-header {
+.page-wrapper {
   display: flex;
+  column-gap: 1rem;
   justify-content: space-between;
+}
+
+.side-pane {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+}
+
+.lessons-pane {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+.description {
+  min-height: 15vh;
+  word-wrap: break-word;
+  resize: none;
+  border: 1px solid lightgray;
+
+}
+
+.buttons-div {
+  display: flex;
+  column-gap: 1rem
 }
 
 .bookmark-button:hover {
@@ -109,10 +150,19 @@ h2 {
   font-size: 1.5rem;
 }
 
+h3 {
+  font-weight: bold;
+}
+
 .lesson-list {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
 }
 
+@media screen and (max-width: 750px) {
+  .page-wrapper {
+    flex-direction: column;
+  }
+}
 </style>

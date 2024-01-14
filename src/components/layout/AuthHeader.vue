@@ -237,6 +237,8 @@ h1 {
   display: grid;
   min-width: 120px;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  background-color: var(--background-color);
+  border-radius: 3px;
 }
 
 :deep(.language-add-button) {
@@ -258,6 +260,7 @@ h1 {
 
 .language-menu-arrow {
   background-color: var(--on-primary-color);
+  color: dimgray;
   padding: 0.25rem;
   border-start-end-radius: 5px;
   border-end-end-radius: 5px;

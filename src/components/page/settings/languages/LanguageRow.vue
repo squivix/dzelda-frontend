@@ -65,6 +65,10 @@ td {
   column-gap: 1rem;
 }
 
+button{
+  color: var(--on-background-color);
+}
+
 @media screen and (max-width: 400px) {
   .actions-cell {
     flex-direction: column;

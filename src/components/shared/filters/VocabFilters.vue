@@ -112,13 +112,12 @@ export default defineComponent({
 h4 {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #00356b;
+  color: var(--panel-new-text-color);
 }
 
 form {
   display: flex;
   flex-direction: column;
-
 }
 
 .filters-wrapper {
@@ -131,15 +130,14 @@ form {
 .filter-label {
   font-size: 1rem;
   font-weight: bold;
-  color: #00356b;
 }
 
 .filter-levels {
   display: flex;
   flex-wrap: wrap;
   column-gap: 1rem;
+  color: var(--on-background-color);
 }
-
 
 .buttons-wrapper {
   align-self: flex-end;

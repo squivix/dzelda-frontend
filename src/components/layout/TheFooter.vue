@@ -4,12 +4,10 @@
       <ul>
       </ul>
     </nav>
-
-
     <nav class="social-links">
       <ul>
         <li><a href="https://github.com/squivix/dzelda-frontend" target="_blank">
-          <img :src="icons.githubLogo" alt="github link">
+          <inline-svg :src="icons.githubLogo" alt="github link"/>
         </a></li>
       </ul>
     </nav>
@@ -17,10 +15,11 @@
 </template>
 <script lang="ts">
 import {icons} from "@/icons.js";
+import InlineSvg from "vue-inline-svg";
 
 export default {
   name: "TheFooter",
-  components: {},
+  components: {InlineSvg},
   setup() {
     return {icons};
   }
@@ -32,7 +31,7 @@ footer {
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 1rem;
-  background-color: #F2F2F2;
+  background-color: var(--footer-color);
 }
 
 .social-links ul {
@@ -40,13 +39,14 @@ footer {
   column-gap: 1rem;
 }
 
-.social-links img {
+.social-links svg {
   width: 25px;
   height: 25px;
   opacity: 0.75;
+  color: var(--on-background-color);
 }
 
-.social-links img:hover {
+.social-links svg:hover {
   opacity: 1;
 }
 </style>

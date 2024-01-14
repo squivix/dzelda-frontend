@@ -108,6 +108,7 @@ audio {
   justify-content: space-between;
 }
 
-.clear-button {
+.buttons-div button {
+  color: var(--on-background-color);
 }
 </style>

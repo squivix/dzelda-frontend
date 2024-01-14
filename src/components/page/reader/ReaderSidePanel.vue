@@ -18,14 +18,13 @@
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
 import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel.vue";
-import {LearnerVocabSchema, MeaningSchema} from "dzelda-common";
+import {LearnerVocabSchema} from "dzelda-common";
 import {LessonTokenObject, NewVocab} from "@/pages/LessonReaderPage.vue";
 import VocabPanel from "@/components/shared/vocab-panel/VocabPanel.vue";
-import LessonContent from "@/components/page/reader/LessonContent.vue";
 
 export default defineComponent({
   name: "ReaderSidePanel",
-  components: {LessonContent, OverlappingPhrasesPanel, VocabPanel},
+  components: {OverlappingPhrasesPanel, VocabPanel},
   props: {
     selectedOverLappingPhrasesTokens: {type: Array as PropType<LessonTokenObject[][] | null>},
     selectedVocab: {type: Object as PropType<LearnerVocabSchema | NewVocab | null>, default: null},

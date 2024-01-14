@@ -49,8 +49,8 @@ export default defineComponent({
 
 .search-button {
   aspect-ratio: 1 / 1;
-  width: 35px;
-  height: 35px;
+  width: 32px;
+  height: 32px;
   border-radius: 5px;
   background-color: var(--primary-color);
   border: 1px solid var(--on-primary-color);

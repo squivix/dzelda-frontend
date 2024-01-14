@@ -96,7 +96,7 @@ export default {
   min-width: 25px;
   height: 25px;
   padding: 0;
-  background-color: white;
+  background-color: var(--background-color);
   color: black;
   border: 1px solid grey;
   border-radius: 50%;

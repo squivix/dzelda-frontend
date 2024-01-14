@@ -108,7 +108,7 @@ label {
 input,
 .base-password-div:deep(input) {
   border: none;
-  outline: 1px solid black;
+  outline: 1px solid gray;
 }
 
 input,

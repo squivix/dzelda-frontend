@@ -49,7 +49,8 @@ tr:hover {
 }
 
 tr.selected-vocab {
-  background-color: #CBE5FE !important;
+  background-color: var(--selected-new-vocab-color) !important;
+  color: white;
 }
 
 tr:hover > .vocab-text {
@@ -57,7 +58,7 @@ tr:hover > .vocab-text {
 }
 
 tr:nth-child(odd) {
-  background-color: whitesmoke;
+  background-color: var(--zebra-stripe-color);
 }
 
 .vocab-text {

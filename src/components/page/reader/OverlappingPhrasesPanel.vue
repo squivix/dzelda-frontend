@@ -42,7 +42,7 @@ export default {
 
 <style scoped>
 .overlapping-phrase-panel {
-  background-color: #f0f9fe;
+  background-color: var(--panel-new-color);
   height: 100%;
   padding: 1vw;
   border-radius: 10px;

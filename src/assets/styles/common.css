@@ -5,25 +5,65 @@
     --secondary-color: #43a047;
     --secondary-color-light: #76d275;
     --secondary-color-dark: #00701a;
-
-    --on-primary-color: #ffffff;
-    --on-secondary-color: #ffffff;
-    --border-color: lightgray;
-    --background-color: white;
+    --on-primary-color: white;
+    --on-secondary-color: white;
 }
 
-[data-theme=dark] {
-    --primary-color: #0288d1;
-    --primary-color-light: #5eb8ff;
-    --primary-color-dark: #005b9f;
-    --secondary-color: #43a047;
-    --secondary-color-light: #76d275;
-    --secondary-color-dark: #00701a;
+[color-scheme=light] {
+    --background-color: white;
+    --on-background-color: black;
+    --on-background-color-inverse: white;
+    --tab-highlight-color: lightgray;
+    --footer-color: #F2F2F2;
+    --divider-color: silver;
+    --scrollbar-background: whitesmoke;
+    --scrollbar-thumb: lightgray;
+    --scrollbar-thumb-selected: darkgray;
+    --zebra-stripe-color: whitesmoke;
+    --disabled-input-background: #F0F0F0;
+    --panel-new-color: #F0F9Fe;
+    --panel-new-text-color: #00356b;
+    --meaning-item-color: #0288d1;
+    --dictionary-item-color: #FFE675;
+    --saved-vocab-panel-color: #FFFCE9B2;
+    --vocab-new-color: #aee0f4;
+    --vocab-level-1-color: #ffeda1;
+    --vocab-level-2-color: #fff2ab;
+    --vocab-level-3-color: #fff6c7;
+    --selected-text-color: #268AFA;
+    --selected-new-vocab-color: #3498db;
+    --selected-saved-vocab-color: #e58200;
+}
 
-    --on-primary-color: #ffffff;
-    --on-secondary-color: #ffffff;
-    --border-color: lightgray;
+[color-scheme=dark] {
+    /*General*/
     --background-color: black;
+    --on-background-color: white;
+    --on-background-color-inverse: black;
+    --divider-color: #606060;
+    --scrollbar-background: #282828;
+    --scrollbar-thumb: #404040;
+    --scrollbar-thumb-selected: #505050;
+    --tab-highlight-color: #202020;
+    --footer-color: #202020;
+    --zebra-stripe-color: #101010;
+    --disabled-input-background: #202020;
+
+    /*Panels*/
+    --panel-new-color: #0a1c2a;
+    --panel-new-text-color: white;
+    --meaning-item-color: #0c6fa4;
+    --dictionary-item-color: #816d1d;
+    --saved-vocab-panel-color: #211d0a;
+
+    /*Reader */
+    --vocab-new-color: #15556e;
+    --vocab-level-1-color: #7f6f1e;
+    --vocab-level-2-color: #807d2a;
+    --vocab-level-3-color: #807f3b;
+    --selected-text-color: #0b1665;
+    --selected-new-vocab-color: #3498db;
+    --selected-saved-vocab-color: #e58d00;
 }
 
 * {
@@ -33,6 +73,7 @@
 
 body {
     background-color: var(--background-color);
+    color: var(--on-background-color);
 }
 
 #app {
@@ -42,8 +83,16 @@ body {
     grid-template-columns: 1fr;
 }
 
-input:not([type='submit']), select {
+input:not([type='submit']), select, textarea {
     height: 2rem;
+    background-color: var(--background-color);
+    color: var(--on-background-color);
+    border: 1px solid gray;
+    border-radius: 3px;
+}
+
+input:disabled, textarea:disabled {
+    background-color: var(--disabled-input-background);
 }
 
 button:hover {
@@ -77,7 +126,7 @@ button:hover {
 }
 
 .primary-hollow-button {
-    background: var(--on-primary-color);
+    background: transparent;
     color: var(--primary-color);
     border: 1px solid var(--primary-color);
     font-size: 1rem;
@@ -151,7 +200,7 @@ a:hover {
 }
 
 .inv-link {
-    color: black;
+    color: var(--on-background-color);
     text-decoration: none;
 }
 
@@ -180,7 +229,7 @@ a:hover {
 /*from: https://css-tricks.com/the-current-state-of-styling-scrollbars-in-css/*/
 .styled-scrollbars {
     /* Foreground, Background */
-    scrollbar-color: darkgray whitesmoke;
+    scrollbar-color: var(--scrollbar-thumb-selected) var(--scrollbar-background);
 }
 
 .styled-scrollbars::-webkit-scrollbar {
@@ -189,16 +238,16 @@ a:hover {
 }
 
 .styled-scrollbars::-webkit-scrollbar-thumb { /* Foreground */
-    background: lightgray;
+    background: var(--scrollbar-thumb);
     border-radius: 5px;
 }
 
 .styled-scrollbars::-webkit-scrollbar-thumb:active { /* Foreground */
-    background: darkgray;
+    background: var(--scrollbar-thumb-selected);
 }
 
 .styled-scrollbars::-webkit-scrollbar-track { /* Background */
-    background: whitesmoke;
+    background: var(--scrollbar-background);
     border-radius: 5px;
 }
 
@@ -246,6 +295,15 @@ svg {
     height: 60px;
 }
 
+.dropdown-list {
+
+}
+
+.dropdown-list li {
+    background-color: var(--background-color);
+    border-radius: 3px;
+}
+
 .dropdown-list li a {
     display: flex;
     flex-direction: row;
@@ -257,7 +315,7 @@ svg {
     padding: 0.5rem 0.5rem;
     width: 100%;
     height: 100%;
-    color: black;
+    color: var(--on-background-color);
     font-family: sans-serif;
     font-size: 0.9rem;
 }
@@ -268,8 +326,7 @@ svg {
 
 .dropdown-list li:hover {
     cursor: pointer;
-    background-color: lightgray;
-    border-radius: 3px;
+    background-color: var(--tab-highlight-color);
 }
 
 .dropdown-list a:hover {

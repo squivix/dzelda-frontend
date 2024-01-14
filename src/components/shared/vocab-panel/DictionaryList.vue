@@ -1,6 +1,6 @@
 <template>
   <div class="dictionaries-wrapper" v-if="dictionaries.length>0">
-    <h5 >Dictionaries</h5>
+    <h5>Dictionaries</h5>
     <ol class="dictionaries styled-scrollbars" v-for="dictionary in dictionaries" :key="dictionary.id">
       <li @click="openDictionaryLink(dictionary)">{{ dictionary.name }}</li>
     </ol>
@@ -47,6 +47,11 @@ export default {
   row-gap: 0.75rem;
 }
 
+h5 {
+  color: var(--panel-new-text-color);
+  font-weight: bold;
+}
+
 .dictionaries {
   display: flex;
   flex-direction: column;
@@ -57,11 +62,11 @@ export default {
 }
 
 .dictionaries > li {
-  background-color: #FFE675;
+  background-color: var(--dictionary-item-color);
+  color: var(--on-background-color);
   padding: 15px 10px;
   cursor: pointer;
   font-size: 1rem;
-  color: black;
   border-radius: 5px;
   width: 100%;
 }

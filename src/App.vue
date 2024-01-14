@@ -28,11 +28,11 @@ export default {
   },
   watch: {
     "localSettingsStore.theme": function () {
-      document.body.dataset["theme"] = this.localSettingsStore.theme;
+      document.body.setAttribute("color-scheme", this.localSettingsStore.theme);
     }
   },
   mounted() {
-    document.body.dataset["theme"] = this.localSettingsStore.theme;
+    document.body.setAttribute("color-scheme", this.localSettingsStore.theme);
   },
   setup() {
     return {userStore: useUserStore(), localSettingsStore: useLocalSettingsStore()};

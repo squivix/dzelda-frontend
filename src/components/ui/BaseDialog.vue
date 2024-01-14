@@ -52,6 +52,8 @@ dialog {
   box-shadow: rgba(60, 64, 67, 0.3) 0 1px 2px 0, rgba(60, 64, 67, 0.15) 0 2px 6px 2px;
   border-radius: 5px;
   transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  background-color: var(--background-color);
+  color:var(--on-background-color)
 }
 
 dialog.open {

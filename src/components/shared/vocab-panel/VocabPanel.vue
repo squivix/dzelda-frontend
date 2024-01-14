@@ -193,10 +193,11 @@ export default {
 }
 
 .new-vocab-panel {
-  background-color: #f0f9fe;
+  background-color: var(--panel-new-color);
+  color: var(--panel-new-text-color);
 }
 
 .existing-vocab-panel {
-  background-color: #FFFCE9;
+  background-color: var(--saved-vocab-panel-color);
 }
 </style>

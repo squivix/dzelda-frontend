@@ -99,7 +99,7 @@ li {
 
 .page-button {
   background-color: transparent;
-  color: black;
+  color: var(--on-background-color);
   border: 1px solid grey;
   border-radius: 3px;
   padding: 0.75rem 0;

@@ -49,7 +49,7 @@ table {
 }
 
 th {
-  background-color: white;
+  background-color: var(--background-color);
   padding-bottom: 0.5rem;
   padding-left: 1rem;
   padding-right: 1rem;

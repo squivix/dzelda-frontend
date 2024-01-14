@@ -80,7 +80,6 @@ export default defineComponent({
   width: 80vw;
   max-width: 800px;
   display: block;
-  margin: auto;
 }
 
 

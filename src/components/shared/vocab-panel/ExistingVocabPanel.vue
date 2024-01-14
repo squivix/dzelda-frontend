@@ -96,7 +96,7 @@ export default {
   padding-top: 0.3rem;
   padding-bottom: 0.3rem;
   background-color: #FFD263;
-  border: 1px solid #FFD263;
+  border: none;
 }
 
 .add-meaning-button svg {

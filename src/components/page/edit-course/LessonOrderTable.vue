@@ -87,7 +87,7 @@ th {
 }
 
 .lesson-tbody tr:nth-child(odd) {
-  background-color: whitesmoke;
+  background-color: var(--zebra-stripe-color);
 }
 
 .lesson-tbody {
