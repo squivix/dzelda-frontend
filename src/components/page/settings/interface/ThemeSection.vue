@@ -3,7 +3,9 @@
     <h3>Theme</h3>
     <select v-model="theme">
       <option value="light">Light</option>
-      <option value="dark">Dark</option>
+<!--      TODO dark theme like dracula-->
+<!--      <option value="dark">Dark</option>-->
+      <option value="black">Black</option>
     </select>
   </section>
 </template>

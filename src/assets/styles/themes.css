@@ -1,0 +1,72 @@
+:root {
+    --primary-color: #0288d1;
+    --primary-color-light: #5eb8ff;
+    --primary-color-dark: #005b9f;
+    --secondary-color: #43a047;
+    --secondary-color-light: #76d275;
+    --secondary-color-dark: #00701a;
+    --on-primary-color: white;
+    --on-secondary-color: white;
+}
+
+[color-scheme=light] {
+    /*General*/
+    --background-color: white;
+    --on-background-color: black;
+    --on-background-color-inverse: white;
+    --tab-highlight-color: lightgray;
+    --footer-color: #F2F2F2;
+    --divider-color: silver;
+    --scrollbar-background: whitesmoke;
+    --scrollbar-thumb: lightgray;
+    --scrollbar-thumb-selected: darkgray;
+    --zebra-stripe-color: whitesmoke;
+    --disabled-input-background: #F0F0F0;
+
+    /*Panels*/
+    --panel-new-color: #F0F9Fe;
+    --panel-new-text-color: #00356b;
+    --meaning-item-color: #0288d1;
+    --dictionary-item-color: #FFE675;
+    --saved-vocab-panel-color: #FFFCE9B2;
+
+    /*Reader */
+    --vocab-new-color: #aee0f4;
+    --vocab-level-1-color: #ffeda1;
+    --vocab-level-2-color: #fff2ab;
+    --vocab-level-3-color: #fff6c7;
+    --selected-text-color: #268AFA;
+    --selected-new-vocab-color: #3498db;
+    --selected-saved-vocab-color: #e58200;
+}
+
+[color-scheme=black] {
+    /*General*/
+    --background-color: black;
+    --on-background-color: white;
+    --on-background-color-inverse: black;
+    --divider-color: #606060;
+    --scrollbar-background: #282828;
+    --scrollbar-thumb: #404040;
+    --scrollbar-thumb-selected: #505050;
+    --tab-highlight-color: #202020;
+    --footer-color: #202020;
+    --zebra-stripe-color: #101010;
+    --disabled-input-background: #202020;
+
+    /*Panels*/
+    --panel-new-color: #0a1c2a;
+    --panel-new-text-color: white;
+    --meaning-item-color: #0c6fa4;
+    --dictionary-item-color: #816d1d;
+    --saved-vocab-panel-color: #211d0a;
+
+    /*Reader */
+    --vocab-new-color: #15556e;
+    --vocab-level-1-color: #7f6f1e;
+    --vocab-level-2-color: #807d2a;
+    --vocab-level-3-color: #807f3b;
+    --selected-text-color: #0b1665;
+    --selected-new-vocab-color: #3498db;
+    --selected-saved-vocab-color: #e58d00;
+}

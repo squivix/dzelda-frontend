@@ -4,8 +4,7 @@
     <BaseCard>
       <template v-slot:all>
         <article class="course-article">
-          <BaseImage :image-url="imageUrl" :fall-back-url="icons.books"
-                     alt-text="course image"></BaseImage>
+          <BaseImage :image-url="course.image" :fall-back-url="icons.books" alt-text="course image"/>
 
           <div class="title-row">
             <h4>{{ course.title }}</h4>
@@ -57,11 +56,6 @@ export default {
       type: Object as PropType<CourseSchema>,
       required: true,
     }
-  },
-  computed: {
-    imageUrl() {
-      return this.course.image;
-    },
   },
   setup() {
     return {

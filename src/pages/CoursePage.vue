@@ -3,6 +3,9 @@
     <template v-slot:content>
       <div class="page-wrapper">
         <div class="side-pane">
+
+          <BaseImage class="course-image" :image-url="course.image" :fall-back-url="icons.books" alt-text="course image"/>
+
           <h3>Description</h3>
           <textarea class="description" readonly>{{ course.description }}</textarea>
           <div class="buttons-div">
@@ -40,10 +43,11 @@ import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
+import BaseImage from "@/components/ui/BaseImage.vue";
 
 export default {
   name: "CoursePage",
-  components: {EmptyScreen, InlineSvg, LessonListItem, BaseCard},
+  components: {BaseImage, EmptyScreen, InlineSvg, LessonListItem, BaseCard},
   data() {
     return {
       course: null as CourseSchema | null,
@@ -94,11 +98,14 @@ export default {
 }
 
 .side-pane {
-  flex: 1;
-  min-width: 200px;
+  flex-basis: auto;
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
+}
+
+.course-image {
+  align-self: center;
 }
 
 .lessons-pane {
