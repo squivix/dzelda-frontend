@@ -8,7 +8,7 @@
           </span>
     </template>
     <template v-slot:menu>
-      <ol class="language-grid dropdown-list">
+      <ol class="language-grid dropdown-list" :style="{'grid-template-columns':`repeat(${gridColumns}, 1fr)`}">
         <li v-for="language in otherLanguages">
           <router-link :to="{params:{learningLanguage:language.code}}">
             <img class="image-icon language-icon" :src="language.flagCircular!"
@@ -46,6 +46,14 @@ export default defineComponent({
     otherLanguages() {
       return this.userLanguages ? this.userLanguages!.filter(lang => lang.code !== this.currentLanguage!.code) : [];
     },
+    gridColumns() {
+      return Math.min(3, Math.floor(this.otherLanguages.length / 3));
+    }
+  },
+  watch: {
+    "otherLanguages.length": function () {
+
+    }
   },
   setup() {
     return {
