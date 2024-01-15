@@ -110,15 +110,12 @@ export default defineComponent({
 .top-bar {
   display: flex;
   justify-content: flex-end;
-  align-items: center;
   column-gap: 0.25rem;
 }
 
 .filter-button {
   border: 2px solid grey;
   border-radius: 5px;
-  width: 35px;
-  height: 35px;
 }
 
 .filter-button:hover {

@@ -16,77 +16,9 @@
       </div>
 
       <div class="right-side-div" v-if="userAccount?.isEmailConfirmed">
-        <BaseDropDown v-if="currentLanguage" class="language-dropdown" id="language">
-          <template v-slot:button="{isDroppedDown}">
-            <img :src="currentLanguage.flagCircular??''" alt="Current Language Icon"
-                 class="current-language-icon">
-            <span class="icon-wrapper language-menu-arrow">
-            <inline-svg :src="isDroppedDown?icons.arrowUp:icons.arrowDown"/>
-          </span>
-          </template>
-          <template v-slot:menu>
-            <ol class="language-grid dropdown-list">
-              <li v-for="language in otherLanguages">
-                <router-link :to="{params:{learningLanguage:language.code}}">
-                  <img class="image-icon language-icon" :src="language.flagCircular!"
-                       :alt="`${language.code} language flag`">
-                  <span>{{ language.name }}</span>
-                </router-link>
-              </li>
-              <li class="language-add-button">
-                <router-link :to="{ name: 'new-language' }">
-                  <inline-svg :src="icons.plusRound"/>
-                </router-link>
-              </li>
-            </ol>
-          </template>
-        </BaseDropDown>
-        <BaseDropDown v-if="userLanguages && userLanguages.length > 0" :is-pointy="true" id="add-menu">
-          <template v-slot:button>
-            <span class="add-button icon-wrapper">
-              <inline-svg :src="icons.plus"/>
-            </span>
-          </template>
-          <template v-slot:menu>
-            <ol class="add-menu dropdown-list">
-              <li>
-                <router-link :to="{name:'add-lesson'}"><span>Add Lesson</span></router-link>
-              </li>
-              <li>
-                <router-link :to="{name:'add-course'}"><span>Add Course</span></router-link>
-              </li>
-            </ol>
-          </template>
-        </BaseDropDown>
-        <BaseDropDown :is-pointy="true" id="profile-menu">
-          <template v-slot:button>
-            <BaseImage :image-url="profilePicture"
-                       :fall-back-url="icons.userProfile" class="profile-picture"
-                       alt="profile picture"/>
-          </template>
-          <template v-slot:menu>
-            <ol class="add-menu dropdown-list">
-              <li>
-                <router-link :to="{name:'my-profile'}">
-                  <inline-svg :src="icons.userProfile"/>
-                  <span>My Profile</span>
-                </router-link>
-              </li>
-              <li>
-                <router-link :to="{name:'settings'}">
-                  <inline-svg :src="icons.settings"/>
-                  <span>Settings</span>
-                </router-link>
-              </li>
-              <li>
-                <router-link :to="{name:'sign-out'}">
-                  <inline-svg :src="icons.signOut"/>
-                  <span>Sign Out</span>
-                </router-link>
-              </li>
-            </ol>
-          </template>
-        </BaseDropDown>
+        <LanguageDropDown/>
+        <CreateDropDown/>
+        <ProfileDropDown/>
       </div>
       <div v-else>
         <router-link :to="{ name: 'sign-out' }">
@@ -109,17 +41,17 @@ import BaseImage from "@/components/ui/BaseImage.vue";
 import InlineSvg from "vue-inline-svg";
 import NavBar from "@/components/layout/header/NavBar.vue";
 import NavDropDown from "@/components/layout/header/NavDropDown.vue";
+import LanguageDropDown from "@/components/layout/header/LanguageDropDown.vue";
+import CreateDropDown from "@/components/layout/header/CreateDropDown.vue";
+import ProfileDropDown from "@/components/layout/header/ProfileDropDown.vue";
 
 export default defineComponent({
   name: "AuthHeader",
-  components: {NavDropDown, NavBar, BaseImage, BaseDropDown, InlineSvg},
+  components: {ProfileDropDown, CreateDropDown, LanguageDropDown, NavDropDown, NavBar, BaseImage, BaseDropDown, InlineSvg},
   data() {
     return {isNavBarExpanded: false};
   },
   computed: {
-    userAccount() {
-      return this.userStore.userAccount;
-    },
     userLanguages() {
       return this.languageStore.userLanguages;
     },
@@ -128,6 +60,9 @@ export default defineComponent({
     },
     otherLanguages() {
       return this.userLanguages ? this.userLanguages!.filter(lang => lang.code !== this.currentLanguage!.code) : [];
+    },
+    userAccount() {
+      return this.userStore.userAccount;
     },
     profilePicture() {
       return this.userAccount?.profile.profilePicture ?? "";
@@ -221,79 +156,11 @@ h1 {
   border-color: var(--on-secondary-color);
 }
 
-.add-button {
-  background-color: var(--secondary-color);
-  border: 1px solid var(--on-secondary-color);
-  padding: 8px;
-  border-radius: 8px;
-}
-
-.add-button svg {
-  color: var(--on-secondary-color);
-}
-
-
-.language-grid {
-  display: grid;
-  min-width: 120px;
-  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-  background-color: var(--background-color);
-  border-radius: 3px;
-}
-
-:deep(.language-add-button) {
-  grid-column: 1/-1;
-}
-
-.current-language-icon {
-  width: 50px;
-  height: 50px;
-  background-color: var(--on-primary-color);
-  border-radius: 50%;
-  padding: 0.2rem;
-}
-
-.language-icon {
-  width: 25px;
-  height: 25px;
-}
-
-.language-menu-arrow {
-  background-color: var(--on-primary-color);
-  color: dimgray;
-  padding: 0.25rem;
-  border-start-end-radius: 5px;
-  border-end-end-radius: 5px;
-  margin-inline-start: -3px;
-}
 
 :deep(.dropdown-label) {
   display: flex;
   flex-direction: row;
   align-items: center;
-}
-
-.profile-picture {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: var(--on-primary-color);
-}
-
-.profile-picture:deep(svg) {
-  width: 24px;
-  height: 24px;
-  color: var(--primary-color);
-}
-
-.profile-menu {
-  width: 10vw;
-  max-width: 100px;
-  min-width: 85px;
-}
-
-.add-menu {
-  width: 100px;
 }
 
 #nav-expand-checkbox, label[for=nav-expand-checkbox] {

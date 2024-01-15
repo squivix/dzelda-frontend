@@ -5,7 +5,8 @@
         <div class="side-pane">
 
           <BaseImage class="course-image" :image-url="course.image" :fall-back-url="icons.books" alt-text="course image"/>
-
+          <h3>Created by</h3>
+          <p>{{ course.addedBy}}</p>
           <h3>Description</h3>
           <textarea class="description" readonly>{{ course.description }}</textarea>
           <div class="buttons-div">

@@ -71,6 +71,7 @@ export default {
   opacity: 0;
   transition: opacity 0.4s linear, visibility 0s linear 0.4s;
   box-shadow: rgba(60, 64, 67, 0.3) 0 1px 2px 0, rgba(60, 64, 67, 0.15) 0 2px 6px 2px;
+  width: fit-content;
 }
 
 .centered-menu {

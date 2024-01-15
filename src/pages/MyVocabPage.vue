@@ -232,14 +232,11 @@ section {
   display: flex;
   column-gap: 0.25rem;
   align-self: flex-end;
-  align-items: center;
 }
 
 .filter-button {
   border: 2px solid grey;
   border-radius: 5px;
-  height: 35px;
-  width: 35px;
 }
 
 .filter-button:hover {
