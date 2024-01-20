@@ -1,34 +1,36 @@
 <template>
   <div class="lesson-content" @mouseup="onMouseUp">
-    <div class="top-div">
+    <div class="top-div" v-if="showTopBar">
       <BaseImage :image-url="image" :fall-back-url="icons.bookOpen"
                  alt-text="lesson image" class="lesson-image"/>
       <h2 class="title">
-        <TokenGroup
-            :isPhraseFirstClick="isPhraseFirstClick"
-            :phrases="phrases"
-            :words="words"
-            :tokenGroup="lessonTokens.title"
-            :shouldRender="true"
-            :selectedTokens="selectedTokens"
-            @onWordClicked="onWordClicked"
-            @onPhraseClicked="onPhraseClicked"
-            @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
-            @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
+        <LessonToken v-for="(token, index) in lessonTokens.title"
+                     :key="index"
+                     :token="token"
+                     :word="words[token.parsedText!]"
+                     :phrases="token.phrases.map(pt=>phrases[pt.text])"
+                     :isPhraseFirstClick="isPhraseFirstClick"
+                     :isWordSelected="selectedTokenIndexes.size==1 && selectedTokenIndexes.has(token.index)"
+                     :isPhraseSelected="selectedTokenIndexes.size>1 && selectedTokenIndexes.has(token.index)"
+                     @onWordClicked="onWordClicked"
+                     @onPhraseClicked="onPhraseClicked"
+                     @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
+                     @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
       </h2>
     </div>
     <p class="lesson-text styled-scrollbars" ref="paragraphRef">
-      <TokenGroup v-for="(tokenGroup,index) in textTokenGroups"
-                  :isPhraseFirstClick="isPhraseFirstClick"
-                  :phrases="phrases"
-                  :words="words"
-                  :tokenGroup="tokenGroup"
-                  :shouldRender="!groupIndexesToRender||groupIndexesToRender.has(index)"
-                  :selectedTokens="selectedTokens"
-                  @onWordClicked="onWordClicked"
-                  @onPhraseClicked="onPhraseClicked"
-                  @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
-                  @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
+      <LessonToken v-for="(token, index) in currentPage"
+                   :key="index"
+                   :token="token"
+                   :word="words[token.parsedText!]"
+                   :phrases="token.phrases.map(pt=>phrases[pt.text])"
+                   :isPhraseFirstClick="isPhraseFirstClick"
+                   :isWordSelected="selectedTokenIndexes.size==1 && selectedTokenIndexes.has(token.index)"
+                   :isPhraseSelected="selectedTokenIndexes.size>1 && selectedTokenIndexes.has(token.index)"
+                   @onWordClicked="onWordClicked"
+                   @onPhraseClicked="onPhraseClicked"
+                   @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
+                   @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
     </p>
   </div>
 </template>
@@ -37,22 +39,20 @@
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {PropType} from "vue";
 import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
-import {getChildrenInViewIndexes, getTextSelectedElements, padSequence} from "@/utils.js";
-import {useDebounceFn, useEventListener} from "@vueuse/core";
+import {getTextSelectedElements} from "@/utils.js";
+import {useEventListener} from "@vueuse/core";
 import {icons} from "@/icons.js";
-import TokenGroup from "@/components/page/reader/TokenGroup.vue";
 import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
-
-const TOKEN_MAX_GROUP_SIZE = 200;
-const TOKEN_MIN_GROUP_SIZE = 100;
-const TOKEN_GROUP_RENDER_BUFFER = 1;
+import LessonToken from "@/components/page/reader/LessonToken.vue";
 
 export default {
   name: "LessonContent",
-  components: {BaseImage, TokenGroup},
+  components: {LessonToken, BaseImage},
   emits: ["onWordClicked", "onPhraseClicked", "onOverLappingPhrasesClicked", "onNewPhraseSelected", "onBackgroundClicked", "onScroll"],
   props: {
     lessonTokens: {type: Object as PropType<{ title: LessonTokenObject[], text: LessonTokenObject[] }>, required: true},
+    showTopBar: {type: Boolean, default: true},
+    currentPage: {type: Array as PropType<LessonTokenObject[]>, required: true},
     selectedTokens: {type: Array as PropType<LessonTokenObject[]>, required: true},
     image: {type: String, required: true,},
     words: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true,},
@@ -60,42 +60,19 @@ export default {
   },
   data() {
     return {
-      scrollObserver: null as IntersectionObserver | null,
-      groupIndexesInView: undefined as Set<number> | undefined,
       isPhraseFirstClick: true,
       selectedTextTokens: [] as LessonTokenObject[],
     };
   },
   expose: ["clearTokenTextSelection"],
   computed: {
-    paragraphRef(): HTMLElement | null {
-      return this.$refs["paragraphRef"] as HTMLElement;
+    selectedTokenIndexes() {
+      return new Set(this.selectedTokens.map(t => t.index));
     },
-    groupIndexesToRender() {
-      if (this.groupIndexesInView && this.groupIndexesInView.size > 0)
-        return new Set(padSequence([...this.groupIndexesInView], TOKEN_GROUP_RENDER_BUFFER, TOKEN_GROUP_RENDER_BUFFER, 0, Infinity));
-    },
-    textTokenGroups() {
-      const tokenGroups = [];
-      let lastNewLineIndex = -1;
-      let groupStartIndex = 0;
-      for (let i = 0; i < this.lessonTokens.text.length; i++) {
-        if (this.lessonTokens.text[i].text == "\n")
-          lastNewLineIndex = i;
-        if ((i - groupStartIndex) == TOKEN_MAX_GROUP_SIZE) {
-          let groupEndIndex;
-          if (lastNewLineIndex != -1 && lastNewLineIndex > TOKEN_MIN_GROUP_SIZE) {
-            groupEndIndex = lastNewLineIndex;
-            lastNewLineIndex = -1;
-          } else
-            groupEndIndex = groupStartIndex + TOKEN_MIN_GROUP_SIZE;
-          tokenGroups.push(this.lessonTokens.text.slice(groupStartIndex, groupEndIndex));
-          groupStartIndex = groupEndIndex;
-        }
-      }
-      //last group
-      tokenGroups.push(this.lessonTokens.text.slice(groupStartIndex));
-      return tokenGroups;
+  },
+  watch: {
+    currentPage() {
+      (this.$refs["paragraphRef"] as HTMLElement)?.scrollTo(0, 0);
     }
   },
   methods: {
@@ -185,22 +162,11 @@ export default {
   mounted() {
     useEventListener(document, "selectionchange", this.onSelectionChange);
     useEventListener(document.body, "mousedown", this.onBackgroundClicked);
-    this.scrollObserver = new IntersectionObserver(useDebounceFn(() => {
-      if (this.paragraphRef)
-        this.groupIndexesInView = getChildrenInViewIndexes(this.paragraphRef);
-    }, 0));
-    for (const child of this.paragraphRef!.children)
-      this.scrollObserver.observe(child);
-  },
-  unmounted() {
-    if (this.scrollObserver)
-      this.scrollObserver.disconnect();
   },
   setup() {
     return {icons};
   }
-}
-;
+};
 </script>
 <style scoped>
 .lesson-content {

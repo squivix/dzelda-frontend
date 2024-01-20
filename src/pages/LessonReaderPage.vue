@@ -2,19 +2,27 @@
   <LoadingScreen v-if="isLoading||!lessonTokens"/>
   <BaseCard class="base-card unselectable" v-else-if="lesson">
     <template v-slot:all>
-      <div class="content-and-side-div">
-        <LessonContent ref="lessonContentRef"
-                       :lessonTokens="lessonTokens"
-                       :selectedTokens="isSelectedNewPhrase?[]:selectedTokens"
-                       :image="imageUrl"
-                       :words="words"
-                       :phrases="phrases"
-                       class="lesson-content"
-                       @onWordClicked="setSelectedTokens"
-                       @onPhraseClicked="setSelectedTokens"
-                       @onNewPhraseSelected="setSelectedTokens"
-                       @onOverLappingPhrasesClicked="showOverlappingPhrases"
-                       @onBackgroundClicked="clearSelectedTokens"/>
+      <div class="top-div">
+        <div class="main-reader">
+          <PagePanelButton :disabled="currentPage==1" :iconSrc="icons.arrowLeft" @click="currentPage--" class="left-button"/>
+          <LessonContent ref="lessonContentRef"
+                         :page="currentPage"
+                         :lessonTokens="lessonTokens"
+                         :currentPage="textTokenPages[currentPage-1]"
+                         :selectedTokens="isSelectedNewPhrase?[]:selectedTokens"
+                         :image="imageUrl"
+                         :words="words"
+                         :phrases="phrases"
+                         :showTopBar="currentPage==1"
+                         class="lesson-content"
+                         @onWordClicked="setSelectedTokens"
+                         @onPhraseClicked="setSelectedTokens"
+                         @onNewPhraseSelected="setSelectedTokens"
+                         @onOverLappingPhrasesClicked="showOverlappingPhrases"
+                         @onBackgroundClicked="clearSelectedTokens"/>
+          <PagePanelButton v-if="currentPage<textTokenPages.length" :iconSrc="icons.arrowRight" @click="currentPage++" class="right-button"/>
+          <PagePanelButton v-else :iconSrc="icons.checkMark" @onClick="finishLesson" class="right-button"/>
+        </div>
         <ReaderSidePanel class="side-panel"
                          :selectedOverLappingPhrasesTokens="selectedOverLappingPhrasesTokens"
                          :selectedVocab="selectedVocab"
@@ -25,20 +33,12 @@
                          @onOverlappingPhraseClicked="setSelectedTokens"
                          :onVocabRefetched="updateVocab"/>
       </div>
-      <div class="bottom-div">
-        <div>
-          <audio v-if="lesson.audio" controls :src="audioUrl">
-            Your browser does not support the audio element.
-          </audio>
-        </div>
-        <ExpandingIconButton v-if="!lesson.isLastInCourse"
-                             :isExpanded="isNextButtonExpanded"
-                             :iconSrc="icons.arrowRight" @onClick="goToNextLesson"
-                             iconPosition="right"
-                             text="Next Lesson" class="next-lesson-button"/>
-        <ExpandingIconButton v-else :isExpanded="isNextButtonExpanded" :iconSrc="icons.checkMark"
-                             text="Finish Course" :linkTo="{name:'home'}"/>
+      <div v-if="lesson.audio">
+        <audio controls :src="audioUrl">
+          Your browser does not support the audio element.
+        </audio>
       </div>
+      <PageIndicator class="page-indicators" :currentPage="currentPage" :pageCount="textTokenPages.length" @onPageIndicatorClicked="page=>currentPage=page"/>
     </template>
   </BaseCard>
 </template>
@@ -46,14 +46,7 @@
 import LessonContent from "@/components/page/reader/LessonContent.vue";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
-import {
-  getParser,
-  LearnerVocabSchema,
-  LessonSchema,
-  TokenWithPhrases,
-  TokeObjectPhrases,
-  VocabLevelSchema
-} from "dzelda-common";
+import {getParser, LearnerVocabSchema, LessonSchema, TokenWithPhrases, TokeObjectPhrases, VocabLevelSchema} from "dzelda-common";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {defineComponent, PropType} from "vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
@@ -62,7 +55,9 @@ import {icons} from "@/icons.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
 import ExpandingIconButton from "@/components/ui/ExpandingIconButton.vue";
 import {useTimeoutFn} from "@vueuse/core";
-import {ALL_VOCAB_LEVELS} from "@/constants.js";
+import PagePanelButton from "@/components/page/reader/PagePanelButton.vue";
+import BasePageSelector from "@/components/ui/BasePageSelector.vue";
+import PageIndicator from "@/components/page/reader/PageIndicator.vue";
 
 export type NewVocab = Omit<LearnerVocabSchema, "id">
 export type LessonTokenObject = Omit<TokenWithPhrases, "phrases"> & {
@@ -71,9 +66,12 @@ export type LessonTokenObject = Omit<TokenWithPhrases, "phrases"> & {
   phrases: Array<TokeObjectPhrases[number] & { phraseId: number }>
 }
 
+const TOKEN_MAX_GROUP_SIZE = 250;
+const TOKEN_MIN_GROUP_SIZE = 100;
+
 export default defineComponent({
   name: "LessonReaderPage",
-  components: {ExpandingIconButton, BaseCard, ReaderSidePanel, LoadingScreen, LessonContent},
+  components: {PageIndicator, BasePageSelector, PagePanelButton, ExpandingIconButton, BaseCard, ReaderSidePanel, LoadingScreen, LessonContent},
   props: {
     pathParams: {type: Object as PropType<{ learningLanguage: string, lessonId: number }>, required: true},
   },
@@ -86,6 +84,7 @@ export default defineComponent({
       selectedOverLappingPhrasesTokens: null as LessonTokenObject[][] | null,
       lessonTokens: null as { title: LessonTokenObject[], text: LessonTokenObject[] } | null,
       matchIndexToTokenIndex: {title: {}, text: {}} as { title: Record<number, number>, text: Record<number, number> },
+      currentPage: 1,
       isLoadingLesson: true,
       isLoadingWords: true,
       isParsingLesson: true,
@@ -93,8 +92,33 @@ export default defineComponent({
     };
   },
   computed: {
-    ALL_VOCAB_LEVELS() {
-      return ALL_VOCAB_LEVELS;
+    textTokenPages() {
+      const tokenPages: LessonTokenObject[][] = [];
+      if (!this.lessonTokens)
+        return tokenPages;
+      // group tokens into pages preferring line endings as borders between them
+      let lastNewLineIndex = -1;
+      let pageStartIndex = 0;
+      let nonNewLineTokensCounter = 0;
+      for (let i = 0; i < this.lessonTokens.text.length; i++) {
+        if (this.lessonTokens.text[i].text == "\n")
+          lastNewLineIndex = i;
+        else
+          nonNewLineTokensCounter++;
+        if ((nonNewLineTokensCounter - pageStartIndex) == TOKEN_MAX_GROUP_SIZE) {
+          let groupEndIndex;
+          if (lastNewLineIndex != -1 && lastNewLineIndex > TOKEN_MIN_GROUP_SIZE) {
+            groupEndIndex = lastNewLineIndex;
+            lastNewLineIndex = -1;
+          } else
+            groupEndIndex = pageStartIndex + TOKEN_MIN_GROUP_SIZE;
+          tokenPages.push(this.lessonTokens.text.slice(pageStartIndex, groupEndIndex));
+          pageStartIndex = groupEndIndex;
+        }
+      }
+      //last page
+      tokenPages.push(this.lessonTokens.text.slice(pageStartIndex));
+      return tokenPages;
     },
     selectedVocab() {
       if (this.selectedTokens.length == 0)
@@ -151,12 +175,15 @@ export default defineComponent({
       this.lesson.text = this.lesson.text.replace(/[\r\n]{3,}/g, "\n\n");
       this.isLoadingLesson = false;
     },
-    async goToNextLesson() {
-      const lesson = await this.lessonStore.fetchNextLesson({
-        courseId: this.lesson!.course.id,
-        lessonId: this.lesson!.id
-      });
-      await this.$router.push({params: {lessonId: lesson!.id}});
+    async finishLesson() {
+      if (!this.lesson!.isLastInCourse) {
+        const lesson = await this.lessonStore.fetchNextLesson({
+          courseId: this.lesson!.course.id,
+          lessonId: this.lesson!.id
+        });
+        await this.$router.push({params: {lessonId: lesson!.id}});
+      } else
+        this.$router.push({name: "home"});
     },
     async fetchLessonVocabs() {
       this.isLoadingWords = true;
@@ -290,21 +317,30 @@ export default defineComponent({
 </script>
 <style scoped>
 .base-card {
-  width: 80vw;
+  width: 90vw;
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
+  row-gap: 1.25rem;
   border-radius: 20px;
   max-width: 1150px;
-  padding: 40px min(5vw, 20px) 10px min(5vw, 20px);
+  padding: 30px 20px 5px 0;
   margin-bottom: 0;
 }
 
-.content-and-side-div {
+.top-div {
   display: grid;
-  grid-template-columns: 2fr 1.3fr;
-  grid-template-rows: 70vh;
-  column-gap: 1rem;
+  grid-template-columns: 2fr 1.2fr;
+  grid-template-rows: 75vh;
+  column-gap: 0.5rem;
+}
+
+.main-reader {
+  display: flex;
+  column-gap: 0.75rem;
+}
+
+.lesson-content {
+  width: 100%;
 }
 
 .bottom-div {
@@ -314,24 +350,30 @@ export default defineComponent({
   width: 100%;
 }
 
-.next-lesson-button {
-  height: 2rem;
-}
-
 audio {
   max-height: 2rem;
 }
 
+.page-indicators {
+  align-self: center;
+}
+
 @media screen and (max-width: 750px) {
-  .content-and-side-div {
-    display: flex;
-    flex-direction: column;
-    row-gap: 1rem;
+  .base-card {
+    padding-bottom: 10px;
   }
 
-  .lesson-content {
-    max-height: 500px;
+  .top-div {
+    grid-template-rows: 50vh 1fr;
+    grid-template-columns: auto;
+    column-gap: 0;
+    height: auto;
   }
+
+  .side-panel {
+    min-height: 25vh;
+  }
+
 }
 
 </style>
