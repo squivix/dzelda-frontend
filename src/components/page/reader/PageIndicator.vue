@@ -65,7 +65,7 @@ button {
 }
 
 .start-end-button svg {
-  color: var(--secondary-color-dark);
+  color: var(--secondary-color);
 }
 
 </style>

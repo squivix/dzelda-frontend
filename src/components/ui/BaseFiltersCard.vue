@@ -14,7 +14,7 @@ export default defineComponent({
 
 <style scoped>
 .card {
-  background-color: var(--panel-new-color);
+  background-color: var(--primary-faint-color);
   color: var(--panel-new-text-color);
   padding: 1rem;
   box-sizing: border-box;

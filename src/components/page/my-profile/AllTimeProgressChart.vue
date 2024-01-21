@@ -54,6 +54,7 @@ export default defineComponent({
         groupBy: "language",
         level: [VocabLevelSchema.LEARNED, VocabLevelSchema.KNOWN]
       });
+      //TODO make colors not null
       this.chartData = {
         datasets: [cleanUndefined({
           data: rawData.map((r) => ({x: r.language, y: r.vocabsCount})),

@@ -1,10 +1,7 @@
 :root {
     --primary-color: #0288d1;
-    --primary-color-light: #5eb8ff;
     --primary-color-dark: #005b9f;
     --secondary-color: #43a047;
-    --secondary-color-light: #F3FFF3FF;
-    --secondary-color-dark: #00701a;
     --on-primary-color: white;
     --on-secondary-color: white;
 }
@@ -22,9 +19,10 @@
     --scrollbar-thumb-selected: darkgray;
     --zebra-stripe-color: whitesmoke;
     --disabled-input-background: #F0F0F0;
+    --primary-faint-color: #F0F9Fe;
+    --secondary-faint-color: #F3FFF3FF;
 
     /*Panels*/
-    --panel-new-color: #F0F9Fe;
     --panel-new-text-color: #00356b;
     --meaning-item-color: #0288d1;
     --dictionary-item-color: #FFE675;
@@ -53,9 +51,10 @@
     --footer-color: #202020;
     --zebra-stripe-color: #101010;
     --disabled-input-background: #202020;
+    --primary-faint-color: #0a1c2a;
+    --secondary-faint-color: #0A150AC6;
 
     /*Panels*/
-    --panel-new-color: #0a1c2a;
     --panel-new-text-color: white;
     --meaning-item-color: #0c6fa4;
     --dictionary-item-color: #af9b0c;

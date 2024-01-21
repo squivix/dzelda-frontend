@@ -81,7 +81,7 @@ export default defineComponent({
 <style scoped>
 .drop-zone {
   border: 3px dashed var(--secondary-color);
-  color: var(--secondary-color-dark);
+  color: var(--secondary-color);
   width: 50vw;
   height: 300px;
   max-width: 600px;
@@ -91,7 +91,7 @@ export default defineComponent({
 }
 
 .drop-zone.highlighted {
-  background-color: var(--secondary-color-light);
+  background-color: var(--secondary-faint-color);
 }
 
 .center-div {

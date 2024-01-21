@@ -76,7 +76,7 @@ export default {
 }
 
 .levels > li {
-  background-color: var(--panel-new-color);
+  background-color: var(--primary-faint-color);
   flex-grow: 1;
   border: 1px solid #408adb;
   padding: 10px;

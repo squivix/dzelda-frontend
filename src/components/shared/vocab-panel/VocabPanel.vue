@@ -193,7 +193,7 @@ export default {
 }
 
 .new-vocab-panel {
-  background-color: var(--panel-new-color);
+  background-color: var(--primary-faint-color);
   color: var(--panel-new-text-color);
 }
 

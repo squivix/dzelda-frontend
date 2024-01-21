@@ -30,7 +30,7 @@ button {
 
 button:hover:not([disabled]) {
   cursor: pointer;
-  background-color: var(--secondary-color-light);
+  background-color: var(--secondary-faint-color);
 }
 button[disabled]
 {
