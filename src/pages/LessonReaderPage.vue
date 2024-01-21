@@ -66,8 +66,8 @@ export type LessonTokenObject = Omit<TokenWithPhrases, "phrases"> & {
   phrases: Array<TokeObjectPhrases[number] & { phraseId: number }>
 }
 
-const TOKEN_MAX_GROUP_SIZE = 250;
-const TOKEN_MIN_GROUP_SIZE = 100;
+const TOKEN_MAX_GROUP_SIZE = 300;
+const TOKEN_MIN_GROUP_SIZE = 200;
 
 export default defineComponent({
   name: "LessonReaderPage",
@@ -361,6 +361,7 @@ audio {
 @media screen and (max-width: 750px) {
   .base-card {
     padding-bottom: 10px;
+    padding-left: 10px;
   }
 
   .top-div {
@@ -372,6 +373,27 @@ audio {
 
   .side-panel {
     min-height: 25vh;
+  }
+
+  .main-reader {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: 90% auto;
+  }
+
+  .lesson-content {
+    grid-column: 1 / end;
+    grid-row: 1;
+  }
+
+  .left-button {
+    grid-row: 2;
+    grid-column: 1;
+  }
+
+  .right-button {
+    grid-row: 2;
+    grid-column: end;
   }
 
 }
