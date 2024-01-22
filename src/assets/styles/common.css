@@ -85,6 +85,14 @@ button:hover {
     cursor: pointer;
 }
 
+.danger-button {
+    background-color: #CA0B00;
+    color: white;
+    border: 1px solid #CA0B00;
+    font-weight: bold;
+    cursor: pointer;
+}
+
 .icon-text-button {
     display: flex;
     align-items: center;

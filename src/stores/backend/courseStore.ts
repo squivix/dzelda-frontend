@@ -94,6 +94,11 @@ export const useCourseStore = defineStore("course", {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.deleteUsersMeCoursesBookmarkedCourseId(pathParams.courseId));
             return response.data;
+        },
+        async deleteCourse(pathParams: { courseId: number }) {
+            useMessageBarStore().clearMessages();
+            const store = useStore();
+            await store.fetchCustom((api) => api.courses.deleteCoursesCourseId(pathParams.courseId));
         }
     }
 });

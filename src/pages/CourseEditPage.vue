@@ -4,11 +4,17 @@
       <LoadingScreen v-if="isLoading || !course"/>
       <form v-else class="edit-course-form" @submit.prevent="submitEditCourse">
         <div class="side-inputs">
-          <ImageUploadInput id="course-image-input" :oldImagePath="course.image" name="course image"
-                            :fallback="icons.books" v-model="image"
-                            :maxFileSizeInBytes="500_000"/>
-          <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
+          <div class="form-row">
+            <ImageUploadInput id="course-image-input" :oldImagePath="course.image" name="course image"
+                              :fallback="icons.books" v-model="image"
+                              :maxFileSizeInBytes="500_000"/>
+            <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
+          </div>
+          <div class="form-row ">
+            <SubmitButton type="button" @click="onDeleteCourseClicked" class="delete-course-button danger-button capsule-button">Delete course</SubmitButton>
+          </div>
         </div>
+
         <div class="main-inputs">
           <div class="form-row">
             <label for="course-title">Title</label>
@@ -39,6 +45,11 @@
           </SubmitButton>
         </div>
       </form>
+      <ConfirmDialog :isShown="isDeleteCourseConfirmShown" @onNoClicked="isDeleteCourseConfirmShown=false" @onYesClicked="deleteCourse">
+        <h3>Are you sure you want to delete this course?</h3>
+        <br>
+        (This action cannot be undone)
+      </ConfirmDialog>
     </template>
   </BaseCard>
 </template>
@@ -57,10 +68,14 @@ import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import {PropType} from "vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {useStore} from "@/stores/backend/rootStore.js";
+import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
+import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
+import {useUserStore} from "@/stores/backend/userStore.js";
 
 export default {
   name: "CourseEditPage",
   components: {
+    ConfirmDialog,
     LoadingScreen,
     EmptyScreen, LessonOrderTable, SubmitButton,
     ImageUploadInput, InlineSvg, BaseCard, draggable: VueDraggableNext,
@@ -78,6 +93,7 @@ export default {
       errorFields: {title: "", description: "", image: ""},
       isSubmitting: false,
       isLoading: false,
+      isDeleteCourseConfirmShown: false
     };
   },
   methods: {
@@ -113,12 +129,24 @@ export default {
     async fetchCourse() {
       return await this.courseStore.fetchCourse({courseId: this.pathParams.courseId});
     },
-
+    onDeleteCourseClicked() {
+      this.isDeleteCourseConfirmShown = true;
+    },
+    async deleteCourse() {
+      await this.courseStore.deleteCourse({courseId: this.pathParams.courseId});
+      this.isDeleteCourseConfirmShown = false;
+      this.messageBarStore.addMessage({type: MessageType.INFO, text: "Course deleted"});
+      this.$router.push({name: "home"});
+    }
   },
   async mounted() {
     this.isLoading = true;
     const course = await this.fetchCourse();
     this.isLoading = false;
+    if (course.addedBy !== this.userStore?.userAccount?.username) {
+      this.messageBarStore.addMessage({type: MessageType.ERROR, text: "User is not authorized to edit course"});
+      this.$router.push({name: "home"});
+    }
     this.course = course;
 
     this.title = course.title;
@@ -126,7 +154,12 @@ export default {
     this.lessons = course.lessons;
   },
   setup() {
-    return {icons, store: useStore(), courseStore: useCourseStore(),};
+    return {
+      icons, store: useStore(),
+      userStore: useUserStore(),
+      messageBarStore: useMessageBarStore(),
+      courseStore: useCourseStore()
+    };
   }
 };
 </script>
@@ -157,7 +190,7 @@ export default {
   flex-grow: 1;
 }
 
-label {
+label, h3 {
   font-size: 1.25rem;
 }
 
@@ -207,6 +240,10 @@ input:not([type='checkbox']), select, textarea {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
+}
+
+.delete-course-button {
+
 }
 
 

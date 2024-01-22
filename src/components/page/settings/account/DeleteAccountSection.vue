@@ -1,7 +1,7 @@
 <template>
   <section>
     <h3>Delete Account</h3>
-    <SubmitButton class="delete-account-button primary-filled-button capsule-button"
+    <SubmitButton class="delete-account-button danger-button capsule-button"
                   @click="onDeleteAccountClicked"
                   :is-submitting="isSubmitting">
       Delete Account
@@ -54,8 +54,6 @@ export default defineComponent({
 
 <style scoped>
 .delete-account-button {
-  background-color: #CA0B00;
-  border-color: #CA0B00;
   align-self: flex-start;
 }
 </style>
