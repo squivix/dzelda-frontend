@@ -19,7 +19,7 @@
           <div class="form-row">
             <label for="lesson-course">Course</label>
             <select required id="lesson-course" v-model="selectedCourse">
-              <option :value="undefined" selected>No course</option>
+              <option :value="undefined" selected>None</option>
               <option v-for="course in editableCourses" :key="course.id" :value="course.id">{{ course.title }}</option>
               <option>New Course</option>
             </select>
@@ -60,6 +60,10 @@
           </div>
         </div>
       </form>
+      <BaseDialog :isOpen="isCreateCourseDialogShown" @onDismissed="onCreateCourseDialogDismissed">
+        <h2>Add Course</h2>
+        <CourseCreateForm @onCourseCreated="onCourseCreated"/>
+      </BaseDialog>
     </template>
   </BaseCard>
 </template>
@@ -79,10 +83,12 @@ import AudioUploadInput from "@/components/shared/AudioUploadInput.vue";
 import path from "path";
 import {LANGUAGE_LEVELS} from "@/constants.js";
 import {toSentenceCase} from "../utils.js";
+import BaseDialog from "@/components/ui/BaseDialog.vue";
+import CourseCreateForm from "@/components/shared/add-course/CourseCreateForm.vue";
 
 export default {
   name: "LessonAddPage",
-  components: {AudioUploadInput, ImageUploadInput, SubmitButton, BaseCard},
+  components: {CourseCreateForm, BaseDialog, AudioUploadInput, ImageUploadInput, SubmitButton, BaseCard},
   props: {
     pathParams: {type: Object as PropType<{ learningLanguage: string }>, required: true},
     queryParams: {type: Object as PropType<{ courseId?: number }>, required: true}
@@ -101,12 +107,13 @@ export default {
       isSubmitting: false,
       submittingMessage: undefined as string | undefined,
       errorFields: {title: "", text: "", image: "", audio: "", courseId: ""},
+      isCreateCourseDialogShown: false,
     };
   },
   watch: {
     selectedCourse(newVal) {
       if (newVal === "New Course")
-        this.$router.push({name: "add-course"});
+        this.isCreateCourseDialogShown = true;
     },
   },
   methods: {
@@ -175,6 +182,15 @@ export default {
           };
       }
     },
+    onCourseCreated(newCourse: CourseSchema) {
+      this.isCreateCourseDialogShown = false;
+      this.editableCourses!.push(newCourse);
+      this.selectedCourse = newCourse.id;
+    },
+    onCreateCourseDialogDismissed() {
+      this.isCreateCourseDialogShown = false;
+      this.selectedCourse = undefined;
+    }
   },
   async mounted() {
     await this.fetchEditableCourses();
@@ -209,6 +225,16 @@ export default {
 
 .add-lesson-base-card:deep(header) {
   margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 2rem;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin-bottom: 1rem;
+}
+
+dialog {
+  width: 70vw;
 }
 
 form {
