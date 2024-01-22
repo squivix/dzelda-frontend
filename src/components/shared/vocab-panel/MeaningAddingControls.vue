@@ -16,7 +16,7 @@
     </button>
   </div>
   <form class="new-meaning-form" action="javascript:void(0);">
-    <input ref="meaningTextInputRef" placeholder="Add new meaning here" v-model="newMeaningText"/>
+    <input ref="meaningTextInputRef" placeholder="Add new meaning here" maxlength="500" v-model="newMeaningText"/>
     <SubmitButton class="new-meaning-button"
                   :isSubmitting="isSubmittingNewMeaning"
                   :keepText="false"

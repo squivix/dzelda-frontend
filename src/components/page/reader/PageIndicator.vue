@@ -1,12 +1,12 @@
 <template>
   <div class="page-indicators">
-    <button v-if="pageCount>indicatorLimit&&start>0" class="start-end-button inv-button" @click="$emit('onPageIndicatorClicked', 1)">
+    <button v-if="pages[0]!=1" class="start-end-button inv-button" @click="$emit('onPageIndicatorClicked', 1)">
       <inline-svg :src="icons.doubleArrowLeft"/>
     </button>
-    <button v-for="i in (end-start)" class="inv-button" @click="$emit('onPageIndicatorClicked', i+start)">
-      <div :class="{indicator:true, 'current':(i+start)==currentPage}"></div>
+    <button v-for="p in pages" class="inv-button" @click="$emit('onPageIndicatorClicked', p)">
+      <div :class="{indicator:true, 'current':p==currentPage}"></div>
     </button>
-    <button v-if="pageCount>indicatorLimit&&end<pageCount" class="start-end-button inv-button" @click="$emit('onPageIndicatorClicked', pageCount)">
+    <button v-if="pages[pages.length-1]!=pageCount" class="start-end-button inv-button" @click="$emit('onPageIndicatorClicked', pageCount)">
       <inline-svg :src="icons.doubleArrowRight"/>
     </button>
   </div>
@@ -25,13 +25,21 @@ export default defineComponent({
     pageCount: {type: Number, required: true},
     indicatorLimit: {type: Number, default: 30},
   },
+  data() {
+    return {
+      beforeCurrentCount: 10,
+      afterCurrentCount: 10,
+    };
+  },
   computed: {
-    start() {
-      return Math.max(0, this.currentPage - Math.floor(this.indicatorLimit / 2));
+    pages() {
+      let pages = [];
+      let start = Math.max(1, this.currentPage - this.beforeCurrentCount);
+      let end = Math.min(this.pageCount + 1, start + Math.min(this.beforeCurrentCount + this.afterCurrentCount + 1, this.pageCount));
+      for (let i = start; i < end; i++)
+        pages.push(i);
+      return pages;
     },
-    end() {
-      return Math.min(this.pageCount, this.currentPage + Math.floor(this.indicatorLimit / 2));
-    }
   },
   setup() {
     return {icons};
@@ -43,10 +51,11 @@ export default defineComponent({
 .page-indicators {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 button {
-  padding: 5px;
+  padding: 4px;
 }
 
 .indicator {
@@ -65,6 +74,8 @@ button {
 }
 
 .start-end-button svg {
+  width: 14px;
+  height: 14px;
   color: var(--secondary-color);
 }
 

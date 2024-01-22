@@ -35,7 +35,7 @@
           <div class="form-row">
             <label for="lesson-text">Text</label>
             <textarea placeholder="Lesson Text" id="lesson-text" v-model="text" required></textarea>
-            <p v-if="text.length>10_000" class="warning-message">Long lessons are always slower, consider splitting into
+            <p v-if="text.length>25_000" class="warning-message">Long lessons are always slower, consider splitting into
               multiple lessons</p>
             <p v-if="errorFields.text" class="error-message">{{ errorFields.text }}</p>
           </div>

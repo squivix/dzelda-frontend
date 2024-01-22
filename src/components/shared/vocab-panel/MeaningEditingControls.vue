@@ -8,7 +8,7 @@
                       @click="submitDeleteMeaning(meaning)" type="button">
           <inline-svg :src="icons.cross"/>
         </SubmitButton>
-        <input v-model="editedMeanings[meaningIndex]"/>
+        <input v-model="editedMeanings[meaningIndex]" maxlength="500"/>
         <SubmitButton :isSubmitting="isSubmittingEditMeaningSet.has(meaning.id)" :keepText="false"
                       class="edit-user-meaning-button"
                       type="submit">

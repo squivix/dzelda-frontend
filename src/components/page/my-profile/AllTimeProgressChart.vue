@@ -56,11 +56,11 @@ export default defineComponent({
       });
       //TODO make colors not null
       this.chartData = {
-        datasets: [cleanUndefined({
+        datasets: [{
           data: rawData.map((r) => ({x: r.language, y: r.vocabsCount})),
-          backgroundColor: rawData.map((r) => this.languageMap[r.language!]?.color),
-          borderColor: rawData.map((r) => this.languageMap[r.language!]?.color),
-        })]
+          backgroundColor: rawData.map((r) => this.languageMap[r.language!].color),
+          borderColor: rawData.map((r) => this.languageMap[r.language!].color),
+        }]
       };
       this.isLoading = false;
     }

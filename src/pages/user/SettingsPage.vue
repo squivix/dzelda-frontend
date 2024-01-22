@@ -43,7 +43,7 @@ export default {
 <style scoped>
 .content {
   display: flex;
-  height: 50vh;
+  min-height: 60vh;
 }
 
 .nav-panel {

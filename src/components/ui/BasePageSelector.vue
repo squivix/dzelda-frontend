@@ -49,32 +49,24 @@ export default {
   },
   data() {
     return {
-      pages: null as number[] | null,
       beforeCurrentCount: 2,
       afterCurrentCount: 2,
     };
   },
-  watch: {
-    pageCount() {
-      this.updatePages(this.currentPage);
+  computed: {
+    pages() {
+      let pages = [];
+      let start = Math.max(1, this.currentPage - this.beforeCurrentCount);
+      let end = Math.min(this.pageCount + 1, start + Math.min(this.beforeCurrentCount + this.afterCurrentCount + 1, this.pageCount));
+      for (let i = start; i < end; i++)
+        pages.push(i);
+      return pages;
     }
   },
   methods: {
     onPageClicked(page: number) {
       this.$emit("onPageClicked", page);
-      this.updatePages(page);
     },
-    updatePages(currentPage: number) {
-      let pages = [];
-      let start = Math.max(1, currentPage - this.beforeCurrentCount);
-      let end = Math.min(this.pageCount + 1, start + Math.min(this.beforeCurrentCount + this.afterCurrentCount + 1, this.pageCount));
-      for (let i = start; i < end; i++)
-        pages.push(i);
-      this.pages = pages;
-    }
-  },
-  mounted() {
-    this.updatePages(this.currentPage);
   },
   setup() {
     return {icons};

@@ -116,12 +116,12 @@ export default defineComponent({
       const languages: { [k: string]: ChartDataset<"line", { x: any, y: any }[]> } = {};
       for (const row of rawData) {
         if (!(row.language! in languages))
-          languages[row.language!] = cleanUndefined({
+          languages[row.language!] = {
             label: row.language!,
             data: [],
-            backgroundColor: this.languageMap[row.language!]?.color,
-            borderColor: this.languageMap[row.language!]?.color
-          });
+            backgroundColor: this.languageMap[row.language!].color,
+            borderColor: this.languageMap[row.language!].color
+          };
         languages[row.language!].data.push({x: this.formatDate(row.date!), y: row.vocabsCount});
       }
       this.chartData = {datasets: Object.values(languages)};
