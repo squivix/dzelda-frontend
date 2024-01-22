@@ -98,7 +98,7 @@ export default defineComponent({
 }
 
 .add-course-button:hover, .add-course-button:hover svg {
-  color: #183153;
+  color: var(--empty-list-icon-hover-color);
 }
 
 </style>

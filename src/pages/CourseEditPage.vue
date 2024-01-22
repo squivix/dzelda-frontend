@@ -191,8 +191,8 @@ input:not([type='checkbox']), select, textarea {
   height: 30px;
 }
 
-.add-lesson-button:hover {
-  color: #183153;
+.add-lesson-button:hover, .add-lesson-button:hover .empty-icon {
+  color: var(--empty-list-icon-hover-color);
 }
 
 

@@ -11,6 +11,8 @@
     --background-color: white;
     --on-background-color: black;
     --on-background-color-inverse: white;
+    --primary-faint-color: #F0F9Fe;
+    --secondary-faint-color: #F3FFF3FF;
     --tab-highlight-color: lightgray;
     --footer-color: #F2F2F2;
     --divider-color: silver;
@@ -19,8 +21,9 @@
     --scrollbar-thumb-selected: darkgray;
     --zebra-stripe-color: whitesmoke;
     --disabled-input-background: #F0F0F0;
-    --primary-faint-color: #F0F9Fe;
-    --secondary-faint-color: #F3FFF3FF;
+    --empty-list-icon-color: lightgray;
+    --empty-list-text-color: gray;
+    --empty-list-icon-hover-color: #00356b;
 
     /*Panels*/
     --panel-new-text-color: #00356b;
@@ -43,6 +46,8 @@
     --background-color: black;
     --on-background-color: white;
     --on-background-color-inverse: black;
+    --primary-faint-color: #0a1c2a;
+    --secondary-faint-color: #0A150AC6;
     --divider-color: #606060;
     --scrollbar-background: #282828;
     --scrollbar-thumb: #404040;
@@ -51,8 +56,9 @@
     --footer-color: #202020;
     --zebra-stripe-color: #101010;
     --disabled-input-background: #202020;
-    --primary-faint-color: #0a1c2a;
-    --secondary-faint-color: #0A150AC6;
+    --empty-list-icon-color: grey;
+    --empty-list-text-color: gray;
+    --empty-list-icon-hover-color: #8eb9e3;
 
     /*Panels*/
     --panel-new-text-color: white;

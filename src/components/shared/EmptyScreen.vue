@@ -45,17 +45,17 @@ export default defineComponent({
   row-gap: 0.5rem;
   justify-content: center;
   align-items: center;
-  color: grey;
+  color: var(--empty-list-text-color);
   font-size: 1.25rem;
   text-align: center;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .empty-screen button {
-  color: grey;
+  color: var(--empty-list-icon-color);
 }
 
 .empty-screen svg {
-  color: lightgrey;
+  color: var(--empty-list-icon-color);
 }
 </style>
