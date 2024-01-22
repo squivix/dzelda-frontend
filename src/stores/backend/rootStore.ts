@@ -51,6 +51,7 @@ export const useStore = defineStore("main", {
                 try {
                     response = await endpoint(this.apiClient as ApiClient<string>);   //for some reason this.apiClient is any :/
                 } catch (e) {
+                    console.error(e)
                     const message = "We're having trouble reaching our servers, please come back later";
                     const messageBarStore = useMessageBarStore();
                     messageBarStore.addMessage({text: message, type: MessageType.ERROR});

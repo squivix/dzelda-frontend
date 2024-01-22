@@ -44,7 +44,7 @@ export default defineComponent({
     id: {type: String, required: true},
     modelValue: {type: [Object, String] as PropType<File | "">},
     fileTitle: {type: String},
-    oldAudioPath: {type: String, default: ""},
+    oldAudioUrl: {type: String, default: ""},
     maxFileSizeInBytes: {type: Number, required: true}
   },
   data() {
@@ -56,7 +56,7 @@ export default defineComponent({
     src() {
       //if no new audio use old audio
       if (this.modelValue === undefined)
-        return this.oldAudioPath;
+        return this.oldAudioUrl;
       //if old audio was cleared use nothing
       else if (this.modelValue === "")
         return "";

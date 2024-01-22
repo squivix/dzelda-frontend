@@ -33,7 +33,7 @@ export const useLessonStore = defineStore("lesson", {
             title: string,
             text: string,
             languageCode: string,
-            courseId: number | undefined,
+            courseId: number | null,
             isPublic: boolean,
             level: "beginner1" | "beginner2" | "intermediate1" | "intermediate2" | "advanced1" | "advanced2",
             image: string | undefined,
@@ -50,6 +50,26 @@ export const useLessonStore = defineStore("lesson", {
                 courseId: body.courseId,
                 image: body.image,
                 audio: body.audio,
+            })));
+        },
+        async updateLesson(pathParams: { lessonId: number }, body: {
+            courseId: number | undefined | null,
+            title: string,
+            text: string,
+            image: string | undefined,
+            level: LanguageLevelSchema,
+            isPublic: boolean,
+            audio: string | undefined
+        }) {
+            const store = useStore();
+            return await store.fetchCustom((api) => api.lessons.patchLessonsLessonId(pathParams.lessonId, cleanUndefined({
+                courseId: body.courseId,
+                title: body.title,
+                text: body.text,
+                image: body.image,
+                audio: body.audio,
+                level: body.level,
+                isPublic: body.isPublic
             })));
         },
         async addLessonToUserHistory(body: { lessonId: number }) {

@@ -27,6 +27,7 @@ import * as queryParams from "@/router/queryParams.js";
 import * as pathParams from "@/router/pathParams.js";
 import {excludeProperties} from "@/utils.js";
 import InterfaceTab from "@/components/page/settings/interface/InterfaceTab.vue";
+import LessonEditPage from "@/pages/LessonEditPage.vue";
 
 export const privateRoutes: RouteRecordRaw[] = [
     {
@@ -169,6 +170,18 @@ export const privateRoutes: RouteRecordRaw[] = [
         meta: {
             queryParams: {
                 courseId: pathParams.id
+            }
+        },
+        props: routeToProps,
+    },
+    {
+        path: "/learn/:learningLanguage/lessons/:lessonId/edit",
+        component: LessonEditPage,
+        name: "edit-lesson",
+        meta: {
+            pathParams: {
+                learningLanguage: pathParams.languageCode,
+                lessonId: pathParams.id
             }
         },
         props: routeToProps,

@@ -76,7 +76,7 @@ export default defineComponent({
         this.submittingMessage = "Uploading";
         profilePictureUrl = await this.store.uploadFile({
           fileField: "profilePicture",
-          fileExtension: "jpg",
+          fileExtension: ".jpg",
           file: new File([this.profilePicture], "image.jpg"),
         });
         if (!profilePictureUrl) {

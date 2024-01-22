@@ -33,12 +33,14 @@
                          @onOverlappingPhraseClicked="setSelectedTokens"
                          :onVocabRefetched="updateVocab"/>
       </div>
-      <div v-if="lesson.audio">
-        <audio controls :src="audioUrl">
-          Your browser does not support the audio element.
-        </audio>
+      <div class="bottom-div">
+        <div v-if="lesson.audio">
+          <audio controls :src="audioUrl">
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+        <PageIndicator class="page-indicators" :currentPage="currentPage" :pageCount="textTokenPages.length" @onPageIndicatorClicked="page=>currentPage=page"/>
       </div>
-      <PageIndicator class="page-indicators" :currentPage="currentPage" :pageCount="textTokenPages.length" @onPageIndicatorClicked="page=>currentPage=page"/>
     </template>
   </BaseCard>
 </template>
@@ -320,10 +322,10 @@ export default defineComponent({
   width: 90vw;
   display: flex;
   flex-direction: column;
-  row-gap: 1.25rem;
+  row-gap: 0.25rem;
   border-radius: 20px;
   max-width: 1150px;
-  padding: 30px 20px 5px 0;
+  padding: 30px 20px 10px 0;
   margin-bottom: 0;
 }
 
@@ -345,8 +347,7 @@ export default defineComponent({
 
 .bottom-div {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   width: 100%;
 }
 

@@ -1,31 +1,31 @@
 <template>
-  <BaseCard title="Add Lesson" class="add-lesson-base-card main-page-base-card">
+  <BaseCard title="Edit Lesson" class="edit-lesson-base-card main-page-base-card">
     <template v-slot:content>
-      <form class="add-lesson-form" @submit.prevent="addLesson">
+      <LoadingScreen v-if="!lesson"/>
+      <form class="edit-lesson-form" @submit.prevent="updateLesson" v-else>
         <div class="side-inputs">
           <div class="form-row">
             <label>Image</label>
-            <ImageUploadInput id="lesson-image-input" fileTitle="lesson image" :fallback="icons.bookOpen"
+            <ImageUploadInput id="lesson-image-input" fileTitle="lesson image" :oldImageUrl="lesson.image" :fallback="icons.bookOpen"
                               v-model="image"
                               :maxFileSizeInBytes="500_000"/>
             <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
           </div>
           <div class="form-row">
             <label>Audio</label>
-            <AudioUploadInput id="lesson-audio-input" fileTitle="lesson audio" v-model="audio"
+            <AudioUploadInput id="lesson-audio-input" fileTitle="lesson audio" :oldAudioUrl="lesson.audio" v-model="audio"
                               :maxFileSizeInBytes="100_000_000"/>
             <p v-if="errorFields.audio" class="error-message">{{ errorFields.audio }}</p>
           </div>
           <div class="form-row">
             <label for="lesson-course">Course</label>
             <select required id="lesson-course" v-model="selectedCourse">
-              <option :value="null" selected>None</option>
+              <option :value="undefined" selected>None</option>
               <option v-for="course in editableCourses" :key="course.id" :value="course.id">{{ course.title }}</option>
               <option>New Course</option>
             </select>
             <p v-if="errorFields.courseId" class="error-message">{{ errorFields.courseId }}</p>
           </div>
-
           <div class="form-row">
             <label>Level</label>
             <select v-model="level">
@@ -69,37 +69,38 @@
 </template>
 
 <script lang="ts">
+import {defineComponent, PropType} from "vue";
+import AudioUploadInput from "@/components/shared/AudioUploadInput.vue";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 import BaseCard from "@/components/ui/BaseCard.vue";
+import CourseCreateForm from "@/components/shared/add-course/CourseCreateForm.vue";
+import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
+import BaseDialog from "@/components/ui/BaseDialog.vue";
+import {CourseSchema, LanguageLevelSchema, LessonSchema} from "dzelda-common";
+import {toSentenceCase} from "@/utils.js";
+import path from "path";
+import {icons} from "@/icons.js";
+import {LANGUAGE_LEVELS} from "@/constants.js";
+import {useStore} from "@/stores/backend/rootStore.js";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
-import {useStore} from "@/stores/backend/rootStore.js";
-import {CourseSchema, LanguageLevelSchema} from "dzelda-common";
 import {useUserStore} from "@/stores/backend/userStore.js";
-import {icons} from "@/icons.js";
-import SubmitButton from "@/components/ui/SubmitButton.vue";
-import {PropType} from "vue";
-import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
-import AudioUploadInput from "@/components/shared/AudioUploadInput.vue";
-import path from "path";
-import {LANGUAGE_LEVELS} from "@/constants.js";
-import {toSentenceCase} from "../utils.js";
-import BaseDialog from "@/components/ui/BaseDialog.vue";
-import CourseCreateForm from "@/components/shared/add-course/CourseCreateForm.vue";
+import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 
-export default {
-  name: "LessonAddPage",
-  components: {CourseCreateForm, BaseDialog, AudioUploadInput, ImageUploadInput, SubmitButton, BaseCard},
+export default defineComponent({
+  name: "LessonEditPage",
+  components: {LoadingScreen, BaseDialog, ImageUploadInput, CourseCreateForm, BaseCard, SubmitButton, AudioUploadInput},
   props: {
-    pathParams: {type: Object as PropType<{ learningLanguage: string }>, required: true},
-    queryParams: {type: Object as PropType<{ courseId?: number }>, required: true}
+    pathParams: {type: Object as PropType<{ learningLanguage: string, lessonId: number }>, required: true},
   },
   data() {
     return {
+      lesson: null as LessonSchema | null,
       editableCourses: null as CourseSchema[] | null,
-      selectedCourse: null as number | null,
+      selectedCourse: null as number  | null,
       title: "",
       text: "",
-      level: LanguageLevelSchema.ADVANCED1,
+      level: undefined as LanguageLevelSchema | undefined,
       isPublic: true,
       image: undefined as Blob | undefined,
       audio: undefined as File | undefined,
@@ -117,6 +118,14 @@ export default {
   },
   methods: {
     toSentenceCase,
+    async fetchLesson() {
+      this.lesson = await this.lessonStore.fetchLesson({lessonId: this.pathParams.lessonId});
+      this.title = this.lesson.title;
+      this.text = this.lesson.text;
+      this.level = this.lesson.level;
+      this.isPublic = this.lesson.isPublic;
+      this.selectedCourse = this.lesson.course?.id ?? undefined;
+    },
     async fetchEditableCourses() {
       const response = await this.courseStore.fetchCourses({
         languageCode: this.pathParams.learningLanguage,
@@ -124,7 +133,7 @@ export default {
       }, {secure: true});
       this.editableCourses = response.data;
     },
-    async addLesson() {
+    async updateLesson() {
       this.errorFields = {title: "", text: "", image: "", audio: "", courseId: ""};
       this.isSubmitting = true;
       let imageUrl, audioUrl;
@@ -155,10 +164,9 @@ export default {
       } else
         audioUrl = this.audio;
 
-      this.submittingMessage = "Creating lesson";
-      const response = await this.lessonStore.createLesson({
+      this.submittingMessage = "Updating lesson";
+      const response = await this.lessonStore.updateLesson({lessonId: this.lesson!.id}, {
         courseId: this.selectedCourse,
-        languageCode: this.pathParams.learningLanguage,
         title: this.title,
         text: this.text,
         level: this.level,
@@ -174,6 +182,7 @@ export default {
           params: {lessonId: lesson.id}
         });
       } else {
+        this.submittingMessage = undefined;
         if ("fields" in response.error)
           this.errorFields = response.error.fields as {
             title: string, text: string,
@@ -188,14 +197,12 @@ export default {
     },
     onCreateCourseDialogDismissed() {
       this.isCreateCourseDialogShown = false;
-      this.selectedCourse = undefined;
+      this.selectedCourse = null;
     }
   },
   async mounted() {
+    await this.fetchLesson();
     await this.fetchEditableCourses();
-    if (this.editableCourses!.some(course => course.id == this.queryParams.courseId))
-      this.selectedCourse = this.queryParams.courseId!;
-    this.$router.replace({query: {...this.queryParams, courseId: undefined}});
   },
   setup() {
     return {
@@ -208,13 +215,11 @@ export default {
       userStore: useUserStore(),
     };
   }
-};
-
-
+});
 </script>
 
 <style scoped>
-.add-lesson-base-card {
+.edit-lesson-base-card {
   display: flex;
   flex-direction: column;
   row-gap: 1.25rem;
@@ -222,7 +227,7 @@ export default {
   align-items: stretch;
 }
 
-.add-lesson-base-card:deep(header) {
+.edit-lesson-base-card:deep(header) {
   margin-bottom: 1rem;
 }
 
@@ -258,7 +263,6 @@ label {
 }
 
 input, select, textarea {
-
   font-size: 1rem;
 }
 
@@ -286,7 +290,7 @@ select {
 }
 
 @media screen and (max-width: 750px) {
-  .add-lesson-form {
+  .edit-lesson-form {
     flex-direction: column;
   }
 

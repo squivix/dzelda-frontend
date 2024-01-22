@@ -48,7 +48,7 @@
       <ConfirmDialog :isShown="isDeleteCourseConfirmShown" @onNoClicked="isDeleteCourseConfirmShown=false" @onYesClicked="deleteCourse">
         <h3>Are you sure you want to delete this course?</h3>
         <br>
-        (This action cannot be undone)
+        (This action cannot be undone. All lessons will be detached from course)
       </ConfirmDialog>
     </template>
   </BaseCard>
@@ -103,7 +103,7 @@ export default {
       if (this.image)
         imageUrl = await this.store.uploadFile({
           fileField: "courseImage",
-          fileExtension: "jpg",
+          fileExtension: ".jpg",
           file: new File([this.image], "image.jpg"),
         });
       else

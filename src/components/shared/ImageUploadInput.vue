@@ -43,7 +43,7 @@ export default defineComponent({
     src() {
       //if no new image use old image
       if (this.modelValue === undefined)
-        return this.oldImagePath;
+        return this.oldImageUrl;
       //if old image was cleared use nothing
       else if (this.modelValue === "")
         return "";
@@ -56,7 +56,7 @@ export default defineComponent({
     id: {type: String, required: true},
     modelValue: {type: [Object, String] as PropType<Blob | "">},
     fileTitle: {type: String},
-    oldImagePath: {type: String, default: ""},
+    oldImageUrl: {type: String, default: ""},
     fallback: {type: String, required: false},
     enabled: {type: Boolean, required: false, default: true},
     circular: {type: Boolean, required: false, default: false},

@@ -36,6 +36,25 @@
               </div>
             </div>
           </div>
+          <BaseDropDown
+              v-if="lesson.addedBy==userStore.userAccount!.username"
+              :id="`lesson-item-${lesson.id}`"
+              :centered="false"
+              :round="false">
+            <template v-slot:button>
+              <inline-svg :src="icons.dotsStacked" class="more-button"/>
+            </template>
+            <template v-slot:menu>
+              <ol class="dropdown-list">
+                <li>
+                  <router-link :to="{ name: 'edit-lesson' , params:{lessonId:lesson.id}}">
+                    <inline-svg :src="icons.pen"/>
+                    <span>Edit</span>
+                  </router-link>
+                </li>
+              </ol>
+            </template>
+          </BaseDropDown>
         </article>
       </router-link>
     </template>
@@ -52,10 +71,12 @@ import constants from "@/constants.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import {format} from "timeago.js";
+import BaseDropDown from "@/components/ui/BaseDropDown.vue";
+import {useUserStore} from "@/stores/backend/userStore.js";
 
 export default {
   name: "LessonListItem",
-  components: {InlineSvg, BaseImage, BaseCard},
+  components: {InlineSvg, BaseDropDown, BaseImage, BaseCard},
   props: {
     lesson: {type: Object as PropType<LessonSchema | LessonHistoryEntrySchema>, required: true},
     showCourse: {type: Boolean, required: false, default: true}
@@ -99,6 +120,7 @@ export default {
     return {
       icons,
       store: useStore(),
+      userStore: useUserStore(),
       VocabLevelSchema
     };
   }
