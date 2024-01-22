@@ -137,7 +137,7 @@ export default defineComponent({
           level: VocabLevelSchema.NEW,
           isPhrase: true,
           notes: null,
-          language: this.lesson!.course.language,
+          language: this.lesson!.language,
           meanings: [],
           learnerMeanings: []
         };
@@ -151,7 +151,7 @@ export default defineComponent({
       return this.isLoadingLesson || this.isLoadingWords || this.isParsingLesson;
     },
     imageUrl() {
-      return (this.lesson!.image || this.lesson!.course.image) ?? "";
+      return (this.lesson!.image || this.lesson!.course?.image) ?? "";
     },
     audioUrl() {
       return this.lesson?.audio ?? "";
@@ -159,7 +159,7 @@ export default defineComponent({
   },
   async mounted() {
     await this.fetchLesson();
-    if (this.lesson!.course.language != this.pathParams.learningLanguage) {
+    if (this.lesson!.language != this.pathParams.learningLanguage) {
       await this.$router.push({name: "not-found"});
       return;
     }
@@ -176,9 +176,9 @@ export default defineComponent({
       this.isLoadingLesson = false;
     },
     async finishLesson() {
-      if (!this.lesson!.isLastInCourse) {
+      if (this.lesson!.course && !this.lesson!.isLastInCourse) {
         const lesson = await this.lessonStore.fetchNextLesson({
-          courseId: this.lesson!.course.id,
+          courseId: this.lesson!.course?.id,
           lessonId: this.lesson!.id
         });
         await this.$router.push({params: {lessonId: lesson!.id}});
@@ -266,7 +266,7 @@ export default defineComponent({
       this.isParsingLesson = false;
     },
     parseStringToTokens(text: string, matchIndexToTokenIndex: Record<number, number>, firstIndex: number): LessonTokenObject[] {
-      const parser = getParser(this.lesson!.course.language);
+      const parser = getParser(this.lesson!.language);
       const tokens = parser.detectPhrases(text, Object.keys(this.phrases)) as LessonTokenObject[];
       let matchIndex = 0;
       for (let i = 0; i < tokens.length; i++) {

@@ -16,17 +16,24 @@
                               :maxFileSizeInBytes="100_000_000"/>
             <p v-if="errorFields.audio" class="error-message">{{ errorFields.audio }}</p>
           </div>
-        </div>
-        <div class="main-inputs">
           <div class="form-row">
             <label for="lesson-course">Course</label>
             <select required id="lesson-course" v-model="selectedCourse">
-              <option value="" disabled selected>Select course</option>
+              <option :value="undefined" selected>No course</option>
               <option v-for="course in editableCourses" :key="course.id" :value="course.id">{{ course.title }}</option>
               <option>New Course</option>
             </select>
             <p v-if="errorFields.courseId" class="error-message">{{ errorFields.courseId }}</p>
           </div>
+
+          <div class="form-row">
+            <label>Level</label>
+            <select v-model="level">
+              <option v-for="level in LANGUAGE_LEVELS" :value="level">{{ toSentenceCase(level) }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="main-inputs">
           <div class="form-row">
             <label for="lesson-title">Title</label>
             <input id="lesson-title" type="text" placeholder="Lesson Title" v-model="title" required maxlength="124">
@@ -39,6 +46,10 @@
               multiple lessons</p>
             <p v-if="errorFields.text" class="error-message">{{ errorFields.text }}</p>
           </div>
+          <label for="is-public-checkbox" class="checkbox-label">
+            <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
+            Public
+          </label>
           <div class="buttons-div">
             <SubmitButton id="save-and-open-button"
                           type="submit"
@@ -58,7 +69,7 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
-import {CourseSchema} from "dzelda-common";
+import {CourseSchema, LanguageLevelSchema} from "dzelda-common";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {icons} from "@/icons.js";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
@@ -66,6 +77,8 @@ import {PropType} from "vue";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import AudioUploadInput from "@/components/shared/AudioUploadInput.vue";
 import path from "path";
+import {LANGUAGE_LEVELS} from "@/constants.js";
+import {toSentenceCase} from "../utils.js";
 
 export default {
   name: "LessonAddPage",
@@ -77,9 +90,11 @@ export default {
   data() {
     return {
       editableCourses: null as CourseSchema[] | null,
-      selectedCourse: "" as number | "",
+      selectedCourse: undefined as number | undefined,
       title: "",
       text: "",
+      level: LanguageLevelSchema.ADVANCED1,
+      isPublic: true,
       image: undefined as Blob | undefined,
       audio: undefined as File | undefined,
       audioUrl: null as string | null,
@@ -95,6 +110,7 @@ export default {
     },
   },
   methods: {
+    toSentenceCase,
     async fetchEditableCourses() {
       const response = await this.courseStore.fetchCourses({
         languageCode: this.pathParams.learningLanguage,
@@ -135,9 +151,12 @@ export default {
 
       this.submittingMessage = "Creating lesson";
       const response = await this.lessonStore.createLesson({
-        courseId: this.selectedCourse as number,
+        courseId: this.selectedCourse,
+        languageCode: this.pathParams.learningLanguage,
         title: this.title,
         text: this.text,
+        level: this.level,
+        isPublic: this.isPublic,
         image: imageUrl,
         audio: audioUrl
       });
@@ -166,6 +185,8 @@ export default {
   setup() {
     return {
       icons,
+      toSentenceCase,
+      LANGUAGE_LEVELS,
       store: useStore(),
       courseStore: useCourseStore(),
       lessonStore: useLessonStore(),
@@ -242,6 +263,10 @@ select {
 @media screen and (max-width: 750px) {
   .add-lesson-form {
     flex-direction: column;
+  }
+
+  .side-inputs {
+    row-gap: 0.5rem;
   }
 }
 </style>

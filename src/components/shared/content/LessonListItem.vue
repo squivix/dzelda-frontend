@@ -12,7 +12,7 @@
             <div class="title-stats">
               <div class="title-subtitle">
                 <h4>{{ lesson.title }}</h4>
-                <router-link v-if="showCourse"
+                <router-link v-if="showCourse && lesson.course"
                              :to="{name:'course', params:{ courseId:lesson.course.id}}"
                              class="link-parent">
                   <p class="course-title">{{ lesson.course.title }}</p>
@@ -66,7 +66,7 @@ export default {
         return format(this.lesson.timeViewed);
     },
     imageUrl() {
-      return (this.lesson.image || this.lesson.course.image) ?? "";
+      return (this.lesson.image || this.lesson.course?.image) ?? "";
     },
     newVocabsPercentage() {
       const total = this.lesson.vocabsByLevel![VocabLevelSchema.NEW] + this.savedVocabsCount;

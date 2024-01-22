@@ -41,8 +41,6 @@ export const useCourseStore = defineStore("course", {
             title: string,
             description: string,
             image: string | undefined,
-            isPublic: boolean,
-            level: LanguageLevelSchema | undefined
         }) {
             useMessageBarStore().clearMessages();
             const store = useStore();
@@ -50,8 +48,6 @@ export const useCourseStore = defineStore("course", {
                 languageCode: body.languageCode,
                 title: body.title,
                 description: body.description,
-                isPublic: body.isPublic,
-                level: body.level,
                 image: body.image as string | undefined,
             }))) as Awaited<ReturnType<typeof store.apiClient.courses.postCourses>>;
         },
@@ -70,8 +66,6 @@ export const useCourseStore = defineStore("course", {
         }, body: {
             title: string,
             description: string,
-            isPublic: boolean,
-            level: "beginner1" | "beginner2" | "intermediate1" | "intermediate2" | "advanced1" | "advanced2"
             image: string | undefined,
             lessonsOrder: number[]
         }) {
@@ -81,8 +75,6 @@ export const useCourseStore = defineStore("course", {
                 cleanUndefined({
                     title: body.title,
                     description: body.description,
-                    level: body.level,
-                    isPublic: body.isPublic,
                     lessonsOrder: body.lessonsOrder,
                     image: body.image
                 })));

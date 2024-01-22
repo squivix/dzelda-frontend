@@ -2,16 +2,10 @@
   <BaseCard title="Add Course" class="add-course-base-card main-page-base-card">
     <template v-slot:content>
       <form class="add-course-form" @submit.prevent="onSubmit">
-        <div class="image-level-section">
+        <div class="image-section">
           <ImageUploadInput id="course-image-input" name="course image" :fallback="icons.books" v-model="image"
                             :maxFileSizeInBytes="500_000"/>
           <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
-          <div class="form-row">
-            <label>Level</label>
-            <select v-model="level">
-              <option v-for="level in LANGUAGE_LEVELS" :value="level">{{ toSentenceCase(level) }}</option>
-            </select>
-          </div>
         </div>
         <div class="main-inputs">
           <div class="form-row">
@@ -25,11 +19,6 @@
                       v-model="description"></textarea>
             <p v-if="errorFields.description" class="error-message">{{ errorFields.description }}</p>
           </div>
-
-          <label for="is-public-checkbox" class="checkbox-label">
-            <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
-            Public
-          </label>
 
           <SubmitButton id="save-button"
                         type="submit"
@@ -52,9 +41,6 @@ import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
-import {LANGUAGE_LEVELS} from "@/constants.js";
-import {toSentenceCase} from "@/utils.js";
-import {LanguageLevelSchema} from "dzelda-common";
 import {useStore} from "@/stores/backend/rootStore.js";
 
 export default {
@@ -63,10 +49,7 @@ export default {
   data() {
     return {
       title: "",
-      description: "",
-      isPublic: true,
-      level: LANGUAGE_LEVELS.ADVANCED_1,
-      image: undefined as Blob | undefined,
+      description: "",      image: undefined as Blob | undefined,
       errorFields: {title: "", description: "", image: ""},
       isSubmitting: false,
       submittingMessage: undefined as string | undefined,
@@ -101,9 +84,7 @@ export default {
         languageCode: this.$route.params.learningLanguage as string,
         title: this.title,
         description: this.description,
-        isPublic: this.isPublic,
         image: imageUrl,
-        level: this.level as LanguageLevelSchema
       });
       this.isSubmitting = false;
       if (response.ok) {
@@ -119,7 +100,6 @@ export default {
   setup() {
     return {
       icons,
-      LANGUAGE_LEVELS, toSentenceCase,
       store: useStore(),
       courseStore: useCourseStore(),
     };
@@ -181,7 +161,7 @@ export default {
   height: 15vh;
 }
 
-.image-level-section {
+.image-section {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;

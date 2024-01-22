@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
-import {LessonSchema} from "dzelda-common";
+import {LanguageLevelSchema, LessonSchema} from "dzelda-common";
 import {cleanUndefined} from "@/utils.js";
 import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
@@ -32,7 +32,10 @@ export const useLessonStore = defineStore("lesson", {
         async createLesson(body: {
             title: string,
             text: string,
-            courseId: number,
+            languageCode: string,
+            courseId: number | undefined,
+            isPublic: boolean,
+            level: "beginner1" | "beginner2" | "intermediate1" | "intermediate2" | "advanced1" | "advanced2",
             image: string | undefined,
             audio: string | undefined
         }) {
@@ -41,6 +44,9 @@ export const useLessonStore = defineStore("lesson", {
             return await store.fetchCustom((api) => api.lessons.postLessons(cleanUndefined({
                 title: body.title,
                 text: body.text,
+                languageCode: body.languageCode,
+                level: body.level,
+                isPublic: body.isPublic,
                 courseId: body.courseId,
                 image: body.image,
                 audio: body.audio,

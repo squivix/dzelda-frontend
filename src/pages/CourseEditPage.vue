@@ -8,12 +8,6 @@
                             :fallback="icons.books" v-model="image"
                             :maxFileSizeInBytes="500_000"/>
           <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
-          <div class="form-row">
-            <label>Level</label>
-            <select v-model="level">
-              <option v-for="level in LANGUAGE_LEVELS" :value="level">{{ toSentenceCase(level) }}</option>
-            </select>
-          </div>
         </div>
         <div class="main-inputs">
           <div class="form-row">
@@ -37,10 +31,6 @@
               Add lesson
             </router-link>
           </div>
-          <label for="is-public-checkbox" class="checkbox-label">
-            <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
-            Public
-          </label>
           <SubmitButton id="save-button"
                         type="submit"
                         class="primary-filled-button capsule-button"
@@ -57,7 +47,7 @@
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {VueDraggableNext} from "vue-draggable-next";
 import {useCourseStore} from "@/stores/backend/courseStore.js";
-import {CourseSchema, LanguageLevelSchema, LessonSchema} from "dzelda-common";
+import {CourseSchema, LessonSchema} from "dzelda-common";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
@@ -66,8 +56,6 @@ import LessonOrderTable from "@/components/page/edit-course/LessonOrderTable.vue
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import {PropType} from "vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
-import {LANGUAGE_LEVELS} from "@/constants.js";
-import {toSentenceCase} from "../utils.js";
 import {useStore} from "@/stores/backend/rootStore.js";
 
 export default {
@@ -85,8 +73,6 @@ export default {
       course: null as CourseSchema | null,
       title: undefined as string | undefined,
       description: undefined as string | undefined,
-      isPublic: undefined as boolean | undefined,
-      level: undefined as LanguageLevelSchema | undefined,
       lessons: undefined as LessonSchema[] | undefined,
       image: undefined as Blob | "" | undefined,
       errorFields: {title: "", description: "", image: ""},
@@ -112,8 +98,6 @@ export default {
           {
             title: this.title!,
             description: this.description!,
-            level: this.level!,
-            isPublic: this.isPublic!,
             lessonsOrder: this.lessons!.map(lesson => lesson.id),
             image: imageUrl
           }
@@ -138,13 +122,11 @@ export default {
     this.course = course;
 
     this.title = course.title;
-    this.level = course.level;
     this.description = course.description;
-    this.isPublic = course.isPublic;
     this.lessons = course.lessons;
   },
   setup() {
-    return {LANGUAGE_LEVELS, toSentenceCase, icons, store: useStore(), courseStore: useCourseStore(),};
+    return {icons, store: useStore(), courseStore: useCourseStore(),};
   }
 };
 </script>
