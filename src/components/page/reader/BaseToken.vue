@@ -21,7 +21,8 @@
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
+import {LessonTokenObject} from "@/components/shared/LessonReader.vue";
+
 
 export default defineComponent({
   name: "BaseToken",

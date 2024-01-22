@@ -42,7 +42,7 @@ import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
 import {getTextSelectedElements} from "@/utils.js";
 import {useEventListener} from "@vueuse/core";
 import {icons} from "@/icons.js";
-import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
+import {LessonTokenObject} from "@/components/shared/LessonReader.vue";
 import LessonToken from "@/components/page/reader/LessonToken.vue";
 
 export default {
@@ -221,7 +221,7 @@ p {
 
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 900px) {
   .top-div {
     flex-direction: column;
     align-items: center;

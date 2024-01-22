@@ -11,9 +11,9 @@
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
 import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
-import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
 import BaseToken from "@/components/page/reader/BaseToken.vue";
 import {getLevelClass} from "@/utils.js";
+import {LessonTokenObject} from "@/components/shared/LessonReader.vue";
 
 
 export default defineComponent({

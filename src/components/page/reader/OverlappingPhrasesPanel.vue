@@ -14,10 +14,10 @@
 <script lang="ts">
 import {PropType} from "vue";
 import {LearnerVocabSchema} from "dzelda-common";
-import {LessonTokenObject} from "@/pages/LessonReaderPage.vue";
 import LessonToken from "@/components/page/reader/LessonToken.vue";
 import {token} from "@/router/queryParams.js";
 import OverlappingPhrase from "@/components/page/reader/OverlappingPhrase.vue";
+import {LessonTokenObject} from "@/components/shared/LessonReader.vue";
 
 export default {
   name: "OverlappingPhrasesPanel",

@@ -32,10 +32,10 @@ import NewVocabPanel from "@/components/shared/vocab-panel/NewVocabPanel.vue";
 import ExistingVocabPanel from "@/components/shared/vocab-panel/ExistingVocabPanel.vue";
 import {PropType} from "vue";
 import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-common";
-import {NewVocab} from "@/pages/LessonReaderPage.vue";
 import {useMeaningStore} from "@/stores/backend/meaningStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import MeaningEditingControls from "@/components/shared/vocab-panel/MeaningEditingControls.vue";
+import {NewVocab} from "@/components/shared/LessonReader.vue";
 
 export default {
   name: "VocabPanel",
