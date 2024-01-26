@@ -29,7 +29,6 @@ import VocabLevelPicker from "@/components/shared/vocab-panel/VocabLevelPicker.v
 import MeaningEditingControls from "@/components/shared/vocab-panel/MeaningEditingControls.vue";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
-import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {PropType} from "vue";
 import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-common";
 
@@ -73,7 +72,6 @@ export default {
   setup() {
     return {
       icons,
-      vocabStore: useVocabStore()
     };
   }
 };

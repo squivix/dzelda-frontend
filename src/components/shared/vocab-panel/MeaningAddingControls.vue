@@ -28,11 +28,9 @@
 </template>
 
 <script lang="ts">
-import {useMeaningStore} from "@/stores/backend/meaningStore.js";
-import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import {LearnerVocabSchema, MeaningSchema} from "dzelda-common";
+import {MeaningSchema} from "dzelda-common";
 import {PropType} from "vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 
@@ -83,8 +81,6 @@ export default {
   setup() {
     return {
       icons,
-      vocabStore: useVocabStore(),
-      meaningStore: useMeaningStore()
     };
   }
 };

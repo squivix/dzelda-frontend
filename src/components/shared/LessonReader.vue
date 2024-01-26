@@ -21,7 +21,7 @@
                          @onOverLappingPhrasesClicked="showOverlappingPhrases"
                          @onBackgroundClicked="clearSelectedTokens"/>
           <PagePanelButton v-if="currentPage<textTokenPages.length" :iconSrc="icons.arrowRight" @click="currentPage++" class="right-button"/>
-          <PagePanelButton v-else :iconSrc="icons.checkMark" @onClick="finishLesson" class="right-button"/>
+          <PagePanelButton v-else :disabled="!showDoneButton" :iconSrc="icons.checkMark" @onClick="finishLesson" class="right-button"/>
         </div>
         <ReaderSidePanel class="side-panel"
                          :selectedOverLappingPhrasesTokens="selectedOverLappingPhrasesTokens"
@@ -31,7 +31,9 @@
                          @onVocabDeleted="deleteVocabData"
                          @onNewVocabCreated="onNewVocabCreated"
                          @onOverlappingPhraseClicked="setSelectedTokens"
-                         :onVocabRefetched="updateVocab"/>
+                         :onVocabRefetched="updateVocab">
+          <slot name="side-panel"></slot>
+        </ReaderSidePanel>
       </div>
       <div class="bottom-div">
         <div v-if="lesson.audio">
@@ -46,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent, inject} from "vue";
 import BaseCard from "@/components/ui/BaseCard.vue";
 import PageIndicator from "@/components/page/reader/PageIndicator.vue";
 import ReaderSidePanel from "@/components/page/reader/ReaderSidePanel.vue";
@@ -66,16 +68,15 @@ export type LessonTokenObject = Omit<TokenWithPhrases, "phrases"> & {
   phrases: Array<TokeObjectPhrases[number] & { phraseId: number }>
 }
 
-const TOKEN_MAX_GROUP_SIZE = 250;
-const TOKEN_MIN_GROUP_SIZE = 100;
 export default defineComponent({
   name: "LessonReader",
   components: {LoadingScreen, LessonContent, PagePanelButton, ReaderSidePanel, PageIndicator, BaseCard},
   props: {
     languageCode: {type: String, required: true},
     lessonId: {type: Number, required: true},
-    lessonStore: {type: Object as PropType<ReturnType<typeof useLessonStore>>, required: true},
-    vocabStore: {type: Object as PropType<ReturnType<typeof useVocabStore>>, required: true},
+    tokenMinGroupSize: {type: Number, default: 100},
+    tokenMaxGroupSize: {type: Number, default: 250},
+    showDoneButton: {type: Boolean, default: true},
   },
   data() {
     return {
@@ -107,13 +108,13 @@ export default defineComponent({
           lastNewLineIndex = i;
         else
           nonNewLineTokensCounter++;
-        if ((nonNewLineTokensCounter - pageStartIndex) == TOKEN_MAX_GROUP_SIZE) {
+        if ((nonNewLineTokensCounter - pageStartIndex) == this.tokenMaxGroupSize) {
           let groupEndIndex;
-          if (lastNewLineIndex != -1 && lastNewLineIndex > TOKEN_MIN_GROUP_SIZE) {
+          if (lastNewLineIndex != -1 && lastNewLineIndex > this.tokenMinGroupSize) {
             groupEndIndex = lastNewLineIndex;
             lastNewLineIndex = -1;
           } else
-            groupEndIndex = pageStartIndex + TOKEN_MIN_GROUP_SIZE;
+            groupEndIndex = pageStartIndex + this.tokenMinGroupSize;
           tokenPages.push(this.lessonTokens.text.slice(pageStartIndex, groupEndIndex));
           pageStartIndex = groupEndIndex;
         }
@@ -306,7 +307,11 @@ export default defineComponent({
     },
   },
   setup() {
-    return {icons};
+    return {
+      icons,
+      lessonStore: inject<ReturnType<typeof useLessonStore>>("lessonStore", useLessonStore()),
+      vocabStore: inject<ReturnType<typeof useVocabStore>>("vocabStore", useVocabStore()),
+    };
   }
 });
 </script>
@@ -351,6 +356,7 @@ audio {
 .page-indicators {
   align-self: center;
 }
+
 @media screen and (max-width: 750px) {
   .base-card {
     padding-bottom: 10px;

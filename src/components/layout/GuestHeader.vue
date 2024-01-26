@@ -1,18 +1,18 @@
 <template>
   <header>
     <div class="main-header">
-      <router-link :to="{name:'root'}" style="text-decoration: none; color: inherit">
-        <router-link :to="{ name: 'home'}" class="title">
-          <img :src="logo" class="logo-image" alt="logo">
-          <!--        <h1>Dzelda</h1>-->
-        </router-link>
+      <router-link :to="{ name: 'home'}" class="title">
+        <img :src="logoSmall" class="logo-image" alt="logo">
+        <!--        <h1>Dzelda</h1>-->
       </router-link>
 
-      <div id="auth-buttons">
+      <div id="header-buttons">
+        <button class="theme-toggle inv-button" @click="onThemeToggleClicked">
+          <inline-svg :src="nextThemeIcon!"></inline-svg>
+        </button>
         <router-link :to="{ name: 'sign-up' }">
-          <button class="hollow-button capsule-button link">Sign Up</button>
+          <button class="primary-filled-button capsule-button link">Sign Up</button>
         </router-link>
-
         <router-link :to="{ name: 'login' }">
           <button class="secondary-filled-button capsule-button link">Login</button>
         </router-link>
@@ -21,14 +21,34 @@
   </header>
 </template>
 <script lang="ts">
-import logo from "@/assets/images/logo.png";
+import logoSmall from "@/assets/images/logo.svg";
+import {useLocalSettingsStore} from "@/stores/settingsStore.js";
+import {icons} from "@/icons.js";
+import InlineSvg from "vue-inline-svg";
 
 export default {
   name: "GuestHeader",
-  components: {},
+  components: {InlineSvg},
+  computed: {
+    nextThemeIcon() {
+      if (this.localSettingsStore.theme == "light")
+        return icons.blackMode;
+      else if (this.localSettingsStore.theme == "black")
+        return icons.lightMode;
+    }
+  },
+  methods: {
+    onThemeToggleClicked() {
+      if (this.localSettingsStore.theme == "light")
+        this.localSettingsStore.theme = "black";
+      else if (this.localSettingsStore.theme == "black")
+        this.localSettingsStore.theme = "light";
+    }
+  },
   setup() {
     return {
-      logo,
+      logoSmall,
+      localSettingsStore: useLocalSettingsStore()
     };
   },
 };
@@ -49,16 +69,16 @@ header {
   background-color: var(--primary-color);
 }
 
-h1 {
+.title h1 {
   color: var(--on-primary-color);
+  font-family: sans-serif;
+  font-weight: 900;
+  font-size: 2rem;
+  padding: 1rem 0;
 }
 
-h1:hover {
+.title:hover {
   text-decoration: none;
-}
-
-h1 {
-  font: 900 2rem sans-serif;
 }
 
 .logo-image {
@@ -68,7 +88,7 @@ h1 {
   margin: 10px 0;
 }
 
-#auth-buttons {
+#header-buttons {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -80,8 +100,19 @@ button a {
   color: inherit;
 }
 
-button {
+#header-buttons .capsule-button {
   border: 1px solid var(--on-primary-color);
 }
 
+.theme-toggle {
+  padding: 0.5rem;
+  display: grid;
+  place-items: center;
+}
+
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  color: var(--on-primary-color);
+}
 </style>

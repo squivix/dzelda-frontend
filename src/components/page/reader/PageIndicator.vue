@@ -4,7 +4,7 @@
       <inline-svg :src="icons.doubleArrowLeft"/>
     </button>
     <button v-for="p in pages" class="inv-button" @click="$emit('onPageIndicatorClicked', p)">
-      <div :class="{indicator:true, 'current':p==currentPage}"></div>
+      <div :class="{indicator:true, 'current':p==currentPage, 'hide':pageCount<2}"></div>
     </button>
     <button v-if="pages[pages.length-1]!=pageCount" class="start-end-button inv-button" @click="$emit('onPageIndicatorClicked', pageCount)">
       <inline-svg :src="icons.doubleArrowRight"/>
@@ -79,4 +79,8 @@ button {
   color: var(--secondary-color);
 }
 
+.hide {
+  visibility: hidden;
+  pointer-events: none;
+}
 </style>

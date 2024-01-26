@@ -21,7 +21,6 @@
 </template>
 
 <script lang="ts">
-import {useMeaningStore} from "@/stores/backend/meaningStore.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import {PropType} from "vue";
@@ -65,7 +64,6 @@ export default {
   setup() {
     return {
       icons,
-      meaningStore: useMeaningStore()
     };
   }
 };

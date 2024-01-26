@@ -30,7 +30,7 @@
 <script lang="ts">
 import NewVocabPanel from "@/components/shared/vocab-panel/NewVocabPanel.vue";
 import ExistingVocabPanel from "@/components/shared/vocab-panel/ExistingVocabPanel.vue";
-import {PropType} from "vue";
+import {inject, PropType} from "vue";
 import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-common";
 import {useMeaningStore} from "@/stores/backend/meaningStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
@@ -172,8 +172,8 @@ export default {
   setup() {
     return {
       VocabLevelSchema,
-      vocabStore: useVocabStore(),
-      meaningStore: useMeaningStore(),
+      meaningStore: inject<ReturnType<typeof useMeaningStore>>("meaningStore", useMeaningStore()),
+      vocabStore: inject<ReturnType<typeof useVocabStore>>("vocabStore", useVocabStore()),
     };
   }
 };

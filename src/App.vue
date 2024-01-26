@@ -12,10 +12,10 @@
 </template>
 <script lang="ts">
 import GuestHeader from "@/components/layout/GuestHeader.vue";
-import TheFooter from "@/components/layout/TheFooter.vue";
+import TheFooter from "@/components/layout/Footer.vue";
 import AuthHeader from "@/components/layout/AuthHeader.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
-import TheMessageBarQueue from "@/components/layout/TheMessageBarQueue.vue";
+import TheMessageBarQueue from "@/components/layout/MessageBarQueue.vue";
 import {useLocalSettingsStore} from "@/stores/settingsStore.js";
 
 

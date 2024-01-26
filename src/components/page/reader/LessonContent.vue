@@ -1,6 +1,6 @@
 <template>
   <div class="lesson-content" @mouseup="onMouseUp">
-    <div class="top-div" v-if="showTopBar">
+    <div class="title-section" v-if="showTopBar">
       <BaseImage :image-url="image" :fall-back-url="icons.bookOpen"
                  alt-text="lesson image" class="lesson-image"/>
       <h2 class="title">
@@ -175,7 +175,7 @@ export default {
   row-gap: 0.5rem;
 }
 
-.top-div {
+.title-section {
   display: flex;
   flex-direction: row;
   column-gap: 1rem;
@@ -222,7 +222,7 @@ p {
 }
 
 @media screen and (max-width: 900px) {
-  .top-div {
+  .title-section {
     flex-direction: column;
     align-items: center;
     row-gap: 0.5rem;

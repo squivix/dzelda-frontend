@@ -43,9 +43,9 @@ button:hover {
 }
 
 .hollow-button {
+    border-style: solid;
+    border-width: 1px;
     background: transparent;
-    color: var(--on-primary-color);
-    border: 1px solid var(--on-primary-color);
     font-weight: bold;
 }
 

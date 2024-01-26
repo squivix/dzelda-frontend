@@ -1,0 +1,497 @@
+[
+  {
+    "id": 125,
+    "text": "no",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 10833,
+    "text": "universal",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 16409,
+    "text": "cruel",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 21990,
+    "text": "a",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 22338,
+    "text": "the",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23483,
+    "text": "of",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23489,
+    "text": "and",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23511,
+    "text": "declaration",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23513,
+    "text": "human",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23514,
+    "text": "rights",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23515,
+    "text": "all",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23517,
+    "text": "beings",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23518,
+    "text": "are",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23519,
+    "text": "born",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23520,
+    "text": "free",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23522,
+    "text": "equal",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23523,
+    "text": "in",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23524,
+    "text": "dignity",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23526,
+    "text": "they",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23527,
+    "text": "endowed",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23528,
+    "text": "with",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23529,
+    "text": "reason",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23530,
+    "text": "conscience",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23531,
+    "text": "should",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23532,
+    "text": "act",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23533,
+    "text": "towards",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23534,
+    "text": "one",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23535,
+    "text": "another",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23537,
+    "text": "spirit",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23539,
+    "text": "brotherhood",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23540,
+    "text": "everyone",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23541,
+    "text": "has",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23543,
+    "text": "right",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23544,
+    "text": "to",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23545,
+    "text": "life",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23546,
+    "text": "liberty",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23547,
+    "text": "security",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23548,
+    "text": "person",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23550,
+    "text": "shall",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23551,
+    "text": "be",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23552,
+    "text": "held",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23553,
+    "text": "slavery",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23554,
+    "text": "or",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23555,
+    "text": "servitude",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23556,
+    "text": "slave",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23557,
+    "text": "trade",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23558,
+    "text": "prohibited",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23559,
+    "text": "their",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23560,
+    "text": "forms",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23561,
+    "text": "subjected",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23562,
+    "text": "torture",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23564,
+    "text": "inhuman",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23565,
+    "text": "degrading",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23566,
+    "text": "treatment",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  },
+  {
+    "id": 23567,
+    "text": "punishment",
+    "isPhrase": false,
+    "level": 0,
+    "notes": null,
+    "language": "es",
+    "learnerMeanings": []
+  }
+]

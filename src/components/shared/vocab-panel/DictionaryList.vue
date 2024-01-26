@@ -10,6 +10,8 @@
 <script lang="ts">
 import {useDictionaryStore} from "@/stores/backend/dictionaryStore.js";
 import {DictionarySchema} from "dzelda-common";
+import {inject} from "vue";
+import {useLessonStore} from "@/stores/backend/lessonStore.js";
 
 export default {
   name: "DictionaryList",
@@ -35,7 +37,9 @@ export default {
     this.dictionaries = await this.dictionaryStore.fetchDictionaries({languageCode: this.languageCode});
   },
   setup() {
-    return {dictionaryStore: useDictionaryStore()};
+    return {
+      dictionaryStore: inject<ReturnType<typeof useDictionaryStore>>("dictionaryStore", useDictionaryStore()),
+    };
   }
 };
 </script>

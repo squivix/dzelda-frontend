@@ -27,7 +27,6 @@
 <script lang="ts">
 import MeaningAddingControls from "@/components/shared/vocab-panel/MeaningAddingControls.vue";
 import DictionariesList from "@/components/shared/vocab-panel/DictionaryList.vue";
-import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {PropType} from "vue";
 import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-common";
 import {NewVocab} from "@/components/shared/LessonReader.vue";
@@ -70,9 +69,6 @@ export default {
       return this.vocab.level === VocabLevelSchema.KNOWN;
     },
   },
-  setup() {
-    return {vocabStore: useVocabStore()};
-  }
 };
 </script>
 

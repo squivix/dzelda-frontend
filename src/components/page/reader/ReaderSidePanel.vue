@@ -1,6 +1,6 @@
 <template>
   <div class="side-panel">
-    <VocabPanel v-if="!selectedOverLappingPhrasesTokens"
+    <VocabPanel v-if="selectedVocab&&!selectedOverLappingPhrasesTokens"
                 :vocab="selectedVocab"
                 @mousedown.stop
                 :onVocabRefetched="onVocabRefetched"
@@ -12,6 +12,7 @@
                              :phrases="phrases"
                              :overLappingPhrasesTokens="selectedOverLappingPhrasesTokens!"
                              @onPhraseClick="(phraseTokens)=>$emit('onOverlappingPhraseClicked', phraseTokens)"/>
+    <slot v-else></slot>
   </div>
 </template>
 
@@ -19,7 +20,7 @@
 import {defineComponent, PropType} from "vue";
 import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel.vue";
 import {LearnerVocabSchema} from "dzelda-common";
-import {LessonTokenObject, NewVocab} from "@/pages/LessonReaderPage.vue";
+import {LessonTokenObject, NewVocab} from "@/components/shared/LessonReader.vue";
 import VocabPanel from "@/components/shared/vocab-panel/VocabPanel.vue";
 
 export default defineComponent({

@@ -22,7 +22,7 @@
       </div>
       <div v-else>
         <router-link :to="{ name: 'sign-out' }">
-          <button class="hollow-button capsule-button link">Sign Out</button>
+          <button class="sign-out-button primary-filled-button capsule-button link">Sign Out</button>
         </router-link>
       </div>
     </div>
@@ -31,7 +31,7 @@
 </template>
 <script lang="ts">
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
-import logo from "@/assets/images/logo.png";
+import logo from "@/assets/images/logo.svg";
 import {icons} from "@/icons.js";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
@@ -135,12 +135,6 @@ h1 {
   column-gap: 3rem;
 }
 
-.title {
-  display: flex;
-  align-items: center;
-  column-gap: 1rem;
-}
-
 .right-side-div {
   display: flex;
   flex-direction: row;
@@ -152,8 +146,6 @@ h1 {
 
 .sign-out-button {
   min-width: 105px;
-  color: var(--on-primary-color);
-  border-color: var(--on-secondary-color);
 }
 
 

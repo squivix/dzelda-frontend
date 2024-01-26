@@ -8,4 +8,12 @@ export const useLocalSettingsStore = defineStore("settings", {
             theme: useStorage("theme", defaultTheme),
         };
     },
+    getters: {
+        isLightTheme(state) {
+            return state.theme == "light";
+        },
+        isDarkTheme(state) {
+            return state.theme == "dark" || state.theme == "black";
+        },
+    }
 });

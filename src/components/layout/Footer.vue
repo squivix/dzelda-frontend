@@ -7,21 +7,21 @@
     <nav class="social-links">
       <ul>
         <li><a href="https://github.com/squivix/dzelda-frontend" target="_blank">
-          <inline-svg :src="icons.githubLogo" alt="github link"/>
+          <inline-svg :src="githubLogo" alt="github link"/>
         </a></li>
       </ul>
     </nav>
   </footer>
 </template>
 <script lang="ts">
-import {icons} from "@/icons.js";
+import githubLogo from "@/assets/images/github-logo.svg";
 import InlineSvg from "vue-inline-svg";
 
 export default {
-  name: "TheFooter",
+  name: "Footer",
   components: {InlineSvg},
   setup() {
-    return {icons};
+    return {githubLogo};
   }
 };
 </script>

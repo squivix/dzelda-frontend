@@ -1,14 +1,10 @@
 <template>
   <LessonReader class="lesson-reader"
-                :lessonStore="lessonStore"
-                :vocabStore="vocabStore"
                 :languageCode="pathParams.learningLanguage"
                 :lessonId="pathParams.lessonId"/>
 </template>
 <script lang="ts">
 import LessonContent from "@/components/page/reader/LessonContent.vue";
-import {useLessonStore} from "@/stores/backend/lessonStore.js";
-import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {defineComponent, PropType} from "vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
@@ -31,8 +27,6 @@ export default defineComponent({
     return {
       icons,
       store: useStore(),
-      lessonStore: useLessonStore(),
-      vocabStore: useVocabStore()
     };
   }
 });

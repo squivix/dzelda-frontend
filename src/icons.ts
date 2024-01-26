@@ -17,7 +17,6 @@ import dotsStacked from "@/assets/images/dots-stacked.svg";
 import dragBars from "@/assets/images/drag-bars.svg";
 import ellipsis from "@/assets/images/ellipsis.svg";
 import filter from "@/assets/images/filter.svg";
-import githubLogo from "@/assets/images/github-logo.svg";
 import hamburgerMenu from "@/assets/images/hamburger-menu.svg";
 import hide from "@/assets/images/hide.svg";
 import history from "@/assets/images/history.svg";
@@ -35,6 +34,13 @@ import signOut from "@/assets/images/sign-out.svg";
 import upload from "@/assets/images/upload.svg";
 import userProfile from "@/assets/images/user-profile.svg";
 import vocabsList from "@/assets/images/vocabs-list.svg";
+import madeWithLove from "@/assets/images/made-with-love.svg";
+import lineGraph from "@/assets/images/line-graph.svg";
+import crowdSourcedLookup from "@/assets/images/crowd-sourced-lookup.svg";
+import email from "@/assets/images/email.svg";
+import lightMode from "@/assets/images/light-mode.svg";
+import darkMode from "@/assets/images/dark-mode.svg";
+import blackMode from "@/assets/images/black-mode.svg";
 
 export const icons = {
     arrowDown,
@@ -56,7 +62,6 @@ export const icons = {
     dragBars,
     ellipsis,
     filter,
-    githubLogo,
     hamburgerMenu,
     hide,
     history,
@@ -74,4 +79,11 @@ export const icons = {
     upload,
     userProfile,
     vocabsList,
+    madeWithLove,
+    lineGraph,
+    crowdSourcedLookup,
+    email,
+    lightMode,
+    darkMode,
+    blackMode,
 };

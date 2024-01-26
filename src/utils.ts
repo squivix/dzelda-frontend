@@ -1,6 +1,12 @@
 import {VocabLevelSchema} from "dzelda-common";
 import {ALL_VOCAB_LEVELS} from "@/constants.js";
 
+export function getRandomInt(min: number, max: number) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
+}
+
 export function shallowObjectEquals(obj1: Record<string, any>, obj2: Record<string, any>): boolean {
     return Object.keys(obj1).length === Object.keys(obj2).length && Object.keys(obj1).every(key => obj1[key] === obj2[key]);
 }

@@ -79,7 +79,6 @@ export const useLessonStore = defineStore("lesson", {
             }));
             if (response.status == 404)
                 await this.router.push({name: "not-found"});
-            return response.data;
         },
         async fetchLesson(pathParams: { lessonId: number }) {
             const store = useStore();
