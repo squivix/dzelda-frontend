@@ -2,56 +2,70 @@ import {defineStore} from "pinia";
 import {DBSchema, deleteDB, IDBPDatabase, openDB} from "idb";
 import {LanguageLevelSchema, VocabLevelSchema} from "dzelda-common";
 
+export type MeaningRow = {
+    id: number,
+    text: string,
+    learnersCount: number,
+    addedBy: string,
+    language: string,
+    addedOn: string,
+    vocab: number,
+};
+export type VocabRow = {
+    id: number,
+    text: string,
+    isPhrase: boolean,
+    level: VocabLevelSchema,
+    notes: string | null,
+    language: string,
+    learnerMeanings: number[],
+};
+export type LessonRow = {
+    id: number,
+    title: string,
+    text: string,
+    parsedTitle: string,
+    parsedText: string,
+    language: string,
+    addedBy: string,
+    isPublic: boolean,
+    level: LanguageLevelSchema,
+    learnersCount: number
+    course: null,
+    addedOn: string,
+    audio: string,
+    image: string,
+    translatedTitle: string,
+    vocabs: number[],
+};
+export type PreviewLesson = {
+    id: number,
+    title: string,
+    languageVersions: Record<string, number>
+}
+
 interface PreviewDBSchema extends DBSchema {
     meanings: {
         key: number;
-        value: {
-            id: number,
-            text: string,
-            learnersCount: number,
-            addedBy: string,
-            language: string,
-            addedOn: string,
-            vocab: number,
-        };
+        value: MeaningRow
         indexes: {
             vocabIndex: number,
         };
     };
     vocabs: {
         key: number;
-        value: {
-            id: number,
-            text: string,
-            isPhrase: boolean,
-            level: VocabLevelSchema,
-            notes: string | null,
-            language: string,
-            learnerMeanings: number[],
-        };
+        value: VocabRow
     };
     lessons: {
         key: number;
-        value: {
-            id: number,
-            title: string,
-            text: string,
-            parsedTitle: string,
-            parsedText: string,
-            language: string,
-            addedBy: string,
-            isPublic: boolean,
-            level: LanguageLevelSchema,
-            learnersCount: number
-            course: null,
-            addedOn: string,
-            audio: string,
-            image: string,
-            vocabs: number[],
-        };
+        value: LessonRow;
         indexes: {
             languageIndex: string,
         };
+    };
+    previews: {
+        key: number;
+        value: PreviewLesson
     };
     dictionaries: {
         key: number;
@@ -62,7 +76,7 @@ interface PreviewDBSchema extends DBSchema {
     };
 }
 
-async function seedData(db: IDBPDatabase<PreviewDBSchema>, url: string, objectStore: "meanings" | "vocabs" | "lessons" | "dictionaries") {
+async function seedData(db: IDBPDatabase<PreviewDBSchema>, url: string, objectStore: "meanings" | "vocabs" | "lessons" | "previews" | "dictionaries") {
     const response = await fetch(url);
     const data = await response.json();
     const transaction = db.transaction(objectStore, "readwrite");
@@ -93,6 +107,7 @@ export const useLocalPreviewStore = defineStore("localPreviewStore", {
                             db.createObjectStore("vocabs", {keyPath: "id"});
                             const lessonsStore = db.createObjectStore("lessons", {keyPath: "id"});
                             lessonsStore.createIndex("languageIndex", "language");
+                            db.createObjectStore("previews", {keyPath: "id"});
                             const dictionariesStore = db.createObjectStore("dictionaries", {keyPath: "id"});
                             dictionariesStore.createIndex("languageIndex", "language");
                         }
@@ -103,6 +118,8 @@ export const useLocalPreviewStore = defineStore("localPreviewStore", {
                             await seedData(db, "data/preview/vocabs.json", "vocabs");
                         if (await db.count("lessons") == 0)
                             await seedData(db, "data/preview/lessons.json", "lessons");
+                        if (await db.count("previews") == 0)
+                            await seedData(db, "data/preview/previews.json", "previews");
                         if (await db.count("dictionaries") == 0)
                             await seedData(db, "data/preview/dictionaries.json", "dictionaries");
                         this.previewDb = db;
@@ -112,7 +129,7 @@ export const useLocalPreviewStore = defineStore("localPreviewStore", {
             } else
                 return this.previewDb;
         },
-        async populateIdsArray(idsArray: number[], foreignObjectStore: "meanings" | "vocabs" | "lessons" | "dictionaries") {
+        async populateIdsArray(idsArray: number[], foreignObjectStore: "meanings" | "vocabs" | "lessons" | "previews" | "dictionaries") {
             const db = await this.getPreviewDb();
             const idsMap: Record<number, any> = {};
             const results: object[] = [];

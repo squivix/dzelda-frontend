@@ -55,7 +55,6 @@ import ReaderSidePanel from "@/components/page/reader/ReaderSidePanel.vue";
 import PagePanelButton from "@/components/page/reader/PagePanelButton.vue";
 import LessonContent from "@/components/page/reader/LessonContent.vue";
 import {getParser, LearnerVocabSchema, LessonSchema, TokenWithPhrases, TokeObjectPhrases, VocabLevelSchema} from "dzelda-common";
-import {useTimeoutFn} from "@vueuse/core";
 import {icons} from "@/icons.js";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
@@ -91,7 +90,6 @@ export default defineComponent({
       isLoadingLesson: true,
       isLoadingWords: true,
       isParsingLesson: true,
-      isNextButtonExpanded: true,
     };
   },
   computed: {
@@ -160,6 +158,18 @@ export default defineComponent({
       return this.lesson?.audio ?? "";
     },
   },
+  watch: {
+    async lessonId() {
+      await this.fetchLesson();
+      if (this.lesson!.language !== this.languageCode) {
+        await this.$router.push({name: "not-found"});
+        return;
+      }
+      await this.lessonStore.addLessonToUserHistory({lessonId: this.lessonId});
+      await this.fetchLessonVocabs();
+      this.parseLesson();
+    }
+  },
   async mounted() {
     await this.fetchLesson();
     if (this.lesson!.language !== this.languageCode) {
@@ -169,7 +179,6 @@ export default defineComponent({
     await this.lessonStore.addLessonToUserHistory({lessonId: this.lessonId});
     await this.fetchLessonVocabs();
     this.parseLesson();
-    useTimeoutFn(() => this.isNextButtonExpanded = false, 3000);
   },
   methods: {
     async fetchLesson() {

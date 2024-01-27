@@ -5,7 +5,7 @@
     <div class="try-it-content" v-else>
       <LessonReader class="lesson-reader"
                     :lessonId="selectedLessonId!"
-                    :languageCode="selectedLanguageCode!"
+                    :languageCode="selectedLanguage!.code"
                     :showDoneButton="false">
         <template v-slot:side-panel>
           <div class="side-panel-place-holder">
@@ -13,18 +13,17 @@
           </div>
         </template>
       </LessonReader>
-
       <div class="bottom-div">
         <div class="form-row">
           <label>Language</label>
-          <select v-model="selectedLanguageCode">
-            <option v-for="language in languagesWithLessons" :value="language.code">{{ language.name }}</option>
+          <select v-model="selectedLanguageIndex">
+            <option v-for="(language, index) in languages" :value="index">{{ language.name }}</option>
           </select>
         </div>
         <div class="form-row">
           <label>Text</label>
-          <select v-model="selectedLessonId">
-            <option v-for="lesson in selectedLanguageLessons" :value="lesson.id">{{ lesson.title }}</option>
+          <select v-model="selectedPreviewIndex">
+            <option v-for="(preview ,index) in previews" :value="index">{{ preview.title }}</option>
           </select>
         </div>
       </div>
@@ -41,8 +40,8 @@ import {useMeaningStoreMock} from "@/stores/backend/local-preview/meaningStoreMo
 import {useDictionaryStoreMock} from "@/stores/backend/local-preview/dictionaryStoreMock.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
-import {LanguageSchema, LessonSchema} from "dzelda-common";
-import {useLocalPreviewStore} from "@/stores/backend/local-preview/localPreviewStore.js";
+import {LanguageSchema} from "dzelda-common";
+import {PreviewLesson, useLocalPreviewStore} from "@/stores/backend/local-preview/localPreviewStore.js";
 
 export default defineComponent({
   name: "TryItSection",
@@ -50,48 +49,34 @@ export default defineComponent({
   data() {
     return {
       languages: null as LanguageSchema[] | null,
-      selectedLanguageCode: null as string | null,
-      languageLessonsMap: {} as Record<string, LessonSchema[]>,
-      selectedLessonId: null as number | null,
+      selectedLanguageIndex: 0,
+      selectedPreviewIndex: 0,
+      previews: null as PreviewLesson[] | null,
       isLoading: true,
     };
   },
   computed: {
-    selectedLanguageLessons() {
-      if (!this.selectedLanguageCode)
+    selectedLessonId() {
+      if (!this.selectedPreview || !this.selectedLanguage)
         return;
-      return this.languageLessonsMap[this.selectedLanguageCode];
+      return this.selectedPreview.languageVersions[this.selectedLanguage.code];
     },
-    languagesWithLessons() {
-      if (!this.languages)
-        return;
-      return this.languages.filter(l => l.code in this.languageLessonsMap);
+    selectedLanguage() {
+      return this.languages?.[this.selectedLanguageIndex];
+    },
+    selectedPreview() {
+      return this.previews?.[this.selectedPreviewIndex];
     },
     isReady() {
-      return !this.isLoading && this.languages !== null && this.selectedLanguageCode !== null && this.selectedLessonId != null;
-    }
-  },
-  watch: {
-    languagesWithLessons() {
-      if (!this.languagesWithLessons || this.languagesWithLessons.length == 0)
-        return;
-      this.selectedLanguageCode = this.languagesWithLessons[0].code;
+      return !this.isLoading && this.languages !== null;
     },
-    selectedLanguageLessons() {
-      if (!this.selectedLanguageLessons || this.selectedLanguageLessons.length == 0)
-        return;
-      this.selectedLessonId = this.selectedLanguageLessons[0].id;
-    }
   },
   async mounted() {
     this.isLoading = true;
-    this.languages = await this.languageStore.fetchLanguages();
+    // TODO after localizing always filter out the current site language
+    this.languages = (await this.languageStore.fetchLanguages({sortBy: "secondSpeakersCount", sortOrder: "desc"})).filter(l => l.code != "en");
     const db = await this.localPreviewStore.getPreviewDb();
-    for (const language of this.languages) {
-      const languageLessons = await db.getAllFromIndex("lessons", "languageIndex", language.code);
-      if (languageLessons.length > 0)
-        this.languageLessonsMap[language.code] = languageLessons;
-    }
+    this.previews = await db.getAll("previews");
     this.isLoading = false;
   },
   setup() {
@@ -110,7 +95,6 @@ export default defineComponent({
 <style scoped>
 section {
   margin-bottom: 20vh;
-  margin-top: 5vh;
 }
 
 .try-it-content {
@@ -122,6 +106,7 @@ section {
 h2 {
   font-size: 2.25rem;
   margin-bottom: 1.5rem;
+  padding-top: 3vh;
 }
 
 .lesson-reader {

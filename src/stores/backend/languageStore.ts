@@ -13,7 +13,7 @@ export const useLanguageStore = defineStore("language", {
         },
     },
     actions: {
-        async fetchLanguages(queryParams: { isSupported?: boolean } = {}) {
+        async fetchLanguages(queryParams: { isSupported?: boolean, sortBy?: "name" | "learnersCount" | "secondSpeakersCount", sortOrder?: "asc" | "desc" } = {}) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.languages.getLanguages(queryParams));
             return response.data;

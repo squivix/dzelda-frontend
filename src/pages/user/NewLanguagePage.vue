@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     async fetchSupportedLanguages() {
-      return await this.languageStore.fetchLanguages({isSupported: true});
+      return await this.languageStore.fetchLanguages({sortBy: "secondSpeakersCount", sortOrder: "desc", isSupported: true});
     },
     async onLanguageClicked(language: LanguageSchema & {
       isLearning: boolean
