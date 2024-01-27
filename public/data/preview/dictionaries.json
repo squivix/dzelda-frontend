@@ -1,8 +1,21 @@
 [
-  {
-    "id": 1,
-    "name": "Google Translate",
-    "link": "https://translate.google.com/?sl=es&tl=en&text=<text>&op=translate",
-    "language": "en"
-  }
+  {"id": 1,"language": "es","name": "Google Translate","lookupLink": "https://translate.google.com/?sl=es&tl=en&text=<text>&op=translate","dictionaryLink": "https://translate.google.com/?sl=es&tl=en","isDefault": true},
+  {"id": 2,"language": "fr","name": "Google Translate","lookupLink": "https://translate.google.com/?sl=fr&tl=en&text=<text>&op=translate","dictionaryLink": "https://translate.google.com/?sl=fr&tl=en","isDefault": true},
+  {"id": 3,"language": "de","name": "Google Translate","lookupLink": "https://translate.google.com/?sl=de&tl=en&text=<text>&op=translate","dictionaryLink": "https://translate.google.com/?sl=de&tl=en","isDefault": true},
+  {"id": 4,"language": "it","name": "Google Translate","lookupLink": "https://translate.google.com/?sl=it&tl=en&text=<text>&op=translate","dictionaryLink": "https://translate.google.com/?sl=it&tl=en","isDefault": true},
+  {"id": 5,"language": "nl","name": "Google Translate","lookupLink": "https://translate.google.com/?sl=nl&tl=en&text=<text>&op=translate","dictionaryLink": "https://translate.google.com/?sl=nl&tl=en","isDefault": true},
+  {"id": 6,"language": "sv","name": "Google Translate","lookupLink": "https://translate.google.com/?sl=sv&tl=en&text=<text>&op=translate","dictionaryLink": "https://translate.google.com/?sl=sv&tl=en","isDefault": true},
+  {"id": 7,"language": "nb","name": "Google Translate","lookupLink": "https://translate.google.com/?sl=nb&tl=en&text=<text>&op=translate","dictionaryLink": "https://translate.google.com/?sl=nb&tl=en","isDefault": true},
+  {"id": 8,"language": "da","name": "Google Translate","lookupLink": "https://translate.google.com/?sl=da&tl=en&text=<text>&op=translate","dictionaryLink": "https://translate.google.com/?sl=da&tl=en","isDefault": true},
+  {"id": 9,"language": "pt","name": "Google Translate","lookupLink": "https://translate.google.com/?sl=pt&tl=en&text=<text>&op=translate","dictionaryLink": "https://translate.google.com/?sl=pt&tl=en","isDefault": true},
+  {"id": 10,"language": "en","name": "Wiktionary","lookupLink": "https://en.wiktionary.org/wiki/<text>#English","dictionaryLink": "https://en.wiktionary.org/wiki/","isDefault": true},
+  {"id": 11,"language": "es","name": "Wiktionary","lookupLink": "https://en.wiktionary.org/wiki/<text>#Spanish","dictionaryLink": "https://en.wiktionary.org/wiki/","isDefault": true},
+  {"id": 12,"language": "fr","name": "Wiktionary","lookupLink": "https://en.wiktionary.org/wiki/<text>#French","dictionaryLink": "https://en.wiktionary.org/wiki/","isDefault": true},
+  {"id": 13,"language": "de","name": "Wiktionary","lookupLink": "https://en.wiktionary.org/wiki/<text>#German","dictionaryLink": "https://en.wiktionary.org/wiki/","isDefault": true},
+  {"id": 14,"language": "it","name": "Wiktionary","lookupLink": "https://en.wiktionary.org/wiki/<text>#Italian","dictionaryLink": "https://en.wiktionary.org/wiki/","isDefault": true},
+  {"id": 15,"language": "nl","name": "Wiktionary","lookupLink": "https://en.wiktionary.org/wiki/<text>#Dutch","dictionaryLink": "https://en.wiktionary.org/wiki/","isDefault": true},
+  {"id": 16,"language": "sv","name": "Wiktionary","lookupLink": "https://en.wiktionary.org/wiki/<text>#Swedish","dictionaryLink": "https://en.wiktionary.org/wiki/","isDefault": true},
+  {"id": 17,"language": "nb","name": "Wiktionary","lookupLink": "https://en.wiktionary.org/wiki/<text>#Norwegian_Bokmål","dictionaryLink": "https://en.wiktionary.org/wiki/","isDefault": true},
+  {"id": 18,"language": "da","name": "Wiktionary","lookupLink": "https://en.wiktionary.org/wiki/<text>#Danish","dictionaryLink": "https://en.wiktionary.org/wiki/","isDefault": true},
+  {"id": 19,"language": "pt","name": "Wiktionary","lookupLink": "https://en.wiktionary.org/wiki/<text>#Portuguese","dictionaryLink": "https://en.wiktionary.org/wiki/","isDefault": true}
 ]

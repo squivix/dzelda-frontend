@@ -20,6 +20,28 @@ export type VocabRow = {
     language: string,
     learnerMeanings: number[],
 };
+
+export type LanguageRow = {
+    id: number
+    name: string
+    greeting: string
+    code: string
+    secondSpeakersCount: number
+    flagCircular: string
+    flagImage: string
+    flagEmoji: string
+    color: string
+    isSupported: boolean
+    levelThresholds: {
+        beginner1: 0,
+        beginner2: 1000,
+        intermediate1: 5000,
+        intermediate2: 12000,
+        advanced1: 20000,
+        advanced2: 30000
+    }
+}
+
 export type LessonRow = {
     id: number,
     title: string,
@@ -56,6 +78,10 @@ interface PreviewDBSchema extends DBSchema {
         key: number;
         value: VocabRow
     };
+    languages: {
+        key: number,
+        value: LanguageRow
+    },
     lessons: {
         key: number;
         value: LessonRow;
@@ -76,7 +102,7 @@ interface PreviewDBSchema extends DBSchema {
     };
 }
 
-async function seedData(db: IDBPDatabase<PreviewDBSchema>, url: string, objectStore: "meanings" | "vocabs" | "lessons" | "previews" | "dictionaries") {
+async function seedData(db: IDBPDatabase<PreviewDBSchema>, url: string, objectStore: "meanings" | "vocabs" | "lessons" | "languages" | "previews" | "dictionaries") {
     const response = await fetch(url);
     const data = await response.json();
     const transaction = db.transaction(objectStore, "readwrite");
@@ -105,6 +131,7 @@ export const useLocalPreviewStore = defineStore("localPreviewStore", {
                             const meaningsStore = db.createObjectStore("meanings", {keyPath: "id"});
                             meaningsStore.createIndex("vocabIndex", "vocab");
                             db.createObjectStore("vocabs", {keyPath: "id"});
+                            db.createObjectStore("languages", {keyPath: "id"});
                             const lessonsStore = db.createObjectStore("lessons", {keyPath: "id"});
                             lessonsStore.createIndex("languageIndex", "language");
                             db.createObjectStore("previews", {keyPath: "id"});
@@ -116,6 +143,8 @@ export const useLocalPreviewStore = defineStore("localPreviewStore", {
                             await seedData(db, "data/preview/meanings.json", "meanings");
                         if (await db.count("vocabs") == 0)
                             await seedData(db, "data/preview/vocabs.json", "vocabs");
+                        if (await db.count("languages") == 0)
+                            await seedData(db, "data/preview/languages.json", "languages");
                         if (await db.count("lessons") == 0)
                             await seedData(db, "data/preview/lessons.json", "lessons");
                         if (await db.count("previews") == 0)
@@ -129,7 +158,7 @@ export const useLocalPreviewStore = defineStore("localPreviewStore", {
             } else
                 return this.previewDb;
         },
-        async populateIdsArray(idsArray: number[], foreignObjectStore: "meanings" | "vocabs" | "lessons" | "previews" | "dictionaries") {
+        async populateIdsArray(idsArray: number[], foreignObjectStore: "meanings" | "vocabs" | "lessons" | "languages" | "previews" | "dictionaries") {
             const db = await this.getPreviewDb();
             const idsMap: Record<number, any> = {};
             const results: object[] = [];

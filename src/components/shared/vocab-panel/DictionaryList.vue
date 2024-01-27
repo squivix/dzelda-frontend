@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     openDictionaryLink(dictionary: DictionarySchema) {
-      const link = dictionary.link.replace("<text>", this.vocabText);
+      const link = dictionary.lookupLink.replace("<text>", this.vocabText);
       const ref = window.open(link, "Dictionary", "left=0,top=0,width=800,height=500,toolbar=1,resizable=0");
       ref!.focus();
     }

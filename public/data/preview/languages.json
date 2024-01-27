@@ -1,0 +1,202 @@
+[
+  {
+    "id": 1,
+    "name": "English",
+    "greeting": "Hello!",
+    "code": "en",
+    "secondSpeakersCount": 1077000000,
+    "flagCircular": "https://hatscripts.github.io/circle-flags/flags/uk.svg",
+    "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/gb.svg",
+    "flagEmoji": "🇬🇧",
+    "color": "#9AD0F5",
+    "isSupported": true,
+    "levelThresholds": {
+      "beginner1": 0,
+      "beginner2": 1000,
+      "intermediate1": 5000,
+      "intermediate2": 12000,
+      "advanced1": 20000,
+      "advanced2": 30000
+    }
+  },
+  {
+    "id": 2,
+    "name": "Spanish",
+    "greeting": "¡Hola!",
+    "code": "es",
+    "secondSpeakersCount": 74000000,
+    "flagCircular": "https://hatscripts.github.io/circle-flags/flags/es.svg",
+    "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/es.svg",
+    "flagEmoji": "🇪🇸",
+    "color": "#FFA247",
+    "isSupported": true,
+    "levelThresholds": {
+      "beginner1": 0,
+      "beginner2": 1000,
+      "intermediate1": 5000,
+      "intermediate2": 12000,
+      "advanced1": 20000,
+      "advanced2": 30000
+    }
+  },
+  {
+    "id": 3,
+    "name": "French",
+    "greeting": "Bonjour!",
+    "code": "fr",
+    "secondSpeakersCount": 229000000,
+    "flagCircular": "https://hatscripts.github.io/circle-flags/flags/fr.svg",
+    "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/fr.svg",
+    "flagEmoji": "🇫🇷",
+    "color": "#f7c5ad",
+    "isSupported": true,
+    "levelThresholds": {
+      "beginner1": 0,
+      "beginner2": 1000,
+      "intermediate1": 5000,
+      "intermediate2": 12000,
+      "advanced1": 20000,
+      "advanced2": 30000
+    }
+  },
+  {
+    "id": 4,
+    "name": "German",
+    "greeting": "Guten Tag!",
+    "code": "de",
+    "secondSpeakersCount": 58000000,
+    "flagCircular": "https://hatscripts.github.io/circle-flags/flags/de.svg",
+    "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/de.svg",
+    "flagEmoji": "🇩🇪",
+    "color": "#7F3301",
+    "isSupported": true,
+    "levelThresholds": {
+      "beginner1": 0,
+      "beginner2": 1000,
+      "intermediate1": 5000,
+      "intermediate2": 12000,
+      "advanced1": 20000,
+      "advanced2": 30000
+    }
+  },
+  {
+    "id": 5,
+    "name": "Italian",
+    "greeting": "Ciao!",
+    "code": "it",
+    "secondSpeakersCount": 3000000,
+    "flagCircular": "https://hatscripts.github.io/circle-flags/flags/it.svg",
+    "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/it.svg",
+    "flagEmoji": "🇮🇹",
+    "color": "#009246",
+    "isSupported": true,
+    "levelThresholds": {
+      "beginner1": 0,
+      "beginner2": 1000,
+      "intermediate1": 5000,
+      "intermediate2": 12000,
+      "advanced1": 20000,
+      "advanced2": 30000
+    }
+  },
+  {
+    "id": 6,
+    "name": "Dutch",
+    "greeting": "Hallo!",
+    "code": "nl",
+    "secondSpeakersCount": 5000000,
+    "flagCircular": "https://hatscripts.github.io/circle-flags/flags/nl.svg",
+    "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/nl.svg",
+    "flagEmoji": "🇳🇱",
+    "color": "#FF9B00",
+    "isSupported": true,
+    "levelThresholds": {
+      "beginner1": 0,
+      "beginner2": 1000,
+      "intermediate1": 5000,
+      "intermediate2": 12000,
+      "advanced1": 20000,
+      "advanced2": 30000
+    }
+  },
+  {
+    "id": 7,
+    "name": "Swedish",
+    "greeting": "Hej!",
+    "code": "sv",
+    "secondSpeakersCount": 3000000,
+    "flagCircular": "https://hatscripts.github.io/circle-flags/flags/se.svg",
+    "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/se.svg",
+    "flagEmoji": "🇸🇪",
+    "color": "#006AA7",
+    "isSupported": true,
+    "levelThresholds": {
+      "beginner1": 0,
+      "beginner2": 1000,
+      "intermediate1": 5000,
+      "intermediate2": 12000,
+      "advanced1": 20000,
+      "advanced2": 30000
+    }
+  },
+  {
+    "id": 8,
+    "name": "Norwegian Bokmål",
+    "greeting": "Hei!",
+    "code": "nb",
+    "secondSpeakersCount": 1500000,
+    "flagCircular": "https://hatscripts.github.io/circle-flags/flags/no.svg",
+    "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/no.svg",
+    "flagEmoji": "🇳🇴",
+    "color": "#EF3340",
+    "isSupported": true,
+    "levelThresholds": {
+      "beginner1": 0,
+      "beginner2": 1000,
+      "intermediate1": 5000,
+      "intermediate2": 12000,
+      "advanced1": 20000,
+      "advanced2": 30000
+    }
+  },
+  {
+    "id": 9,
+    "name": "Danish",
+    "greeting": "Hej!",
+    "code": "da",
+    "secondSpeakersCount": 900000,
+    "flagCircular": "https://hatscripts.github.io/circle-flags/flags/dk.svg",
+    "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/dk.svg",
+    "flagEmoji": "🇩🇰",
+    "color": "#C60C30",
+    "isSupported": true,
+    "levelThresholds": {
+      "beginner1": 0,
+      "beginner2": 1000,
+      "intermediate1": 5000,
+      "intermediate2": 12000,
+      "advanced1": 20000,
+      "advanced2": 30000
+    }
+  },
+  {
+    "id": 10,
+    "name": "Portuguese",
+    "greeting": "Olá!",
+    "code": "pt",
+    "secondSpeakersCount": 27000000,
+    "flagCircular": "https://hatscripts.github.io/circle-flags/flags/br.svg",
+    "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/br.svg",
+    "flagEmoji": "🇵🇹",
+    "color": "#FF0000",
+    "isSupported": true,
+    "levelThresholds": {
+      "beginner1": 0,
+      "beginner2": 1000,
+      "intermediate1": 5000,
+      "intermediate2": 12000,
+      "advanced1": 20000,
+      "advanced2": 30000
+    }
+  }
+]

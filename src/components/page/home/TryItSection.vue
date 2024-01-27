@@ -39,7 +39,6 @@ import {useVocabStoreMock} from "@/stores/backend/local-preview/vocabStoreMock.j
 import {useMeaningStoreMock} from "@/stores/backend/local-preview/meaningStoreMock.js";
 import {useDictionaryStoreMock} from "@/stores/backend/local-preview/dictionaryStoreMock.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
-import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {LanguageSchema} from "dzelda-common";
 import {PreviewLesson, useLocalPreviewStore} from "@/stores/backend/local-preview/localPreviewStore.js";
 
@@ -74,8 +73,9 @@ export default defineComponent({
   async mounted() {
     this.isLoading = true;
     // TODO after localizing always filter out the current site language
-    this.languages = (await this.languageStore.fetchLanguages({sortBy: "secondSpeakersCount", sortOrder: "desc"})).filter(l => l.code != "en");
+
     const db = await this.localPreviewStore.getPreviewDb();
+    this.languages = await db.getAll("languages");
     this.previews = await db.getAll("previews");
     this.isLoading = false;
   },
@@ -85,7 +85,6 @@ export default defineComponent({
     provide("meaningStore", useMeaningStoreMock());
     provide("dictionaryStore", useDictionaryStoreMock());
     return {
-      languageStore: useLanguageStore(),
       localPreviewStore: useLocalPreviewStore()
     };
   }
@@ -136,7 +135,7 @@ h2 {
 }
 
 select {
-  height: 2rem;
+  height: 2.5rem;
   font-size: 1.05rem;
 }
 
