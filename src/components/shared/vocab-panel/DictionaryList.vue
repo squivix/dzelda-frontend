@@ -2,7 +2,7 @@
   <div class="dictionaries-wrapper">
     <div class="header">
       <h5>Dictionaries</h5>
-      <button class="edit-button inv-button" @click="isEditDictionaryListDialogShown=true">
+      <button v-if="allowEditDictionaries" class="edit-button inv-button" @click="isEditDictionaryListDialogShown=true">
         <inline-svg :src="userDictionaries.length==0?icons.plus:icons.pen"/>
       </button>
     </div>
@@ -10,7 +10,8 @@
     <ol class="dictionaries styled-scrollbars">
       <li @click="openDictionaryLink(dictionary)" v-for="dictionary in userDictionaries" :key="dictionary.id">{{ dictionary.name }}</li>
     </ol>
-    <EditDictionaryListDialog :isShown="isEditDictionaryListDialogShown" @onClosed="isEditDictionaryListDialogShown=false" @onSubmitted="onDictionariesUpdated" :languageCode="languageCode"/>
+    <EditDictionaryListDialog v-if="allowEditDictionaries" :isShown="isEditDictionaryListDialogShown" @onClosed="isEditDictionaryListDialogShown=false" @onSubmitted="onDictionariesUpdated"
+                              :languageCode="languageCode"/>
   </div>
 </template>
 
@@ -51,8 +52,10 @@ export default {
     this.userDictionaries = await this.dictionaryStore.fetchUserDictionaries({languageCode: this.languageCode});
   },
   setup() {
+
     return {
       icons,
+      allowEditDictionaries: inject<boolean>("allowEditDictionaries", true),
       dictionaryStore: inject<ReturnType<typeof useDictionaryStore>>("dictionaryStore", useDictionaryStore()),
     };
   }
@@ -71,6 +74,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 0.5rem;
 }
 
 .edit-button {

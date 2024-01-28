@@ -84,6 +84,7 @@ export default defineComponent({
     provide("vocabStore", useVocabStoreMock());
     provide("meaningStore", useMeaningStoreMock());
     provide("dictionaryStore", useDictionaryStoreMock());
+    provide("allowEditDictionaries", false);
     return {
       localPreviewStore: useLocalPreviewStore()
     };

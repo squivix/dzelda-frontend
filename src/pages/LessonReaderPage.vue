@@ -18,7 +18,7 @@ import LessonReader from "@/components/shared/LessonReader.vue";
 
 export default defineComponent({
   name: "LessonReaderPage",
-  components: {LessonReader, PageIndicator, BasePageSelector, PagePanelButton,  BaseCard, ReaderSidePanel, LoadingScreen, LessonContent},
+  components: {LessonReader, PageIndicator, BasePageSelector, PagePanelButton, BaseCard, ReaderSidePanel, LoadingScreen, LessonContent},
   props: {
     pathParams: {type: Object as PropType<{ learningLanguage: string, lessonId: number }>, required: true},
   },

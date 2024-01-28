@@ -4,7 +4,10 @@ import {useLocalPreviewStore} from "@/stores/backend/local-preview/localPreviewS
 
 export const useDictionaryStoreMock = defineStore("dictionaryStoreMock", {
     actions: {
-        async fetchDictionaries(queryParams) {
+        async fetchDictionaries(queryParams: { languageCode?: string } = {}) {
+            return await this.fetchUserDictionaries(queryParams);
+        },
+        async fetchUserDictionaries(queryParams: { languageCode?: string } = {}) {
             const localPreviewStore = useLocalPreviewStore();
             const previewDb = await localPreviewStore.getPreviewDb();
             if (queryParams && queryParams.languageCode)
@@ -12,5 +15,5 @@ export const useDictionaryStoreMock = defineStore("dictionaryStoreMock", {
             else
                 return await previewDb.getAll("dictionaries");
         }
-    } as Partial<ReturnType<typeof useDictionaryStore>>
+    }
 });

@@ -29,6 +29,7 @@
       <section>
         <h3 class="heading">Other Dictionaries</h3>
         <ul class="dictionary-list styled-scrollbars">
+          <p v-if="otherDictionaries!.length==0">No other dictionaries</p>
           <li v-for="dictionary in otherDictionaries" :key="dictionary.id" class="dictionary" @click="addDictionaryToSaved(dictionary)">
             <div class="title-icon-div">
               <div class="icon inv-button">
