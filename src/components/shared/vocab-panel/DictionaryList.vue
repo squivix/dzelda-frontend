@@ -1,9 +1,16 @@
 <template>
-  <div class="dictionaries-wrapper" v-if="dictionaries.length>0">
-    <h5>Dictionaries</h5>
-    <ol class="dictionaries styled-scrollbars" v-for="dictionary in dictionaries" :key="dictionary.id">
-      <li @click="openDictionaryLink(dictionary)">{{ dictionary.name }}</li>
+  <div class="dictionaries-wrapper">
+    <div class="header">
+      <h5>Dictionaries</h5>
+      <button class="edit-button inv-button" @click="isEditDictionaryListDialogShown=true">
+        <inline-svg :src="userDictionaries.length==0?icons.plus:icons.pen"/>
+      </button>
+    </div>
+    <p class="empty-message" v-if="userDictionaries.length==0">No dictionaries saved</p>
+    <ol class="dictionaries styled-scrollbars">
+      <li @click="openDictionaryLink(dictionary)" v-for="dictionary in userDictionaries" :key="dictionary.id">{{ dictionary.name }}</li>
     </ol>
+    <EditDictionaryListDialog :isShown="isEditDictionaryListDialogShown" @onClosed="isEditDictionaryListDialogShown=false" @onSubmitted="onDictionariesUpdated" :languageCode="languageCode"/>
   </div>
 </template>
 
@@ -11,18 +18,21 @@
 import {useDictionaryStore} from "@/stores/backend/dictionaryStore.js";
 import {DictionarySchema} from "dzelda-common";
 import {inject} from "vue";
-import {useLessonStore} from "@/stores/backend/lessonStore.js";
+import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
+import EditDictionaryListDialog from "@/components/shared/vocab-panel/EditDictionaryListDialog.vue";
 
 export default {
   name: "DictionaryList",
-  components: {},
+  components: {InlineSvg, EditDictionaryListDialog},
   props: {
     languageCode: {type: String, required: true},
     vocabText: {type: String, required: true},
   },
   data() {
     return {
-      dictionaries: [] as DictionarySchema[],
+      userDictionaries: [] as DictionarySchema[],
+      isEditDictionaryListDialogShown: false
     };
   },
   methods: {
@@ -30,14 +40,19 @@ export default {
       const link = dictionary.lookupLink.replace("<text>", this.vocabText);
       const ref = window.open(link, "Dictionary", "left=0,top=0,width=800,height=500,toolbar=1,resizable=0");
       ref!.focus();
+    },
+    async onDictionariesUpdated() {
+      this.userDictionaries = await this.dictionaryStore.fetchUserDictionaries({languageCode: this.languageCode}, true);
+      this.isEditDictionaryListDialogShown = false;
     }
   }
   ,
   async mounted() {
-    this.dictionaries = await this.dictionaryStore.fetchDictionaries({languageCode: this.languageCode});
+    this.userDictionaries = await this.dictionaryStore.fetchUserDictionaries({languageCode: this.languageCode});
   },
   setup() {
     return {
+      icons,
       dictionaryStore: inject<ReturnType<typeof useDictionaryStore>>("dictionaryStore", useDictionaryStore()),
     };
   }
@@ -48,7 +63,19 @@ export default {
 .dictionaries-wrapper {
   display: flex;
   flex-direction: column;
-  row-gap: 0.75rem;
+  row-gap: 0.25rem;
+  padding-right: 0.5rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit-button {
+  padding: 0.5rem;
+  color: var(--panel-new-text-color);
 }
 
 h5 {
@@ -61,7 +88,6 @@ h5 {
   flex-direction: column;
   row-gap: 0.5rem;
   overflow-y: auto;
-  padding-right: 0.5rem;
   max-height: 200px;
 }
 
@@ -73,5 +99,9 @@ h5 {
   font-size: 1rem;
   border-radius: 5px;
   width: 100%;
+}
+
+.empty-message {
+  margin: 1rem 0;
 }
 </style>

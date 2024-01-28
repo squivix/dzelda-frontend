@@ -9,7 +9,7 @@
         <input id="email" type="email" maxlength="256" required v-model="email"/>
 
         <SubmitButton id="reset-password-button"
-                      class="primary-filled-button capsule-button"
+                      class="primary-filled-button big-button capsule-button"
                       type="submit"
                       :is-submitting="isSubmitting">
           Reset Password

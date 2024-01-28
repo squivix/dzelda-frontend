@@ -15,7 +15,7 @@
                                :class="{'error-input': !!errorMessage}"/>
           <SubmitButton v-if="emailChanged"
                         type="submit"
-                        class="change-email-button primary-filled-button capsule-button"
+                        class="change-email-button primary-filled-button mid-button capsule-button"
                         :is-submitting="isSubmitting">
             Change Email
           </SubmitButton>

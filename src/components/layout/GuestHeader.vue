@@ -11,10 +11,10 @@
           <inline-svg :src="nextThemeIcon!"></inline-svg>
         </button>
         <router-link :to="{ name: 'sign-up' }">
-          <button class="primary-filled-button capsule-button link">Sign Up</button>
+          <button class="auth-button primary-dark-filled-button big-button capsule-button link">Sign Up</button>
         </router-link>
         <router-link :to="{ name: 'login' }">
-          <button class="secondary-filled-button capsule-button link">Login</button>
+          <button class="auth-button secondary-filled-button big-button capsule-button link">Login</button>
         </router-link>
       </div>
     </div>
@@ -100,8 +100,8 @@ button a {
   color: inherit;
 }
 
-#header-buttons .capsule-button {
-  border: 1px solid var(--on-primary-color);
+.auth-button {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
 .theme-toggle {

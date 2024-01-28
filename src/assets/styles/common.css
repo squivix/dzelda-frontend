@@ -33,13 +33,20 @@ button:hover {
 
 .capsule-button {
     border-radius: 20px;
-    padding: 10px 20px;
+}
+
+.big-button {
     font-size: 1rem;
+    padding: 10px 20px;
+}
+
+.mid-button {
+    font-size: 0.9rem;
+    padding: 8px 20px;
 }
 
 .square-button {
     border-radius: 3px;
-    font-size: 1rem;
 }
 
 .hollow-button {
@@ -57,11 +64,18 @@ button:hover {
     cursor: pointer;
 }
 
+.primary-dark-filled-button {
+    background: var(--primary-color-dark);
+    border: 1px solid var(--primary-color-dark);
+    color: var(--on-primary-color);
+    font-weight: bold;
+    cursor: pointer;
+}
+
 .primary-hollow-button {
     background: transparent;
     color: var(--primary-color);
     border: 1px solid var(--primary-color);
-    font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
 }
@@ -71,7 +85,6 @@ button:hover {
     background: var(--secondary-color);
     border: 1px solid var(--secondary-color);
     color: var(--on-secondary-color);
-    font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
 }

@@ -24,7 +24,7 @@
         <p class="error-message">{{ errorMessage }}</p>
         <SubmitButton type="submit"
                       id="login-button"
-                      class="primary-filled-button capsule-button"
+                      class="primary-filled-button big-button capsule-button"
                       :is-submitting="isSubmitting"
                       :keep-text="true">
           Login

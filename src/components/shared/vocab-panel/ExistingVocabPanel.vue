@@ -7,7 +7,7 @@
         :vocab-id="vocab.id"
         :saved-meanings="vocab.learnerMeanings"/>
 
-    <button class="capsule-button add-meaning-button" @click="addMeaning">
+    <button class="big-button capsule-button add-meaning-button" @click="addMeaning">
       <inline-svg :src="icons.plus" class="more-button"/>
     </button>
 

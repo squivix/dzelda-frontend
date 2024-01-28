@@ -1,7 +1,7 @@
 <template>
   <section>
     <h3>Delete Account</h3>
-    <SubmitButton class="delete-account-button danger-button capsule-button"
+    <SubmitButton class="delete-account-button danger-button mid-button capsule-button"
                   @click="onDeleteAccountClicked"
                   :is-submitting="isSubmitting">
       Delete Account

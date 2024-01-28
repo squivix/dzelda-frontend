@@ -22,7 +22,7 @@
         <p class="error-message">{{ errorMessage }}</p>
 
         <SubmitButton id="reset-password-button"
-                      class="primary-filled-button capsule-button"
+                      class="primary-filled-button big-button capsule-button"
                       type="submit"
                       :is-submitting="isSubmitting">
           Reset Password

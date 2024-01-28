@@ -13,5 +13,22 @@ export const useDictionaryStore = defineStore("dictionary", {
                 });
             return response.data;
         },
+        async fetchUserDictionaries(queryParams: { languageCode?: string } = {}, ignoreCache = false) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.users.getUsersMeDictionaries(queryParams),
+                {
+                    cacheKey: `fetchUserDictionaries(${JSON.stringify(queryParams)})`,
+                    expiryTimeInMs: minsToMs(5),
+                    clearCache: ignoreCache
+                });
+            return response.data;
+        },
+        async updateUserLanguageDictionaries(pathParams: { languageCode: string }, body: { dictionaryIds: number[] }) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.users.putUsersMeLanguagesLanguageCodeDictionaries(pathParams.languageCode, {
+                dictionaryIds: body.dictionaryIds
+            }));
+            return response.data;
+        }
     }
 });

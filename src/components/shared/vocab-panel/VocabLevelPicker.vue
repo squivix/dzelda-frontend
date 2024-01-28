@@ -83,13 +83,13 @@ export default {
 }
 
 .levels > li:first-child {
-  border-start-start-radius: 5px;
-  border-end-start-radius: 5px;
+  border-start-start-radius: 10px;
+  border-end-start-radius: 10px;
 }
 
 .levels > li:last-child {
-  border-end-end-radius: 5px;
-  border-start-end-radius: 5px;
+  border-end-end-radius: 10px;
+  border-start-end-radius: 10px;
 }
 
 .levels .highlighted {

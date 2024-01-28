@@ -26,7 +26,7 @@
           <p v-if="errorFields.password" class="error-message">{{ errorFields.password }}</p>
         </div>
         <SubmitButton id="signup-button"
-                      class="primary-filled-button capsule-button"
+                      class="primary-filled-button big-button capsule-button"
                       :is-submitting="isSubmitting"
                       :keep-text="true">
           Sign Up

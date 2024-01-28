@@ -22,7 +22,7 @@
       </div>
       <div v-else>
         <router-link :to="{ name: 'sign-out' }">
-          <button class="sign-out-button primary-filled-button capsule-button link">Sign Out</button>
+          <button class="sign-out-button big-button primary-filled-button capsule-button link">Sign Out</button>
         </router-link>
       </div>
     </div>

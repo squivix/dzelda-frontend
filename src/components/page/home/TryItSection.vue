@@ -75,7 +75,7 @@ export default defineComponent({
     // TODO after localizing always filter out the current site language
 
     const db = await this.localPreviewStore.getPreviewDb();
-    this.languages = await db.getAll("languages");
+    this.languages = (await db.getAll("languages")).filter(l => l.code !== "en");
     this.previews = await db.getAll("previews");
     this.isLoading = false;
   },

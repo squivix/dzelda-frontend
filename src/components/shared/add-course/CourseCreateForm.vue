@@ -20,7 +20,7 @@
 
       <SubmitButton id="save-button"
                     type="submit"
-                    class="primary-filled-button capsule-button"
+                    class="primary-filled-button big-button capsule-button"
                     :is-submitting="isSubmitting">
         {{ submittingMessage ?? "Save" }}
       </SubmitButton>

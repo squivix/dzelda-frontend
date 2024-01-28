@@ -11,7 +11,7 @@
             <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
           </div>
           <div class="form-row ">
-            <SubmitButton type="button" @click="onDeleteCourseClicked" class="delete-course-button danger-button capsule-button">Delete course</SubmitButton>
+            <SubmitButton type="button" @click="onDeleteCourseClicked" class="delete-course-button danger-button big-button capsule-button">Delete course</SubmitButton>
           </div>
         </div>
 
@@ -39,7 +39,7 @@
           </div>
           <SubmitButton id="save-button"
                         type="submit"
-                        class="primary-filled-button capsule-button"
+                        class="primary-filled-button big-button capsule-button"
                         :is-submitting="isSubmitting">
             Save
           </SubmitButton>

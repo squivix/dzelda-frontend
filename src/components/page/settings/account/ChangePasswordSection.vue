@@ -34,7 +34,7 @@
 
       <p v-if="errorFields.newPassword" class="error-message">{{ errorFields.newPassword }}</p>
       <p v-else-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-      <SubmitButton class="change-password-button primary-filled-button capsule-button"
+      <SubmitButton class="change-password-button primary-filled-button mid-button capsule-button"
                     :is-submitting="isSubmitting">
         Change Password
       </SubmitButton>

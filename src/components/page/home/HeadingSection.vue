@@ -4,7 +4,7 @@
       <h1 class="heading">Learn languages by reading</h1>
       <p class="sub-heading">Dzelda helps you read in any language.</p>
       <a href="#try-it-header">
-        <button class="primary-filled-button capsule-button link">Try it yourself</button>
+        <button class="primary-filled-button big-button capsule-button link">Try it yourself</button>
       </a>
     </div>
     <img :src="logo" class="logo-image" alt="logo">

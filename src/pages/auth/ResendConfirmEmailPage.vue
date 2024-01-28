@@ -16,7 +16,7 @@
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
         <SubmitButton id="confirm-email-button"
-                      class="primary-filled-button capsule-button"
+                      class="primary-filled-button big-button capsule-button"
                       type="submit"
                       :is-submitting="isSubmitting">
           Resend Confirmation Email
