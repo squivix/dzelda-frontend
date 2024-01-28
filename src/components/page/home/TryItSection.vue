@@ -120,11 +120,9 @@ h2 {
   display: flex;
   column-gap: 1rem;
   align-items: center;
-  width: 50%;
-}
-
-.bottom-div > .form-row {
-  flex-grow: 1;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  row-gap: 1rem;
 }
 
 
