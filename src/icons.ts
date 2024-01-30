@@ -41,7 +41,7 @@ import email from "@/assets/images/email.svg";
 import lightMode from "@/assets/images/light-mode.svg";
 import darkMode from "@/assets/images/dark-mode.svg";
 import blackMode from "@/assets/images/black-mode.svg";
-
+import info from "@/assets/images/info.svg"
 export const icons = {
     arrowDown,
     arrowLeft,
@@ -86,4 +86,5 @@ export const icons = {
     lightMode,
     darkMode,
     blackMode,
+    info
 };

@@ -21,7 +21,7 @@
   </header>
 </template>
 <script lang="ts">
-import logoSmall from "@/assets/images/logo.svg";
+import logoSmall from "@/assets/images/logo-small.svg";
 import {useLocalSettingsStore} from "@/stores/settingsStore.js";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";

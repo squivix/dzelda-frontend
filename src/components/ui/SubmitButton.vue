@@ -1,7 +1,7 @@
 <template>
   <button @click="$emit('onClick')" :disabled="!enabled||isSubmitting">
-    <InlineSvg v-show="isSubmitting" :src="icons.loadingSpinnerOval"/>
-    <span v-if="!isSubmitting || keepText">
+    <InlineSvg v-if="isSubmitting" :src="icons.loadingSpinnerOval"/>
+    <span v-if="!isSubmitting || keepText" :class="wrapperClass">
       <slot>
 
       </slot>
@@ -21,7 +21,8 @@ export default defineComponent({
   props: {
     enabled: {type: Boolean, default: true},
     isSubmitting: {type: Boolean, default: false},
-    keepText: {type: Boolean, default: true}
+    keepText: {type: Boolean, default: true},
+    wrapperClass: {type: String, default: ""}
   },
   setup() {
     return {icons};

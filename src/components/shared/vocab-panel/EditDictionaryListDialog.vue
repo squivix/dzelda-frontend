@@ -165,6 +165,7 @@ form {
   padding: 0 1rem;
   display: grid;
   place-items: center;
+  color: var(--on-background-color);
 }
 
 .saved-dictionary {

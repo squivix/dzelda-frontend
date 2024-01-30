@@ -1,5 +1,6 @@
 import {VocabLevelSchema} from "dzelda-common";
 import {ALL_VOCAB_LEVELS} from "@/constants.js";
+import snarkdown from "snarkdown";
 
 export function getRandomInt(min: number, max: number) {
     min = Math.ceil(min);
@@ -146,6 +147,13 @@ export function padSequence(numbers: number[], leftPadding: number, rightPadding
         result.push(element);
     }
     return result;
+}
+
+export function renderMarkdown(markdownText: string, linkInNewTab: boolean = true) {
+    const htmlText = snarkdown(markdownText);
+    if (linkInNewTab)
+        return htmlText.replaceAll(/<a /g, `<a target="_blank" rel="noreferrer noopener nofollow" `);
+    return htmlText;
 }
 
 export function getLevelClass(level?: VocabLevelSchema) {

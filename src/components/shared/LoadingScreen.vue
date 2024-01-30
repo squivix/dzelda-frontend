@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="loading-screen">
     <inline-svg class="spinner" :src="icons.loadingSpinnerTailSpin"/>
   </div>
 </template>

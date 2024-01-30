@@ -122,6 +122,13 @@ button:hover {
     cursor: pointer;
 }
 
+.inv-checkbox {
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
+
 a {
     text-decoration: none;
 }

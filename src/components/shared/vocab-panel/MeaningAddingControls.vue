@@ -3,10 +3,18 @@
     <h5>Suggested Meanings</h5>
     <ol class="suggested-meanings styled-scrollbars">
       <li v-for="meaning in suggestedMeanings" :key="meaning.id">
-        <SubmitButton class="inv-button suggested-meaning"
-                      @click="addSuggestedMeaning(meaning)">
-          {{ meaning.text }}
-        </SubmitButton>
+        <button class="inv-button suggested-meaning"
+                @click="addSuggestedMeaning(meaning)">
+          <span>
+            {{ meaning.text }}
+          </span>
+          <label v-if="meaning.attributionMarkdownText" class="meaning-attribution" @click.stop>
+            <input type="checkbox" class="inv-checkbox">
+            <img v-if="meaning.attributionLogo" :src="meaning.attributionLogo" alt="meaning attribution logo" class="meaning-attribution-icon">
+            <inline-svg v-else :src="icons.info" class="meaning-attribution-icon"/>
+            <span class="meaning-attribution-popup" v-html="renderMarkdown(meaning.attributionMarkdownText)"></span>
+          </label>
+        </button>
       </li>
     </ol>
     <button v-if="shouldShowAllMeaningsButton&&!isShowingAllSuggestedMeanings"
@@ -33,6 +41,8 @@ import {icons} from "@/icons.js";
 import {MeaningSchema} from "dzelda-common";
 import {PropType} from "vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
+import snarkdown from "snarkdown";
+import {renderMarkdown} from "@/utils.js";
 
 export default {
   name: "MeaningAddingControls",
@@ -81,6 +91,7 @@ export default {
   setup() {
     return {
       icons,
+      renderMarkdown: renderMarkdown
     };
   }
 };
@@ -93,7 +104,7 @@ export default {
   row-gap: 0.75rem;
 }
 
-h5{
+h5 {
   font-weight: bold;
 }
 
@@ -108,7 +119,8 @@ h5{
 
 .suggested-meaning {
   background-color: var(--meaning-item-color);
-  padding: 15px 10px;
+  padding-left: 10px;
+  height: 50px;
   cursor: pointer;
   font-size: 1.15rem;
   color: var(--on-primary-color);
@@ -116,7 +128,39 @@ h5{
   width: 100%;
   text-align: start;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.meaning-attribution {
+  padding-right: 1rem;
+  padding-left: 0.5rem;
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  color: white;
+}
+
+.meaning-attribution-icon {
+  width: 20px;
+  height: 20px;
+}
+
+
+.meaning-attribution-popup {
+  display: none;
+  background-color: var(--background-color);
+  border: 1px solid var(--on-background-color);
+  color: var(--on-background-color);
+  padding: 0.2rem;
+  position: absolute;
+  transform: translateY(-30px);
+  font-size: 0.75rem;
+  max-width: 250px;
+}
+
+.meaning-attribution:hover .meaning-attribution-popup {
+  display: block;
 }
 
 .show-all-suggestions-button span {

@@ -22,6 +22,7 @@
     "path-browserify": "^1.0.1",
     "pinia": "^2.1.4",
     "pretty-bytes": "^6.1.1",
+    "snarkdown": "^2.0.0",
     "timeago.js": "^4.0.2",
     "vue": "^3.3.4",
     "vue-advanced-cropper": "^2.8.8",

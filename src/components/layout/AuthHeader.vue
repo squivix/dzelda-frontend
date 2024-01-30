@@ -9,7 +9,7 @@
           <input type="checkbox" id="nav-expand-checkbox" v-model="isNavBarExpanded">
         </template>
         <router-link :to="{ name: 'home'}" class="title">
-          <img :src="logo" class="logo-image" alt="logo">
+          <img :src="logoSmall" class="logo-image" alt="logo">
           <!--        <h1>Dzelda</h1>-->
         </router-link>
         <NavBar v-if="doShowNavBar"/>
@@ -31,7 +31,7 @@
 </template>
 <script lang="ts">
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
-import logo from "@/assets/images/logo.svg";
+import logoSmall from "@/assets/images/logo-small.svg";
 import {icons} from "@/icons.js";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
@@ -84,7 +84,7 @@ export default defineComponent({
   setup() {
     return {
       icons,
-      logo,
+      logoSmall,
       store: useStore(),
       userStore: useUserStore(),
       languageStore: useLanguageStore(),

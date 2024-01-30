@@ -1,7 +1,7 @@
 <template>
   <section>
     <h2 id="try-it-header">Try it yourself</h2>
-    <LoadingScreen v-if="!isReady"/>
+    <LoadingScreen v-if="isLoading"/>
     <div class="try-it-content" v-else>
       <LessonReader class="lesson-reader"
                     :lessonId="selectedLessonId!"
@@ -65,9 +65,6 @@ export default defineComponent({
     },
     selectedPreview() {
       return this.previews?.[this.selectedPreviewIndex];
-    },
-    isReady() {
-      return !this.isLoading && this.languages !== null;
     },
   },
   async mounted() {

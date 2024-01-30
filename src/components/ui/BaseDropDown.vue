@@ -7,7 +7,7 @@
     </label>
 
     <input :id="`dropdown-checkbox-${id}`"
-           type="checkbox" class="dropdown-checkbox"
+           type="checkbox" class="inv-checkbox"
            ref="dropdown-checkbox"
            name="dropdown-checkbox"
            v-model="isDroppedDown">
@@ -87,12 +87,6 @@ export default {
   transform: translate(-50%, 15px);
 }
 
-.dropdown-checkbox {
-  position: absolute;
-  opacity: 0;
-  height: 0;
-  width: 0;
-}
 
 .dropdown-checkbox:checked + .menu {
   visibility: visible;
