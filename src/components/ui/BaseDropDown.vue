@@ -7,7 +7,7 @@
     </label>
 
     <input :id="`dropdown-checkbox-${id}`"
-           type="checkbox" class="inv-checkbox"
+           type="checkbox" class="dropdown-checkbox inv-checkbox"
            ref="dropdown-checkbox"
            name="dropdown-checkbox"
            v-model="isDroppedDown">

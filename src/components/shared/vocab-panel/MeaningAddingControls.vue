@@ -8,12 +8,14 @@
           <span>
             {{ meaning.text }}
           </span>
-          <label v-if="meaning.attributionMarkdownText" class="meaning-attribution" @click.stop>
+          <span v-if="meaning.attributionMarkdownText" class="meaning-attribution" @click.stop>
             <input type="checkbox" class="inv-checkbox">
             <img v-if="meaning.attributionLogo" :src="meaning.attributionLogo" alt="meaning attribution logo" class="meaning-attribution-icon">
             <inline-svg v-else :src="icons.info" class="meaning-attribution-icon"/>
-            <span class="meaning-attribution-popup" v-html="renderMarkdown(meaning.attributionMarkdownText)"></span>
-          </label>
+            <span class="meaning-attribution-popup">
+              <div v-html="renderMarkdown(meaning.attributionMarkdownText)"></div>
+            </span>
+          </span>
         </button>
       </li>
     </ol>
@@ -137,6 +139,7 @@ h5 {
   padding-left: 0.5rem;
   align-self: stretch;
   display: grid;
+  cursor: default;
   place-items: center;
   color: white;
 }
@@ -149,12 +152,16 @@ h5 {
 
 .meaning-attribution-popup {
   display: none;
+  position: absolute;
+  transform: translateY(-40px);
+  padding: 1rem;
+}
+
+.meaning-attribution-popup div {
   background-color: var(--background-color);
   border: 1px solid var(--on-background-color);
   color: var(--on-background-color);
   padding: 0.2rem;
-  position: absolute;
-  transform: translateY(-30px);
   font-size: 0.75rem;
   max-width: 250px;
 }
