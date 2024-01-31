@@ -1,9 +1,10 @@
 <template>
   <div>
     <template v-if="vocab">
-      <h4 class="vocab-text">{{ vocab.text }}</h4>
-      <div :class="{'meaning-sub-panel':true,'new-vocab-panel':showAddPanel, 'existing-vocab-panel':!showAddPanel}">
-        <NewVocabPanel v-if="showAddPanel"
+      <VocabPanelTopBar :vocab="vocab" :hidePreferredTTS="showPronunciationPanel" @onPronunciationButtonClicked="showPronunciationPanel=!showPronunciationPanel"/>
+      <div :class="{'meaning-sub-panel':true,'new-vocab-panel':showAddPanel, 'existing-vocab-panel':!showAddPanel, 'pronunciation-panel':showPronunciationPanel}">
+        <PronunciationPanel v-if="showPronunciationPanel" :vocab="vocab"/>
+        <NewVocabPanel v-else-if="showAddPanel"
                        :vocab="vocab"
                        :isPhrase="vocab.isPhrase"
                        :isSubmittingNewMeaning="isSubmittingNewMeaning"
@@ -36,10 +37,13 @@ import {useMeaningStore} from "@/stores/backend/meaningStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import MeaningEditingControls from "@/components/shared/vocab-panel/MeaningEditingControls.vue";
 import {NewVocab} from "@/components/shared/LessonReader.vue";
+import InlineSvg from "vue-inline-svg";
+import VocabPanelTopBar from "@/components/shared/vocab-panel/VocabPanelTopBar.vue";
+import PronunciationPanel from "@/components/shared/vocab-panel/PronunciationPanel.vue";
 
 export default {
   name: "VocabPanel",
-  components: {MeaningEditingControls, NewVocabPanel, ExistingVocabPanel},
+  components: {PronunciationPanel, VocabPanelTopBar, MeaningEditingControls, NewVocabPanel, ExistingVocabPanel, InlineSvg},
   emits: {
     onNewVocabCreated: (vocab: LearnerVocabSchema) => true,
     onVocabUpdated: (vocab: LearnerVocabSchema, updatedData: Partial<LearnerVocabSchema>) => true,
@@ -51,6 +55,7 @@ export default {
   },
   data() {
     return {
+      showPronunciationPanel: false,
       addingMoreMeanings: false,
       isSubmittingNewMeaning: false,
       isSubmittingEditMeaningSet: new Set<number>(),
@@ -180,12 +185,6 @@ export default {
 </script>
 
 <style scoped>
-.vocab-text {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  user-select: text;
-}
-
 .meaning-sub-panel {
   padding: 1vw;
   border-radius: 10px;
@@ -199,5 +198,10 @@ export default {
 
 .existing-vocab-panel {
   background-color: var(--saved-vocab-panel-color);
+}
+
+.pronunciation-panel {
+  background-color: var(--primary-faint-color);
+  color: var(--panel-new-text-color);
 }
 </style>

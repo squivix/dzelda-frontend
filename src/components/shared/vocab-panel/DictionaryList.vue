@@ -92,6 +92,7 @@ h5 {
   flex-direction: column;
   row-gap: 0.5rem;
   overflow-y: auto;
+  padding-right: 5px;
   max-height: 200px;
 }
 

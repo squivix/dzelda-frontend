@@ -41,7 +41,11 @@ import email from "@/assets/images/email.svg";
 import lightMode from "@/assets/images/light-mode.svg";
 import darkMode from "@/assets/images/dark-mode.svg";
 import blackMode from "@/assets/images/black-mode.svg";
-import info from "@/assets/images/info.svg"
+import info from "@/assets/images/info.svg";
+import audio from "@/assets/images/audio.svg";
+import pronunciation from "@/assets/images/pronunciation.svg";
+import stopPlayback from "@/assets/images/stop-playback.svg"
+
 export const icons = {
     arrowDown,
     arrowLeft,
@@ -86,5 +90,8 @@ export const icons = {
     lightMode,
     darkMode,
     blackMode,
-    info
+    info,
+    audio,
+    pronunciation,
+    stopPlayback
 };
