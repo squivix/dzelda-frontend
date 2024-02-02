@@ -4,7 +4,7 @@ import {minsToMs} from "@/utils.js";
 
 export const useDictionaryStore = defineStore("dictionary", {
     actions: {
-        async fetchDictionaries(queryParams: { languageCode?: string } = {}) {
+        async fetchDictionaries(queryParams: { languageCode?: string, isPronunciation?: boolean } = {}) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.dictionaries.getDictionaries(queryParams),
                 {
