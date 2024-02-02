@@ -77,6 +77,7 @@ export default {
   },
   watch: {
     vocab() {
+      this.showPronunciationPanel = false;
       this.addingMoreMeanings = false;
     }
   },

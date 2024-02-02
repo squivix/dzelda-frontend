@@ -140,7 +140,8 @@ export default defineComponent({
           notes: null,
           language: this.lesson!.language,
           meanings: [],
-          learnerMeanings: []
+          learnerMeanings: [],
+          ttsPronunciations: [],
         };
     },
     isSelectedNewPhrase() {
@@ -253,7 +254,8 @@ export default defineComponent({
         notes: null,
         language: vocab.language,
         meanings: vocab.meanings,
-        learnerMeanings: []
+        learnerMeanings: [],
+        ttsPronunciations: []
       };
       if (vocab.isPhrase)
         this.phrases[vocab.text] = newVocab;

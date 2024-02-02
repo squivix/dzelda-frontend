@@ -7,18 +7,18 @@
       <ul class="pronunciation-list styled-scrollbars" v-else>
         <li v-for="ttsPronunciation in vocab.ttsPronunciations" :key="ttsPronunciation.id" class="pronunciation" @click="setPronunciationPlaying(ttsPronunciation)">
           <inline-svg :src="pronunciationPlaying===ttsPronunciation?icons.stopPlayback:icons.audio"/>
-          <p>{{ ttsPronunciation.voice!.accent}}</p>
+          <p>{{ ttsPronunciation.voice!.accent }}</p>
         </li>
       </ul>
     </div>
-
     <div>
       <h5>Human Pronunciations</h5>
-      <p v-if="vocab.humanPronunciations.length==0">No text to speech Pronunciations</p>
+      <LoadingScreen v-if="!humanPronunciations" style="height: auto" />
+      <p v-else-if="humanPronunciations.length==0">No human Pronunciations</p>
       <ul class="pronunciation-list styled-scrollbars" v-else>
-        <li v-for="humanPronunciation in vocab.humanPronunciations" :key="humanPronunciation.id" class="pronunciation" @click="setPronunciationPlaying(humanPronunciation)">
+        <li v-for="humanPronunciation in humanPronunciations" :key="humanPronunciation.id" class="pronunciation" @click="setPronunciationPlaying(humanPronunciation)">
           <inline-svg :src="pronunciationPlaying===humanPronunciation?icons.stopPlayback:icons.audio"/>
-          <p>{{humanPronunciation.accent}}</p>
+          <p>{{ humanPronunciation.text }}</p>
         </li>
       </ul>
     </div>
@@ -31,17 +31,28 @@ import {HumanPronunciationSchema, LearnerVocabSchema, TTSPronunciationSchema} fr
 import {NewVocab} from "@/components/shared/LessonReader.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
+import {useVocabStore} from "@/stores/backend/vocabStore.js";
+import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 
 export default defineComponent({
   name: "PronunciationPanel",
-  components: {InlineSvg},
+  components: {LoadingScreen, InlineSvg},
   props: {
     vocab: {type: Object as PropType<LearnerVocabSchema | NewVocab>, default: null},
   },
   data() {
     return {
+      humanPronunciations: null as HumanPronunciationSchema[] | null,
       pronunciationPlaying: null as TTSPronunciationSchema | HumanPronunciationSchema | null
     };
+  },
+  watch: {
+    async vocab() {
+      this.humanPronunciations = (await this.vocabStore.fetchHumanPronunciations({languageCode: this.vocab.language, text: this.vocab.text})).data;
+    }
+  },
+  async mounted() {
+    this.humanPronunciations = (await this.vocabStore.fetchHumanPronunciations({languageCode: this.vocab.language, text: this.vocab.text})).data;
   },
   methods: {
     setPronunciationPlaying(pronunciationPlaying: TTSPronunciationSchema | HumanPronunciationSchema) {
@@ -57,7 +68,8 @@ export default defineComponent({
   },
   setup() {
     return {
-      icons
+      icons,
+      vocabStore: useVocabStore()
     };
   }
 });
@@ -72,7 +84,7 @@ export default defineComponent({
 
 h5 {
   font-weight: bold;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
 .pronunciation-list {
@@ -81,7 +93,7 @@ h5 {
   row-gap: 0.5rem;
   padding-right: 5px;
   overflow-y: auto;
-  max-height: 200px;
+  max-height: 220px;
 }
 
 .pronunciation {

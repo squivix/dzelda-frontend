@@ -7,7 +7,7 @@
       </button>
       <h4 class="vocab-text">{{ vocab.text }}</h4>
     </div>
-    <button v-if="(vocab.ttsPronunciations.length+vocab.humanPronunciations.length)>1" class="pronunciations-button" @click="$emit('onPronunciationButtonClicked')">
+    <button class="pronunciations-button" @click="$emit('onPronunciationButtonClicked')">
       <inline-svg :src="icons.pronunciation"/>
     </button>
   </div>
