@@ -1,14 +1,16 @@
 <template>
   <div class="top-bar">
     <div class="left-side">
-      <button v-if="preferredTTS &&!hidePreferredTTS" class="audio-button" @click="onTTSButton">
+      <button v-if="preferredTTS &&!isPronunciationPanelShown" class="audio-button" @click="onTTSButton">
         <inline-svg :src="isPlaying?icons.stopPlayback:icons.audio"/>
         <audio ref="ttsAudioElement" @play="isPlaying=true" @ended="isPlaying=false" :src="preferredTTS.url" autoplay></audio>
       </button>
       <h4 class="vocab-text">{{ vocab.text }}</h4>
     </div>
     <button class="pronunciations-button" @click="$emit('onPronunciationButtonClicked')">
-      <inline-svg :src="icons.pronunciation"/>
+      <span>
+        <inline-svg :src="icons.pronunciation"/>
+      </span>
     </button>
   </div>
 </template>
@@ -27,7 +29,7 @@ export default defineComponent({
   emits: ["onPronunciationButtonClicked"],
   props: {
     vocab: {type: Object as PropType<LearnerVocabSchema | NewVocab>, default: null},
-    hidePreferredTTS: {type: Boolean, default: false}
+    isPronunciationPanelShown: {type: Boolean, default: false}
   },
   data() {
     return {
@@ -36,9 +38,9 @@ export default defineComponent({
   },
   computed: {
     preferredTTS() {
-      const language = this.languageStore.userLanguages!.find(l => l.code === this.vocab.language)!;
+      const language = this.languageStore.userLanguages?.find(l => l.code === this.vocab.language)!;
       return this.vocab.ttsPronunciations.find(pronunciation => {
-        if (language.preferredTtsVoice?.id === pronunciation.voice!.id || !language.preferredTtsVoice && pronunciation.voice!.isDefault)
+        if (language?.preferredTtsVoice?.id === pronunciation.voice!.id || !language?.preferredTtsVoice && pronunciation.voice!.isDefault)
           return pronunciation;
       });
     }
@@ -71,13 +73,14 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.25rem;
 }
 
 .left-side {
   display: flex;
   align-items: center;
   column-gap: 0.5rem;
+  padding-top: 30px;
 }
 
 
@@ -101,15 +104,25 @@ export default defineComponent({
   display: grid;
   place-items: center;
   border: none;
-  border-radius: 8px;
-  padding: 4px;
   background: none;
-  color: var(--secondary-color)
+  color: var(--secondary-color);
+  padding-top: 15px;
+  padding-right: 15px;
+}
+
+.pronunciations-button > span {
+  border-radius: 50%;
+  padding: 12px;
+}
+
+.pronunciations-button:hover > span {
+  background-color: var(--secondary-faint-color);
+  filter: saturate(1.5);
 }
 
 .pronunciations-button svg {
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
 }
 
 .vocab-text {

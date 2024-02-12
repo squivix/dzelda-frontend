@@ -173,6 +173,7 @@ export default {
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
+  padding-top: 30px;
 }
 
 .title-section {

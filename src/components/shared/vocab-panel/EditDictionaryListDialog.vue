@@ -37,7 +37,6 @@
               </div>
               <p>{{ dictionary.name }}</p>
             </div>
-
           </li>
         </ul>
       </section>
@@ -152,7 +151,7 @@ form {
 .dictionary {
   background-color: var(--dictionary-item-color);
   color: var(--on-background-color);
-  height: 50px;
+  min-height: 50px;
   font-size: 1rem;
   border-radius: 5px;
   width: 100%;

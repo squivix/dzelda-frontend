@@ -8,14 +8,7 @@
           <span>
             {{ meaning.text }}
           </span>
-          <span v-if="meaning.attributionMarkdownText" class="meaning-attribution" @click.stop>
-            <input type="checkbox" class="inv-checkbox">
-            <img v-if="meaning.attributionLogo" :src="meaning.attributionLogo" alt="meaning attribution logo" class="meaning-attribution-icon">
-            <inline-svg v-else :src="icons.info" class="meaning-attribution-icon"/>
-            <span class="meaning-attribution-popup">
-              <div v-html="renderMarkdown(meaning.attributionMarkdownText)"></div>
-            </span>
-          </span>
+          <AttributionIcon :attribution="meaning.attribution"/>
         </button>
       </li>
     </ol>
@@ -45,10 +38,11 @@ import {PropType} from "vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import snarkdown from "snarkdown";
 import {renderMarkdown} from "@/utils.js";
+import AttributionIcon from "@/components/ui/AttributionIcon.vue";
 
 export default {
   name: "MeaningAddingControls",
-  components: {SubmitButton, InlineSvg},
+  components: {AttributionIcon, SubmitButton, InlineSvg},
   emits: {
     onSuggestedMeaningClicked: (meaning: MeaningSchema) => true,
     onNewMeaningSubmitted: (newMeaningText: string) => true,
@@ -132,42 +126,6 @@ h5 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.meaning-attribution {
-  padding-right: 1rem;
-  padding-left: 0.5rem;
-  align-self: stretch;
-  display: grid;
-  cursor: default;
-  place-items: center;
-  color: white;
-}
-
-.meaning-attribution-icon {
-  width: 20px;
-  height: 20px;
-}
-
-
-.meaning-attribution-popup {
-  display: none;
-  position: absolute;
-  transform: translateY(-40px);
-  padding: 1rem;
-}
-
-.meaning-attribution-popup div {
-  background-color: var(--background-color);
-  border: 1px solid var(--on-background-color);
-  color: var(--on-background-color);
-  padding: 0.2rem;
-  font-size: 0.75rem;
-  max-width: 250px;
-}
-
-.meaning-attribution:hover .meaning-attribution-popup {
-  display: block;
 }
 
 .show-all-suggestions-button span {

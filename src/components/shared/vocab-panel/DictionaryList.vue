@@ -107,6 +107,6 @@ h5 {
 }
 
 .empty-message {
-  margin: 1rem 0;
+  margin-bottom: 1rem;
 }
 </style>

@@ -1,25 +1,27 @@
 <template>
   <div>
     <template v-if="vocab">
-      <VocabPanelTopBar :vocab="vocab" :hidePreferredTTS="showPronunciationPanel" @onPronunciationButtonClicked="showPronunciationPanel=!showPronunciationPanel"/>
-      <div :class="{'meaning-sub-panel':true,'new-vocab-panel':showAddPanel, 'existing-vocab-panel':!showAddPanel, 'pronunciation-panel':showPronunciationPanel}">
-        <PronunciationPanel v-if="showPronunciationPanel" :vocab="vocab"/>
-        <NewVocabPanel v-else-if="showAddPanel"
-                       :vocab="vocab"
-                       :isPhrase="vocab.isPhrase"
-                       :isSubmittingNewMeaning="isSubmittingNewMeaning"
-                       @onSuggestedMeaningClicked="addSuggestedMeaning"
-                       @onNewMeaningSubmitted="addNewMeaning"
-                       @onMarkAsKnownClicked="()=>onMarkAsButtonClicked(VocabLevelSchema.KNOWN)"
-                       @onMarkAsIgnoredClicked="()=>onMarkAsButtonClicked(VocabLevelSchema.IGNORED)"/>
-        <ExistingVocabPanel v-else
-                            :vocab="existingVocab!"
-                            :isSubmittingEditMeaningSet="isSubmittingEditMeaningSet"
-                            @onAddMoreMeaningsClicked="onAddMoreMeaningsClicked"
-                            @onVocabLevelButtonClicked="updateVocabLevel"
-                            @onVocabNotesEditSubmitted="updateVocabNotes"
-                            @onMeaningEditSubmitted="updateMeaning"
-                            @onMeaningDeleteClicked="deleteMeaning"/>
+      <VocabPanelTopBar :vocab="vocab" :isPronunciationPanelShown="isPronunciationPanelShown" @onPronunciationButtonClicked="isPronunciationPanelShown=!isPronunciationPanelShown"/>
+      <div class="meaning-sub-panel-wrapper">
+        <div :class="{'meaning-sub-panel':true,'new-vocab-panel':showAddPanel, 'existing-vocab-panel':!showAddPanel, 'pronunciation-panel':isPronunciationPanelShown}">
+          <PronunciationPanel v-if="isPronunciationPanelShown" :vocab="vocab"/>
+          <NewVocabPanel v-else-if="showAddPanel"
+                         :vocab="vocab"
+                         :isPhrase="vocab.isPhrase"
+                         :isSubmittingNewMeaning="isSubmittingNewMeaning"
+                         @onSuggestedMeaningClicked="addSuggestedMeaning"
+                         @onNewMeaningSubmitted="addNewMeaning"
+                         @onMarkAsKnownClicked="()=>onMarkAsButtonClicked(VocabLevelSchema.KNOWN)"
+                         @onMarkAsIgnoredClicked="()=>onMarkAsButtonClicked(VocabLevelSchema.IGNORED)"/>
+          <ExistingVocabPanel v-else
+                              :vocab="existingVocab!"
+                              :isSubmittingEditMeaningSet="isSubmittingEditMeaningSet"
+                              @onAddMoreMeaningsClicked="onAddMoreMeaningsClicked"
+                              @onVocabLevelButtonClicked="updateVocabLevel"
+                              @onVocabNotesEditSubmitted="updateVocabNotes"
+                              @onMeaningEditSubmitted="updateMeaning"
+                              @onMeaningDeleteClicked="deleteMeaning"/>
+        </div>
       </div>
     </template>
     <slot name="no-selected-panel" v-else>
@@ -55,8 +57,8 @@ export default {
   },
   data() {
     return {
-      showPronunciationPanel: false,
-      addingMoreMeanings: false,
+      isPronunciationPanelShown: false,
+      isAddingMoreMeanings: false,
       isSubmittingNewMeaning: false,
       isSubmittingEditMeaningSet: new Set<number>(),
     };
@@ -66,7 +68,7 @@ export default {
       return [VocabLevelSchema.NEW, VocabLevelSchema.IGNORED, VocabLevelSchema.KNOWN].includes(this.vocab!.level!);
     },
     showAddPanel() {
-      return this.isVocabNotSaved || this.addingMoreMeanings;
+      return this.isVocabNotSaved || this.isAddingMoreMeanings;
     },
     existingVocab(): LearnerVocabSchema | undefined {
       if (this.isVocabNotSaved)
@@ -77,13 +79,13 @@ export default {
   },
   watch: {
     vocab() {
-      this.showPronunciationPanel = false;
-      this.addingMoreMeanings = false;
+      this.isPronunciationPanelShown = false;
+      this.isAddingMoreMeanings = false;
     }
   },
   methods: {
     onAddMoreMeaningsClicked() {
-      this.addingMoreMeanings = true;
+      this.isAddingMoreMeanings = true;
     },
     onMarkAsButtonClicked(level: VocabLevelSchema) {
       const vocab = this.vocab as LearnerVocabSchema;
@@ -117,7 +119,7 @@ export default {
         level: [VocabLevelSchema.NEW, VocabLevelSchema.LEARNED, VocabLevelSchema.KNOWN, VocabLevelSchema.IGNORED].includes(vocab.level) ? VocabLevelSchema.LEVEL1 : vocab.level,
         learnerMeanings: [...vocab.learnerMeanings, meaning],
       });
-      this.addingMoreMeanings = false;
+      this.isAddingMoreMeanings = false;
     },
     async addNewMeaning(newMeaningText: string) {
       if (!this.vocab)
@@ -149,7 +151,7 @@ export default {
         this.isSubmittingNewMeaning = false;
         this.onVocabRefetched(newVocab);
       }
-      this.addingMoreMeanings = false;
+      this.isAddingMoreMeanings = false;
     },
     updateMeaning(meaning: MeaningSchema, newMeaningText: string) {
       const vocab = this.vocab as LearnerVocabSchema;
@@ -186,6 +188,10 @@ export default {
 </script>
 
 <style scoped>
+.meaning-sub-panel-wrapper {
+  padding-right: 20px;
+}
+
 .meaning-sub-panel {
   padding: 1vw;
   border-radius: 10px;

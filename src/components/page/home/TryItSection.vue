@@ -140,6 +140,7 @@ label {
 }
 
 .side-panel-place-holder p {
+  margin-top: 30px;
   font-size: 1.25rem;
 }
 

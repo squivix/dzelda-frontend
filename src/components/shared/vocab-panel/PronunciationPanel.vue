@@ -1,30 +1,35 @@
 <template>
   <div class="pronunciation-panel">
-    <audio ref="audioElement" :src="pronunciationPlaying?.url"></audio>
+    <audio ref="audioElement" :src="pronunciationPlaying?.url" @ended="pronunciationPlaying=null" @error="pronunciationPlaying=null"></audio>
     <div>
       <h5>Text to speech Pronunciations</h5>
       <p v-if="vocab.ttsPronunciations.length==0">No text to speech Pronunciations</p>
       <ul class="pronunciation-list styled-scrollbars" v-else>
         <li v-for="ttsPronunciation in vocab.ttsPronunciations" :key="ttsPronunciation.id" class="pronunciation" @click="setPronunciationPlaying(ttsPronunciation)">
-          <inline-svg :src="pronunciationPlaying===ttsPronunciation?icons.stopPlayback:icons.audio"/>
-          <p>{{ ttsPronunciation.voice!.accent }}</p>
+          <div class="pronunciation-side">
+            <inline-svg :src="pronunciationPlaying===ttsPronunciation?icons.stopPlayback:icons.audio"/>
+            <p>{{ ttsPronunciation.voice!.accent }}</p>
+          </div>
         </li>
       </ul>
     </div>
     <div>
       <h5>Human Pronunciations</h5>
-      <LoadingScreen v-if="!humanPronunciations" style="height: auto"/>
+      <LoadingScreen v-if="!humanPronunciations" class="loading-screen"/>
       <p v-else-if="humanPronunciations.length==0">No human Pronunciations</p>
       <ul class="pronunciation-list styled-scrollbars" v-else>
         <li v-for="humanPronunciation in humanPronunciations" :key="humanPronunciation.id" class="pronunciation" @click="setPronunciationPlaying(humanPronunciation)">
-          <inline-svg :src="pronunciationPlaying===humanPronunciation?icons.stopPlayback:icons.audio"/>
-          <p>{{ humanPronunciation.text }}</p>
+          <div class="pronunciation-side">
+            <inline-svg :src="pronunciationPlaying===humanPronunciation?icons.stopPlayback:icons.audio"/>
+            <p>{{ humanPronunciation.text }}</p>
+          </div>
+          <AttributionIcon :attribution="humanPronunciation.attribution"/>
         </li>
       </ul>
     </div>
     <div>
       <h5>Pronunciation Dictionaries</h5>
-      <LoadingScreen v-if="!pronunciationDictionaries" style="height: auto"/>
+      <LoadingScreen v-if="!pronunciationDictionaries" class="loading-screen"/>
       <p v-else-if="pronunciationDictionaries.length==0">No Pronunciation Dictionaries</p>
       <!--      TODO move to common component-->
       <ul class="dictionaries styled-scrollbars" v-else>
@@ -43,10 +48,11 @@ import {icons} from "@/icons.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {useDictionaryStore} from "@/stores/backend/dictionaryStore.js";
+import AttributionIcon from "@/components/ui/AttributionIcon.vue";
 
 export default defineComponent({
   name: "PronunciationPanel",
-  components: {LoadingScreen, InlineSvg},
+  components: {AttributionIcon, LoadingScreen, InlineSvg},
   props: {
     vocab: {type: Object as PropType<LearnerVocabSchema | NewVocab>, default: null},
   },
@@ -62,9 +68,11 @@ export default defineComponent({
       this.humanPronunciations = (await this.vocabStore.fetchHumanPronunciations({languageCode: this.vocab.language, text: this.vocab.text})).data;
     }
   },
-  async mounted() {
-    this.humanPronunciations = (await this.vocabStore.fetchHumanPronunciations({languageCode: this.vocab.language, text: this.vocab.text})).data;
-    this.pronunciationDictionaries = (await this.dictionaryStore.fetchDictionaries({languageCode: this.vocab.language, isPronunciation: true}));
+  mounted() {
+    this.dictionaryStore.fetchDictionaries({languageCode: this.vocab.language, isPronunciation: true})
+        .then(dictionaries => this.pronunciationDictionaries = dictionaries);
+    this.vocabStore.fetchHumanPronunciations({languageCode: this.vocab.language, text: this.vocab.text})
+        .then(response => this.humanPronunciations = response.data);
   },
   methods: {
     openDictionaryLink(dictionary: DictionarySchema) {
@@ -124,6 +132,12 @@ h5 {
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+}
+
+.pronunciation-side {
+  display: flex;
+  align-items: center;
   column-gap: 0.5rem;
 }
 
@@ -135,6 +149,16 @@ h5 {
   font-size: 1rem;
   border-radius: 5px;
   width: 100%;
+}
+
+.loading-screen {
+  height: auto;
+  padding: 1rem 0;
+}
+
+.loading-screen:deep(.spinner) {
+  width: 35px;
+  height: 35px;
 }
 
 </style>

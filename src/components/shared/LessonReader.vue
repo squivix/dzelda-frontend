@@ -334,7 +334,7 @@ export default defineComponent({
   row-gap: 0.25rem;
   border-radius: 20px;
   max-width: 1150px;
-  padding: 30px 20px 10px 0;
+  padding: 0 0 10px 0;
   margin-bottom: 0;
 }
 

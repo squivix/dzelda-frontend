@@ -73,9 +73,14 @@ button {
   background-color: var(--secondary-color);
 }
 
+.start-end-button {
+  display: grid;
+  place-items: center;
+}
+
 .start-end-button svg {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   color: var(--secondary-color);
 }
 
