@@ -8,9 +8,9 @@
           </label>
           <input type="checkbox" id="nav-expand-checkbox" v-model="isNavBarExpanded">
         </template>
-        <router-link :to="{ name: 'home'}" class="title">
+        <router-link :to="{ name: 'home'}" class="title inv-link">
           <img :src="logoSmall" class="logo-image" alt="logo">
-          <!--        <h1>Dzelda</h1>-->
+          <h1>Dzelda</h1>
         </router-link>
         <NavBar v-if="doShowNavBar"/>
       </div>
@@ -135,6 +135,12 @@ h1 {
   column-gap: 3rem;
 }
 
+.title {
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+}
+
 .right-side-div {
   display: flex;
   flex-direction: row;
@@ -162,6 +168,10 @@ h1 {
 @media screen and (max-width: 750px) {
   .title-nav-div {
     column-gap: 1rem;
+  }
+
+  .title h1 {
+    display: none;
   }
 
   label[for=nav-expand-checkbox] {

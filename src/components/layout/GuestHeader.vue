@@ -1,9 +1,9 @@
 <template>
   <header>
     <div class="main-header">
-      <router-link :to="{ name: 'home'}" class="title">
+      <router-link :to="{ name: 'home'}" class="title inv-link">
         <img :src="logoSmall" class="logo-image" alt="logo">
-        <!--        <h1>Dzelda</h1>-->
+        <h1>Dzelda</h1>
       </router-link>
 
       <div id="header-buttons">
@@ -69,10 +69,16 @@ header {
   background-color: var(--primary-color);
 }
 
+.title {
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+}
+
 .title h1 {
   color: var(--on-primary-color);
-  font-family: sans-serif;
-  font-weight: 900;
+  font-family: Verdana, sans-serif;
+  font-weight: bold;
   font-size: 2rem;
   padding: 1rem 0;
 }
@@ -114,5 +120,11 @@ button a {
   width: 20px;
   height: 20px;
   color: var(--on-primary-color);
+}
+
+@media screen and (max-width: 750px) {
+  .title h1 {
+    display: none;
+  }
 }
 </style>

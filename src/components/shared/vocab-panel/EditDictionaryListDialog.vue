@@ -40,6 +40,12 @@
           </li>
         </ul>
       </section>
+      <section>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLScxVd5rHNIqvq7j4q90RpnkNM9d-Ucw-XNbg6gXgJweOY6ldg/viewform?usp=sf_link" class="suggest-link" target="_blank" >
+          <inline-svg :src="googleFormsLogo"></inline-svg>
+          Suggest a dictionary!
+        </a>
+      </section>
       <div class="buttons-div">
         <button type="button" class="primary-hollow-button mid-button square-button" @click="$emit('onClosed')">Cancel</button>
         <SubmitButton type="submit" :isSubmitting="isSubmitting" class="primary-filled-button mid-button square-button">Save</SubmitButton>
@@ -58,6 +64,7 @@ import {useDictionaryStore} from "@/stores/backend/dictionaryStore.js";
 import {DictionarySchema} from "dzelda-common";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
+import googleFormsLogo from "@/assets/images/google-forms-logo.svg";
 
 export default defineComponent({
   name: "EditDictionaryListDialog",
@@ -118,6 +125,7 @@ export default defineComponent({
   setup() {
     return {
       icons,
+      googleFormsLogo,
       dictionaryStore: useDictionaryStore()
     };
   }
@@ -194,4 +202,18 @@ form {
 .buttons-div button {
   flex-grow: 1;
 }
+
+.suggest-link {
+  display: flex;
+  column-gap: 0.25rem;
+  align-items: center;
+  color: var(--on-background-color);
+  font-weight: bold;
+}
+
+.suggest-link svg {
+  width: 30px;
+  height: 30px;
+}
+
 </style>

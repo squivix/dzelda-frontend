@@ -205,6 +205,9 @@ p {
 }
 
 @media screen and (max-width: 800px) {
+  .lesson-content{
+    padding-right: 20px;
+  }
   .lesson-image {
     width: 100px;
     height: 100px;

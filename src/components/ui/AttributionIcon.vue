@@ -1,6 +1,6 @@
 <template>
   <div v-if="attribution" class="attribution" @click.stop>
-    <img v-if="attribution.sourceRootLogoUrl&&logoError" :alt="`${attribution.sourceRootName} attribution logo`" class="attribution-icon" @error="logoError=true">
+    <img v-if="attribution.sourceRootLogoUrl&&!logoError" :src="attribution.sourceRootLogoUrl" :alt="`${attribution.sourceRootName} attribution logo`" class="attribution-icon" @error="logoError=true">
     <inline-svg v-else :src="icons.info" class="attribution-icon"/>
     <span class="attribution-popup">
       <div v-html="renderMarkdown(attribution?.attributionMarkdown)">
