@@ -35,9 +35,11 @@ div {
 h2 {
   font-size: 1.2rem;
   margin-bottom: 0.2rem;
+  font-weight: bold;
 }
 
 p {
   font-size: 1.1rem;
+  line-height: 1.5rem;
 }
 </style>

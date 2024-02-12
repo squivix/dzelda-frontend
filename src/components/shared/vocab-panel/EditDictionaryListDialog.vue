@@ -41,7 +41,7 @@
         </ul>
       </section>
       <section>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLScxVd5rHNIqvq7j4q90RpnkNM9d-Ucw-XNbg6gXgJweOY6ldg/viewform?usp=sf_link" class="suggest-link" target="_blank" >
+        <a href="https://forms.gle/Rm5pbrwDaG5Sp3h67" class="suggest-link" target="_blank" >
           <inline-svg :src="googleFormsLogo"></inline-svg>
           Suggest a dictionary!
         </a>

@@ -105,6 +105,7 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 0 2vw;
+  column-gap: 1rem;
   background-color: var(--primary-color);
 }
 
@@ -132,13 +133,13 @@ h1 {
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  column-gap: 3rem;
+  column-gap: min(3rem, 4vw);
 }
 
 .title {
   display: flex;
   align-items: center;
-  column-gap: 1rem;
+  column-gap: 0.75rem;
 }
 
 .right-side-div {

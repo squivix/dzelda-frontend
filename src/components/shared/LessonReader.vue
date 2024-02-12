@@ -331,10 +331,10 @@ export default defineComponent({
 .base-card {
   display: flex;
   flex-direction: column;
-  row-gap: 0.25rem;
+  row-gap: 1rem;
   border-radius: 20px;
   max-width: 1150px;
-  padding: 0 0 10px 0;
+  padding: 0 0 15px 0;
   margin-bottom: 0;
 }
 

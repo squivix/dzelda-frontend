@@ -51,7 +51,7 @@
           </fieldset>
           <template v-if="!exclude.addedBy">
             <label for="author-input" class="filter-label">Course Author</label>
-            <input id="author-input" type="text" v-model="addedBy">
+            <input id="author-input" type="text" v-model="addedBy" placeholder="Enter a username">
           </template>
         </div>
         <div class="buttons-wrapper">

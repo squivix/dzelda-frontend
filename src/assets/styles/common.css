@@ -125,7 +125,7 @@ button:hover {
 .inv-checkbox {
     position: absolute;
     opacity: 0;
-    height: 0;
+    height: 0 !important;
     width: 0;
 }
 

@@ -80,7 +80,6 @@ export default defineComponent({
   display: flex;
   align-items: center;
   column-gap: 0.5rem;
-  padding-top: 30px;
 }
 
 
@@ -106,8 +105,6 @@ export default defineComponent({
   border: none;
   background: none;
   color: var(--secondary-color);
-  padding-top: 15px;
-  padding-right: 15px;
 }
 
 .pronunciations-button > span {

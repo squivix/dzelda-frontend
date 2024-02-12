@@ -1,5 +1,5 @@
 <template>
-  <div class="side-panel">
+  <div class="side-panel" @mousedown.stop>
     <VocabPanel v-if="selectedVocab&&!selectedOverLappingPhrasesTokens"
                 :vocab="selectedVocab"
                 @mousedown.stop
@@ -47,5 +47,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding-top: 30px;
+  padding-right: 15px;
 }
 </style>

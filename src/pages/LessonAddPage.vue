@@ -188,7 +188,7 @@ export default {
     },
     onCreateCourseDialogDismissed() {
       this.isCreateCourseDialogShown = false;
-      this.selectedCourse = undefined;
+      this.selectedCourse = null;
     }
   },
   async mounted() {

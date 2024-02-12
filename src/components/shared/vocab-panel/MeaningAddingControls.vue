@@ -115,7 +115,7 @@ h5 {
 
 .suggested-meaning {
   background-color: var(--meaning-item-color);
-  padding-left: 10px;
+  padding: 15px 10px;
   min-height: 50px;
   cursor: pointer;
   font-size: 1.15rem;

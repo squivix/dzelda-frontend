@@ -42,7 +42,9 @@
               :centered="false"
               :round="false">
             <template v-slot:button>
-              <inline-svg :src="icons.dotsStacked" class="more-button"/>
+              <button class="more-button inv-button">
+              <inline-svg :src="icons.dotsStacked" class=""/>
+              </button>
             </template>
             <template v-slot:menu>
               <ol class="dropdown-list">
@@ -219,7 +221,9 @@ h4 {
 a:hover {
   text-decoration: none;
 }
-
+.more-button{
+  padding: 1rem 0.5rem 0 0.5rem;
+}
 .more-button:hover {
   cursor: pointer;
 }

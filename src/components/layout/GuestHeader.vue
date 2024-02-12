@@ -114,6 +114,11 @@ button a {
   padding: 0.5rem;
   display: grid;
   place-items: center;
+  border-radius: 50%;
+}
+
+.theme-toggle:hover {
+  background-color: color-mix(in srgb, var(--primary-color-dark) 25%, transparent);
 }
 
 .theme-toggle svg {
