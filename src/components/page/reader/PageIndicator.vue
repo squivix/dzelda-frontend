@@ -8,7 +8,7 @@
 import {defineComponent} from "vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-
+//TODO replce with text when space is tight compared to pages.
 export default defineComponent({
   name: "PageIndicator",
   components: {InlineSvg},

@@ -59,7 +59,8 @@ export const useVocabStoreMock = defineStore("vocabStoreMock", {
                     lessonsCount: 0,
                     level: VocabLevelSchema.NEW,
                     notes: null,
-                    learnerMeanings: []
+                    learnerMeanings: [],
+                    ttsPronunciations: []
                 };
                 await previewDb.add("vocabs", newVocab);
 

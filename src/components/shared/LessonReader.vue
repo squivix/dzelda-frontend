@@ -66,14 +66,13 @@ export type LessonTokenObject = Omit<TokenWithPhrases, "phrases"> & {
   parsedText: string,
   phrases: Array<TokeObjectPhrases[number] & { phraseId: number }>
 }
-
 export default defineComponent({
   name: "LessonReader",
   components: {LoadingScreen, LessonContent, PagePanelButton, ReaderSidePanel, PageIndicator, BaseCard},
   props: {
     languageCode: {type: String, required: true},
     lessonId: {type: Number, required: true},
-    tokenMinGroupSize: {type: Number, default: 200},
+    tokenMinGroupSize: {type: Number, default: 100},
     tokenMaxGroupSize: {type: Number, default: 250},
     showDoneButton: {type: Boolean, default: true},
   },
@@ -93,6 +92,12 @@ export default defineComponent({
     };
   },
   computed: {
+    //Note the tradeoffs with tokenMinGroupSize and tokenMaxGroupSize.
+    //Higher min group size means fewer pages, but more splitting mid-paragraph
+    //Lower min group size means less splitting mid-paragraph but more pages
+    //Higher max group size means fewer pages, but more performance slowdown depending on user's device
+    //Lower max group size means less performance problems but more pages
+    //Solution is probably to rewrite the grouping algorithm
     textTokenPages() {
       const tokenPages: LessonTokenObject[][] = [];
       if (!this.lessonTokens)
