@@ -91,7 +91,7 @@ export default defineComponent({
 
 <style scoped>
 section {
-  margin-bottom: 20vh;
+  margin-bottom: 25vh;
 }
 
 .try-it-content {

@@ -24,7 +24,7 @@ export default defineComponent({
 <style scoped>
 section {
   margin-top: 5vh;
-  margin-bottom: 20vh;
+  margin-bottom: 25vh;
 }
 
 h2 {

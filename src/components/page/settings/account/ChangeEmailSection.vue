@@ -53,7 +53,7 @@ export default defineComponent({
       const response = await this.userStore.changeEmail({newEmail: this.newEmail});
       this.isSubmitting = false;
       if (!response.ok && response?.error?.code == 400)
-        this.errorMessage = (response.error.fields! as { email: string }).email;
+        this.errorMessage = (response.error.fields! as { newEmail: string }).newEmail;
       else
         this.emailChangeSuccess = true;
     },

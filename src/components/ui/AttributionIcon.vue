@@ -40,8 +40,6 @@ export default defineComponent({
 <style scoped>
 
 .attribution {
-  padding-right: 1rem;
-  padding-left: 0.5rem;
   align-self: stretch;
   display: grid;
   cursor: default;

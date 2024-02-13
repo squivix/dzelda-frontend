@@ -73,7 +73,7 @@ export default defineComponent({
   props: {
     languageCode: {type: String, required: true},
     lessonId: {type: Number, required: true},
-    tokenMinGroupSize: {type: Number, default: 100},
+    tokenMinGroupSize: {type: Number, default: 200},
     tokenMaxGroupSize: {type: Number, default: 250},
     showDoneButton: {type: Boolean, default: true},
   },
@@ -331,7 +331,7 @@ export default defineComponent({
 .base-card {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
+  row-gap: 1.5rem;
   border-radius: 20px;
   max-width: 1150px;
   padding: 0 0 15px 0;
@@ -362,6 +362,12 @@ export default defineComponent({
 
 audio {
   max-height: 2rem;
+}
+
+.paging-div {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
 }
 
 .page-indicators {

@@ -8,7 +8,7 @@
         <li v-for="ttsPronunciation in vocab.ttsPronunciations" :key="ttsPronunciation.id" class="pronunciation" @click="setPronunciationPlaying(ttsPronunciation)">
           <div class="pronunciation-side">
             <inline-svg :src="pronunciationPlaying===ttsPronunciation?icons.stopPlayback:icons.audio"/>
-            <p>{{ ttsPronunciation.voice!.accent }}</p>
+            <p>{{ `${vocab.text}${ttsPronunciation?.voice?.accentCountryCode ? ` (${ttsPronunciation.voice.accentCountryCode})` : ""}` }}</p>
           </div>
         </li>
       </ul>
