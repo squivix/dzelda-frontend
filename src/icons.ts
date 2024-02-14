@@ -44,7 +44,8 @@ import blackMode from "@/assets/images/black-mode.svg";
 import info from "@/assets/images/info.svg";
 import audio from "@/assets/images/audio.svg";
 import pronunciation from "@/assets/images/pronunciation.svg";
-import stopPlayback from "@/assets/images/stop-playback.svg"
+import stopPlayback from "@/assets/images/stop-playback.svg";
+import tts from "@/assets/images/tts.svg";
 
 export const icons = {
     arrowDown,
@@ -93,5 +94,6 @@ export const icons = {
     info,
     audio,
     pronunciation,
-    stopPlayback
+    stopPlayback,
+    tts
 };

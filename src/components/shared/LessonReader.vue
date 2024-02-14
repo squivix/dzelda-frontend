@@ -208,12 +208,17 @@ export default defineComponent({
       const lessonVocabs = await this.vocabStore.fetchLessonVocabs({lessonId: this.lessonId}, {});
       const words: Record<string, LearnerVocabSchema> = {};
       const phrases: Record<string, LearnerVocabSchema> = {};
+      let hasAudioCounter = 0, totalCouner = 0;
       for (const vocab of lessonVocabs) {
         if (!vocab.isPhrase)
           words[vocab.text] = vocab;
         else
           phrases[vocab.text] = vocab;
+        if (vocab.ttsPronunciations.length > 0)
+          hasAudioCounter++;
+        totalCouner++;
       }
+      console.log(`${hasAudioCounter}/${totalCouner} (${(hasAudioCounter / totalCouner) * 100}%)`);
       this.words = words;
       this.phrases = phrases;
       this.isLoadingWords = false;
@@ -230,7 +235,7 @@ export default defineComponent({
       this.clearSelectedTokens();
       this.selectedOverLappingPhrasesTokens = overlappingPhrasesTokens;
     },
-    onNewVocabCreated(vocab: LearnerVocabSchema) {
+    onNewVocabCreated(vocab: LearnerVocabSchema ) {
       if (vocab.isPhrase) {
         this.phrases[vocab.text] = vocab;
         this.parsePhraseInTokens(this.lesson!.parsedTitle!, this.matchIndexToTokenIndex.title, this.lessonTokens!.title, vocab.text);
@@ -363,6 +368,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   width: 100%;
+  row-gap: 0.5rem;
 }
 
 audio {

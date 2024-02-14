@@ -10,7 +10,7 @@
     <template v-slot:menu>
       <ol class="language-grid dropdown-list" :style="{'grid-template-columns':`repeat(${gridColumns}, 1fr)`}">
         <li v-for="language in otherLanguages">
-          <router-link :to="{params:{learningLanguage:language.code}}">
+          <router-link :to="{name:'explore-lang',params:{learningLanguage:language.code}}">
             <img class="image-icon language-icon" :src="language.flagCircular!"
                  :alt="`${language.code} language flag`">
             <span>{{ language.name }}</span>

@@ -1,5 +1,5 @@
 <template>
-  <div class="bar">
+  <div class="bar" v-if="pageCount>1">
     <div v-for="page in  pageCount" :class="{'section-indicator':true,  'current-section-indicator':page<=currentPage}" @click="$emit('onPageIndicatorClicked', page)"></div>
   </div>
 </template>

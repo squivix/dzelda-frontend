@@ -86,6 +86,12 @@ export const useVocabStore = defineStore("vocab", {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.humanPronunciations.getHumanPronunciations(queryParams));
             return response.data;
+        },
+        async generateVocabTTS(body: { vocabId: number, voiceCode: string | undefined }) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.ttsPronunciations.postTtsPronunciations({vocabId: body.vocabId, voiceCode: body.voiceCode}), {ignore5XX: true});
+            if (response.ok)
+                return response.data;
         }
     }
 });

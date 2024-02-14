@@ -1,7 +1,11 @@
 <template>
   <div>
     <template v-if="vocab">
-      <VocabPanelTopBar :vocab="vocab" :isPronunciationPanelShown="isPronunciationPanelShown" @onPronunciationButtonClicked="isPronunciationPanelShown=!isPronunciationPanelShown"/>
+      <VocabPanelTopBar :vocab="vocab"
+                        :isPronunciationPanelShown="isPronunciationPanelShown"
+                        @onPronunciationButtonClicked="isPronunciationPanelShown=!isPronunciationPanelShown"
+                        :isGeneratingTTS="isGeneratingTTS"
+                        @onGenerateTTSButtonClicked="onGenerateTTSButtonClicked"/>
       <div class="meaning-sub-panel-wrapper">
         <div :class="{'meaning-sub-panel':true,'new-vocab-panel':showAddPanel, 'existing-vocab-panel':!showAddPanel, 'pronunciation-panel':isPronunciationPanelShown}">
           <PronunciationPanel v-if="isPronunciationPanelShown" :vocab="vocab"/>
@@ -34,7 +38,7 @@
 import NewVocabPanel from "@/components/shared/vocab-panel/NewVocabPanel.vue";
 import ExistingVocabPanel from "@/components/shared/vocab-panel/ExistingVocabPanel.vue";
 import {inject, PropType} from "vue";
-import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-common";
+import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema, VocabSchema} from "dzelda-common";
 import {useMeaningStore} from "@/stores/backend/meaningStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import MeaningEditingControls from "@/components/shared/vocab-panel/MeaningEditingControls.vue";
@@ -42,6 +46,7 @@ import {NewVocab} from "@/components/shared/LessonReader.vue";
 import InlineSvg from "vue-inline-svg";
 import VocabPanelTopBar from "@/components/shared/vocab-panel/VocabPanelTopBar.vue";
 import PronunciationPanel from "@/components/shared/vocab-panel/PronunciationPanel.vue";
+import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 export default {
   name: "VocabPanel",
@@ -60,6 +65,7 @@ export default {
       isPronunciationPanelShown: false,
       isAddingMoreMeanings: false,
       isSubmittingNewMeaning: false,
+      isGeneratingTTS: false,
       isSubmittingEditMeaningSet: new Set<number>(),
     };
   },
@@ -176,12 +182,39 @@ export default {
       this.meaningStore.deleteMeaningFromUser({meaningId: meaning.id});
       this.$emit("onVocabUpdated", vocab, {learnerMeanings: vocab.learnerMeanings.filter(m => m.id !== meaning.id)});
     },
+    async onGenerateTTSButtonClicked() {
+      if (!this.vocab)
+        return;
+      this.isGeneratingTTS = true;
+      let vocab: LearnerVocabSchema | VocabSchema;
+      if (!("id" in this.vocab)) {
+        vocab = await this.vocabStore.createVocab({
+          text: this.vocab.text,
+          languageCode: this.vocab.language,
+          isPhrase: this.vocab.isPhrase,
+        });
+        this.$emit("onNewVocabCreated", {
+          ...vocab,
+          level: VocabLevelSchema.NEW,
+          notes: null,
+          learnerMeanings: [],
+          ttsPronunciations: [],
+        });
+      } else
+        vocab = this.vocab;
+      const preferredVoice = this.languageStore.userLanguages?.find((l) => l.code === vocab.language)?.preferredTtsVoice;
+      const ttsPronunciation = await this.vocabStore.generateVocabTTS({vocabId: vocab.id, voiceCode: preferredVoice?.code});
+      if (ttsPronunciation)
+        this.vocab.ttsPronunciations.push(ttsPronunciation);
+      this.isGeneratingTTS = false;
+    }
   },
   setup() {
     return {
       VocabLevelSchema,
       meaningStore: inject<ReturnType<typeof useMeaningStore>>("meaningStore", useMeaningStore()),
       vocabStore: inject<ReturnType<typeof useVocabStore>>("vocabStore", useVocabStore()),
+      languageStore: inject<ReturnType<typeof useLanguageStore>>("vocabStore", useLanguageStore()),
     };
   }
 };

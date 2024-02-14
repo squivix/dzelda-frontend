@@ -139,7 +139,11 @@ h1 {
 .title {
   display: flex;
   align-items: center;
-  column-gap: 0.75rem;
+  column-gap: 0.5rem;
+}
+
+.title h1 {
+  font-family: "Varela Round", Verdana, sans-serif;
 }
 
 .right-side-div {

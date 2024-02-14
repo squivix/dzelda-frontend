@@ -1,10 +1,13 @@
 <template>
   <div class="top-bar">
     <div class="left-side">
-      <button v-if="preferredTTS &&!isPronunciationPanelShown" class="audio-button" @click="onTTSButton">
-        <inline-svg :src="isPlaying?icons.stopPlayback:icons.audio"/>
-        <audio ref="ttsAudioElement" @play="isPlaying=true" @ended="isPlaying=false" :src="preferredTTS.url" autoplay></audio>
-      </button>
+      <template v-if="!isPronunciationPanelShown">
+        <button v-if="preferredTTS " class="audio-button" @click="onPlayTTSButtonClicked">
+          <inline-svg :src="isPlaying?icons.stopPlayback:icons.audio"/>
+          <audio ref="ttsAudioElement" @play="isPlaying=true" @ended="isPlaying=false" :src="preferredTTS.url" autoplay></audio>
+        </button>
+        <SubmitButton v-else class="audio-button" :iconSrc="icons.tts" @click="$emit('onGenerateTTSButtonClicked')" :isSubmitting="isGeneratingTTS"/>
+      </template>
       <h4 class="vocab-text">{{ vocab.text }}</h4>
     </div>
     <button class="pronunciations-button" @click="$emit('onPronunciationButtonClicked')">
@@ -22,14 +25,17 @@ import {LearnerVocabSchema} from "dzelda-common";
 import {NewVocab} from "@/components/shared/LessonReader.vue";
 import {icons} from "@/icons.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
+import {useVocabStore} from "@/stores/backend/vocabStore.js";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default defineComponent({
   name: "VocabPanelTopBar",
-  components: {InlineSvg},
-  emits: ["onPronunciationButtonClicked"],
+  components: {SubmitButton, InlineSvg},
+  emits: ["onPronunciationButtonClicked", "onGenerateTTSButtonClicked"],
   props: {
     vocab: {type: Object as PropType<LearnerVocabSchema | NewVocab>, default: null},
-    isPronunciationPanelShown: {type: Boolean, default: false}
+    isPronunciationPanelShown: {type: Boolean, default: false},
+    isGeneratingTTS: {type: Boolean, default: false},
   },
   data() {
     return {
@@ -37,16 +43,19 @@ export default defineComponent({
     };
   },
   computed: {
-    preferredTTS() {
+    preferredVoice() {
       const language = this.languageStore.userLanguages?.find(l => l.code === this.vocab.language)!;
+      return language?.preferredTtsVoice;
+    },
+    preferredTTS() {
       return this.vocab.ttsPronunciations.find(pronunciation => {
-        if (language?.preferredTtsVoice?.id === pronunciation.voice!.id || !language?.preferredTtsVoice && pronunciation.voice!.isDefault)
+        if (this.preferredVoice?.id === pronunciation.voice!.id || !this.preferredVoice && pronunciation.voice!.isDefault)
           return pronunciation;
       });
     }
   },
   methods: {
-    onTTSButton() {
+    onPlayTTSButtonClicked() {
       const audioElement = (this.$refs["ttsAudioElement"] as HTMLAudioElement);
       if (this.isPlaying) {
         audioElement.pause();
@@ -57,7 +66,8 @@ export default defineComponent({
         audioElement.play();
         this.isPlaying = true;
       }
-    }
+    },
+
   },
   setup() {
     return {
@@ -94,10 +104,11 @@ export default defineComponent({
   color: var(--on-secondary-color)
 }
 
-.audio-button svg {
+.audio-button:deep(svg) {
   width: 20px;
   height: 20px;
 }
+
 
 .pronunciations-button {
   display: grid;

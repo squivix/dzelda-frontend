@@ -72,15 +72,16 @@ header {
 .title {
   display: flex;
   align-items: center;
-  column-gap: 1rem;
+  column-gap: 0.5rem;
 }
 
 .title h1 {
   color: var(--on-primary-color);
-  font-family: Verdana, sans-serif;
+  font-family:"Varela Round", Verdana, sans-serif;
   font-weight: bold;
   font-size: 2rem;
   padding: 1rem 0;
+
 }
 
 .title:hover {

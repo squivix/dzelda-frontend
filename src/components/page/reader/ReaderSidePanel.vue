@@ -1,13 +1,13 @@
 <template>
   <div class="side-panel" @mousedown.stop>
-    <VocabPanel v-if="selectedVocab&&!selectedOverLappingPhrasesTokens"
+    <VocabPanel v-if="selectedVocab"
                 :vocab="selectedVocab"
                 @mousedown.stop
                 :onVocabRefetched="onVocabRefetched"
                 @onVocabUpdated="(vocab, updatedData)=>$emit('onVocabUpdated',vocab, updatedData)"
                 @onVocabDeleted="(vocab)=>$emit('onVocabDeleted',vocab)"
                 @onNewVocabCreated="(vocab)=>$emit('onNewVocabCreated', vocab)"/>
-    <OverlappingPhrasesPanel v-else
+    <OverlappingPhrasesPanel v-else-if="selectedOverLappingPhrasesTokens"
                              @mousedown.stop
                              :phrases="phrases"
                              :overLappingPhrasesTokens="selectedOverLappingPhrasesTokens!"

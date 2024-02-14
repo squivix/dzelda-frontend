@@ -23,12 +23,14 @@ export const useStore = defineStore("main", {
                 cacheKey,
                 clearCache = false,
                 expiryTimeInMs,
-                ignore401 = false
+                ignore401 = false,
+                ignore5XX = false
             }: {
                 clearCache?: boolean,
                 cacheKey?: string,
                 expiryTimeInMs?: number,
-                ignore401?: boolean
+                ignore401?: boolean,
+                ignore5XX?: boolean
             } = {}): typeof cacheKey extends undefined ? Promise<HttpResponse<T, E>> : Promise<{
                 ok: true,
                 cacheHit: true,
@@ -55,16 +57,17 @@ export const useStore = defineStore("main", {
                         throw error;
                     console.error(error);
                     const message = "We're having trouble reaching our servers, please come back later";
-                    const messageBarStore = useMessageBarStore();
-                    messageBarStore.addMessage({text: message, type: MessageType.ERROR});
-                    await this.router.push({name: "server-side-error"});
+                    if (!ignore5XX) {
+                        const messageBarStore = useMessageBarStore();
+                        messageBarStore.addMessage({text: message, type: MessageType.ERROR});
+                        await this.router.push({name: "server-side-error"});
+                    }
                     throw new Error(message as string);
                 }
-                if (response.status >= 500)
+                if (response.status >= 500 && !ignore5XX)
                     await this.router.push({name: "server-side-error"});
                 else if (response.status == 401 && !ignore401) {
-                    userStore.authToken = null;
-                    this.router.push({name: "home"});
+                    await userStore.signOut();
                 }
                 if (cacheKey !== undefined)
                     this.cache[cacheKey] = {timeCached: new Date(), data: response.data, expiryTimeInMs: expiryTimeInMs ?? DEFAULT_CACHE_TIME};
