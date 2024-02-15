@@ -8,6 +8,7 @@
           <div class="item-content">
             <BaseImage :image-url="imageUrl"
                        :fall-back-url="icons.bookOpen"
+                       class="lesson-image"
                        alt-text="lesson image"/>
             <div class="title-stats">
               <div class="title-subtitle">
@@ -158,6 +159,9 @@ article {
   row-gap: 1.5rem;
   align-items: flex-start;
   height: 100%;
+}
+.lesson-image{
+  align-self: center;
 }
 
 .vocabs-indicator {

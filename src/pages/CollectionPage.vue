@@ -3,27 +3,30 @@
     <template v-slot:content>
       <div class="page-wrapper">
         <div class="side-pane">
-
           <BaseImage class="collection-image" :image-url="collection.image" :fall-back-url="icons.books" alt-text="collection image"/>
-          <h3>Created by</h3>
-          <p>{{ collection.addedBy }}</p>
-          <h3>Description</h3>
-          <textarea class="description" readonly>{{ collection.description }}</textarea>
-          <div class="buttons-div">
-            <button class="bookmark-button inv-button" @click="toggleIsBookmarked">
-              <inline-svg :src="icons.bookmark"
-                          :class="`${collection.isBookmarked?'bookmark-filled':'bookmark-hollow'}`"/>
-            </button>
-            <router-link :to="{ name: 'edit-collection' , params:{collectionId:collection.id}}" v-if="collection.addedBy==userStore.userAccount?.username">
-              <inline-svg :src="icons.pen"/>
-            </router-link>
+          <div class="side-pane-bottom">
+            <div class="created-by-buttons-row">
+              <h3>Created by</h3>
+              <div class="buttons-div">
+                <button class="bookmark-button inv-button" @click="toggleIsBookmarked">
+                  <inline-svg :src="icons.bookmark"
+                              :class="`${collection.isBookmarked?'bookmark-filled':'bookmark-hollow'}`"/>
+                </button>
+                <router-link :to="{ name: 'edit-collection' , params:{collectionId:collection.id}}" v-if="collection.addedBy==userStore.userAccount?.username">
+                  <inline-svg :src="icons.pen"/>
+                </router-link>
+              </div>
+            </div>
+            <p>{{ collection.addedBy }}</p>
+            <h3>Description</h3>
+            <textarea class="description" readonly>{{ collection.description }}</textarea>
           </div>
         </div>
         <div class="lessons-pane">
           <h2>Lessons</h2>
           <ol class="lesson-list" v-if="collection.lessons.length>0">
             <li v-for="lesson in collection.lessons" :key="lesson.id" class="lesson">
-              <LessonListItem :lesson="{...lesson, collection}" :showCollection="false">
+              <LessonListItem class="lesson-list-item" :lesson="{...lesson, collection}" :showCollection="false">
               </LessonListItem>
             </li>
           </ol>
@@ -98,19 +101,26 @@ export default {
 
 .page-wrapper {
   display: flex;
-  column-gap: 1rem;
+  column-gap: min(3vw, 2rem);
   justify-content: space-between;
 }
 
 .side-pane {
-  flex-basis: auto;
   display: flex;
   flex-direction: column;
-  row-gap: 0.5rem;
+  row-gap: 1.5rem;
 }
 
 .collection-image {
   align-self: center;
+}
+
+.side-pane-bottom {
+  flex-basis: auto;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+
 }
 
 .lessons-pane {
@@ -126,6 +136,11 @@ export default {
   resize: none;
   border: 1px solid lightgray;
 
+}
+
+.created-by-buttons-row {
+  display: flex;
+  justify-content: space-between;
 }
 
 .buttons-div {
@@ -172,9 +187,40 @@ h3 {
   row-gap: 1rem;
 }
 
+.lesson-list-item:deep(.image) {
+  width: 19vw;
+  height: 19vw;
+  max-width: 200px;
+  max-height: 200px;
+  min-width: 140px;
+  min-height: 140px;
+}
+
 @media screen and (max-width: 750px) {
   .page-wrapper {
     flex-direction: column;
+    row-gap: 1rem;
+  }
+
+  .side-pane {
+    flex-direction: row;
+    column-gap: 1.5rem;
+  }
+
+  .side-pane-bottom {
+    flex-grow: 1;
+  }
+
+  .lesson-list-item:deep(.image) {
+    width: 175px;
+    height: 175px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .side-pane {
+    flex-direction: column;
+    row-gap: 1rem;
   }
 }
 </style>

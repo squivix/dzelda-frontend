@@ -52,8 +52,8 @@ export default {
 }
 
 .fallback-image svg {
-  width: 120px;
-  height: 120px;
+  width: 60%;
+  height: 60%;
   color: var(--on-primary-color);
 }
 
