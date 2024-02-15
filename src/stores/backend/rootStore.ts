@@ -68,6 +68,10 @@ export const useStore = defineStore("main", {
                     await this.router.push({name: "server-side-error"});
                 else if (response.status == 401 && !ignore401)
                     userStore.clearUserData();
+                else if (response.status == 429) {
+                    const messageBarStore = useMessageBarStore();
+                    messageBarStore.addMessage({text: "Too many requests, please wait 1 minute and refresh page", type: MessageType.ERROR});
+                }
                 if (cacheKey !== undefined)
                     this.cache[cacheKey] = {timeCached: new Date(), data: response.data, expiryTimeInMs: expiryTimeInMs ?? DEFAULT_CACHE_TIME};
                 return response;

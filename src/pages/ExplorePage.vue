@@ -82,19 +82,19 @@ h2 {
 .tab-labels {
   display: flex;
   flex-direction: row;
-  margin-bottom: 1rem;
 }
 
-.tab-labels .tab-label {
+.tab-label {
   font-size: 1.2rem;
-  padding: 1rem 1rem;
-}
-
-.tab-labels .tab-label:hover {
   cursor: pointer;
 }
 
-.tab-labels .tab-label.current-tab {
+.tab-label > a {
+  display: inline-block;
+  padding: 1rem;
+}
+
+.current-tab > a {
   border-bottom: 3px solid var(--secondary-color);
 }
 </style>

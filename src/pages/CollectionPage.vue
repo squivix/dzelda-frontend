@@ -141,6 +141,7 @@ export default {
 .created-by-buttons-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .buttons-div {
