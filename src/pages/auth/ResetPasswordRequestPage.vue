@@ -18,7 +18,6 @@
       </form>
       <p class="submit-message" v-else>If the account exists we will send you an email with the reset
         link</p>
-
     </template>
   </BaseCard>
 </template>

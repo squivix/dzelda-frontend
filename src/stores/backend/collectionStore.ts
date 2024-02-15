@@ -1,12 +1,11 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {cleanUndefined} from "@/utils.js";
-import {LanguageLevelSchema} from "dzelda-common";
 import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
-export const useCourseStore = defineStore("course", {
+export const useCollectionStore = defineStore("collection", {
     actions: {
-        async fetchCourses(queryParams: {
+        async fetchCollections(queryParams: {
             languageCode?: string,
             addedBy?: string,
             level?: string[],
@@ -19,11 +18,11 @@ export const useCourseStore = defineStore("course", {
             secure?: boolean
         } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.courses.getCourses(queryParams, {secure: secure}));
+            const response = await store.fetchCustom((api) => api.collections.getCollections(queryParams, {secure: secure}));
 
             return response.data;
         },
-        async fetchUserBookmarkedCourses(queryParams: {
+        async fetchUserBookmarkedCollections(queryParams: {
             languageCode?: string,
             searchQuery?: string,
             addedBy?: string,
@@ -32,11 +31,11 @@ export const useCourseStore = defineStore("course", {
             page?: number
         } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.getUsersMeCoursesBookmarked(queryParams));
+            const response = await store.fetchCustom((api) => api.users.getUsersMeCollectionsBookmarked(queryParams));
 
             return response.data;
         },
-        async createCourse(body: {
+        async createCollection(body: {
             languageCode: string,
             title: string,
             description: string,
@@ -44,25 +43,25 @@ export const useCourseStore = defineStore("course", {
         }) {
             useMessageBarStore().clearMessages();
             const store = useStore();
-            return await store.fetchCustom((api) => api.courses.postCourses(cleanUndefined({
+            return await store.fetchCustom((api) => api.collections.postCollections(cleanUndefined({
                 languageCode: body.languageCode,
                 title: body.title,
                 description: body.description,
                 image: body.image as string | undefined,
-            }))) as Awaited<ReturnType<typeof store.apiClient.courses.postCourses>>;
+            }))) as Awaited<ReturnType<typeof store.apiClient.collections.postCollections>>;
         },
-        async fetchCourse(pathParams: {
-            courseId: number
+        async fetchCollection(pathParams: {
+            collectionId: number
         }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.courses.getCoursesCourseId(pathParams.courseId)) as Awaited<ReturnType<typeof store.apiClient.courses.getCoursesCourseId>>;
+            const response = await store.fetchCustom((api) => api.collections.getCollectionsCollectionId(pathParams.collectionId)) as Awaited<ReturnType<typeof store.apiClient.collections.getCollectionsCollectionId>>;
 
             if (response.status == 404)
                 await this.router.push({name: "not-found"});
             return response.data;
         },
-        async updateCourse(pathParams: {
-            courseId: number
+        async updateCollection(pathParams: {
+            collectionId: number
         }, body: {
             title: string,
             description: string,
@@ -71,7 +70,7 @@ export const useCourseStore = defineStore("course", {
         }) {
             useMessageBarStore().clearMessages();
             const store = useStore();
-            return await store.fetchCustom((api) => api.courses.putCoursesCourseId(pathParams.courseId,
+            return await store.fetchCustom((api) => api.collections.putCollectionsCollectionId(pathParams.collectionId,
                 cleanUndefined({
                     title: body.title,
                     description: body.description,
@@ -79,26 +78,26 @@ export const useCourseStore = defineStore("course", {
                     image: body.image
                 })));
         },
-        async addCourseToUserBookmarks(body: {
-            courseId: number
+        async addCollectionToUserBookmarks(body: {
+            collectionId: number
         }) {
             useMessageBarStore().clearMessages();
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.postUsersMeCoursesBookmarked({courseId: body.courseId}));
+            const response = await store.fetchCustom((api) => api.users.postUsersMeCollectionsBookmarked({collectionId: body.collectionId}));
             return response.data;
         },
-        async removeCourseFromUserBookmarks(pathParams: {
-            courseId: number
+        async removeCollectionFromUserBookmarks(pathParams: {
+            collectionId: number
         }) {
             useMessageBarStore().clearMessages();
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.deleteUsersMeCoursesBookmarkedCourseId(pathParams.courseId));
+            const response = await store.fetchCustom((api) => api.users.deleteUsersMeCollectionsBookmarkedCollectionId(pathParams.collectionId));
             return response.data;
         },
-        async deleteCourse(pathParams: { courseId: number }) {
+        async deleteCollection(pathParams: { collectionId: number }) {
             useMessageBarStore().clearMessages();
             const store = useStore();
-            await store.fetchCustom((api) => api.courses.deleteCoursesCourseId(pathParams.courseId));
+            await store.fetchCustom((api) => api.collections.deleteCollectionsCollectionId(pathParams.collectionId));
         }
     }
 });

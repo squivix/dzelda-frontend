@@ -143,7 +143,7 @@ h1 {
 }
 
 .title h1 {
-  font-family: "Varela Round", Verdana, sans-serif;
+  font-family: Verdana, sans-serif;
 }
 
 .right-side-div {

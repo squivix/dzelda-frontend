@@ -7,22 +7,22 @@
         <inline-svg :src="icons.filter"/>
       </button>
     </div>
-    <CourseFilters :is-shown="isFiltersShown"
+    <CollectionFilters :is-shown="isFiltersShown"
                    @on-filters-cleared="() => isFiltersShown=false"
                    @on-filters-applied="() => isFiltersShown=false"/>
 
-    <EmptyScreen v-if="!courses||courses.length==0" :has-filters="hasFilters">
+    <EmptyScreen v-if="!collections||collections.length==0" :has-filters="hasFilters">
       <template v-slot:no-filters>
         <div class="empty-screen">
           <slot name="empty-screen">
-            <p>No courses found</p>
+            <p>No collections found</p>
           </slot>
         </div>
       </template>
       <template v-slot:with-filters>
         <div class="empty-screen">
           <inline-svg :src="icons.search" class="empty-icon"/>
-          <p>No courses match your query</p>
+          <p>No collections match your query</p>
 
           <button @click="clearFilters" class="clear-filters-button inv-button link">
             <inline-svg :src="icons.removeFilter"/>
@@ -32,9 +32,9 @@
       </template>
     </EmptyScreen>
 
-    <ol class="course-grid" v-else>
-      <li v-for="course in courses" :key="course.id">
-        <CourseCard :course="course"/>
+    <ol class="collection-grid" v-else>
+      <li v-for="collection in collections" :key="collection.id">
+        <CollectionCard :collection="collection"/>
       </li>
     </ol>
 
@@ -43,7 +43,7 @@
         :page-count="pageCount"
         :page="page"
         :page-size="pageSize"
-        :per-page-select-label="`Courses Per Page`">
+        :per-page-select-label="`Collections Per Page`">
     </PaginationControls>
   </div>
 </template>
@@ -54,20 +54,15 @@ import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import SearchBar from "@/components/ui/SearchBar.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
+import CollectionFilters from "@/components/shared/filters/CollectionFilters.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
-import {CourseSchema} from "dzelda-common";
-import CourseCard from "@/components/shared/content/CourseCard.vue";
+import {CollectionSchema} from "dzelda-common";
+import CollectionCard from "@/components/shared/content/CollectionCard.vue";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
 
 export default defineComponent({
-  name: "CourseList",
-  components: {PaginationControls, CourseCard, EmptyScreen, CourseFilters, InlineSvg, SearchBar, LoadingScreen},
-  data() {
-    return {
-      isFiltersShown: false,
-    };
-  },
+  name: "CollectionList",
+  components: {PaginationControls, CollectionCard, EmptyScreen, CollectionFilters, InlineSvg, SearchBar, LoadingScreen},
   props: {
     isLoading: {type: Boolean, required: true},
     pageCount: {type: Number, required: true},
@@ -76,7 +71,12 @@ export default defineComponent({
     searchQuery: String,
     addedBy: String,
     level: Array as PropType<string[]>,
-    courses: Object as PropType<CourseSchema[] | null>
+    collections: Object as PropType<CollectionSchema[] | null>
+  },
+  data() {
+    return {
+      isFiltersShown: false,
+    };
   },
   computed: {
     hasFilters() {
@@ -122,7 +122,7 @@ export default defineComponent({
   cursor: pointer;
 }
 
-.course-grid {
+.collection-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-row-gap: 1rem;

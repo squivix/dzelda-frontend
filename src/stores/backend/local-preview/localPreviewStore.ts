@@ -53,7 +53,7 @@ export type LessonRow = {
     isPublic: boolean,
     level: LanguageLevelSchema,
     learnersCount: number
-    course: null,
+    collection: null,
     addedOn: string,
     audio: string,
     image: string,

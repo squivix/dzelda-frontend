@@ -1,38 +1,38 @@
 <template>
-  <BaseCard title="Edit Course" class="edit-course-base-card main-page-base-card">
+  <BaseCard title="Update Collection" class="update-collection-base-card main-page-base-card">
     <template v-slot:content>
-      <LoadingScreen v-if="isLoading || !course"/>
-      <form v-else class="edit-course-form" @submit.prevent="submitEditCourse">
+      <LoadingScreen v-if="isLoading || !collection"/>
+      <form v-else class="update-collection-form" @submit.prevent="submitUpdateCollection">
         <div class="side-inputs">
           <div class="form-row">
-            <ImageUploadInput id="course-image-input" :oldImagePath="course.image" name="course image"
+            <ImageUploadInput id="collection-image-input" :oldImagePath="collection.image" name="collection image"
                               :fallback="icons.books" v-model="image"
                               :maxFileSizeInBytes="500_000"/>
             <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
           </div>
           <div class="form-row ">
-            <SubmitButton type="button" @click="onDeleteCourseClicked" class="delete-course-button danger-button big-button capsule-button">Delete course</SubmitButton>
+            <SubmitButton type="button" @click="onDeleteCollectionClicked" class="danger-button big-button capsule-button">Delete Collection</SubmitButton>
           </div>
         </div>
 
         <div class="main-inputs">
           <div class="form-row">
-            <label for="course-title">Title</label>
-            <input id="course-title" type="text" maxlength="255" placeholder="Course Title" v-model="title" required>
+            <label for="collection-title">Title</label>
+            <input id="collection-title" type="text" maxlength="255" placeholder="Collection Title" v-model="title" required>
             <p v-if="errorFields.title" class="error-message">{{ errorFields.title }}</p>
           </div>
           <div class="form-row">
-            <label for="course-description">Description</label>
-            <textarea id="course-description" maxlength="500" placeholder="Course Description"
+            <label for="collection-description">Description</label>
+            <textarea id="collection-description" maxlength="500" placeholder="Collection Description"
                       v-model="description"></textarea>
             <p v-if="errorFields.description" class="error-message">{{ errorFields.description }}</p>
           </div>
           <div class="form-row">
             <label for="lesson-table">Lessons</label>
 
-            <p v-if="lessons?.length==0">No lessons in course</p>
+            <p v-if="lessons?.length==0">No lessons in collection</p>
             <LessonOrderTable v-else v-model="lessons"/>
-            <router-link :to="{name:'add-lesson', query:{courseId:course.id}}" class="inv-link add-lesson-button">
+            <router-link :to="{name:'add-lesson', query:{collectionId:collection.id}}" class="inv-link add-lesson-button">
               <inline-svg :src="icons.plusRound" class="empty-icon"/>
               Add lesson
             </router-link>
@@ -45,10 +45,10 @@
           </SubmitButton>
         </div>
       </form>
-      <ConfirmDialog :isShown="isDeleteCourseConfirmShown" @onNoClicked="isDeleteCourseConfirmShown=false" @onYesClicked="deleteCourse">
-        <h3>Are you sure you want to delete this course?</h3>
+      <ConfirmDialog :isShown="isDeleteCollectionConfirmShown" @onNoClicked="isDeleteCollectionConfirmShown=false" @onYesClicked="deleteCollection">
+        <h3>Are you sure you want to delete this collection?</h3>
         <br>
-        (This action cannot be undone. All lessons will be detached from course)
+        (This action cannot be undone. All lessons will be detached from collection)
       </ConfirmDialog>
     </template>
   </BaseCard>
@@ -57,13 +57,13 @@
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {VueDraggableNext} from "vue-draggable-next";
-import {useCourseStore} from "@/stores/backend/courseStore.js";
-import {CourseSchema, LessonSchema} from "dzelda-common";
+import {useCollectionStore} from "@/stores/backend/collectionStore.js";
+import {CollectionSchema, LessonSchema} from "dzelda-common";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
-import LessonOrderTable from "@/components/page/edit-course/LessonOrderTable.vue";
+import LessonOrderTable from "@/components/page/edit-collection/LessonOrderTable.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import {PropType} from "vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
@@ -73,7 +73,7 @@ import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 import {useUserStore} from "@/stores/backend/userStore.js";
 
 export default {
-  name: "CourseEditPage",
+  name: "UpdateCollectionPage",
   components: {
     ConfirmDialog,
     LoadingScreen,
@@ -81,11 +81,11 @@ export default {
     ImageUploadInput, InlineSvg, BaseCard, draggable: VueDraggableNext,
   },
   props: {
-    pathParams: {type: Object as PropType<{ learningLanguage: string, courseId: number }>, required: true}
+    pathParams: {type: Object as PropType<{ learningLanguage: string, collectionId: number }>, required: true}
   },
   data() {
     return {
-      course: null as CourseSchema | null,
+      collection: null as CollectionSchema | null,
       title: undefined as string | undefined,
       description: undefined as string | undefined,
       lessons: undefined as LessonSchema[] | undefined,
@@ -93,24 +93,24 @@ export default {
       errorFields: {title: "", description: "", image: ""},
       isSubmitting: false,
       isLoading: false,
-      isDeleteCourseConfirmShown: false
+      isDeleteCollectionConfirmShown: false
     };
   },
   methods: {
-    async submitEditCourse() {
+    async submitUpdateCollection() {
       this.isSubmitting = true;
       let imageUrl;
       if (this.image)
         imageUrl = await this.store.uploadFile({
-          fileField: "courseImage",
+          fileField: "collectionImage",
           fileExtension: ".jpg",
           file: new File([this.image], "image.jpg"),
         });
       else
         imageUrl = this.image;
 
-      const response = await this.courseStore.updateCourse(
-          {courseId: this.pathParams.courseId},
+      const response = await this.collectionStore.updateCollection(
+          {collectionId: this.pathParams.collectionId},
           {
             title: this.title!,
             description: this.description!,
@@ -120,45 +120,42 @@ export default {
       );
       this.isSubmitting = false;
       if (response.ok)
-        this.$router.push({name: "course", ...this.pathParams});
+        this.$router.push({name: "collection", ...this.pathParams});
       else {
         if ("fields" in response.error)
           this.errorFields = response.error.fields as { title: string, description: string, image: string };
       }
     },
-    async fetchCourse() {
-      return await this.courseStore.fetchCourse({courseId: this.pathParams.courseId});
+    onDeleteCollectionClicked() {
+      this.isDeleteCollectionConfirmShown = true;
     },
-    onDeleteCourseClicked() {
-      this.isDeleteCourseConfirmShown = true;
-    },
-    async deleteCourse() {
-      await this.courseStore.deleteCourse({courseId: this.pathParams.courseId});
-      this.isDeleteCourseConfirmShown = false;
-      this.messageBarStore.addMessage({type: MessageType.INFO, text: "Course deleted"});
+    async deleteCollection() {
+      await this.collectionStore.deleteCollection({collectionId: this.pathParams.collectionId});
+      this.isDeleteCollectionConfirmShown = false;
+      this.messageBarStore.addMessage({type: MessageType.INFO, text: "Collection deleted"});
       this.$router.push({name: "home"});
     }
   },
   async mounted() {
     this.isLoading = true;
-    const course = await this.fetchCourse();
+    const collection = await this.collectionStore.fetchCollection({collectionId: this.pathParams.collectionId});
     this.isLoading = false;
-    if (course.addedBy !== this.userStore?.userAccount?.username) {
-      this.messageBarStore.addMessage({type: MessageType.ERROR, text: "User is not authorized to edit course"});
+    if (collection.addedBy !== this.userStore?.userAccount?.username) {
+      this.messageBarStore.addMessage({type: MessageType.ERROR, text: "User is not authorized to edit collection"});
       this.$router.push({name: "home"});
     }
-    this.course = course;
+    this.collection = collection;
 
-    this.title = course.title;
-    this.description = course.description;
-    this.lessons = course.lessons;
+    this.title = collection.title;
+    this.description = collection.description;
+    this.lessons = collection.lessons;
   },
   setup() {
     return {
       icons, store: useStore(),
       userStore: useUserStore(),
       messageBarStore: useMessageBarStore(),
-      courseStore: useCourseStore()
+      collectionStore: useCollectionStore()
     };
   }
 };
@@ -166,7 +163,7 @@ export default {
 
 <style scoped>
 
-.edit-course-base-card {
+.update-collection-base-card {
   display: flex;
   flex-direction: column;
   row-gap: 1.25rem;
@@ -174,11 +171,11 @@ export default {
   align-items: stretch;
 }
 
-.edit-course-base-card:deep(header) {
+.update-collection-base-card:deep(header) {
   margin-bottom: 1rem;
 }
 
-.edit-course-form {
+.update-collection-form {
   display: flex;
   flex-direction: row;
   column-gap: 1rem;
@@ -202,7 +199,7 @@ input:not([type='checkbox']), select, textarea {
   align-self: flex-start;
 }
 
-#course-description {
+#collection-description {
   resize: none;
   height: 15vh;
 }
@@ -242,13 +239,8 @@ input:not([type='checkbox']), select, textarea {
   row-gap: 1rem;
 }
 
-.delete-course-button {
-
-}
-
-
 @media screen and (max-width: 750px) {
-  .edit-course-form {
+  .update-collection-form {
     flex-direction: column;
   }
 }

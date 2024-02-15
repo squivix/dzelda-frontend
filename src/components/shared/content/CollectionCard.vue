@@ -1,25 +1,25 @@
 <template>
   <router-link
-      :to="{name:'course', params:{courseId:course.id}}">
+      :to="{name:'collection', params:{collectionId:collection.id}}">
     <BaseCard>
       <template v-slot:all>
-        <article class="course-article">
-          <BaseImage :image-url="course.image" :fall-back-url="icons.books" alt-text="course image"/>
+        <article class="collection-article">
+          <BaseImage :image-url="collection.image" :fall-back-url="icons.books" alt-text="collection image"/>
 
           <div class="title-row">
-            <h4>{{ course.title }}</h4>
+            <h4>{{ collection.title }}</h4>
 
-            <BaseDropDown :id="`course-card-${course.id}`"
-                          group="course-cards"
+            <BaseDropDown :id="`collection-card-${collection.id}`"
+                          group="collection-cards"
                           :centered="false"
-                          :round="false" v-if="course.addedBy==userStore.userAccount?.username">
+                          :round="false" v-if="collection.addedBy==userStore.userAccount?.username">
               <template v-slot:button>
                 <inline-svg :src="icons.dotsStacked" class="more-button"/>
               </template>
               <template v-slot:menu>
                 <ol class="dropdown-list">
                   <li>
-                    <router-link :to="{ name: 'edit-course' , params:{courseId:course.id}}">
+                    <router-link :to="{ name: 'edit-collection' , params:{collectionId:collection.id}}">
                       <inline-svg :src="icons.pen"/>
                       <span>Edit</span>
                     </router-link>
@@ -39,21 +39,21 @@ import {useStore} from "@/stores/backend/rootStore.js";
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {PropType} from "vue";
-import {CourseSchema} from "dzelda-common";
+import {CollectionSchema} from "dzelda-common";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
 
 export default {
-  name: "CourseCard",
+  name: "CollectionCard",
   components: {InlineSvg, BaseCard, BaseImage, BaseDropDown},
   data() {
     return {};
   },
   props: {
-    course: {
-      type: Object as PropType<CourseSchema>,
+    collection: {
+      type: Object as PropType<CollectionSchema>,
       required: true,
     }
   },
@@ -74,7 +74,7 @@ export default {
   padding: 20px 2vw;
 }
 
-.course-article {
+.collection-article {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -89,12 +89,6 @@ export default {
   align-items: center;
   margin-bottom: 15px;
   margin-top: 10px;
-}
-
-.course-image {
-  /*border: 3px solid var(--primary-color-dark);*/
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border-radius: 5px;
 }
 
 a:hover {

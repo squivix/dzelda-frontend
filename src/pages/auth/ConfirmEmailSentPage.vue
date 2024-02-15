@@ -18,7 +18,7 @@ export default defineComponent({
   name: "ConfirmEmailSentPage",
   beforeRouteEnter() {
     const userStore = useUserStore();
-    if (userStore.userAccount!.isEmailConfirmed)
+    if (userStore.userAccount!.isEmailConfirmed && !userStore.userAccount!.isPendingEmailChange)
       return {name: "home"};
   },
 });

@@ -77,7 +77,7 @@ header {
 
 .title h1 {
   color: var(--on-primary-color);
-  font-family:"Varela Round", Verdana, sans-serif;
+  font-family: Verdana, sans-serif;
   font-weight: bold;
   font-size: 2rem;
   padding: 1rem 0;

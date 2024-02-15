@@ -1,31 +1,31 @@
 <template>
-  <BaseCard title="Edit Lesson" class="edit-lesson-base-card main-page-base-card">
+  <BaseCard title="Add Lesson" class="add-lesson-base-card main-page-base-card">
     <template v-slot:content>
-      <LoadingScreen v-if="!lesson"/>
-      <form class="edit-lesson-form" @submit.prevent="updateLesson" v-else>
+      <form class="add-lesson-form" @submit.prevent="addLesson">
         <div class="side-inputs">
           <div class="form-row">
             <label>Image</label>
-            <ImageUploadInput id="lesson-image-input" fileTitle="lesson image" :oldImageUrl="lesson.image" :fallback="icons.bookOpen"
+            <ImageUploadInput id="lesson-image-input" fileTitle="lesson image" :fallback="icons.bookOpen"
                               v-model="image"
                               :maxFileSizeInBytes="500_000"/>
             <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
           </div>
           <div class="form-row">
             <label>Audio</label>
-            <AudioUploadInput id="lesson-audio-input" fileTitle="lesson audio" :oldAudioUrl="lesson.audio" v-model="audio"
+            <AudioUploadInput id="lesson-audio-input" fileTitle="lesson audio" v-model="audio"
                               :maxFileSizeInBytes="100_000_000"/>
             <p v-if="errorFields.audio" class="error-message">{{ errorFields.audio }}</p>
           </div>
           <div class="form-row">
-            <label for="lesson-course">Course</label>
-            <select required id="lesson-course" v-model="selectedCourse">
-              <option :value="undefined" selected>None</option>
-              <option v-for="course in editableCourses" :key="course.id" :value="course.id">{{ course.title }}</option>
-              <option>New Course</option>
+            <label for="lesson-collection">Collection</label>
+            <select required id="lesson-collection" v-model="selectedCollection">
+              <option :value="null" selected>None</option>
+              <option v-for="collection in editableCollections" :key="collection.id" :value="collection.id">{{ collection.title }}</option>
+              <option value="new-collection">New Collection</option>
             </select>
-            <p v-if="errorFields.courseId" class="error-message">{{ errorFields.courseId }}</p>
+            <p v-if="errorFields.collectionId" class="error-message">{{ errorFields.collectionId }}</p>
           </div>
+
           <div class="form-row">
             <label>Level</label>
             <select v-model="level">
@@ -60,81 +60,72 @@
           </div>
         </div>
       </form>
-      <BaseDialog :isOpen="isCreateCourseDialogShown" @onDismissed="onCreateCourseDialogDismissed">
-        <h2>Add Course</h2>
-        <CourseCreateForm @onCourseCreated="onCourseCreated"/>
+      <BaseDialog :isOpen="isCreateCollectionDialogShown" @onDismissed="onCreateCollectionDialogDismissed">
+        <h2>Create Collection</h2>
+        <CreateCollectionForm @onCollectionCreated="onCollectionCreated"/>
       </BaseDialog>
     </template>
   </BaseCard>
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
-import AudioUploadInput from "@/components/shared/AudioUploadInput.vue";
-import SubmitButton from "@/components/ui/SubmitButton.vue";
 import BaseCard from "@/components/ui/BaseCard.vue";
-import CourseCreateForm from "@/components/shared/add-course/CourseCreateForm.vue";
-import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
-import BaseDialog from "@/components/ui/BaseDialog.vue";
-import {CourseSchema, LanguageLevelSchema, LessonSchema} from "dzelda-common";
-import {toSentenceCase} from "@/utils.js";
-import path from "path";
-import {icons} from "@/icons.js";
-import {LANGUAGE_LEVELS} from "@/constants.js";
-import {useStore} from "@/stores/backend/rootStore.js";
-import {useCourseStore} from "@/stores/backend/courseStore.js";
+import {useCollectionStore} from "@/stores/backend/collectionStore.js";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
+import {useStore} from "@/stores/backend/rootStore.js";
+import {CollectionSchema, LanguageLevelSchema} from "dzelda-common";
 import {useUserStore} from "@/stores/backend/userStore.js";
-import LoadingScreen from "@/components/shared/LoadingScreen.vue";
+import {icons} from "@/icons.js";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
+import {PropType} from "vue";
+import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
+import AudioUploadInput from "@/components/shared/AudioUploadInput.vue";
+import path from "path";
+import {LANGUAGE_LEVELS} from "@/constants.js";
+import {toSentenceCase} from "../utils.js";
+import BaseDialog from "@/components/ui/BaseDialog.vue";
+import CreateCollectionForm from "@/components/shared/create-collection/CreateCollectionForm.vue";
 
-export default defineComponent({
-  name: "LessonEditPage",
-  components: {LoadingScreen, BaseDialog, ImageUploadInput, CourseCreateForm, BaseCard, SubmitButton, AudioUploadInput},
+export default {
+  name: "CreateLessonPage",
+  components: {CreateCollectionForm, BaseDialog, AudioUploadInput, ImageUploadInput, SubmitButton, BaseCard},
   props: {
-    pathParams: {type: Object as PropType<{ learningLanguage: string, lessonId: number }>, required: true},
+    pathParams: {type: Object as PropType<{ learningLanguage: string }>, required: true},
+    queryParams: {type: Object as PropType<{ collectionId?: number }>, required: true}
   },
   data() {
     return {
-      lesson: null as LessonSchema | null,
-      editableCourses: null as CourseSchema[] | null,
-      selectedCourse: null as number  | null,
+      editableCollections: null as CollectionSchema[] | null,
+      selectedCollection: null as number | null,
       title: "",
       text: "",
-      level: undefined as LanguageLevelSchema | undefined,
+      level: LanguageLevelSchema.ADVANCED1,
       isPublic: true,
       image: undefined as Blob | undefined,
       audio: undefined as File | undefined,
       isSubmitting: false,
       submittingMessage: undefined as string | undefined,
-      errorFields: {title: "", text: "", image: "", audio: "", courseId: ""},
-      isCreateCourseDialogShown: false,
+      errorFields: {title: "", text: "", image: "", audio: "", collectionId: ""},
+      isCreateCollectionDialogShown: false,
     };
   },
   watch: {
-    selectedCourse(newVal) {
-      if (newVal === "New Course")
-        this.isCreateCourseDialogShown = true;
+    selectedCollection(newVal: string) {
+      if (newVal === "new-collection")
+        this.isCreateCollectionDialogShown = true;
     },
   },
   methods: {
     toSentenceCase,
-    async fetchLesson() {
-      this.lesson = await this.lessonStore.fetchLesson({lessonId: this.pathParams.lessonId});
-      this.title = this.lesson.title;
-      this.text = this.lesson.text;
-      this.level = this.lesson.level;
-      this.isPublic = this.lesson.isPublic;
-      this.selectedCourse = this.lesson.course?.id ?? undefined;
-    },
-    async fetchEditableCourses() {
-      const response = await this.courseStore.fetchCourses({
+    async fetchEditableCollections() {
+      const response = await this.collectionStore.fetchCollections({
         languageCode: this.pathParams.learningLanguage,
         addedBy: "me",
       }, {secure: true});
-      this.editableCourses = response.data;
+      this.editableCollections = response.data;
     },
-    async updateLesson() {
-      this.errorFields = {title: "", text: "", image: "", audio: "", courseId: ""};
+    async addLesson() {
+      this.errorFields = {title: "", text: "", image: "", audio: "", collectionId: ""};
       this.isSubmitting = true;
       let imageUrl, audioUrl;
       if (this.image) {
@@ -164,9 +155,10 @@ export default defineComponent({
       } else
         audioUrl = this.audio;
 
-      this.submittingMessage = "Updating lesson";
-      const response = await this.lessonStore.updateLesson({lessonId: this.lesson!.id}, {
-        courseId: this.selectedCourse,
+      this.submittingMessage = "Creating lesson";
+      const response = await this.lessonStore.createLesson({
+        collectionId: this.selectedCollection,
+        languageCode: this.pathParams.learningLanguage,
         title: this.title,
         text: this.text,
         level: this.level,
@@ -182,27 +174,28 @@ export default defineComponent({
           params: {lessonId: lesson.id}
         });
       } else {
-        this.submittingMessage = undefined;
         if ("fields" in response.error)
           this.errorFields = response.error.fields as {
             title: string, text: string,
-            courseId: string, image: string, audio: string,
+            collectionId: string, image: string, audio: string,
           };
       }
     },
-    onCourseCreated(newCourse: CourseSchema) {
-      this.isCreateCourseDialogShown = false;
-      this.editableCourses!.push(newCourse);
-      this.selectedCourse = newCourse.id;
+    onCollectionCreated(newCollection: CollectionSchema) {
+      this.isCreateCollectionDialogShown = false;
+      this.editableCollections!.push(newCollection);
+      this.selectedCollection = newCollection.id;
     },
-    onCreateCourseDialogDismissed() {
-      this.isCreateCourseDialogShown = false;
-      this.selectedCourse = null;
+    onCreateCollectionDialogDismissed() {
+      this.isCreateCollectionDialogShown = false;
+      this.selectedCollection = null;
     }
   },
   async mounted() {
-    await this.fetchLesson();
-    await this.fetchEditableCourses();
+    await this.fetchEditableCollections();
+    if (this.editableCollections!.some(collection => collection.id == this.queryParams.collectionId))
+      this.selectedCollection = this.queryParams.collectionId!;
+    this.$router.replace({query: {...this.queryParams, collectionId: undefined}});
   },
   setup() {
     return {
@@ -210,16 +203,18 @@ export default defineComponent({
       toSentenceCase,
       LANGUAGE_LEVELS,
       store: useStore(),
-      courseStore: useCourseStore(),
+      collectionStore: useCollectionStore(),
       lessonStore: useLessonStore(),
       userStore: useUserStore(),
     };
   }
-});
+};
+
+
 </script>
 
 <style scoped>
-.edit-lesson-base-card {
+.add-lesson-base-card {
   display: flex;
   flex-direction: column;
   row-gap: 1.25rem;
@@ -227,7 +222,7 @@ export default defineComponent({
   align-items: stretch;
 }
 
-.edit-lesson-base-card:deep(header) {
+.add-lesson-base-card:deep(header) {
   margin-bottom: 1rem;
 }
 
@@ -263,6 +258,7 @@ label {
 }
 
 input, select, textarea {
+
   font-size: 1rem;
 }
 
@@ -290,7 +286,7 @@ select {
 }
 
 @media screen and (max-width: 750px) {
-  .edit-lesson-form {
+  .add-lesson-form {
     flex-direction: column;
   }
 

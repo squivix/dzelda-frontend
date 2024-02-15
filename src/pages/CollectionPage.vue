@@ -1,33 +1,33 @@
 <template>
-  <BaseCard v-if="!loading && course" :title="course.title" class="course-base-card main-page-base-card">
+  <BaseCard v-if="!loading && collection" :title="collection.title" class="collection-base-card main-page-base-card">
     <template v-slot:content>
       <div class="page-wrapper">
         <div class="side-pane">
 
-          <BaseImage class="course-image" :image-url="course.image" :fall-back-url="icons.books" alt-text="course image"/>
+          <BaseImage class="collection-image" :image-url="collection.image" :fall-back-url="icons.books" alt-text="collection image"/>
           <h3>Created by</h3>
-          <p>{{ course.addedBy}}</p>
+          <p>{{ collection.addedBy }}</p>
           <h3>Description</h3>
-          <textarea class="description" readonly>{{ course.description }}</textarea>
+          <textarea class="description" readonly>{{ collection.description }}</textarea>
           <div class="buttons-div">
-            <button class="bookmark-button inv-button" @click="toggleCourseIsBookmarked">
+            <button class="bookmark-button inv-button" @click="toggleIsBookmarked">
               <inline-svg :src="icons.bookmark"
-                          :class="`${course.isBookmarked?'bookmark-filled':'bookmark-hollow'}`"/>
+                          :class="`${collection.isBookmarked?'bookmark-filled':'bookmark-hollow'}`"/>
             </button>
-            <router-link :to="{ name: 'edit-course' , params:{courseId:course.id}}" v-if="course.addedBy==userStore.userAccount?.username">
+            <router-link :to="{ name: 'edit-collection' , params:{collectionId:collection.id}}" v-if="collection.addedBy==userStore.userAccount?.username">
               <inline-svg :src="icons.pen"/>
             </router-link>
           </div>
         </div>
         <div class="lessons-pane">
           <h2>Lessons</h2>
-          <ol class="lesson-list" v-if="course.lessons.length>0">
-            <li v-for="lesson in course.lessons" :key="lesson.id" class="lesson">
-              <LessonListItem :lesson="{...lesson, course}" :show-course="false">
+          <ol class="lesson-list" v-if="collection.lessons.length>0">
+            <li v-for="lesson in collection.lessons" :key="lesson.id" class="lesson">
+              <LessonListItem :lesson="{...lesson, collection}" :showCollection="false">
               </LessonListItem>
             </li>
           </ol>
-          <EmptyScreen v-else message="No lessons in course"></EmptyScreen>
+          <EmptyScreen v-else message="No lessons in collection"></EmptyScreen>
         </div>
       </div>
     </template>
@@ -37,45 +37,49 @@
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import LessonListItem from "@/components/shared/content/LessonListItem.vue";
-import {useCourseStore} from "@/stores/backend/courseStore.js";
+import {useCollectionStore} from "@/stores/backend/collectionStore.js";
 import {useLessonStore} from "@/stores/backend/lessonStore.js";
-import {CourseSchema} from "dzelda-common";
+import {CollectionSchema} from "dzelda-common";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
+import {PropType} from "vue";
 
 export default {
-  name: "CoursePage",
+  name: "CollectionPage",
   components: {BaseImage, EmptyScreen, InlineSvg, LessonListItem, BaseCard},
+  props: {
+    pathParams: {type: Object as PropType<{ collectionId: number }>, required: true}
+  },
   data() {
     return {
-      course: null as CourseSchema | null,
+      collection: null as CollectionSchema | null,
       loading: true,
     };
   },
   async mounted() {
     this.loading = true;
-    await this.fetchCourse();
+    await this.fetchCollection();
     this.loading = false;
   },
   methods: {
-    async fetchCourse() {
-      this.course = await this.courseStore.fetchCourse({courseId: Number(this.$route.params.courseId as string)});
+    async fetchCollection() {
+      this.collection = await this.collectionStore.fetchCollection({collectionId: this.pathParams.collectionId});
     },
-    async toggleCourseIsBookmarked() {
-      if (this.course!.isBookmarked)
-        await this.courseStore.removeCourseFromUserBookmarks({courseId: this.course!.id});
+    async toggleIsBookmarked() {
+      if (this.collection!.isBookmarked)
+        await this.collectionStore.removeCollectionFromUserBookmarks({collectionId: this.collection!.id});
       else
-        await this.courseStore.addCourseToUserBookmarks({courseId: this.course!.id});
-      this.course!.isBookmarked = !this.course!.isBookmarked;
+        await this.collectionStore.addCollectionToUserBookmarks({collectionId: this.collection!.id});
+      this.collection!.isBookmarked = !this.collection!.isBookmarked;
     },
   },
   setup() {
     return {
       icons,
-      courseStore: useCourseStore(),
+      collectionStore: useCollectionStore(),
       lessonStore: useLessonStore(),
       userStore: useUserStore(),
     };
@@ -84,7 +88,7 @@ export default {
 </script>
 
 <style scoped>
-.course-base-card {
+.collection-base-card {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
@@ -105,7 +109,7 @@ export default {
   row-gap: 0.5rem;
 }
 
-.course-image {
+.collection-image {
   align-self: center;
 }
 

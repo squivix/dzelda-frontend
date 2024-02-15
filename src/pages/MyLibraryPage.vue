@@ -3,10 +3,10 @@
     <template v-slot:content>
       <ul class="tab-labels">
         <li :class="['tab-label', { 'current-tab': currentTab === MyLibraryPageTab.BOOKMARKS }]">
-          <router-link :to="{name:'my-library-bookmarked-courses'}" class="inv-link">Bookmarks</router-link>
+          <router-link :to="{name:'my-library-bookmarked-tab'}" class="inv-link">Bookmarks</router-link>
         </li>
         <li :class="['tab-label', { 'current-tab': currentTab === MyLibraryPageTab.IMPORTED }]">
-          <router-link :to="{name:'my-library-imported-courses'}" class="inv-link">Imported</router-link>
+          <router-link :to="{name:'my-library-imported-tab'}" class="inv-link">Imported</router-link>
         </li>
         <li :class="['tab-label', { 'current-tab': currentTab === MyLibraryPageTab.HISTORY }]">
           <router-link :to="{name:'my-library-lesson-history'}" class="inv-link">History</router-link>
@@ -19,8 +19,7 @@
 
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
-import LessonListItem from "@/components/shared/content/LessonListItem.vue";
-import CourseCard from "@/components/shared/content/CourseCard.vue";
+
 import {defineComponent} from "vue";
 
 
@@ -32,12 +31,12 @@ enum MyLibraryPageTab {
 
 export default defineComponent({
   name: "MyLibraryPage",
-  components: {LessonListItem, CourseCard, BaseCard},
+  components: {BaseCard},
   computed: {
     currentTab() {
-      if (this.$route.name == "my-library-bookmarked-courses")
+      if (this.$route.name == "my-library-bookmarked-tab")
         return MyLibraryPageTab.BOOKMARKS;
-      else if (this.$route.name == "my-library-imported-courses")
+      else if (this.$route.name == "my-library-imported-tab")
         return MyLibraryPageTab.IMPORTED;
       else if (this.$route.name == "my-library-lesson-history")
         return MyLibraryPageTab.HISTORY;

@@ -2,10 +2,10 @@ import ExplorePage from "@/pages/ExplorePage.vue";
 import MyLibraryPage from "@/pages/MyLibraryPage.vue";
 import MyVocabPage from "@/pages/MyVocabPage.vue";
 import LessonReaderPage from "@/pages/LessonReaderPage.vue";
-import LessonAddPage from "@/pages/LessonAddPage.vue";
-import CourseAddPage from "@/pages/CourseAddPage.vue";
-import CoursePage from "@/pages/CoursePage.vue";
-import CourseEditPage from "@/pages/CourseEditPage.vue";
+import CreateLessonPage from "@/pages/CreateLessonPage.vue";
+import CreateCollectionPage from "@/pages/CreateCollectionPage.vue";
+import CollectionPage from "@/pages/CollectionPage.vue";
+import UpdateCollectionPage from "@/pages/UpdateCollectionPage.vue";
 import NewLanguagePage from "@/pages/user/NewLanguagePage.vue";
 import MyProfilePage from "@/pages/user/MyProfilePage.vue";
 import SettingsPage from "@/pages/user/SettingsPage.vue";
@@ -20,14 +20,14 @@ import ConfirmEmailSentPage from "@/pages/auth/ConfirmEmailSentPage.vue";
 import ResendConfirmEmailPage from "@/pages/auth/ResendConfirmEmailPage.vue";
 import RecentLessonsTab from "@/components/page/explore/RecentLessonsTab.vue";
 import PopularLessonsTab from "@/components/page/explore/PopularLessonsTab.vue";
-import BookmarkedCoursesTab from "@/components/page/my-library/BookmarkedCoursesTab.vue";
-import ImportedCoursesTab from "@/components/page/my-library/ImportedCoursesTab.vue";
+import LibraryBookmarkedTab from "@/components/page/my-library/LibraryBookmarkedTab.vue";
+import LibraryImportedTab from "@/components/page/my-library/LibraryImportedTab.vue";
 import LessonHistoryTab from "@/components/page/my-library/LessonHistoryTab.vue";
 import * as queryParams from "@/router/queryParams.js";
 import * as pathParams from "@/router/pathParams.js";
 import {excludeProperties} from "@/utils.js";
 import InterfaceTab from "@/components/page/settings/interface/InterfaceTab.vue";
-import LessonEditPage from "@/pages/LessonEditPage.vue";
+import UpdateLessonPage from "@/pages/UpdateLessonPage.vue";
 
 export const privateRoutes: RouteRecordRaw[] = [
     {
@@ -77,19 +77,19 @@ export const privateRoutes: RouteRecordRaw[] = [
     {
         path: "/learn/:learningLanguage/my-library",
         component: MyLibraryPage,
-        redirect: {name: "my-library-bookmarked-courses"},
+        redirect: {name: "my-library-bookmarked-tab"},
         name: "language-my-library",
         meta: {pathParams: {learningLanguage: pathParams.languageCode}},
         children: [
             {
                 path: "/learn/:learningLanguage/my-library/bookmarks",
-                component: BookmarkedCoursesTab,
-                name: "my-library-bookmarked-courses",
+                component: LibraryBookmarkedTab,
+                name: "my-library-bookmarked-tab",
                 meta: {
                     pathParams: {learningLanguage: pathParams.languageCode},
                     queryParams: {
                         ...queryParams.generatePaginationQueryParams([5, 10, 25, 50, 100]),
-                        ...queryParams.courseFilters,
+                        ...queryParams.collectionFilters,
                         searchQuery: queryParams.searchQuery
                     }
                 },
@@ -97,13 +97,13 @@ export const privateRoutes: RouteRecordRaw[] = [
             },
             {
                 path: "/learn/:learningLanguage/my-library/imported",
-                component: ImportedCoursesTab,
-                name: "my-library-imported-courses",
+                component: LibraryImportedTab,
+                name: "my-library-imported-tab",
                 meta: {
                     pathParams: {learningLanguage: pathParams.languageCode},
                     queryParams: {
                         ...queryParams.generatePaginationQueryParams([5, 10, 25, 50, 100]),
-                        ...excludeProperties(queryParams.courseFilters, ["addedBy"]),
+                        ...excludeProperties(queryParams.collectionFilters, ["addedBy"]),
                         searchQuery: queryParams.searchQuery
                     }
                 },
@@ -159,24 +159,24 @@ export const privateRoutes: RouteRecordRaw[] = [
     },
     {
         path: "/lessons/add",
-        component: LessonAddPage,
+        component: CreateLessonPage,
         name: "add-lesson",
         meta: {redirToLanguageSpecific: true}
     },
     {
         path: "/learn/:learningLanguage/lessons/add",
         name: "add-lesson-lang",
-        component: LessonAddPage,
+        component: CreateLessonPage,
         meta: {
             queryParams: {
-                courseId: pathParams.id
+                collectionId: pathParams.id
             }
         },
         props: routeToProps,
     },
     {
         path: "/learn/:learningLanguage/lessons/:lessonId/edit",
-        component: LessonEditPage,
+        component: UpdateLessonPage,
         name: "edit-lesson",
         meta: {
             pathParams: {
@@ -187,38 +187,39 @@ export const privateRoutes: RouteRecordRaw[] = [
         props: routeToProps,
     },
     {
-        path: "/courses/add",
-        component: CourseAddPage,
-        name: "add-course",
+        path: "/collections/add",
+        component: CreateCollectionPage,
+        name: "add-collection",
         meta: {redirToLanguageSpecific: true}
     },
     {
-        path: "/learn/:learningLanguage/courses/add",
-        name: "add-course-lang",
-        component: CourseAddPage,
+        path: "/learn/:learningLanguage/collections/add",
+        name: "add-collection-lang",
+        component: CreateCollectionPage,
         meta: {
             pathParams: {learningLanguage: pathParams.languageCode,}
         },
     },
     {
-        path: "/learn/:learningLanguage/courses/:courseId",
-        component: CoursePage,
-        name: "course",
+        path: "/learn/:learningLanguage/collections/:collectionId",
+        component: CollectionPage,
+        name: "collection",
         meta: {
             pathParams: {
                 learningLanguage: pathParams.languageCode,
-                courseId: pathParams.id
+                collectionId: pathParams.id
             }
-        }
+        },
+        props: routeToProps,
     },
     {
-        path: "/learn/:learningLanguage/courses/:courseId/edit",
-        component: CourseEditPage,
-        name: "edit-course",
+        path: "/learn/:learningLanguage/collections/:collectionId/edit",
+        component: UpdateCollectionPage,
+        name: "edit-collection",
         meta: {
             pathParams: {
                 learningLanguage: pathParams.languageCode,
-                courseId: pathParams.id
+                collectionId: pathParams.id
             }
         },
         props: routeToProps,

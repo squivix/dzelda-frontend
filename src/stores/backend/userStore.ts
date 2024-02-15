@@ -64,9 +64,8 @@ export const useUserStore = defineStore("auth", {
         async signOut() {
             useMessageBarStore().clearMessages();
             const store = useStore();
-            await store.fetchCustom((api) => api.sessions.deleteSessions());
-            this.authToken = null;
-            this.userAccount = null;
+            await store.fetchCustom((api) => api.sessions.deleteSessions(), {ignore401: true});
+            this.clearUserData();
             store.clearUserData();
         },
         async requestEmailConfirmToken(body: {
@@ -162,6 +161,10 @@ export const useUserStore = defineStore("auth", {
             if (response.ok)
                 await this.fetchUserAccount(true);
             return response;
+        },
+        clearUserData() {
+            this.authToken = null;
+            this.userAccount = null;
         }
     }
 });

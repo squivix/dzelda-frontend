@@ -12,10 +12,10 @@
             <div class="title-stats">
               <div class="title-subtitle">
                 <h4>{{ lesson.title }}</h4>
-                <router-link v-if="showCourse && lesson.course"
-                             :to="{name:'course', params:{ courseId:lesson.course.id}}"
+                <router-link v-if="showCollection && lesson.collection"
+                             :to="{name:'collection', params:{ collectionId:lesson.collection.id}}"
                              class="link-parent">
-                  <p class="course-title">{{ lesson.course.title }}</p>
+                  <p class="collection-title">{{ lesson.collection.title }}</p>
                 </router-link>
                 <p v-if="'timeViewed' in lesson" class="time-viewed">{{ timeViewed }}</p>
               </div>
@@ -81,7 +81,7 @@ export default {
   components: {InlineSvg, BaseDropDown, BaseImage, BaseCard},
   props: {
     lesson: {type: Object as PropType<LessonSchema | LessonHistoryEntrySchema>, required: true},
-    showCourse: {type: Boolean, required: false, default: true}
+    showCollection: {type: Boolean, required: false, default: true}
   },
   computed: {
     timeViewed() {
@@ -89,7 +89,7 @@ export default {
         return format(this.lesson.timeViewed);
     },
     imageUrl() {
-      return (this.lesson.image || this.lesson.course?.image) ?? "";
+      return (this.lesson.image || this.lesson.collection?.image) ?? "";
     },
     newVocabsPercentage() {
       const total = this.lesson.vocabsByLevel![VocabLevelSchema.NEW] + this.savedVocabsCount;
@@ -208,7 +208,7 @@ h4 {
   -webkit-box-orient: vertical;
 }
 
-.course-title {
+.collection-title {
   color: grey;
   margin-bottom: 0.5rem;
 }

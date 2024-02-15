@@ -50,7 +50,7 @@
             </div>
           </fieldset>
           <template v-if="!exclude.addedBy">
-            <label for="author-input" class="filter-label">Course Author</label>
+            <label for="author-input" class="filter-label">Collection Author</label>
             <input id="author-input" type="text" v-model="addedBy" placeholder="Enter a username">
           </template>
         </div>
@@ -70,7 +70,7 @@ import BaseFiltersCard from "@/components/ui/BaseFiltersCard.vue";
 import constants from "@/constants.js";
 
 export default defineComponent({
-  name: "CourseFilters",
+  name: "CollectionFilters",
   components: {BaseFiltersCard, BaseCollapsableDiv},
   emits: ["onFiltersApplied", "onFiltersCleared"],
   props: {

@@ -12,7 +12,7 @@ export const generatePaginationQueryParams = (pageSizes: number[]) => {
     }
 };
 export const lessonFilters = {};
-export const courseFilters = {
+export const collectionFilters = {
     level: {
         schema: z.union([
             z.enum(["beginner1", "beginner2", "intermediate1", "intermediate2", "advanced1", "advanced2"]),

@@ -29,14 +29,14 @@ import {LessonSchema} from "dzelda-common";
 import LessonListItem from "@/components/shared/content/LessonListItem.vue";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
-import CourseFilters from "@/components/shared/filters/CourseFilters.vue";
+import CollectionFilters from "@/components/shared/filters/CollectionFilters.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 
 export default defineComponent({
   name: "LessonHistoryTab",
-  components: {InlineSvg, EmptyScreen, CourseFilters, LoadingScreen, PaginationControls, LessonListItem},
+  components: {InlineSvg, EmptyScreen, CollectionFilters, LoadingScreen, PaginationControls, LessonListItem},
   data() {
     return {
       lessons: [] as LessonSchema[],

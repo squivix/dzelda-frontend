@@ -33,7 +33,7 @@ export const useLessonStore = defineStore("lesson", {
             title: string,
             text: string,
             languageCode: string,
-            courseId: number | null,
+            collectionId: number | null,
             isPublic: boolean,
             level: "beginner1" | "beginner2" | "intermediate1" | "intermediate2" | "advanced1" | "advanced2",
             image: string | undefined,
@@ -47,13 +47,13 @@ export const useLessonStore = defineStore("lesson", {
                 languageCode: body.languageCode,
                 level: body.level,
                 isPublic: body.isPublic,
-                courseId: body.courseId,
+                collectionId: body.collectionId,
                 image: body.image,
                 audio: body.audio,
             })));
         },
         async updateLesson(pathParams: { lessonId: number }, body: {
-            courseId: number | undefined | null,
+            collectionId: number | undefined | null,
             title: string,
             text: string,
             image: string | undefined,
@@ -63,7 +63,7 @@ export const useLessonStore = defineStore("lesson", {
         }) {
             const store = useStore();
             return await store.fetchCustom((api) => api.lessons.patchLessonsLessonId(pathParams.lessonId, cleanUndefined({
-                courseId: body.courseId,
+                collectionId: body.collectionId,
                 title: body.title,
                 text: body.text,
                 image: body.image,
@@ -87,9 +87,9 @@ export const useLessonStore = defineStore("lesson", {
                 await this.router.push({name: "not-found"});
             return response.data;
         },
-        async fetchNextLesson(pathParams: { lessonId: number, courseId: number }) {
+        async fetchNextLesson(pathParams: { lessonId: number, collectionId: number }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.courses.getCoursesCourseIdLessonsLessonIdNext(pathParams.courseId, pathParams.lessonId));
+            const response = await store.fetchCustom((api) => api.collections.getCollectionsCollectionIdLessonsLessonIdNext(pathParams.collectionId, pathParams.lessonId));
             if (response.redirected) {
                 response.data = await response.json();
                 return response.data as LessonSchema;

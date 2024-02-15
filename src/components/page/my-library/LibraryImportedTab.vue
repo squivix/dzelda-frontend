@@ -1,32 +1,32 @@
 <template>
-  <CourseList :is-loading="isLoading"
-              :page-count="pageCount"
+  <CollectionList :isLoading="isLoading"
+              :pageCount="pageCount"
               :page="queryParams.page"
               :pageSize="queryParams.pageSize"
               :searchQuery="queryParams.searchQuery"
               :addedBy="queryParams.addedBy"
               :level="queryParams.level"
-              :courses="courses">
+              :collections="collections">
     <template v-slot:empty-screen>
-      <inline-svg :src="icons.bookWithBookmark" class="empty-icon"/>
-      <p>Courses you bookmark
-        <br>
-        will appear here</p>
+      <router-link :to="{name:'add-collection'}" class="inv-link add-collection-button">
+        <inline-svg :src="icons.plusRound" class="empty-icon"/>
+        Create collections and<br>they will appear here
+      </router-link>
     </template>
-  </CourseList>
+  </CollectionList>
 </template>
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import {CourseSchema} from "dzelda-common";
-import {useCourseStore} from "@/stores/backend/courseStore.js";
-import CourseList from "@/components/shared/content/CourseList.vue";
+import {CollectionSchema} from "dzelda-common";
+import {useCollectionStore} from "@/stores/backend/collectionStore.js";
+import CollectionList from "@/components/shared/content/CollectionList.vue";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
 
 export default defineComponent({
-  name: "BookmarkedCoursesTab",
-  components: {CourseList, InlineSvg},
+  name: "LibraryImportedTab",
+  components: {InlineSvg, CollectionList},
   props: {
     pathParams: {
       type: Object as PropType<{
@@ -47,31 +47,33 @@ export default defineComponent({
   },
   data() {
     return {
-      courses: null as CourseSchema[] | null,
+      collections: null as CollectionSchema[] | null,
       pageCount: 0,
-      isLoading: false,
+      isLoading: true,
     };
   },
   watch: {
     queryParams() {
-      this.fetchSavedCourses();
+      this.fetchImportedCollections();
     }
   },
   async mounted() {
-    await this.fetchSavedCourses();
+    await this.fetchImportedCollections();
   },
   methods: {
-    async fetchSavedCourses() {
+    async fetchImportedCollections() {
       this.isLoading = true;
-      const response = await this.courseStore.fetchUserBookmarkedCourses({
+      const response = await this.collectionStore.fetchCollections({
         languageCode: this.$route.params.learningLanguage as string,
         level: this.queryParams.level,
-        addedBy: this.queryParams.addedBy,
+        addedBy: "me",
+        sortBy: "createdDate",
+        sortOrder: "desc",
         page: this.queryParams.page,
         pageSize: this.queryParams.pageSize,
         searchQuery: this.queryParams.searchQuery || undefined,
-      });
-      this.courses = response.data;
+      }, {secure: true});
+      this.collections = response.data;
       this.pageCount = response.pageCount;
       this.isLoading = false;
     },
@@ -79,12 +81,24 @@ export default defineComponent({
   setup() {
     return {
       icons,
-      courseStore: useCourseStore()
+      collectionStore: useCollectionStore()
     };
   }
 });
 </script>
 
 <style scoped>
+.add-collection-button {
+  display: flex;
+  color: grey;
+  flex-direction: column;
+  align-items: center;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  row-gap: 0.5rem;
+}
+
+.add-collection-button:hover, .add-collection-button:hover svg {
+  color: var(--empty-list-icon-hover-color);
+}
 
 </style>

@@ -158,7 +158,7 @@ export default defineComponent({
       return this.isLoadingLesson || this.isLoadingWords || this.isParsingLesson;
     },
     imageUrl() {
-      return (this.lesson!.image || this.lesson!.course?.image) ?? "";
+      return (this.lesson!.image || this.lesson!.collection?.image) ?? "";
     },
     audioUrl() {
       return this.lesson?.audio ?? "";
@@ -194,9 +194,9 @@ export default defineComponent({
       this.isLoadingLesson = false;
     },
     async finishLesson() {
-      if (this.lesson!.course && !this.lesson!.isLastInCourse) {
+      if (this.lesson!.collection && !this.lesson!.isLastInCollection) {
         const lesson = await this.lessonStore.fetchNextLesson({
-          courseId: this.lesson!.course?.id,
+          collectionId: this.lesson!.collection?.id,
           lessonId: this.lesson!.id
         });
         await this.$router.push({params: {lessonId: lesson!.id}});
@@ -235,7 +235,7 @@ export default defineComponent({
       this.clearSelectedTokens();
       this.selectedOverLappingPhrasesTokens = overlappingPhrasesTokens;
     },
-    onNewVocabCreated(vocab: LearnerVocabSchema ) {
+    onNewVocabCreated(vocab: LearnerVocabSchema) {
       if (vocab.isPhrase) {
         this.phrases[vocab.text] = vocab;
         this.parsePhraseInTokens(this.lesson!.parsedTitle!, this.matchIndexToTokenIndex.title, this.lessonTokens!.title, vocab.text);

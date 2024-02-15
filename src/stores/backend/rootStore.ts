@@ -66,9 +66,8 @@ export const useStore = defineStore("main", {
                 }
                 if (response.status >= 500 && !ignore5XX)
                     await this.router.push({name: "server-side-error"});
-                else if (response.status == 401 && !ignore401) {
-                    await userStore.signOut();
-                }
+                else if (response.status == 401 && !ignore401)
+                    userStore.clearUserData();
                 if (cacheKey !== undefined)
                     this.cache[cacheKey] = {timeCached: new Date(), data: response.data, expiryTimeInMs: expiryTimeInMs ?? DEFAULT_CACHE_TIME};
                 return response;
