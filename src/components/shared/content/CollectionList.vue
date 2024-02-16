@@ -1,21 +1,22 @@
 <template>
   <LoadingScreen v-if="isLoading"/>
   <div class="wrapper" v-else>
-    <div class="top-bar">
-      <SearchBar :initial-search-query="searchQuery"/>
-      <button class="filter-button icon-wrapper" @click.stop="toggleFilters">
-        <inline-svg :src="icons.filter"/>
-      </button>
-    </div>
-    <CollectionFilters :is-shown="isFiltersShown"
-                   @on-filters-cleared="() => isFiltersShown=false"
-                   @on-filters-applied="() => isFiltersShown=false"/>
-
+    <template v-if="showSearchFilters">
+      <div class="top-bar">
+        <SearchBar :initial-search-query="searchQuery"/>
+        <button class="filter-button icon-wrapper" @click.stop="toggleFilters">
+          <inline-svg :src="icons.filter"/>
+        </button>
+      </div>
+      <CollectionFilters :is-shown="isFiltersShown"
+                         @on-filters-cleared="() => isFiltersShown=false"
+                         @on-filters-applied="() => isFiltersShown=false"/>
+    </template>
     <EmptyScreen v-if="!collections||collections.length==0" :has-filters="hasFilters">
       <template v-slot:no-filters>
         <div class="empty-screen">
           <slot name="empty-screen">
-            <p>No collections found</p>
+            <p>{{ emptyMessage }}</p>
           </slot>
         </div>
       </template>
@@ -70,8 +71,10 @@ export default defineComponent({
     pageSize: Number,
     searchQuery: String,
     addedBy: String,
+    showSearchFilters: {type: Boolean, default: true},
     level: Array as PropType<string[]>,
-    collections: Object as PropType<CollectionSchema[] | null>
+    collections: Object as PropType<CollectionSchema[] | null>,
+    emptyMessage: {type: String, default: "No collections found"}
   },
   data() {
     return {
@@ -104,13 +107,13 @@ export default defineComponent({
 .wrapper {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
 }
 
 .top-bar {
   display: flex;
   justify-content: flex-end;
   column-gap: 0.25rem;
+  margin-bottom: 1rem;
 }
 
 .filter-button {
@@ -127,6 +130,7 @@ export default defineComponent({
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-row-gap: 1rem;
   grid-column-gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .clear-filters-button {

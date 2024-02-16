@@ -116,9 +116,6 @@ button:hover {
     background: none;
     border: none;
     padding: 0;
-}
-
-.inv-button:hover {
     cursor: pointer;
 }
 

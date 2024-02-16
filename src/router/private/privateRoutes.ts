@@ -18,8 +18,8 @@ import ConfirmEmailPage from "@/pages/auth/ConfirmEmailPage.vue";
 import {routeToProps, setDefaultRouteMeta} from "@/router/routerUtils.js";
 import ConfirmEmailSentPage from "@/pages/auth/ConfirmEmailSentPage.vue";
 import ResendConfirmEmailPage from "@/pages/auth/ResendConfirmEmailPage.vue";
-import RecentLessonsTab from "@/components/page/explore/RecentLessonsTab.vue";
-import PopularLessonsTab from "@/components/page/explore/PopularLessonsTab.vue";
+import ExploreRecentTab from "@/components/page/explore/ExploreRecentTab.vue";
+import ExplorePopularTab from "@/components/page/explore/ExplorePopularTab.vue";
 import LibraryBookmarkedTab from "@/components/page/my-library/LibraryBookmarkedTab.vue";
 import LibraryImportedTab from "@/components/page/my-library/LibraryImportedTab.vue";
 import LessonHistoryTab from "@/components/page/my-library/LessonHistoryTab.vue";
@@ -43,8 +43,7 @@ export const privateRoutes: RouteRecordRaw[] = [
         path: "/learn/:learningLanguage/explore",
         name: "explore-lang",
         component: ExplorePage,
-        redirect: {name: "explore-recent-lessons"},
-        props: routeToProps,
+        redirect: to => ({name: "explore-recent", params: {...to.params, resourceType: "texts"}}),
         meta: {
             pathParams: {learningLanguage: pathParams.languageCode},
             queryParams: {
@@ -53,18 +52,19 @@ export const privateRoutes: RouteRecordRaw[] = [
                 searchQuery: queryParams.searchQuery
             },
         },
+        props: routeToProps,
         children: [
             {
-                path: "/learn/:learningLanguage/explore/lessons/recent",
-                component: RecentLessonsTab,
-                name: "explore-recent-lessons",
-                meta: {pathParams: {learningLanguage: pathParams.languageCode}}
+                path: "/learn/:learningLanguage/explore/:resourceType/recent",
+                component: ExploreRecentTab,
+                name: "explore-recent",
+                meta: {pathParams: {learningLanguage: pathParams.languageCode, resourceType: pathParams.resourceType}}
             },
             {
-                path: "/learn/:learningLanguage/explore/lessons/popular",
-                component: PopularLessonsTab,
-                name: "explore-popular-lessons",
-                meta: {pathParams: {learningLanguage: pathParams.languageCode}}
+                path: "/learn/:learningLanguage/explore/:resourceType/popular",
+                component: ExplorePopularTab,
+                name: "explore-popular",
+                meta: {pathParams: {learningLanguage: pathParams.languageCode, resourceType: pathParams.resourceType}}
             }
         ]
     },
