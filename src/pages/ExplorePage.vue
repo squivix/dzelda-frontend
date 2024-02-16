@@ -113,7 +113,7 @@ h2 {
 
 select {
   font-size: 1rem;
-  height: 3rem;
+  height: 2.5rem;
   flex-basis: 200px;
 }
 

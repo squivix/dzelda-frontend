@@ -3,7 +3,7 @@
     <h3>Change Email</h3>
     <form class="change-email-form" @submit.prevent="submitEmailChange">
       <p v-if="emailChangeSuccess">
-        We've sent you an email with a confirmation link.
+        We've sent your new email a confirmation link.
         <br><br>
         Please confirm your new email within 24 hours for the change to be applied.
       </p>

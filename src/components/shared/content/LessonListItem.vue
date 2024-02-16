@@ -1,5 +1,5 @@
 <template>
-  <BaseCard>
+  <BaseCard class="lesson">
     <template v-slot:all>
       <router-link
           :to="{name:'lesson', params:{lessonId:lesson.id}}"
@@ -44,7 +44,7 @@
               :round="false">
             <template v-slot:button>
               <button class="more-button inv-button">
-              <inline-svg :src="icons.dotsStacked" class=""/>
+                <inline-svg :src="icons.dotsStacked" class=""/>
               </button>
             </template>
             <template v-slot:menu>
@@ -131,7 +131,7 @@ export default {
 </script>
 
 <style scoped>
-.base-card {
+.lesson {
   margin: 0;
   padding: 20px 2vw;
   box-shadow: rgba(0, 0, 0, 0.1) 0 0 5px 0, rgba(0, 0, 0, 0.1) 0 0 1px 0;
@@ -160,8 +160,15 @@ article {
   align-items: flex-start;
   height: 100%;
 }
-.lesson-image{
+
+.lesson-image {
   align-self: center;
+  width: 20vw;
+  height: 20vw;
+  max-width: 200px;
+  max-height: 200px;
+  min-width: 140px;
+  min-height: 140px;
 }
 
 .vocabs-indicator {
@@ -225,9 +232,11 @@ h4 {
 a:hover {
   text-decoration: none;
 }
-.more-button{
+
+.more-button {
   padding: 1rem 0.5rem 0 0.5rem;
 }
+
 .more-button:hover {
   cursor: pointer;
 }
@@ -248,6 +257,20 @@ a:hover {
 }
 
 @media screen and (max-width: 500px) {
+  article {
+    flex-direction: column-reverse;
+    row-gap: 1rem;
+  }
+
+  .lesson-image {
+    width: 200px;
+    height: 200px;
+  }
+
+  .dropdown {
+    align-self: flex-end;
+  }
+
   .item-content {
     flex-direction: column;
     align-items: center;

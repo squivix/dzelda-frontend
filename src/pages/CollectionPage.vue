@@ -188,15 +188,6 @@ h3 {
   row-gap: 1rem;
 }
 
-.lesson-list-item:deep(.image) {
-  width: 19vw;
-  height: 19vw;
-  max-width: 200px;
-  max-height: 200px;
-  min-width: 140px;
-  min-height: 140px;
-}
-
 @media screen and (max-width: 750px) {
   .page-wrapper {
     flex-direction: column;

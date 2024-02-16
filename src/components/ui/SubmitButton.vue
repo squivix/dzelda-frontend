@@ -3,7 +3,8 @@
     <inline-svg v-if="isSubmitting" :src="icons.loadingSpinnerOval"/>
     <inline-svg v-else-if="iconSrc" :src="iconSrc"/>
     <span v-if="!isSubmitting || keepText" :class="wrapperClass">
-      <slot>
+      <template v-if="isSubmitting&&submittingText">{{ submittingText }}</template>
+      <slot v-else>
 
       </slot>
     </span>
@@ -24,6 +25,7 @@ export default defineComponent({
     isSubmitting: {type: Boolean, default: false},
     iconSrc: {type: String, required: false},
     keepText: {type: Boolean, default: true},
+    submittingText: {type: String, required: false},
     wrapperClass: {type: String, default: ""}
   },
   setup() {

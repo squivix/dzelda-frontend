@@ -111,14 +111,15 @@ export default defineComponent({
 
 
 .pronunciations-button {
-  display: grid;
-  place-items: center;
+  padding: 0;
   border: none;
   background: none;
   color: var(--secondary-color);
 }
 
 .pronunciations-button > span {
+  display: grid;
+  place-items: center;
   border-radius: 50%;
   padding: 12px;
 }
