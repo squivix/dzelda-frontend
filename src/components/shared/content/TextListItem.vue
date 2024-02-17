@@ -1,30 +1,30 @@
 <template>
-  <BaseCard class="lesson">
+  <BaseCard class="text-card">
     <template v-slot:all>
       <router-link
-          :to="{name:'lesson', params:{lessonId:lesson.id}}"
+          :to="{name:'text', params:{textId:text.id}}"
           class="inv-link">
         <article>
           <div class="item-content">
             <BaseImage :image-url="imageUrl"
                        :fall-back-url="icons.bookOpen"
-                       class="lesson-image"
-                       alt-text="lesson image"/>
+                       class="text-image"
+                       alt-text="text image"/>
             <div class="title-stats">
               <div class="title-subtitle">
-                <h4>{{ lesson.title }}</h4>
-                <router-link v-if="showCollection && lesson.collection"
-                             :to="{name:'collection', params:{ collectionId:lesson.collection.id}}"
+                <h4>{{ text.title }}</h4>
+                <router-link v-if="showCollection && text.collection"
+                             :to="{name:'collection', params:{ collectionId:text.collection.id}}"
                              class="link-parent">
-                  <p class="collection-title">{{ lesson.collection.title }}</p>
+                  <p class="collection-title">{{ text.collection.title }}</p>
                 </router-link>
-                <p v-if="'timeViewed' in lesson" class="time-viewed">{{ timeViewed }}</p>
+                <p v-if="'timeViewed' in text" class="time-viewed">{{ timeViewed }}</p>
               </div>
               <div class="stats">
                 <div class="stats-count">
                   <span class="vocabs-indicator new-vocabs"></span>
                   <div>
-                    <span>{{ lesson.vocabsByLevel![VocabLevelSchema.NEW] }} (</span>
+                    <span>{{ text.vocabsByLevel![VocabLevelSchema.NEW] }} (</span>
                     <span :class="newVocabsPercentageClass">{{ newVocabsPercentage }}%</span>
                     <span>)</span>
                   </div>
@@ -38,8 +38,8 @@
             </div>
           </div>
           <BaseDropDown
-              v-if="lesson.addedBy==userStore.userAccount!.username"
-              :id="`lesson-item-${lesson.id}`"
+              v-if="text.addedBy==userStore.userAccount!.username"
+              :id="`text-item-${text.id}`"
               :centered="false"
               :round="false">
             <template v-slot:button>
@@ -50,7 +50,7 @@
             <template v-slot:menu>
               <ol class="dropdown-list">
                 <li>
-                  <router-link :to="{ name: 'edit-lesson' , params:{lessonId:lesson.id}}">
+                  <router-link :to="{ name: 'edit-text' , params:{textId:text.id}}">
                     <inline-svg :src="icons.pen"/>
                     <span>Edit</span>
                   </router-link>
@@ -67,7 +67,7 @@
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import {LessonHistoryEntrySchema, LessonSchema, VocabLevelSchema, VocabsByLevelSchema} from "dzelda-common";
+import {TextHistoryEntrySchema, TextSchema, VocabLevelSchema, VocabsByLevelSchema} from "dzelda-common";
 import {PropType} from "vue";
 import {useStore} from "@/stores/backend/rootStore.js";
 import constants from "@/constants.js";
@@ -78,25 +78,25 @@ import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
 
 export default {
-  name: "LessonListItem",
+  name: "TextListItem",
   components: {InlineSvg, BaseDropDown, BaseImage, BaseCard},
   props: {
-    lesson: {type: Object as PropType<LessonSchema | LessonHistoryEntrySchema>, required: true},
+    text: {type: Object as PropType<TextSchema | TextHistoryEntrySchema>, required: true},
     showCollection: {type: Boolean, required: false, default: true}
   },
   computed: {
     timeViewed() {
-      if ("timeViewed" in this.lesson)
-        return format(this.lesson.timeViewed);
+      if ("timeViewed" in this.text)
+        return format(this.text.timeViewed);
     },
     imageUrl() {
-      return (this.lesson.image || this.lesson.collection?.image) ?? "";
+      return (this.text.image || this.text.collection?.image) ?? "";
     },
     newVocabsPercentage() {
-      const total = this.lesson.vocabsByLevel![VocabLevelSchema.NEW] + this.savedVocabsCount;
+      const total = this.text.vocabsByLevel![VocabLevelSchema.NEW] + this.savedVocabsCount;
       if (total == 0) //prevent NaN% from dividing 0/0
         return 0.00;
-      const percentage = (this.lesson.vocabsByLevel![VocabLevelSchema.NEW] / total) * 100;
+      const percentage = (this.text.vocabsByLevel![VocabLevelSchema.NEW] / total) * 100;
       return Number(percentage.toFixed(2));
     },
     newVocabsPercentageClass() {
@@ -111,9 +111,9 @@ export default {
     savedVocabsCount() {
       let count = 0;
       let level: keyof VocabsByLevelSchema;   //typescript is acting up :/
-      for (level in this.lesson.vocabsByLevel!) {
+      for (level in this.text.vocabsByLevel!) {
         if (Number(level) !== VocabLevelSchema.NEW && Number(level) !== VocabLevelSchema.IGNORED) {
-          count += this.lesson.vocabsByLevel![level];
+          count += this.text.vocabsByLevel![level];
         }
       }
       return count;
@@ -131,7 +131,7 @@ export default {
 </script>
 
 <style scoped>
-.lesson {
+.text-card {
   margin: 0;
   padding: 20px 2vw;
   box-shadow: rgba(0, 0, 0, 0.1) 0 0 5px 0, rgba(0, 0, 0, 0.1) 0 0 1px 0;
@@ -161,7 +161,7 @@ article {
   height: 100%;
 }
 
-.lesson-image {
+.text-image {
   align-self: center;
   width: 20vw;
   height: 20vw;
@@ -262,7 +262,7 @@ a:hover {
     row-gap: 1rem;
   }
 
-  .lesson-image {
+  .text-image {
     width: 200px;
     height: 200px;
   }

@@ -1,10 +1,9 @@
 <template>
-  <LessonReader class="lesson-reader"
+  <Reader class="text-reader"
                 :languageCode="pathParams.learningLanguage"
-                :lessonId="pathParams.lessonId"/>
+                :textId="pathParams.textId"/>
 </template>
 <script lang="ts">
-import LessonContent from "@/components/page/reader/LessonContent.vue";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {defineComponent, PropType} from "vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
@@ -14,13 +13,14 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import PagePanelButton from "@/components/page/reader/PagePanelButton.vue";
 import BasePageSelector from "@/components/ui/BasePageSelector.vue";
 import PageIndicator from "@/components/page/reader/PageIndicator.vue";
-import LessonReader from "@/components/shared/LessonReader.vue";
+import Reader from "@/components/shared/Reader.vue";
+import TextMainPane from "@/components/page/reader/TextMainPane.vue";
 
 export default defineComponent({
-  name: "LessonReaderPage",
-  components: {LessonReader, PageIndicator, BasePageSelector, PagePanelButton, BaseCard, ReaderSidePanel, LoadingScreen, LessonContent},
+  name: "ReaderPage",
+  components: {Reader, PageIndicator, BasePageSelector, PagePanelButton, BaseCard, ReaderSidePanel, LoadingScreen, TextMainPane},
   props: {
-    pathParams: {type: Object as PropType<{ learningLanguage: string, lessonId: number }>, required: true},
+    pathParams: {type: Object as PropType<{ learningLanguage: string, textId: number }>, required: true},
   },
   setup() {
     return {
@@ -31,7 +31,7 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-.lesson-reader {
+.text-reader {
   width: 90vw;
 }
 </style>

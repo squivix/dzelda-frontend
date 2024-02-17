@@ -13,14 +13,14 @@ import {defineComponent, PropType} from "vue";
 import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
 import BaseToken from "@/components/page/reader/BaseToken.vue";
 import {getLevelClass} from "@/utils.js";
-import {LessonTokenObject} from "@/components/shared/LessonReader.vue";
+import {TextTokenObject} from "@/components/shared/Reader.vue";
 
 
 export default defineComponent({
-  name: "LessonToken",
+  name: "TextToken",
   components: {BaseToken},
   props: {
-    token: {type: Object as PropType<LessonTokenObject>, required: true},
+    token: {type: Object as PropType<TextTokenObject>, required: true},
     word: {type: Object as PropType<LearnerVocabSchema>, required: false},
     phrases: {type: Object as PropType<LearnerVocabSchema[]>, required: false},
     isPhraseFirstClick: {type: Boolean, required: true},

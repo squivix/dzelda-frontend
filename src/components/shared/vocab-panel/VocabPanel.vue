@@ -42,7 +42,7 @@ import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema, VocabSchema} from "
 import {useMeaningStore} from "@/stores/backend/meaningStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import MeaningEditingControls from "@/components/shared/vocab-panel/MeaningEditingControls.vue";
-import {NewVocab} from "@/components/shared/LessonReader.vue";
+import {NewVocab} from "@/components/shared/Reader.vue";
 import InlineSvg from "vue-inline-svg";
 import VocabPanelTopBar from "@/components/shared/vocab-panel/VocabPanelTopBar.vue";
 import PronunciationPanel from "@/components/shared/vocab-panel/PronunciationPanel.vue";

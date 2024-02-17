@@ -9,7 +9,7 @@
           <router-link :to="{name:'my-library-imported-tab'}" class="inv-link">Imported</router-link>
         </li>
         <li :class="['tab-label', { 'current-tab': currentTab === MyLibraryPageTab.HISTORY }]">
-          <router-link :to="{name:'my-library-lesson-history'}" class="inv-link">History</router-link>
+          <router-link :to="{name:'my-library-history'}" class="inv-link">History</router-link>
         </li>
       </ul>
       <router-view/>
@@ -38,7 +38,7 @@ export default defineComponent({
         return MyLibraryPageTab.BOOKMARKS;
       else if (this.$route.name == "my-library-imported-tab")
         return MyLibraryPageTab.IMPORTED;
-      else if (this.$route.name == "my-library-lesson-history")
+      else if (this.$route.name == "my-library-history")
         return MyLibraryPageTab.HISTORY;
       else
         return null;

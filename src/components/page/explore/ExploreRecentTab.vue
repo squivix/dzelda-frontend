@@ -1,11 +1,11 @@
 <template>
-  <LessonList v-if="resourceType=='texts'"
+  <TextsList v-if="resourceType=='texts'"
               :pageCount="pageCount"
               :pageSize="queryParams.pageSize"
               :page="queryParams.page"
               :isLoading="isLoading"
-              :lessons="lessons"
-              emptyMessage="No lessons found in this language"
+              :texts="texts"
+              emptyMessage="No texts found in this language"
   />
   <CollectionList v-else
                   :pageCount="pageCount"
@@ -19,18 +19,18 @@
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import {useLessonStore} from "@/stores/backend/lessonStore.js";
-import {CollectionSchema, LessonSchema} from "dzelda-common";
-import LessonList from "@/components/shared/content/LessonList.vue";
+import {useTextStore} from "@/stores/backend/textStore.js";
+import {CollectionSchema, TextSchema} from "dzelda-common";
+import TextsList from "@/components/shared/content/TextsList.vue";
 import CollectionList from "@/components/shared/content/CollectionList.vue";
 import {useCollectionStore} from "@/stores/backend/collectionStore.js";
 
 export default defineComponent({
   name: "ExploreRecentTab",
-  components: {LessonList, CollectionList},
+  components: {TextsList, CollectionList},
   data() {
     return {
-      lessons: [] as LessonSchema[],
+      texts: [] as TextSchema[],
       collections: [] as CollectionSchema[],
       pageCount: 0,
       isLoading: false,
@@ -42,7 +42,7 @@ export default defineComponent({
   },
   watch: {
     queryParams() {
-      this.fetchLessons();
+      this.fetchTexts();
     },
     resourceType() {
       this.fetchResources();
@@ -51,20 +51,20 @@ export default defineComponent({
   methods: {
     async fetchResources() {
       if (this.resourceType == "texts")
-        await this.fetchLessons();
+        await this.fetchTexts();
       else
         await this.fetchCollections();
     },
-    async fetchLessons() {
+    async fetchTexts() {
       this.isLoading = true;
-      const response = await this.lessonStore.fetchLessons({
+      const response = await this.textStore.fetchTexts({
         languageCode: this.$route.params.learningLanguage as string,
         page: this.queryParams.page,
         pageSize: this.queryParams.pageSize,
         sortBy: "createdDate",
         sortOrder: "desc"
       });
-      this.lessons = response.data!;
+      this.texts = response.data!;
       this.pageCount = response.pageCount!;
       this.isLoading = false;
     },
@@ -87,7 +87,7 @@ export default defineComponent({
   },
   setup() {
     return {
-      lessonStore: useLessonStore(),
+      textStore: useTextStore(),
       collectionStore: useCollectionStore()
     };
   }

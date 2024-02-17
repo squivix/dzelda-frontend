@@ -22,15 +22,15 @@
             <textarea class="description" readonly>{{ collection.description }}</textarea>
           </div>
         </div>
-        <div class="lessons-pane">
-          <h2>Lessons</h2>
-          <ol class="lesson-list" v-if="collection.lessons.length>0">
-            <li v-for="lesson in collection.lessons" :key="lesson.id" class="lesson">
-              <LessonListItem class="lesson-list-item" :lesson="{...lesson, collection}" :showCollection="false">
-              </LessonListItem>
+        <div class="texts-pane">
+          <h2>Texts</h2>
+          <ol class="text-list" v-if="collection.texts.length>0">
+            <li v-for="text in collection.texts" :key="text.id" class="text">
+              <TextListItem class="text-list-item" :text="{...text, collection}" :showCollection="false">
+              </TextListItem>
             </li>
           </ol>
-          <EmptyScreen v-else message="No lessons in collection"></EmptyScreen>
+          <EmptyScreen v-else message="No texts in collection"></EmptyScreen>
         </div>
       </div>
     </template>
@@ -39,9 +39,9 @@
 
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
-import LessonListItem from "@/components/shared/content/LessonListItem.vue";
+import TextListItem from "@/components/shared/content/TextListItem.vue";
 import {useCollectionStore} from "@/stores/backend/collectionStore.js";
-import {useLessonStore} from "@/stores/backend/lessonStore.js";
+import {useTextStore} from "@/stores/backend/textStore.js";
 import {CollectionSchema} from "dzelda-common";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
@@ -52,7 +52,7 @@ import {PropType} from "vue";
 
 export default {
   name: "CollectionPage",
-  components: {BaseImage, EmptyScreen, InlineSvg, LessonListItem, BaseCard},
+  components: {BaseImage, EmptyScreen, InlineSvg, TextListItem, BaseCard},
   props: {
     pathParams: {type: Object as PropType<{ collectionId: number }>, required: true}
   },
@@ -83,7 +83,7 @@ export default {
     return {
       icons,
       collectionStore: useCollectionStore(),
-      lessonStore: useLessonStore(),
+      textStore: useTextStore(),
       userStore: useUserStore(),
     };
   }
@@ -123,7 +123,7 @@ export default {
 
 }
 
-.lessons-pane {
+.texts-pane {
   flex: 3;
   display: flex;
   flex-direction: column;
@@ -182,7 +182,7 @@ h3 {
   font-weight: bold;
 }
 
-.lesson-list {
+.text-list {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
@@ -203,7 +203,7 @@ h3 {
     flex-grow: 1;
   }
 
-  .lesson-list-item:deep(.image) {
+  .text-list-item:deep(.image) {
     width: 175px;
     height: 175px;
   }

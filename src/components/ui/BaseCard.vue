@@ -4,6 +4,7 @@
       <slot name="header">
         <header class="base-card-header">
           <h2>{{ title }}</h2>
+          <h3>{{ subtitle }}</h3>
         </header>
       </slot>
       <slot name="content"></slot>
@@ -15,11 +16,8 @@ export default {
   name: "BaseCard",
   components: {},
   props: {
-    title: {
-      type: String,
-      required: false,
-      default: "",
-    },
+    title: {type: String, default: "",},
+    subtitle: {type: String, default: ""},
   },
 };
 </script>
@@ -39,5 +37,11 @@ header {
 h2 {
   font-size: 2rem;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin-bottom: 0.5rem;
+}
+h3{
+  font-size: 1.25rem;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: gray;
 }
 </style>

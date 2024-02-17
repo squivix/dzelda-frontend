@@ -11,7 +11,7 @@ export const generatePaginationQueryParams = (pageSizes: number[]) => {
         }
     }
 };
-export const lessonFilters = {};
+export const textFilters = {};
 export const collectionFilters = {
     level: {
         schema: z.union([

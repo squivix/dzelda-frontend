@@ -6,19 +6,19 @@ import {escapeRegExp} from "dzelda-common/build/src/utils/utils.js";
 
 export const useVocabStoreMock = defineStore("vocabStoreMock", {
         actions: {
-            async fetchLessonVocabs(pathParams: { lessonId: number }, queryParams: {}) {
+            async fetchTextVocabs(pathParams: { textId: number }, queryParams: {}) {
                 const localPreviewStore = useLocalPreviewStore();
                 const previewDb = await localPreviewStore.getPreviewDb();
 
-                const lesson = await previewDb.get("lessons", pathParams.lessonId);
-                if (!lesson)
+                const text = await previewDb.get("texts", pathParams.textId);
+                if (!text)
                     return;
-                const lessonVocabs = await localPreviewStore.populateIdsArray(lesson.vocabs, "vocabs");
-                for (const vocab of lessonVocabs) {
+                const textVocabs = await localPreviewStore.populateIdsArray(text.vocabs, "vocabs");
+                for (const vocab of textVocabs) {
                     vocab.meanings = await previewDb.getAllFromIndex("meanings", "vocabIndex", vocab.id);
                     vocab.learnerMeanings = await localPreviewStore.populateIdsArray(vocab.learnerMeanings, "meanings");
                 }
-                return lessonVocabs;
+                return textVocabs;
             },
             async addVocabToUser(body: { vocabId: number, level?: VocabLevelSchema }) {
                 return await this.updateUserVocab({vocabId: body.vocabId}, {level: body.level ?? VocabLevelSchema.LEVEL1});
@@ -56,7 +56,7 @@ export const useVocabStoreMock = defineStore("vocabStoreMock", {
                     isPhrase: body.isPhrase,
                     language: body.languageCode,
                     learnersCount: 0,
-                    lessonsCount: 0,
+                    textsCount: 0,
                     level: VocabLevelSchema.NEW,
                     notes: null,
                     learnerMeanings: [],
@@ -64,12 +64,12 @@ export const useVocabStoreMock = defineStore("vocabStoreMock", {
                 };
                 await previewDb.add("vocabs", newVocab);
 
-                const allLessons = await previewDb.getAllFromIndex("lessons", "languageIndex", newVocab.language);
+                const allTexts = await previewDb.getAllFromIndex("texts", "languageIndex", newVocab.language);
                 const vocabFindRegex = new RegExp(`(\\s|^)${escapeRegExp(newVocab.text)}(\\s|$)`);
-                for (const lesson of allLessons) {
-                    if (lesson.parsedTitle.match(vocabFindRegex) || lesson.parsedText.match(vocabFindRegex)) {
-                        lesson.vocabs.push(newVocab.id);
-                        await previewDb.put("lessons", lesson);
+                for (const text of allTexts) {
+                    if (text.parsedTitle.match(vocabFindRegex) || text.parsedContent.match(vocabFindRegex)) {
+                        text.vocabs.push(newVocab.id);
+                        await previewDb.put("texts", text);
                     }
                 }
                 return newVocab;

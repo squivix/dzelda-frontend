@@ -1,27 +1,27 @@
 <template>
-  <LoadingScreen v-if="isLoading||!lessonTokens"/>
-  <BaseCard class="base-card unselectable" v-else-if="lesson">
+  <LoadingScreen v-if="isLoading||!textTokens"/>
+  <BaseCard class="base-card unselectable" v-else-if="text">
     <template v-slot:all>
       <div class="top-div">
         <div class="main-reader">
           <PagePanelButton :disabled="currentPage==1" :iconSrc="icons.arrowLeft" @click="currentPage--" class="left-button"/>
-          <LessonContent ref="lessonContentRef"
+          <TextMainPane ref="textContentRef"
                          :page="currentPage"
-                         :lessonTokens="lessonTokens"
+                         :textTokens="textTokens"
                          :currentPage="textTokenPages[currentPage-1]"
                          :selectedTokens="isSelectedNewPhrase?[]:selectedTokens"
                          :image="imageUrl"
                          :words="words"
                          :phrases="phrases"
                          :showTopBar="currentPage==1"
-                         class="lesson-content"
+                         class="text-main-pane"
                          @onWordClicked="setSelectedTokens"
                          @onPhraseClicked="setSelectedTokens"
                          @onNewPhraseSelected="setSelectedTokens"
                          @onOverLappingPhrasesClicked="showOverlappingPhrases"
                          @onBackgroundClicked="clearSelectedTokens"/>
           <PagePanelButton v-if="currentPage<textTokenPages.length" :iconSrc="icons.arrowRight" @click="currentPage++" class="right-button"/>
-          <PagePanelButton v-else :disabled="!showDoneButton" :iconSrc="icons.checkMark" @onClick="finishLesson" class="right-button"/>
+          <PagePanelButton v-else :disabled="!showDoneButton" :iconSrc="icons.checkMark" @onClick="finishText" class="right-button"/>
         </div>
         <ReaderSidePanel class="side-panel"
                          :selectedOverLappingPhrasesTokens="selectedOverLappingPhrasesTokens"
@@ -36,7 +36,7 @@
         </ReaderSidePanel>
       </div>
       <div class="bottom-div">
-        <div v-if="lesson.audio">
+        <div v-if="text.audio">
           <audio controls :src="audioUrl">
             Your browser does not support the audio element.
           </audio>
@@ -53,42 +53,42 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import PageIndicator from "@/components/page/reader/PageIndicator.vue";
 import ReaderSidePanel from "@/components/page/reader/ReaderSidePanel.vue";
 import PagePanelButton from "@/components/page/reader/PagePanelButton.vue";
-import LessonContent from "@/components/page/reader/LessonContent.vue";
-import {getParser, LearnerVocabSchema, LessonSchema, TokenWithPhrases, TokeObjectPhrases, VocabLevelSchema} from "dzelda-common";
+import {getParser, LearnerVocabSchema, TextSchema, TokenWithPhrases, TokeObjectPhrases, VocabLevelSchema} from "dzelda-common";
 import {icons} from "@/icons.js";
-import {useLessonStore} from "@/stores/backend/lessonStore.js";
+import {useTextStore} from "@/stores/backend/textStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
+import TextMainPane from "@/components/page/reader/TextMainPane.vue";
 
 export type NewVocab = Omit<LearnerVocabSchema, "id">
-export type LessonTokenObject = Omit<TokenWithPhrases, "phrases"> & {
+export type TextTokenObject = Omit<TokenWithPhrases, "phrases"> & {
   index: number,
   parsedText: string,
   phrases: Array<TokeObjectPhrases[number] & { phraseId: number }>
 }
 export default defineComponent({
-  name: "LessonReader",
-  components: {LoadingScreen, LessonContent, PagePanelButton, ReaderSidePanel, PageIndicator, BaseCard},
+  name: "Reader",
+  components: {LoadingScreen, TextMainPane, PagePanelButton, ReaderSidePanel, PageIndicator, BaseCard},
   props: {
     languageCode: {type: String, required: true},
-    lessonId: {type: Number, required: true},
+    textId: {type: Number, required: true},
     tokenMinGroupSize: {type: Number, default: 100},
     tokenMaxGroupSize: {type: Number, default: 250},
     showDoneButton: {type: Boolean, default: true},
   },
   data() {
     return {
-      lesson: null as LessonSchema | null,
+      text: null as TextSchema | null,
       words: {} as Record<string, LearnerVocabSchema>,
       phrases: {} as Record<string, LearnerVocabSchema>,
-      selectedTokens: [] as LessonTokenObject[],
-      selectedOverLappingPhrasesTokens: null as LessonTokenObject[][] | null,
-      lessonTokens: null as { title: LessonTokenObject[], text: LessonTokenObject[] } | null,
+      selectedTokens: [] as TextTokenObject[],
+      selectedOverLappingPhrasesTokens: null as TextTokenObject[][] | null,
+      textTokens: null as { title: TextTokenObject[], text: TextTokenObject[] } | null,
       matchIndexToTokenIndex: {title: {}, text: {}} as { title: Record<number, number>, text: Record<number, number> },
       currentPage: 1,
-      isLoadingLesson: true,
+      isLoadingText: true,
       isLoadingWords: true,
-      isParsingLesson: true,
+      isParsingText: true,
     };
   },
   computed: {
@@ -99,15 +99,15 @@ export default defineComponent({
     //Lower max group size means less performance problems but more pages
     //Solution is probably to rewrite the grouping algorithm
     textTokenPages() {
-      const tokenPages: LessonTokenObject[][] = [];
-      if (!this.lessonTokens)
+      const tokenPages: TextTokenObject[][] = [];
+      if (!this.textTokens)
         return tokenPages;
       // group tokens into pages preferring line endings as borders between them
       let lastNewLineIndex = -1;
       let pageStartIndex = 0;
       let nonNewLineTokensCounter = 0;
-      for (let i = 0; i < this.lessonTokens.text.length; i++) {
-        if (this.lessonTokens.text[i].text == "\n")
+      for (let i = 0; i < this.textTokens.text.length; i++) {
+        if (this.textTokens.text[i].text == "\n")
           lastNewLineIndex = i;
         else
           nonNewLineTokensCounter++;
@@ -118,12 +118,12 @@ export default defineComponent({
             lastNewLineIndex = -1;
           } else
             groupEndIndex = pageStartIndex + this.tokenMinGroupSize;
-          tokenPages.push(this.lessonTokens.text.slice(pageStartIndex, groupEndIndex));
+          tokenPages.push(this.textTokens.text.slice(pageStartIndex, groupEndIndex));
           pageStartIndex = groupEndIndex;
         }
       }
       //last page
-      tokenPages.push(this.lessonTokens.text.slice(pageStartIndex));
+      tokenPages.push(this.textTokens.text.slice(pageStartIndex));
       return tokenPages;
     },
     selectedVocab() {
@@ -143,7 +143,7 @@ export default defineComponent({
           level: VocabLevelSchema.NEW,
           isPhrase: true,
           notes: null,
-          language: this.lesson!.language,
+          language: this.text!.language,
           meanings: [],
           learnerMeanings: [],
           ttsPronunciations: [],
@@ -155,75 +155,75 @@ export default defineComponent({
       return (this.selectedVocab.isPhrase && this.selectedVocab.level == VocabLevelSchema.NEW);
     },
     isLoading() {
-      return this.isLoadingLesson || this.isLoadingWords || this.isParsingLesson;
+      return this.isLoadingText || this.isLoadingWords || this.isParsingText;
     },
     imageUrl() {
-      return (this.lesson!.image || this.lesson!.collection?.image) ?? "";
+      return (this.text!.image || this.text!.collection?.image) ?? "";
     },
     audioUrl() {
-      return this.lesson?.audio ?? "";
+      return this.text?.audio ?? "";
     },
   },
   watch: {
-    async lessonId() {
-      await this.fetchLesson();
-      if (this.lesson!.language !== this.languageCode) {
+    async textId() {
+      await this.fetchText();
+      if (this.text!.language !== this.languageCode) {
         await this.$router.push({name: "not-found"});
         return;
       }
-      await this.lessonStore.addLessonToUserHistory({lessonId: this.lessonId});
-      await this.fetchLessonVocabs();
-      this.parseLesson();
+      await this.textStore.addTextToUserHistory({textId: this.textId});
+      await this.fetchTextVocabs();
+      this.parseText();
     }
   },
   async mounted() {
-    await this.fetchLesson();
-    if (this.lesson!.language !== this.languageCode) {
+    await this.fetchText();
+    if (this.text!.language !== this.languageCode) {
       await this.$router.push({name: "not-found"});
       return;
     }
-    await this.lessonStore.addLessonToUserHistory({lessonId: this.lessonId});
-    await this.fetchLessonVocabs();
-    this.parseLesson();
+    await this.textStore.addTextToUserHistory({textId: this.textId});
+    await this.fetchTextVocabs();
+    this.parseText();
   },
   methods: {
-    async fetchLesson() {
-      this.isLoadingLesson = true;
-      this.lesson = await this.lessonStore.fetchLesson({lessonId: this.lessonId});
-      this.lesson.text = this.lesson.text.replace(/[\r\n]{3,}/g, "\n\n");
-      this.isLoadingLesson = false;
+    async fetchText() {
+      this.isLoadingText = true;
+      this.text = await this.textStore.fetchText({textId: this.textId});
+      this.text.content = this.text.content.replace(/[\r\n]{3,}/g, "\n\n");
+      this.isLoadingText = false;
     },
-    async finishLesson() {
-      if (this.lesson!.collection && !this.lesson!.isLastInCollection) {
-        const lesson = await this.lessonStore.fetchNextLesson({
-          collectionId: this.lesson!.collection?.id,
-          lessonId: this.lesson!.id
+    async finishText() {
+      if (this.text!.collection && !this.text!.isLastInCollection) {
+        const text = await this.textStore.fetchNextText({
+          collectionId: this.text!.collection?.id,
+          textId: this.text!.id
         });
-        await this.$router.push({params: {lessonId: lesson!.id}});
+        await this.$router.push({params: {textId: text!.id}});
       } else
         this.$router.push({name: "home"});
     },
-    async fetchLessonVocabs() {
+    async fetchTextVocabs() {
       this.isLoadingWords = true;
-      const lessonVocabs = await this.vocabStore.fetchLessonVocabs({lessonId: this.lessonId}, {});
+      const textVocabs = await this.vocabStore.fetchTextVocabs({textId: this.textId}, {});
       const words: Record<string, LearnerVocabSchema> = {};
       const phrases: Record<string, LearnerVocabSchema> = {};
-      let hasAudioCounter = 0, totalCouner = 0;
-      for (const vocab of lessonVocabs) {
+      let hasAudioCounter = 0, totalCounter = 0;
+      for (const vocab of textVocabs) {
         if (!vocab.isPhrase)
           words[vocab.text] = vocab;
         else
           phrases[vocab.text] = vocab;
         if (vocab.ttsPronunciations.length > 0)
           hasAudioCounter++;
-        totalCouner++;
+        totalCounter++;
       }
-      console.log(`${hasAudioCounter}/${totalCouner} (${(hasAudioCounter / totalCouner) * 100}%)`);
+      console.log(`${hasAudioCounter}/${totalCounter} (${(hasAudioCounter / totalCounter) * 100}%)`);
       this.words = words;
       this.phrases = phrases;
       this.isLoadingWords = false;
     },
-    setSelectedTokens(selectedTokens: LessonTokenObject[]) {
+    setSelectedTokens(selectedTokens: TextTokenObject[]) {
       this.selectedTokens = selectedTokens;
       this.selectedOverLappingPhrasesTokens = null;
     },
@@ -231,17 +231,17 @@ export default defineComponent({
       this.selectedTokens = [];
       this.selectedOverLappingPhrasesTokens = null;
     },
-    showOverlappingPhrases(overlappingPhrasesTokens: LessonTokenObject[][]) {
+    showOverlappingPhrases(overlappingPhrasesTokens: TextTokenObject[][]) {
       this.clearSelectedTokens();
       this.selectedOverLappingPhrasesTokens = overlappingPhrasesTokens;
     },
     onNewVocabCreated(vocab: LearnerVocabSchema) {
       if (vocab.isPhrase) {
         this.phrases[vocab.text] = vocab;
-        this.parsePhraseInTokens(this.lesson!.parsedTitle!, this.matchIndexToTokenIndex.title, this.lessonTokens!.title, vocab.text);
-        this.parsePhraseInTokens(this.lesson!.parsedText!, this.matchIndexToTokenIndex.text, this.lessonTokens!.text, vocab.text);
-        if (this.$refs.lessonContentRef)
-          (this.$refs.lessonContentRef as InstanceType<typeof LessonContent>).clearTokenTextSelection();
+        this.parsePhraseInTokens(this.text!.parsedTitle!, this.matchIndexToTokenIndex.title, this.textTokens!.title, vocab.text);
+        this.parsePhraseInTokens(this.text!.parsedContent!, this.matchIndexToTokenIndex.text, this.textTokens!.text, vocab.text);
+        if (this.$refs.textContentRef)
+          (this.$refs.textContentRef as InstanceType<typeof TextMainPane>).clearTokenTextSelection();
       }
     },
     updateVocabData(vocab: LearnerVocabSchema, updatedVocabData: Partial<LearnerVocabSchema>) {
@@ -280,16 +280,16 @@ export default defineComponent({
       else
         this.words[updatedVocab.text] = updatedVocab;
     },
-    parseLesson() {
-      this.isParsingLesson = true;
-      const titleTokens = this.parseStringToTokens(this.lesson!.title, this.matchIndexToTokenIndex.title, 0);
-      const textTokens = this.parseStringToTokens(this.lesson!.text, this.matchIndexToTokenIndex.text, titleTokens.length);
-      this.lessonTokens = {title: titleTokens, text: textTokens};
-      this.isParsingLesson = false;
+    parseText() {
+      this.isParsingText = true;
+      const titleTokens = this.parseStringToTokens(this.text!.title, this.matchIndexToTokenIndex.title, 0);
+      const textTokens = this.parseStringToTokens(this.text!.content, this.matchIndexToTokenIndex.text, titleTokens.length);
+      this.textTokens = {title: titleTokens, text: textTokens};
+      this.isParsingText = false;
     },
-    parseStringToTokens(text: string, matchIndexToTokenIndex: Record<number, number>, firstIndex: number): LessonTokenObject[] {
-      const parser = getParser(this.lesson!.language);
-      const tokens = parser.detectPhrases(text, Object.keys(this.phrases)) as LessonTokenObject[];
+    parseStringToTokens(text: string, matchIndexToTokenIndex: Record<number, number>, firstIndex: number): TextTokenObject[] {
+      const parser = getParser(this.text!.language);
+      const tokens = parser.detectPhrases(text, Object.keys(this.phrases)) as TextTokenObject[];
       let matchIndex = 0;
       for (let i = 0; i < tokens.length; i++) {
         if (tokens[i].isWord) {
@@ -303,7 +303,7 @@ export default defineComponent({
       }
       return tokens;
     },
-    parsePhraseInTokens(parsedText: string, matchIndexToTokenIndex: Record<number, number>, tokens: LessonTokenObject[], phraseText: string) {
+    parsePhraseInTokens(parsedText: string, matchIndexToTokenIndex: Record<number, number>, tokens: TextTokenObject[], phraseText: string) {
       //detect every phrase surrounded by non letters and non-numbers
       const regex = new RegExp(`(?=((?<=\\s|^)${phraseText}(?=\\s|$)))`, "gu");
       const phraseWords = phraseText.split(" ");
@@ -330,7 +330,7 @@ export default defineComponent({
   setup() {
     return {
       icons,
-      lessonStore: inject<ReturnType<typeof useLessonStore>>("lessonStore", useLessonStore()),
+      textStore: inject<ReturnType<typeof useTextStore>>("textStore", useTextStore()),
       vocabStore: inject<ReturnType<typeof useVocabStore>>("vocabStore", useVocabStore()),
     };
   }
@@ -360,7 +360,7 @@ export default defineComponent({
   column-gap: 0.75rem;
 }
 
-.lesson-content {
+.text-main-pane {
   width: 100%;
 }
 
@@ -409,7 +409,7 @@ audio {
     column-gap: 0;
   }
 
-  .lesson-content {
+  .text-main-pane {
 
     grid-column: 1 / span 3;
   }

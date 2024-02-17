@@ -14,7 +14,7 @@ import {defineComponent, PropType} from "vue";
 import {LearnerVocabSchema} from "dzelda-common";
 import BaseToken from "@/components/page/reader/BaseToken.vue";
 import {getLevelClass} from "@/utils.js";
-import {LessonTokenObject} from "@/components/shared/LessonReader.vue";
+import {TextTokenObject} from "@/components/shared/Reader.vue";
 
 export default defineComponent({
   name: "OverlappingPhrase",
@@ -22,7 +22,7 @@ export default defineComponent({
   emits: ["onPhraseClick"],
   props: {
     phrase: {type: Object as PropType<LearnerVocabSchema>, required: true},
-    phraseTokens: {type: Object as PropType<LessonTokenObject[]>, required: true},
+    phraseTokens: {type: Object as PropType<TextTokenObject[]>, required: true},
   },
   computed: {
     phraseOccurrenceIndex() {

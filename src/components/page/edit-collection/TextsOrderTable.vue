@@ -1,6 +1,6 @@
 <template>
   <div class="table-wrapper styled-scrollbars">
-    <table id="lesson-table" class="">
+    <table id="text-table" class="">
       <thead>
       <tr>
         <th class="centered-col">Drag</th>
@@ -9,19 +9,19 @@
       </thead>
 
       <VueDraggable tag="tbody"
-                    class="lesson-tbody"
+                    class="text-tbody"
                     handle=".handle"
                     animation="200"
                     ghostClass="ghost"
                     dragClass="invisible"
                     :modelValue="modelValue"
                     @update:model-value="newValue => $emit('update:modelValue',newValue)">
-        <tr v-for="lesson in modelValue" :key="lesson.id">
+        <tr v-for="text in modelValue" :key="text.id">
           <td class="handle centered-col">
             <inline-svg :src="icons.dragBars"/>
           </td>
           <td>
-            {{ lesson.title }}
+            {{ text.title }}
           </td>
         </tr>
       </VueDraggable>
@@ -34,13 +34,13 @@ import {defineComponent, PropType} from "vue";
 import {VueDraggableNext as VueDraggable} from "vue-draggable-next";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import {LessonSchema} from "dzelda-common";
+import {TextSchema} from "dzelda-common";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 
 export default defineComponent({
-  name: "LessonOrderTable",
+  name: "TextsOrderTable",
   components: {EmptyScreen, InlineSvg, VueDraggable},
-  props: {modelValue: {type: Object as PropType<LessonSchema[] | undefined>}},
+  props: {modelValue: {type: Object as PropType<TextSchema[] | undefined>}},
   data() {
     return {};
   },
@@ -56,8 +56,7 @@ export default defineComponent({
   max-height: 200px;
 }
 
-#lesson-table {
-
+#text-table {
   font-size: 1rem;
   width: 100%;
 }
@@ -86,11 +85,11 @@ th {
   padding: 0.1rem 1rem;
 }
 
-.lesson-tbody tr:nth-child(odd) {
+.text-tbody tr:nth-child(odd) {
   background-color: var(--zebra-stripe-color);
 }
 
-.lesson-tbody {
+.text-tbody {
 }
 
 td {

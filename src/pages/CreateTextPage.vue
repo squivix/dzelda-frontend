@@ -1,31 +1,33 @@
 <template>
-  <BaseCard title="Edit Lesson" class="edit-lesson-base-card main-page-base-card">
+  <BaseCard class="add-text-base-card main-page-base-card"
+            title="Add Text"
+            subtitle="Import the text of an article, a book chapter, a video transcript or anything else you want to read">
     <template v-slot:content>
-      <LoadingScreen v-if="!lesson"/>
-      <form class="edit-lesson-form" @submit.prevent="updateLesson" v-else>
+      <form class="create-text-form" @submit.prevent="addText">
         <div class="side-inputs">
           <div class="form-row">
             <label>Image</label>
-            <ImageUploadInput id="lesson-image-input" fileTitle="lesson image" :oldImageUrl="lesson.image" :fallback="icons.bookOpen"
+            <ImageUploadInput id="text-image-input" fileTitle="text image" :fallback="icons.bookOpen"
                               v-model="image"
                               :maxFileSizeInBytes="500_000"/>
             <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
           </div>
           <div class="form-row">
             <label>Audio</label>
-            <AudioUploadInput id="lesson-audio-input" fileTitle="lesson audio" :oldAudioUrl="lesson.audio" v-model="audio"
+            <AudioUploadInput id="text-audio-input" fileTitle="text audio" v-model="audio"
                               :maxFileSizeInBytes="100_000_000"/>
             <p v-if="errorFields.audio" class="error-message">{{ errorFields.audio }}</p>
           </div>
           <div class="form-row">
-            <label for="lesson-collection">Collection</label>
-            <select required id="lesson-collection" v-model="selectedCollection">
+            <label for="text-collection">Collection</label>
+            <select required id="text-collection" v-model="selectedCollection">
               <option :value="null" selected>None</option>
               <option v-for="collection in editableCollections" :key="collection.id" :value="collection.id">{{ collection.title }}</option>
               <option value="new-collection">New Collection</option>
             </select>
             <p v-if="errorFields.collectionId" class="error-message">{{ errorFields.collectionId }}</p>
           </div>
+
           <div class="form-row">
             <label>Level</label>
             <select v-model="level">
@@ -35,15 +37,21 @@
         </div>
         <div class="main-inputs">
           <div class="form-row">
-            <label for="lesson-title">Title</label>
-            <input id="lesson-title" type="text" placeholder="Lesson Title" v-model="title" required maxlength="124">
+            <label for="text-title">Title</label>
+            <input id="text-title" type="text" placeholder="Enter the title" v-model="title" required maxlength="124">
             <p v-if="errorFields.title" class="error-message">{{ errorFields.title }}</p>
           </div>
           <div class="form-row">
-            <label for="lesson-text">Text</label>
-            <textarea placeholder="Lesson Text" id="lesson-text" v-model="text" required></textarea>
-            <p v-if="text.length>25_000" class="warning-message">Long lessons are always slower, consider splitting into
-              multiple lessons</p>
+            <label for="text-text">Text</label>
+            <textarea placeholder="Enter the text" id="text-content" v-model="content" required></textarea>
+            <p v-if="content.length>25_000" class="warning-message">
+              <template v-if="isSubmitting">
+                Please be patient...
+              </template>
+              <template v-else>
+                Long texts are always slower, consider splitting into multiple texts
+              </template>
+            </p>
             <p v-if="errorFields.text" class="error-message">{{ errorFields.text }}</p>
           </div>
           <label for="is-public-checkbox" class="checkbox-label">
@@ -61,7 +69,7 @@
         </div>
       </form>
       <BaseDialog :isOpen="isCreateCollectionDialogShown" @onDismissed="onCreateCollectionDialogDismissed">
-        <h2>Add Collection</h2>
+        <h2>Create Collection</h2>
         <CreateCollectionForm @onCollectionCreated="onCollectionCreated"/>
       </BaseDialog>
     </template>
@@ -69,38 +77,37 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
-import AudioUploadInput from "@/components/shared/AudioUploadInput.vue";
-import SubmitButton from "@/components/ui/SubmitButton.vue";
 import BaseCard from "@/components/ui/BaseCard.vue";
-import CreateCollectionForm from "@/components/shared/create-collection/CreateCollectionForm.vue";
-import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
-import BaseDialog from "@/components/ui/BaseDialog.vue";
-import {CollectionSchema, LanguageLevelSchema, LessonSchema} from "dzelda-common";
-import {toSentenceCase} from "@/utils.js";
-import path from "path";
-import {icons} from "@/icons.js";
-import {LANGUAGE_LEVELS} from "@/constants.js";
-import {useStore} from "@/stores/backend/rootStore.js";
 import {useCollectionStore} from "@/stores/backend/collectionStore.js";
-import {useLessonStore} from "@/stores/backend/lessonStore.js";
+import {useTextStore} from "@/stores/backend/textStore.js";
+import {useStore} from "@/stores/backend/rootStore.js";
+import {CollectionSchema, LanguageLevelSchema} from "dzelda-common";
 import {useUserStore} from "@/stores/backend/userStore.js";
-import LoadingScreen from "@/components/shared/LoadingScreen.vue";
+import {icons} from "@/icons.js";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
+import {PropType} from "vue";
+import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
+import AudioUploadInput from "@/components/shared/AudioUploadInput.vue";
+import path from "path";
+import {LANGUAGE_LEVELS} from "@/constants.js";
+import {toSentenceCase} from "../utils.js";
+import BaseDialog from "@/components/ui/BaseDialog.vue";
+import CreateCollectionForm from "@/components/shared/create-collection/CreateCollectionForm.vue";
 
-export default defineComponent({
-  name: "UpdateLessonPage",
-  components: {LoadingScreen, BaseDialog, ImageUploadInput, CreateCollectionForm, BaseCard, SubmitButton, AudioUploadInput},
+export default {
+  name: "CreateTextPage",
+  components: {CreateCollectionForm, BaseDialog, AudioUploadInput, ImageUploadInput, SubmitButton, BaseCard},
   props: {
-    pathParams: {type: Object as PropType<{ learningLanguage: string, lessonId: number }>, required: true},
+    pathParams: {type: Object as PropType<{ learningLanguage: string }>, required: true},
+    queryParams: {type: Object as PropType<{ collectionId?: number }>, required: true}
   },
   data() {
     return {
-      lesson: null as LessonSchema | null,
       editableCollections: null as CollectionSchema[] | null,
-      selectedCollection: null as number  | null,
+      selectedCollection: null as number | null,
       title: "",
-      text: "",
-      level: undefined as LanguageLevelSchema | undefined,
+      content: "",
+      level: LanguageLevelSchema.ADVANCED1,
       isPublic: true,
       image: undefined as Blob | undefined,
       audio: undefined as File | undefined,
@@ -111,21 +118,13 @@ export default defineComponent({
     };
   },
   watch: {
-    selectedCollection(newVal) {
+    selectedCollection(newVal: string) {
       if (newVal === "new-collection")
         this.isCreateCollectionDialogShown = true;
     },
   },
   methods: {
     toSentenceCase,
-    async fetchLesson() {
-      this.lesson = await this.lessonStore.fetchLesson({lessonId: this.pathParams.lessonId});
-      this.title = this.lesson.title;
-      this.text = this.lesson.text;
-      this.level = this.lesson.level;
-      this.isPublic = this.lesson.isPublic;
-      this.selectedCollection = this.lesson?.collection?.id ?? null;
-    },
     async fetchEditableCollections() {
       const response = await this.collectionStore.fetchCollections({
         languageCode: this.pathParams.learningLanguage,
@@ -133,14 +132,14 @@ export default defineComponent({
       }, {secure: true});
       this.editableCollections = response.data;
     },
-    async updateLesson() {
+    async addText() {
       this.errorFields = {title: "", text: "", image: "", audio: "", collectionId: ""};
       this.isSubmitting = true;
       let imageUrl, audioUrl;
       if (this.image) {
         this.submittingMessage = "Uploading image";
         imageUrl = await this.store.uploadFile({
-          fileField: "lessonImage",
+          fileField: "textImage",
           fileExtension: ".jpg",
           file: new File([this.image], "image.jpg"),
         });
@@ -153,7 +152,7 @@ export default defineComponent({
       if (this.audio) {
         this.submittingMessage = "Uploading audio";
         audioUrl = await this.store.uploadFile({
-          fileField: "lessonAudio",
+          fileField: "textAudio",
           fileExtension: path.extname(this.audio.name),
           file: this.audio
         });
@@ -164,11 +163,12 @@ export default defineComponent({
       } else
         audioUrl = this.audio;
 
-      this.submittingMessage = "Updating lesson";
-      const response = await this.lessonStore.updateLesson({lessonId: this.lesson!.id}, {
+      this.submittingMessage = "Creating text";
+      const response = await this.textStore.createText({
         collectionId: this.selectedCollection,
+        languageCode: this.pathParams.learningLanguage,
         title: this.title,
-        text: this.text,
+        content: this.content,
         level: this.level,
         isPublic: this.isPublic,
         image: imageUrl,
@@ -176,13 +176,12 @@ export default defineComponent({
       });
       this.isSubmitting = false;
       if (response.ok) {
-        const lesson = response.data;
+        const text = response.data;
         await this.$router.push({
-          name: "lesson",
-          params: {lessonId: lesson.id}
+          name: "text",
+          params: {textId: text.id}
         });
       } else {
-        this.submittingMessage = undefined;
         if ("fields" in response.error)
           this.errorFields = response.error.fields as {
             title: string, text: string,
@@ -201,8 +200,10 @@ export default defineComponent({
     }
   },
   async mounted() {
-    await this.fetchLesson();
     await this.fetchEditableCollections();
+    if (this.editableCollections!.some(collection => collection.id == this.queryParams.collectionId))
+      this.selectedCollection = this.queryParams.collectionId!;
+    this.$router.replace({query: {...this.queryParams, collectionId: undefined}});
   },
   setup() {
     return {
@@ -211,15 +212,17 @@ export default defineComponent({
       LANGUAGE_LEVELS,
       store: useStore(),
       collectionStore: useCollectionStore(),
-      lessonStore: useLessonStore(),
+      textStore: useTextStore(),
       userStore: useUserStore(),
     };
   }
-});
+};
+
+
 </script>
 
 <style scoped>
-.edit-lesson-base-card {
+.add-text-base-card {
   display: flex;
   flex-direction: column;
   row-gap: 1.25rem;
@@ -227,7 +230,7 @@ export default defineComponent({
   align-items: stretch;
 }
 
-.edit-lesson-base-card:deep(header) {
+.add-text-base-card:deep(header) {
   margin-bottom: 1rem;
 }
 
@@ -263,6 +266,7 @@ label {
 }
 
 input, select, textarea {
+
   font-size: 1rem;
 }
 
@@ -271,7 +275,7 @@ select {
   text-overflow: ellipsis;
 }
 
-#lesson-text {
+#text-content {
   resize: none;
   height: 35vh;
 }
@@ -290,7 +294,7 @@ select {
 }
 
 @media screen and (max-width: 750px) {
-  .edit-lesson-form {
+  .create-text-form {
     flex-direction: column;
   }
 

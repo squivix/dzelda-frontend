@@ -22,7 +22,7 @@
 import {defineComponent, PropType} from "vue";
 import InlineSvg from "vue-inline-svg";
 import {LearnerVocabSchema} from "dzelda-common";
-import {NewVocab} from "@/components/shared/LessonReader.vue";
+import {NewVocab} from "@/components/shared/Reader.vue";
 import {icons} from "@/icons.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";

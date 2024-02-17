@@ -21,13 +21,13 @@
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import {LessonTokenObject} from "@/components/shared/LessonReader.vue";
+import {TextTokenObject} from "@/components/shared/Reader.vue";
 
 
 export default defineComponent({
   name: "BaseToken",
   props: {
-    token: {type: Object as PropType<LessonTokenObject>, required: true},
+    token: {type: Object as PropType<TextTokenObject>, required: true},
     wrapperClass: {
       type: [String, Object, Array] as PropType<string | Record<string, boolean> | Array<string | Record<string, boolean>>>,
       default: ""

@@ -17,7 +17,7 @@
 
       <div class="right-side-div" v-if="userAccount?.isEmailConfirmed">
         <LanguageDropDown/>
-        <CreateLessonButton/>
+        <CreateTextButton/>
         <ProfileDropDown/>
       </div>
       <div v-else>
@@ -42,12 +42,12 @@ import InlineSvg from "vue-inline-svg";
 import NavBar from "@/components/layout/header/NavBar.vue";
 import NavDropDown from "@/components/layout/header/NavDropDown.vue";
 import LanguageDropDown from "@/components/layout/header/LanguageDropDown.vue";
-import CreateLessonButton from "@/components/layout/header/CreateLessonButton.vue";
 import ProfileDropDown from "@/components/layout/header/ProfileDropDown.vue";
+import CreateTextButton from "@/components/layout/header/CreateTextButton.vue";
 
 export default defineComponent({
   name: "AuthHeader",
-  components: {ProfileDropDown, CreateLessonButton, LanguageDropDown, NavDropDown, NavBar, BaseImage, BaseDropDown, InlineSvg},
+  components: {ProfileDropDown, CreateTextButton, LanguageDropDown, NavDropDown, NavBar, BaseImage, BaseDropDown, InlineSvg},
   data() {
     return {isNavBarExpanded: false};
   },

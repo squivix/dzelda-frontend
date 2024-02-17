@@ -14,10 +14,9 @@
 <script lang="ts">
 import {PropType} from "vue";
 import {LearnerVocabSchema} from "dzelda-common";
-import LessonToken from "@/components/page/reader/LessonToken.vue";
 import {token} from "@/router/queryParams.js";
 import OverlappingPhrase from "@/components/page/reader/OverlappingPhrase.vue";
-import {LessonTokenObject} from "@/components/shared/LessonReader.vue";
+import {TextTokenObject} from "@/components/shared/Reader.vue";
 
 export default {
   name: "OverlappingPhrasesPanel",
@@ -26,14 +25,14 @@ export default {
       return token;
     }
   },
-  components: {OverlappingPhrase, LessonToken},
+  components: {OverlappingPhrase},
   emits: ["onPhraseClick"],
   props: {
-    overLappingPhrasesTokens: {type: Array as PropType<LessonTokenObject[][]>, required: true},
+    overLappingPhrasesTokens: {type: Array as PropType<TextTokenObject[][]>, required: true},
     phrases: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
   },
   methods: {
-    onPhraseClick(phraseTokens: LessonTokenObject[]) {
+    onPhraseClick(phraseTokens: TextTokenObject[]) {
       this.$emit("onPhraseClick", phraseTokens);
     }
   }

@@ -29,7 +29,7 @@ import MeaningAddingControls from "@/components/shared/vocab-panel/MeaningAdding
 import DictionariesList from "@/components/shared/vocab-panel/DictionaryList.vue";
 import {PropType} from "vue";
 import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-common";
-import {NewVocab} from "@/components/shared/LessonReader.vue";
+import {NewVocab} from "@/components/shared/Reader.vue";
 
 export default {
   name: "NewVocabPanel",

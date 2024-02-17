@@ -1,25 +1,10 @@
 <template>
-  <div class="lesson-content" @mouseup="onMouseUp">
+  <div class="text-main-pane" @mouseup="onMouseUp">
     <div class="title-section" v-if="showTopBar">
       <BaseImage :image-url="image" :fall-back-url="icons.bookOpen"
-                 alt-text="lesson image" class="lesson-image"/>
+                 alt-text="text image" class="text-image"/>
       <h2 class="title">
-        <LessonToken v-for="(token, index) in lessonTokens.title"
-                     :key="index"
-                     :token="token"
-                     :word="words[token.parsedText!]"
-                     :phrases="token.phrases.map(pt=>phrases[pt.text])"
-                     :isPhraseFirstClick="isPhraseFirstClick"
-                     :isWordSelected="selectedTokenIndexes.size==1 && selectedTokenIndexes.has(token.index)"
-                     :isPhraseSelected="selectedTokenIndexes.size>1 && selectedTokenIndexes.has(token.index)"
-                     @onWordClicked="onWordClicked"
-                     @onPhraseClicked="onPhraseClicked"
-                     @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
-                     @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
-      </h2>
-    </div>
-    <p class="lesson-text styled-scrollbars" ref="paragraphRef">
-      <LessonToken v-for="(token, index) in currentPage"
+        <TextToken v-for="(token, index) in textTokens.title"
                    :key="index"
                    :token="token"
                    :word="words[token.parsedText!]"
@@ -31,6 +16,21 @@
                    @onPhraseClicked="onPhraseClicked"
                    @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
                    @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
+      </h2>
+    </div>
+    <p class="content styled-scrollbars" ref="paragraphRef">
+      <TextToken v-for="(token, index) in currentPage"
+                 :key="index"
+                 :token="token"
+                 :word="words[token.parsedText!]"
+                 :phrases="token.phrases.map(pt=>phrases[pt.text])"
+                 :isPhraseFirstClick="isPhraseFirstClick"
+                 :isWordSelected="selectedTokenIndexes.size==1 && selectedTokenIndexes.has(token.index)"
+                 :isPhraseSelected="selectedTokenIndexes.size>1 && selectedTokenIndexes.has(token.index)"
+                 @onWordClicked="onWordClicked"
+                 @onPhraseClicked="onPhraseClicked"
+                 @onOverLappingPhrasesClicked="onOverLappingPhrasesClicked"
+                 @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
     </p>
   </div>
 </template>
@@ -42,18 +42,18 @@ import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
 import {getTextSelectedElements} from "@/utils.js";
 import {useEventListener} from "@vueuse/core";
 import {icons} from "@/icons.js";
-import {LessonTokenObject} from "@/components/shared/LessonReader.vue";
-import LessonToken from "@/components/page/reader/LessonToken.vue";
+import {TextTokenObject} from "@/components/shared/Reader.vue";
+import TextToken from "@/components/page/reader/TextToken.vue";
 
 export default {
-  name: "LessonContent",
-  components: {LessonToken, BaseImage},
+  name: "TextMainPane",
+  components: {TextToken, BaseImage},
   emits: ["onWordClicked", "onPhraseClicked", "onOverLappingPhrasesClicked", "onNewPhraseSelected", "onBackgroundClicked", "onScroll"],
   props: {
-    lessonTokens: {type: Object as PropType<{ title: LessonTokenObject[], text: LessonTokenObject[] }>, required: true},
+    textTokens: {type: Object as PropType<{ title: TextTokenObject[], text: TextTokenObject[] }>, required: true},
     showTopBar: {type: Boolean, default: true},
-    currentPage: {type: Array as PropType<LessonTokenObject[]>, required: true},
-    selectedTokens: {type: Array as PropType<LessonTokenObject[]>, required: true},
+    currentPage: {type: Array as PropType<TextTokenObject[]>, required: true},
+    selectedTokens: {type: Array as PropType<TextTokenObject[]>, required: true},
     image: {type: String, required: true,},
     words: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true,},
     phrases: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
@@ -61,7 +61,7 @@ export default {
   data() {
     return {
       isPhraseFirstClick: true,
-      selectedTextTokens: [] as LessonTokenObject[],
+      selectedTextTokens: [] as TextTokenObject[],
     };
   },
   expose: ["clearTokenTextSelection"],
@@ -76,16 +76,16 @@ export default {
     }
   },
   methods: {
-    onWordClicked(word: LearnerVocabSchema, wordToken: LessonTokenObject) {
+    onWordClicked(word: LearnerVocabSchema, wordToken: TextTokenObject) {
       this.clearTokenTextSelection();
       this.$emit("onWordClicked", [wordToken]);
     },
-    onPhraseClicked(phrase: LearnerVocabSchema, clickedToken: LessonTokenObject) {
+    onPhraseClicked(phrase: LearnerVocabSchema, clickedToken: TextTokenObject) {
       this.clearTokenTextSelection();
       this.$emit("onPhraseClicked", this.getPhraseTokens(clickedToken, [phrase]));
     },
-    onOverLappingPhrasesClicked(phrases: LearnerVocabSchema[], clickedToken: LessonTokenObject) {
-      const phraseMap: Record<string, LessonTokenObject[]> = {};
+    onOverLappingPhrasesClicked(phrases: LearnerVocabSchema[], clickedToken: TextTokenObject) {
+      const phraseMap: Record<string, TextTokenObject[]> = {};
       const phraseTokens = this.getPhraseTokens(clickedToken, phrases);
       const phraseIds = new Set(phrases.map(p => p.id));
       for (const token of phraseTokens) {
@@ -102,7 +102,7 @@ export default {
       const completePhraseTokens = Object.values(phraseMap).filter(pts => pts.filter(t => t.isWord).map(t => t.parsedText).join(" ") in this.phrases);
       this.$emit("onOverLappingPhrasesClicked", completePhraseTokens);
     },
-    onNewPhraseSelected(newPhraseTokens: LessonTokenObject[]) {
+    onNewPhraseSelected(newPhraseTokens: TextTokenObject[]) {
       this.$emit("onNewPhraseSelected", newPhraseTokens);
     },
     onBackgroundClicked() {
@@ -119,7 +119,7 @@ export default {
       if (!selectedWrappers || selectedWrappers.length < 1)
         return;
       this.clearTokenTextSelection();
-      const selected: LessonTokenObject[] = [];
+      const selected: TextTokenObject[] = [];
       for (const wrapperElement of selectedWrappers) {
         wrapperElement.classList.add("text-selected");
         const token = this.getTokenFromIndex(Number(wrapperElement.dataset.tokenIndex));
@@ -141,13 +141,13 @@ export default {
         this.onNewPhraseSelected(this.selectedTextTokens);
     },
     getTokenFromIndex(tokenIndex: number) {
-      if (tokenIndex < this.lessonTokens.title.length)
-        return this.lessonTokens.title[tokenIndex];
+      if (tokenIndex < this.textTokens.title.length)
+        return this.textTokens.title[tokenIndex];
       else
-        return this.lessonTokens.text[tokenIndex - this.lessonTokens.title.length];
+        return this.textTokens.text[tokenIndex - this.textTokens.title.length];
     },
-    getPhraseTokens(clickedToken: LessonTokenObject, phrases: LearnerVocabSchema[]) {
-      const phraseTokens: LessonTokenObject[] = [];
+    getPhraseTokens(clickedToken: TextTokenObject, phrases: LearnerVocabSchema[]) {
+      const phraseTokens: TextTokenObject[] = [];
       const phraseIds = new Set<number>(phrases.map(p => p.id));
       document.querySelectorAll(clickedToken.phrases
           .filter(p => phraseIds.has(p.phraseId))
@@ -169,7 +169,7 @@ export default {
 };
 </script>
 <style scoped>
-.lesson-content {
+.text-main-pane {
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
@@ -182,7 +182,7 @@ export default {
   column-gap: 1rem;
 }
 
-.lesson-image {
+.text-image {
   width: 150px;
   height: 150px;
 }
@@ -192,7 +192,7 @@ export default {
   line-height: 2.75rem;
 }
 
-.lesson-text {
+.content {
   overflow-y: auto;
   overflow-x: hidden;
   padding-top: 0.5rem;
@@ -205,10 +205,11 @@ p {
 }
 
 @media screen and (max-width: 800px) {
-  .lesson-content{
+  .text-main-pane {
     padding-right: 20px;
   }
-  .lesson-image {
+
+  .text-image {
     width: 100px;
     height: 100px;
   }

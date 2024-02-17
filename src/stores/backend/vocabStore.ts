@@ -54,9 +54,9 @@ export const useVocabStore = defineStore("vocab", {
             const store = useStore();
             await store.fetchCustom((api) => api.users.deleteUsersMeVocabsVocabId(pathParams.vocabId));
         },
-        async fetchLessonVocabs(pathParams: { lessonId: number }, queryParams: {}) {
+        async fetchTextVocabs(pathParams: { textId: number }, queryParams: {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.lessons.getLessonsLessonIdVocabs(pathParams.lessonId, queryParams));
+            const response = await store.fetchCustom((api) => api.texts.getTextsTextIdVocabs(pathParams.textId, queryParams));
             return response.data;
         },
         async fetchSavedVocabsCountTimeSeries(pathParams: { username: string }, queryParams: {

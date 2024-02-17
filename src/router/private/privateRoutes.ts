@@ -1,8 +1,8 @@
 import ExplorePage from "@/pages/ExplorePage.vue";
 import MyLibraryPage from "@/pages/MyLibraryPage.vue";
 import MyVocabPage from "@/pages/MyVocabPage.vue";
-import LessonReaderPage from "@/pages/LessonReaderPage.vue";
-import CreateLessonPage from "@/pages/CreateLessonPage.vue";
+import ReaderPage from "@/pages/ReaderPage.vue";
+import CreateTextPage from "@/pages/CreateTextPage.vue";
 import CreateCollectionPage from "@/pages/CreateCollectionPage.vue";
 import CollectionPage from "@/pages/CollectionPage.vue";
 import UpdateCollectionPage from "@/pages/UpdateCollectionPage.vue";
@@ -22,12 +22,12 @@ import ExploreRecentTab from "@/components/page/explore/ExploreRecentTab.vue";
 import ExplorePopularTab from "@/components/page/explore/ExplorePopularTab.vue";
 import LibraryBookmarkedTab from "@/components/page/my-library/LibraryBookmarkedTab.vue";
 import LibraryImportedTab from "@/components/page/my-library/LibraryImportedTab.vue";
-import LessonHistoryTab from "@/components/page/my-library/LessonHistoryTab.vue";
+import LibraryHistoryTab from "@/components/page/my-library/LibraryHistoryTab.vue";
 import * as queryParams from "@/router/queryParams.js";
 import * as pathParams from "@/router/pathParams.js";
 import {excludeProperties} from "@/utils.js";
 import InterfaceTab from "@/components/page/settings/interface/InterfaceTab.vue";
-import UpdateLessonPage from "@/pages/UpdateLessonPage.vue";
+import UpdateTextPage from "@/pages/UpdateTextPage.vue";
 
 export const privateRoutes: RouteRecordRaw[] = [
     {
@@ -48,7 +48,7 @@ export const privateRoutes: RouteRecordRaw[] = [
             pathParams: {learningLanguage: pathParams.languageCode},
             queryParams: {
                 ...queryParams.generatePaginationQueryParams([5, 10, 25, 50, 100]),
-                ...queryParams.lessonFilters,
+                ...queryParams.textFilters,
                 searchQuery: queryParams.searchQuery
             },
         },
@@ -111,13 +111,13 @@ export const privateRoutes: RouteRecordRaw[] = [
             },
             {
                 path: "/learn/:learningLanguage/my-library/history",
-                component: LessonHistoryTab,
-                name: "my-library-lesson-history",
+                component: LibraryHistoryTab,
+                name: "my-library-history",
                 meta: {
                     pathParams: {learningLanguage: pathParams.languageCode},
                     queryParams: {
                         ...queryParams.generatePaginationQueryParams([5, 10, 25, 50, 100]),
-                        ...queryParams.lessonFilters,
+                        ...queryParams.textFilters,
                         searchQuery: queryParams.searchQuery
                     }
                 },
@@ -146,27 +146,27 @@ export const privateRoutes: RouteRecordRaw[] = [
         props: routeToProps,
     },
     {
-        path: "/learn/:learningLanguage/lessons/:lessonId",
-        component: LessonReaderPage,
-        name: "lesson",
+        path: "/learn/:learningLanguage/texts/:textId",
+        component: ReaderPage,
+        name: "text",
         meta: {
             pathParams: {
                 learningLanguage: pathParams.languageCode,
-                lessonId: pathParams.id
+                textId: pathParams.id
             }
         },
         props: routeToProps,
     },
     {
-        path: "/lessons/add",
-        component: CreateLessonPage,
-        name: "add-lesson",
+        path: "/texts/add",
+        component: CreateTextPage,
+        name: "add-text",
         meta: {redirToLanguageSpecific: true}
     },
     {
-        path: "/learn/:learningLanguage/lessons/add",
-        name: "add-lesson-lang",
-        component: CreateLessonPage,
+        path: "/learn/:learningLanguage/texts/add",
+        name: "add-text-lang",
+        component: CreateTextPage,
         meta: {
             queryParams: {
                 collectionId: pathParams.id
@@ -175,13 +175,13 @@ export const privateRoutes: RouteRecordRaw[] = [
         props: routeToProps,
     },
     {
-        path: "/learn/:learningLanguage/lessons/:lessonId/edit",
-        component: UpdateLessonPage,
-        name: "edit-lesson",
+        path: "/learn/:learningLanguage/texts/:textId/edit",
+        component: UpdateTextPage,
+        name: "edit-text",
         meta: {
             pathParams: {
                 learningLanguage: pathParams.languageCode,
-                lessonId: pathParams.id
+                textId: pathParams.id
             }
         },
         props: routeToProps,

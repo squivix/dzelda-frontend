@@ -9,7 +9,7 @@ export const useCollectionStore = defineStore("collection", {
             languageCode?: string,
             addedBy?: string,
             level?: string[],
-            sortBy?: "title" | "createdDate" | "avgPastViewersCountPerLesson",
+            sortBy?: "title" | "createdDate" | "avgPastViewersCountPerText",
             sortOrder?: "asc" | "desc",
             searchQuery?: string,
             page?: number,
@@ -66,7 +66,7 @@ export const useCollectionStore = defineStore("collection", {
             title: string,
             description: string,
             image: string | undefined,
-            lessonsOrder: number[]
+            textsOrder: number[]
         }) {
             useMessageBarStore().clearMessages();
             const store = useStore();
@@ -74,7 +74,7 @@ export const useCollectionStore = defineStore("collection", {
                 cleanUndefined({
                     title: body.title,
                     description: body.description,
-                    lessonsOrder: body.lessonsOrder,
+                    textsOrder: body.textsOrder,
                     image: body.image
                 })));
         },

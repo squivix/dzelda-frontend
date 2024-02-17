@@ -20,14 +20,14 @@
 import {defineComponent, PropType} from "vue";
 import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel.vue";
 import {LearnerVocabSchema} from "dzelda-common";
-import {LessonTokenObject, NewVocab} from "@/components/shared/LessonReader.vue";
+import {TextTokenObject, NewVocab} from "@/components/shared/Reader.vue";
 import VocabPanel from "@/components/shared/vocab-panel/VocabPanel.vue";
 
 export default defineComponent({
   name: "ReaderSidePanel",
   components: {OverlappingPhrasesPanel, VocabPanel},
   props: {
-    selectedOverLappingPhrasesTokens: {type: Array as PropType<LessonTokenObject[][] | null>},
+    selectedOverLappingPhrasesTokens: {type: Array as PropType<TextTokenObject[][] | null>},
     selectedVocab: {type: Object as PropType<LearnerVocabSchema | NewVocab | null>, default: null},
     onVocabRefetched: {type: Function as PropType<(updatedVocab: LearnerVocabSchema) => void>},
     phrases: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
@@ -37,7 +37,7 @@ export default defineComponent({
     onVocabUpdated: (vocab: LearnerVocabSchema, updatedData: Partial<LearnerVocabSchema>) => true,
     onVocabDeleted: (vocab: LearnerVocabSchema) => true,
     onNewVocabCreated: (vocab: LearnerVocabSchema) => true,
-    onOverlappingPhraseClicked: (phraseTokens: LessonTokenObject[]) => true,
+    onOverlappingPhraseClicked: (phraseTokens: TextTokenObject[]) => true,
   },
 });
 </script>

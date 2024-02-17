@@ -28,13 +28,12 @@
             <p v-if="errorFields.description" class="error-message">{{ errorFields.description }}</p>
           </div>
           <div class="form-row">
-            <label for="lesson-table">Lessons</label>
-
-            <p v-if="lessons?.length==0">No lessons in collection</p>
-            <LessonOrderTable v-else v-model="lessons"/>
-            <router-link :to="{name:'add-lesson', query:{collectionId:collection.id}}" class="inv-link add-lesson-button">
+            <label for="text-table">Texts</label>
+            <p v-if="texts?.length==0">No texts in collection</p>
+            <TextsOrderTable v-else v-model="texts"/>
+            <router-link :to="{name:'add-text', query:{collectionId:collection.id}}" class="inv-link add-text-button">
               <inline-svg :src="icons.plusRound" class="empty-icon"/>
-              Add lesson
+              Add text
             </router-link>
           </div>
           <SubmitButton id="save-button"
@@ -48,7 +47,7 @@
       <ConfirmDialog :isShown="isDeleteCollectionConfirmShown" @onNoClicked="isDeleteCollectionConfirmShown=false" @onYesClicked="deleteCollection">
         <h3>Are you sure you want to delete this collection?</h3>
         <br>
-        (This action cannot be undone. All lessons will be detached from collection)
+        (This action cannot be undone. All texts will be detached from collection)
       </ConfirmDialog>
     </template>
   </BaseCard>
@@ -58,12 +57,12 @@
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {VueDraggableNext} from "vue-draggable-next";
 import {useCollectionStore} from "@/stores/backend/collectionStore.js";
-import {CollectionSchema, LessonSchema} from "dzelda-common";
+import {CollectionSchema, TextSchema} from "dzelda-common";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
-import LessonOrderTable from "@/components/page/edit-collection/LessonOrderTable.vue";
+import TextsOrderTable from "@/components/page/edit-collection/TextsOrderTable.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import {PropType} from "vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
@@ -77,7 +76,7 @@ export default {
   components: {
     ConfirmDialog,
     LoadingScreen,
-    EmptyScreen, LessonOrderTable, SubmitButton,
+    EmptyScreen, TextsOrderTable, SubmitButton,
     ImageUploadInput, InlineSvg, BaseCard, draggable: VueDraggableNext,
   },
   props: {
@@ -88,7 +87,7 @@ export default {
       collection: null as CollectionSchema | null,
       title: undefined as string | undefined,
       description: undefined as string | undefined,
-      lessons: undefined as LessonSchema[] | undefined,
+      texts: undefined as TextSchema[] | undefined,
       image: undefined as Blob | "" | undefined,
       errorFields: {title: "", description: "", image: ""},
       isSubmitting: false,
@@ -114,7 +113,7 @@ export default {
           {
             title: this.title!,
             description: this.description!,
-            lessonsOrder: this.lessons!.map(lesson => lesson.id),
+            textsOrder: this.texts!.map(text => text.id),
             image: imageUrl
           }
       );
@@ -148,7 +147,7 @@ export default {
 
     this.title = collection.title;
     this.description = collection.description;
-    this.lessons = collection.lessons;
+    this.texts = collection.texts;
   },
   setup() {
     return {
@@ -204,7 +203,7 @@ input:not([type='checkbox']), select, textarea {
   height: 15vh;
 }
 
-.lessons-empty-screen > div, .add-lesson-button {
+.texts-empty-screen > div, .add-text-button {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -212,16 +211,16 @@ input:not([type='checkbox']), select, textarea {
   row-gap: 0.5rem;
 }
 
-.add-lesson-button {
+.add-text-button {
   color: grey;
 }
 
-.add-lesson-button svg {
+.add-text-button svg {
   width: 30px;
   height: 30px;
 }
 
-.add-lesson-button:hover, .add-lesson-button:hover .empty-icon {
+.add-text-button:hover, .add-text-button:hover .empty-icon {
   color: var(--empty-list-icon-hover-color);
 }
 

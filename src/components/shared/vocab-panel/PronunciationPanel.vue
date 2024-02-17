@@ -42,7 +42,7 @@
 <script lang="ts">
 import {defineComponent, nextTick, PropType} from "vue";
 import {DictionarySchema, HumanPronunciationSchema, LearnerVocabSchema, TTSPronunciationSchema} from "dzelda-common";
-import {NewVocab} from "@/components/shared/LessonReader.vue";
+import {NewVocab} from "@/components/shared/Reader.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";

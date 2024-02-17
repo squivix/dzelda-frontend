@@ -3,8 +3,8 @@
     <h2 id="try-it-header">Try it yourself</h2>
     <LoadingScreen v-if="isLoading"/>
     <div class="try-it-content" v-else>
-      <LessonReader class="lesson-reader"
-                    :lessonId="selectedLessonId!"
+      <Reader class="text-reader"
+                    :textId="selectedTextId!"
                     :languageCode="selectedLanguage!.code"
                     :showDoneButton="false">
         <template v-slot:side-panel>
@@ -12,7 +12,7 @@
             <p>Select a word or phrase that you don't understand</p>
           </div>
         </template>
-      </LessonReader>
+      </Reader>
       <div class="bottom-div">
         <div class="form-row">
           <label>Language</label>
@@ -33,29 +33,29 @@
 
 <script lang="ts">
 import {defineComponent, provide} from "vue";
-import LessonReader from "@/components/shared/LessonReader.vue";
-import {useLessonStoreMock} from "@/stores/backend/local-preview/lessonStoreMock.js";
+import Reader from "@/components/shared/Reader.vue";
+import {useTextStoreMock} from "@/stores/backend/local-preview/textStoreMock.js";
 import {useVocabStoreMock} from "@/stores/backend/local-preview/vocabStoreMock.js";
 import {useMeaningStoreMock} from "@/stores/backend/local-preview/meaningStoreMock.js";
 import {useDictionaryStoreMock} from "@/stores/backend/local-preview/dictionaryStoreMock.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {LanguageSchema} from "dzelda-common";
-import {PreviewLesson, useLocalPreviewStore} from "@/stores/backend/local-preview/localPreviewStore.js";
+import {PreviewText, useLocalPreviewStore} from "@/stores/backend/local-preview/localPreviewStore.js";
 
 export default defineComponent({
   name: "TryItSection",
-  components: {LoadingScreen, LessonReader},
+  components: {LoadingScreen, Reader},
   data() {
     return {
       languages: null as LanguageSchema[] | null,
       selectedLanguageIndex: 0,
       selectedPreviewIndex: 0,
-      previews: null as PreviewLesson[] | null,
+      previews: null as PreviewText[] | null,
       isLoading: true,
     };
   },
   computed: {
-    selectedLessonId() {
+    selectedTextId() {
       if (!this.selectedPreview || !this.selectedLanguage)
         return;
       return this.selectedPreview.languageVersions[this.selectedLanguage.code];
@@ -77,7 +77,7 @@ export default defineComponent({
     this.isLoading = false;
   },
   setup() {
-    provide("lessonStore", useLessonStoreMock());
+    provide("textStore", useTextStoreMock());
     provide("vocabStore", useVocabStoreMock());
     provide("meaningStore", useMeaningStoreMock());
     provide("dictionaryStore", useDictionaryStoreMock());
@@ -106,11 +106,11 @@ h2 {
   padding-top: 3vh;
 }
 
-.lesson-reader {
+.text-reader {
   margin: 0;
 }
 
-.lesson-reader:deep(.top-div) {
+.text-reader:deep(.top-div) {
   grid-template-rows: 70vh
 }
 
