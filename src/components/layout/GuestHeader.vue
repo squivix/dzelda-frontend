@@ -2,7 +2,7 @@
   <header>
     <div class="main-header">
       <router-link :to="{ name: 'home'}" class="title inv-link">
-        <img :src="logoSmall" class="logo-image" alt="logo">
+        <inline-svg :src="logoSmall" class="logo-image" alt="logo"/>
         <h1>Dzelda</h1>
       </router-link>
 
@@ -72,7 +72,7 @@ header {
 .title {
   display: flex;
   align-items: center;
-  column-gap: 0.5rem;
+  column-gap: 0.75rem;
 }
 
 .title h1 {
@@ -81,7 +81,6 @@ header {
   font-weight: bold;
   font-size: 2rem;
   padding: 1rem 0;
-
 }
 
 .title:hover {
@@ -89,10 +88,11 @@ header {
 }
 
 .logo-image {
-  width: 64px;
   height: 64px;
+  width: 64px;
   background-color: transparent;
   margin: 10px 0;
+  color: var(--on-primary-color);
 }
 
 #header-buttons {
