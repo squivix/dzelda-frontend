@@ -124,7 +124,7 @@ select {
   }
 
   select {
-    flex-basis: 3rem;
+    flex-basis: 2.5rem;
   }
 }
 </style>

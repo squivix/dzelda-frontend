@@ -2,7 +2,7 @@
   <BaseCard title="New Language" class="new-language-card">
     <template v-slot:content>
       <div class="content">
-        <p>Select a new language to learn from our list of supported languages</p>
+        <p class="instructions-paragraph">Select a new language to learn from our list of supported languages</p>
         <ul v-if="supportedLanguages" class="languages">
           <li v-for="language in supportedLanguages" :key="language.code" @click="onLanguageClicked(language)">
             <LanguageCard :language="language"/>
@@ -96,6 +96,10 @@ export default {
 </script>
 
 <style scoped>
+.instructions-paragraph{
+  font-size: 1.15rem;
+  margin-bottom: 1rem;
+}
 .new-language-card {
   width: 85vw;
   max-width: 900px;

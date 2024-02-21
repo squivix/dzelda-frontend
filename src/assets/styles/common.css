@@ -1,4 +1,4 @@
-* {
+*{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     box-sizing: border-box;
 }
@@ -15,7 +15,7 @@ body {
     grid-template-columns: 1fr;
 }
 
-input:not([type='submit']), select, textarea {
+input:not([type='submit']):not([type="checkbox"]):not([type="radio"]), select, textarea {
     height: 2rem;
     background-color: var(--background-color);
     color: var(--on-background-color);
@@ -170,7 +170,7 @@ a:hover {
     user-select: none;
 }
 
-.checkbox-label {
+.box-label {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -306,4 +306,15 @@ svg {
 .main-page-base-card {
     width: 85vw;
     max-width: 1300px;
+}
+
+.bookmark-filled {
+    fill: var(--primary-color);
+    stroke: var(--primary-color);
+}
+
+.bookmark-hollow {
+    fill: none;
+    stroke-width: 56px;
+    stroke: var(--primary-color);
 }

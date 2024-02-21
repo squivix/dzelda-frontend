@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
-import {LanguageLevelSchema, TextSchema} from "dzelda-common";
+import {LanguageLevelSchema, TextHistoryEntrySchema, TextSchema} from "dzelda-common";
 import {cleanUndefined} from "@/utils.js";
 import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
@@ -8,6 +8,10 @@ export const useTextStore = defineStore("text", {
     actions: {
         async fetchTexts(queryParams: {
             languageCode?: string,
+            addedBy?: string,
+            searchQuery?: string,
+            hasAudio?: boolean,
+            level?: string|string[],
             sortBy?: "title" | "createdDate" | "pastViewersCount",
             sortOrder?: "asc" | "desc",
             pageSize?: number,
@@ -95,6 +99,35 @@ export const useTextStore = defineStore("text", {
                 return response.data as TextSchema;
             } else
                 return null;
+        },
+        async toggleTextBookmark(text: TextSchema | TextHistoryEntrySchema) {
+            if (!text.isBookmarked)
+                return this.addTextToUserBookmarks({textId: text.id});
+            else
+                return this.removeTextFromUserBookmarks({textId: text.id});
+        },
+        async addTextToUserBookmarks(pathParams: { textId: number }) {
+            const store = useStore();
+            await store.fetchCustom((api) => api.users.postUsersMeTextsBookmarked({textId: pathParams.textId}));
+        },
+        async removeTextFromUserBookmarks(pathParams: { textId: number }) {
+            const store = useStore();
+            await store.fetchCustom((api) => api.users.deleteUsersMeTextsBookmarkedTextId(pathParams.textId));
+        },
+        async fetchUserBookmarkedTexts(queryParams: {
+            languageCode?: string,
+            addedBy?: string,
+            searchQuery?: string,
+            hasAudio?: boolean,
+            level?: string|string[],
+            sortBy?: "title" | "createdDate" | "pastViewersCount",
+            sortOrder?: "asc" | "desc",
+            pageSize?: number,
+            page?: number
+        } = {}) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.users.getUsersMeTextsBookmarked(queryParams));
+            return response.data;
         }
     }
 });

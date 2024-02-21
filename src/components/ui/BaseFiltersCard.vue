@@ -19,5 +19,6 @@ export default defineComponent({
   padding: 1rem;
   box-sizing: border-box;
   box-shadow: rgba(99, 99, 99, 0.2) 0 2px 8px 0;
+  margin-bottom: 1rem;
 }
 </style>

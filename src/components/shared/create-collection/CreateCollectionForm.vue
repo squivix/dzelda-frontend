@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent, PropType} from "vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import {icons} from "@/icons.js";
@@ -40,6 +40,9 @@ export default defineComponent({
   name: "CreateCollectionForm",
   components: {ImageUploadInput, SubmitButton},
   emits: ["onCollectionCreated"],
+  props: {
+    languageCode: {type: String, required: true},
+  },
   data() {
     return {
       title: "",
@@ -75,7 +78,7 @@ export default defineComponent({
         imageUrl = this.image;
       this.submittingMessage = "Creating Collection";
       const response = await this.collectionStore.createCollection({
-        languageCode: this.$route.params.learningLanguage as string,
+        languageCode: this.learningLanguage,
         title: this.title,
         description: this.description,
         image: imageUrl,

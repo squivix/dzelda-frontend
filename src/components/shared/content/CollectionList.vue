@@ -3,16 +3,19 @@
   <div class="wrapper" v-else>
     <template v-if="showSearchFilters">
       <div class="top-bar">
-        <SearchBar :initial-search-query="searchQuery"/>
-        <button class="filter-button icon-wrapper" @click.stop="toggleFilters">
+        <SearchBar :initialSearchQuery="searchQuery"/>
+        <button v-if="remainingFilters.size!=0" class="filter-button icon-wrapper" @click.stop="toggleFilters">
           <inline-svg :src="icons.filter"/>
         </button>
       </div>
-      <CollectionFilters :is-shown="isFiltersShown"
-                         @on-filters-cleared="() => isFiltersShown=false"
-                         @on-filters-applied="() => isFiltersShown=false"/>
+      <CollectionFilters v-if="remainingFilters.size!=0"
+                         :isShown="isFiltersShown"
+                         :filters="filters"
+                         :excludedFilters="excludedFilters"
+                         @onFiltersCleared="() => isFiltersShown=false"
+                         @onFiltersApplied="() => isFiltersShown=false"/>
     </template>
-    <EmptyScreen v-if="!collections||collections.length==0" :has-filters="hasFilters">
+    <EmptyScreen v-if="!collections||collections.length==0" :hasFilters="hasQuery">
       <template v-slot:no-filters>
         <div class="empty-screen">
           <slot name="empty-screen">
@@ -55,26 +58,29 @@ import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import SearchBar from "@/components/ui/SearchBar.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import CollectionFilters from "@/components/shared/filters/CollectionFilters.vue";
+import CollectionFilters, {collectionFilterFields, CollectionFiltersObject} from "@/components/shared/filters/CollectionFilters.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import {CollectionSchema} from "dzelda-common";
 import CollectionCard from "@/components/shared/content/CollectionCard.vue";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
+import {isEmptyObject, setDifference} from "@/utils.js";
+import TextFilters from "@/components/shared/filters/TextFilters.vue";
 
 export default defineComponent({
   name: "CollectionList",
-  components: {PaginationControls, CollectionCard, EmptyScreen, CollectionFilters, InlineSvg, SearchBar, LoadingScreen},
+  components: {TextFilters, PaginationControls, CollectionCard, EmptyScreen, CollectionFilters, InlineSvg, SearchBar, LoadingScreen},
   props: {
     isLoading: {type: Boolean, required: true},
     pageCount: {type: Number, required: true},
     page: Number,
     pageSize: Number,
     searchQuery: String,
+    filters: {type: Object as PropType<CollectionFiltersObject>, default: {}},
     addedBy: String,
     showSearchFilters: {type: Boolean, default: true},
-    level: Array as PropType<string[]>,
     collections: Object as PropType<CollectionSchema[] | null>,
-    emptyMessage: {type: String, default: "No collections found"}
+    emptyMessage: {type: String, default: "No collections found"},
+    excludedFilters: {type: Object as PropType<Set<typeof collectionFilterFields[number]>>, required: false, default: new Set()}
   },
   data() {
     return {
@@ -82,8 +88,11 @@ export default defineComponent({
     };
   },
   computed: {
-    hasFilters() {
-      return !!this.addedBy || !!this.searchQuery || !!this.level;
+    hasQuery() {
+      return !isEmptyObject(this.filters) || !!this.searchQuery;
+    },
+    remainingFilters() {
+      return setDifference(new Set(collectionFilterFields), this.excludedFilters);
     }
   },
   methods: {
@@ -91,8 +100,10 @@ export default defineComponent({
       this.isFiltersShown = !this.isFiltersShown;
     },
     clearFilters() {
+      const clearedFilters: Partial<Record<typeof collectionFilterFields[number], undefined>> = {};
+      collectionFilterFields.forEach(f => clearedFilters[f] = undefined);
       this.$router.push({
-        query: {...this.$route.query, level: undefined, addedBy: undefined, searchQuery: undefined, page: undefined}
+        query: {...this.$route.query, ...clearedFilters, searchQuery: undefined, page: undefined}
       });
       this.isFiltersShown = false;
     }
@@ -119,9 +130,6 @@ export default defineComponent({
 .filter-button {
   border: 2px solid grey;
   border-radius: 5px;
-}
-
-.filter-button:hover {
   cursor: pointer;
 }
 
@@ -145,4 +153,10 @@ export default defineComponent({
   height: 20px;
 }
 
+@media screen and (max-width: 350px) {
+  .collection-grid {
+    display: flex;
+    flex-direction: column;
+  }
+}
 </style>

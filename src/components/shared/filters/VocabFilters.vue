@@ -1,48 +1,18 @@
 <template>
   <BaseCollapsableDiv :is-shown="isShown">
-    <BaseFiltersCard class="card">
+    <BaseFiltersCard class="card" @mousedown.stop>
       <h4>Filters</h4>
       <form @submit.prevent="applyFilters" @reset="clearFilters">
         <div class="filters-wrapper">
-          <h5 class="filter-label">Level</h5>
-          <fieldset class="filter-levels" v-if="!exclude.levels">
-            <div class="checkbox-label">
-              <input id="filter-level-1-checkbox"
-                     type="checkbox"
-                     :value="constants.SAVED_VOCAB_LEVELS.LEVEL_1"
-                     v-model="levels">
-              <label for="filter-level-1-checkbox">Level 1</label>
-            </div>
-            <div class="checkbox-label">
-              <input id="filter-level-2-checkbox"
-                     type="checkbox"
-                     :value="constants.SAVED_VOCAB_LEVELS.LEVEL_2"
-                     v-model="levels">
-              <label for="filter-level-2-checkbox">Level 2</label>
-            </div>
-            <div class="checkbox-label">
-              <input id="filter-level-3-checkbox"
-                     type="checkbox"
-                     :value="constants.SAVED_VOCAB_LEVELS.LEVEL_3"
-                     v-model="levels">
-              <label for="filter-level-3-checkbox">Level 3</label>
-            </div>
-            <div class="checkbox-label">
-              <input id="filter-level-4-checkbox"
-                     type="checkbox"
-                     :value="constants.SAVED_VOCAB_LEVELS.LEVEL_4"
-                     v-model="levels">
-              <label for="filter-level-4-checkbox">Level 4</label>
-            </div>
-
-            <div class="checkbox-label">
-              <input id="filter-level-learned-checkbox"
-                     type="checkbox"
-                     :value="constants.SAVED_VOCAB_LEVELS.LEARNED"
-                     v-model="levels">
-              <label for="filter-level-learned-checkbox">Learned</label>
-            </div>
-          </fieldset>
+          <div class="form-row" v-if="!excludedFilters.has('level')">
+            <h5 class="filter-label">Level</h5>
+            <fieldset class="filter-levels">
+              <label v-for="level in allLevels" class="box-label">
+                <input type="checkbox" :value="level.value" v-model="levels">
+                {{ level.label }}
+              </label>
+            </fieldset>
+          </div>
         </div>
         <div class="buttons-wrapper">
           <button type="reset" class="primary-hollow-button square-button">Clear</button>
@@ -57,34 +27,40 @@
 import {defineComponent, PropType} from "vue";
 import BaseCollapsableDiv from "@/components/ui/BaseCollapsableDiv.vue";
 import BaseFiltersCard from "@/components/ui/BaseFiltersCard.vue";
-import constants from "@/constants.js";
+import {VocabLevelSchema} from "dzelda-common";
 
+type VocabFiltersObject = { level: VocabLevelSchema | VocabLevelSchema[] };
 export default defineComponent({
   name: "VocabFilters",
   components: {BaseFiltersCard, BaseCollapsableDiv},
   emits: ["onFiltersApplied", "onFiltersCleared"],
   props: {
     isShown: {type: Boolean, required: true},
-    exclude: {type: Object as PropType<{ [k in "levels" | "addedBy"]?: boolean }>, required: false, default: []}
+    filters: {type: Object as PropType<VocabFiltersObject>, default: {}},
+    excludedFilters: {type: Object as PropType<Set<keyof VocabFiltersObject>>, required: false, default: new Set()}
   },
   data() {
     return {
-      levels: [],
+      levels: this.filters.level ?? [],
     };
+  },
+  watch: {
+    filters() {
+      this.levels = this.filters.level ?? [];
+    }
   },
   methods: {
     applyFilters() {
       this.$router.push({
         query: {
           ...this.$route.query,
-          level: this.levels.length == 0 ? undefined : this.levels,
+          level: this.levels,
           page: undefined
         }
       });
       this.$emit("onFiltersApplied");
     },
     clearFilters() {
-      this.levels = [];
       this.$router.push({
         query: {
           ...this.$route.query,
@@ -97,7 +73,15 @@ export default defineComponent({
     }
   },
   setup() {
-    return {constants};
+    return {
+      allLevels: [
+        {value: VocabLevelSchema.LEVEL1, label: "Level 1"},
+        {value: VocabLevelSchema.LEVEL2, label: "Level 2"},
+        {value: VocabLevelSchema.LEVEL3, label: "Level 3"},
+        {value: VocabLevelSchema.LEVEL4, label: "Level 4"},
+        {value: VocabLevelSchema.LEARNED, label: "Learned"},
+      ]
+    };
   }
 });
 </script>
@@ -113,11 +97,13 @@ h4 {
   font-size: 1.25rem;
   font-weight: bold;
   color: var(--panel-new-text-color);
+  margin-bottom: 0.5rem;
 }
 
 form {
   display: flex;
   flex-direction: column;
+  row-gap: 1rem;
 }
 
 .filters-wrapper {
@@ -125,6 +111,12 @@ form {
   flex-direction: column;
   row-gap: 0.5rem;
   align-items: flex-start;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
 }
 
 .filter-label {

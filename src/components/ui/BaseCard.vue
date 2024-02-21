@@ -39,9 +39,16 @@ h2 {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   margin-bottom: 0.5rem;
 }
-h3{
+
+h3 {
   font-size: 1.25rem;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   color: gray;
+}
+
+@media screen and (max-width: 400px) {
+  h3 {
+    font-size: 1rem;
+  }
 }
 </style>

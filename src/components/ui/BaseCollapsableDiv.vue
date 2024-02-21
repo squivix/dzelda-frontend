@@ -24,6 +24,7 @@ export default defineComponent({
     }
   }
 });
+// TODO set max height with js
 </script>
 
 <style scoped>

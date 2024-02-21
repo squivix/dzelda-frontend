@@ -1,7 +1,9 @@
 import {z, ZodType} from "zod";
 import constants from "@/constants.js";
+import {LanguageLevelSchema} from "dzelda-common";
 
 export type RouteParamDef = { schema: ZodType, postProcess?: (param: string | string[]) => any }
+export const booleanStringQueryParam: RouteParamDef = {schema: z.preprocess((v) => String(v).toLowerCase(), z.literal("true").or(z.literal("false"))), postProcess: v => v === "true"};
 export const generatePaginationQueryParams = (pageSizes: number[]) => {
     return {
         page: {schema: z.string().regex(/^[1-9][0-9]*$/).optional(), postProcess: Number},
@@ -9,16 +11,20 @@ export const generatePaginationQueryParams = (pageSizes: number[]) => {
             schema: z.string().regex(new RegExp(`${pageSizes.map(p => `^${p}$`).join("|")}`)).optional(),
             postProcess: Number
         }
-    }
+    };
 };
-export const textFilters = {};
-export const collectionFilters = {
+
+export const textFilters = {
     level: {
         schema: z.union([
-            z.enum(["beginner1", "beginner2", "intermediate1", "intermediate2", "advanced1", "advanced2"]),
-            z.array(z.enum(["beginner1", "beginner2", "intermediate1", "intermediate2", "advanced1", "advanced2"]))
+            z.nativeEnum(LanguageLevelSchema),
+            z.array(z.nativeEnum(LanguageLevelSchema))
         ]).optional(),
     },
+    addedBy: {schema: z.string().min(1).optional()},
+    hasAudio: booleanStringQueryParam,
+};
+export const collectionFilters = {
     addedBy: {schema: z.string().min(1).optional()}
 };
 export const vocabFilters = {
@@ -31,4 +37,4 @@ export const vocabFilters = {
 };
 
 export const searchQuery: RouteParamDef = {schema: z.string().min(1).optional()};
-export const token: RouteParamDef = {schema: z.string().min(1).optional()}
+export const token: RouteParamDef = {schema: z.string().min(1).optional()};

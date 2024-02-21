@@ -28,10 +28,16 @@ import * as pathParams from "@/router/pathParams.js";
 import {excludeProperties} from "@/utils.js";
 import InterfaceTab from "@/components/page/settings/interface/InterfaceTab.vue";
 import UpdateTextPage from "@/pages/UpdateTextPage.vue";
+import {z} from "zod";
 
 export const privateRoutes: RouteRecordRaw[] = [
     {
         path: "/sign-out", component: SignOutPage, name: "sign-out", meta: {showFooter: true, requiresEmailConfirmed: false}
+    },
+    {
+        path: "/learn/:learningLanguage/",
+        name: "learn-lang",
+        redirect: to => ({name: "explore-lang", params: to.params}),
     },
     {
         path: "/explore",
@@ -58,13 +64,15 @@ export const privateRoutes: RouteRecordRaw[] = [
                 path: "/learn/:learningLanguage/explore/:resourceType/recent",
                 component: ExploreRecentTab,
                 name: "explore-recent",
-                meta: {pathParams: {learningLanguage: pathParams.languageCode, resourceType: pathParams.resourceType}}
+                meta: {pathParams: {learningLanguage: pathParams.languageCode, resourceType: pathParams.resourceType}},
+                props: routeToProps,
             },
             {
                 path: "/learn/:learningLanguage/explore/:resourceType/popular",
                 component: ExplorePopularTab,
                 name: "explore-popular",
-                meta: {pathParams: {learningLanguage: pathParams.languageCode, resourceType: pathParams.resourceType}}
+                meta: {pathParams: {learningLanguage: pathParams.languageCode, resourceType: pathParams.resourceType}},
+                props: routeToProps,
             }
         ]
     },
@@ -77,44 +85,53 @@ export const privateRoutes: RouteRecordRaw[] = [
     {
         path: "/learn/:learningLanguage/my-library",
         component: MyLibraryPage,
-        redirect: {name: "my-library-bookmarked-tab"},
+        redirect: to => ({name: "my-library-bookmarked-tab", params: {...to.params, resourceType: "collections"}}),
         name: "language-my-library",
         meta: {pathParams: {learningLanguage: pathParams.languageCode}},
+        props: routeToProps,
         children: [
             {
-                path: "/learn/:learningLanguage/my-library/bookmarks",
+                path: "/learn/:learningLanguage/my-library/bookmarks/:resourceType",
                 component: LibraryBookmarkedTab,
                 name: "my-library-bookmarked-tab",
                 meta: {
-                    pathParams: {learningLanguage: pathParams.languageCode},
+                    pathParams: {
+                        learningLanguage: pathParams.languageCode,
+                        resourceType: pathParams.resourceType,
+                    },
                     queryParams: {
                         ...queryParams.generatePaginationQueryParams([5, 10, 25, 50, 100]),
                         ...queryParams.collectionFilters,
+                        ...queryParams.textFilters,
                         searchQuery: queryParams.searchQuery
                     }
                 },
                 props: routeToProps,
             },
             {
-                path: "/learn/:learningLanguage/my-library/imported",
+                path: "/learn/:learningLanguage/my-library/imported/:resourceType",
                 component: LibraryImportedTab,
                 name: "my-library-imported-tab",
                 meta: {
-                    pathParams: {learningLanguage: pathParams.languageCode},
+                    pathParams: {
+                        learningLanguage: pathParams.languageCode,
+                        resourceType: pathParams.resourceType,
+                    },
                     queryParams: {
                         ...queryParams.generatePaginationQueryParams([5, 10, 25, 50, 100]),
                         ...excludeProperties(queryParams.collectionFilters, ["addedBy"]),
+                        ...excludeProperties(queryParams.textFilters, ["addedBy"]),
                         searchQuery: queryParams.searchQuery
                     }
                 },
                 props: routeToProps,
             },
             {
-                path: "/learn/:learningLanguage/my-library/history",
+                path: "/learn/:learningLanguage/my-library/history/:resourceType",
                 component: LibraryHistoryTab,
-                name: "my-library-history",
+                name: "my-library-history-tab",
                 meta: {
-                    pathParams: {learningLanguage: pathParams.languageCode},
+                    pathParams: {learningLanguage: pathParams.languageCode, resourceType: {schema: z.literal("texts")}},
                     queryParams: {
                         ...queryParams.generatePaginationQueryParams([5, 10, 25, 50, 100]),
                         ...queryParams.textFilters,
@@ -123,7 +140,8 @@ export const privateRoutes: RouteRecordRaw[] = [
                 },
                 props: routeToProps,
             }
-        ]
+        ],
+
     },
     {
         path: "/my-vocab",
@@ -161,7 +179,7 @@ export const privateRoutes: RouteRecordRaw[] = [
         path: "/texts/add",
         component: CreateTextPage,
         name: "add-text",
-        meta: {redirToLanguageSpecific: true}
+        meta: {redirToLanguageSpecific: true},
     },
     {
         path: "/learn/:learningLanguage/texts/add",
@@ -177,7 +195,7 @@ export const privateRoutes: RouteRecordRaw[] = [
     {
         path: "/learn/:learningLanguage/texts/:textId/edit",
         component: UpdateTextPage,
-        name: "edit-text",
+        name: "update-text",
         meta: {
             pathParams: {
                 learningLanguage: pathParams.languageCode,
@@ -199,6 +217,7 @@ export const privateRoutes: RouteRecordRaw[] = [
         meta: {
             pathParams: {learningLanguage: pathParams.languageCode,}
         },
+        props: routeToProps,
     },
     {
         path: "/learn/:learningLanguage/collections/:collectionId",

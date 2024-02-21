@@ -7,7 +7,7 @@ export const useVocabStore = defineStore("vocab", {
     actions: {
         async fetchUserVocabs(queryParams: {
             languageCode?: string,
-            level?: (-1 | 0 | 1 | 2 | 3 | 4 | 5 | 6)[],
+            level?:  VocabLevelSchema[],
             searchQuery?: string,
             pageSize?: number,
             page?: number

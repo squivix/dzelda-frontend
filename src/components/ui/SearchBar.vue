@@ -22,6 +22,11 @@ export default defineComponent({
       searchQuery: this.initialSearchQuery,
     };
   },
+  watch: {
+    initialSearchQuery() {
+      this.searchQuery = this.initialSearchQuery;
+    }
+  },
   methods: {
     onSearchSubmitted() {
       this.$router.push({query: {...this.$route.query, searchQuery: this.searchQuery || undefined, page: undefined}});

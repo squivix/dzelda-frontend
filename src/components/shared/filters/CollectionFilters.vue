@@ -4,53 +4,8 @@
       <h4>Filters</h4>
       <form @submit.prevent="applyFilters" @reset="clearFilters">
         <div class="filters-wrapper">
-          <h5 class="filter-label">Level</h5>
-          <fieldset class="filter-levels" v-if="!exclude.levels">
-            <div class="checkbox-label">
-              <input id="filter-beginner-1-checkbox"
-                     type="checkbox"
-                     :value="constants.LANGUAGE_LEVELS.BEGINNER_1"
-                     v-model="levels">
-              <label for="filter-beginner-1-checkbox">Beginner 1</label>
-            </div>
-            <div class="checkbox-label">
-              <input id="filter-beginner-2-checkbox"
-                     type="checkbox"
-                     :value="constants.LANGUAGE_LEVELS.BEGINNER_2"
-                     v-model="levels">
-              <label for="filter-beginner-2-checkbox">Beginner 2</label>
-            </div>
-            <div class="checkbox-label">
-              <input id="filter-intermediate-1-checkbox"
-                     type="checkbox"
-                     :value="constants.LANGUAGE_LEVELS.INTERMEDIATE_1"
-                     v-model="levels">
-              <label for="filter-intermediate-1-checkbox">Intermediate 1</label>
-            </div>
-            <div class="checkbox-label">
-              <input id="filter-intermediate-2-checkbox"
-                     type="checkbox"
-                     :value="constants.LANGUAGE_LEVELS.INTERMEDIATE_2"
-                     v-model="levels">
-              <label for="filter-intermediate-2-checkbox">Intermediate 2</label>
-            </div>
-            <div class="checkbox-label">
-              <input id="filter-advanced-1-checkbox"
-                     type="checkbox"
-                     :value="constants.LANGUAGE_LEVELS.ADVANCED_1"
-                     v-model="levels">
-              <label for="filter-advanced-1-checkbox">Advanced 1</label>
-            </div>
-            <div class="checkbox-label">
-              <input id="filter-advanced-2-checkbox"
-                     type="checkbox"
-                     :value="constants.LANGUAGE_LEVELS.ADVANCED_2"
-                     v-model="levels">
-              <label for="filter-advanced-2-checkbox">Advanced 2</label>
-            </div>
-          </fieldset>
-          <template v-if="!exclude.addedBy">
-            <label for="author-input" class="filter-label">Collection Author</label>
+          <template v-if="!excludedFilters.has('addedBy')">
+            <label for="author-input" class="filter-label">Author</label>
             <input id="author-input" type="text" v-model="addedBy" placeholder="Enter a username">
           </template>
         </div>
@@ -68,27 +23,34 @@ import {defineComponent, PropType} from "vue";
 import BaseCollapsableDiv from "@/components/ui/BaseCollapsableDiv.vue";
 import BaseFiltersCard from "@/components/ui/BaseFiltersCard.vue";
 import constants from "@/constants.js";
+import {setDifference} from "@/utils.js";
 
+export const collectionFilterFields = ["addedBy"] as const;
+export type CollectionFiltersObject = Partial<{ addedBy: string }>
 export default defineComponent({
   name: "CollectionFilters",
   components: {BaseFiltersCard, BaseCollapsableDiv},
   emits: ["onFiltersApplied", "onFiltersCleared"],
   props: {
     isShown: {type: Boolean, required: true},
-    exclude: {type: Object as PropType<{ [k in "levels" | "addedBy"]?: boolean }>, required: false, default: []}
+    filters: {type: Object as PropType<CollectionFiltersObject>, default: {}},
+    excludedFilters: {type: Object as PropType<Set<keyof CollectionFiltersObject>>, required: false, default: new Set()}
   },
   data() {
     return {
-      levels: [],
-      addedBy: ""
+      addedBy: this.filters.addedBy
     };
+  },
+  watch: {
+    filters() {
+      this.addedBy = this.filters.addedBy ?? "";
+    }
   },
   methods: {
     applyFilters() {
       this.$router.push({
         query: {
           ...this.$route.query,
-          level: this.levels.length == 0 ? undefined : this.levels,
           addedBy: this.addedBy || undefined,
           page: undefined
         }
@@ -96,13 +58,13 @@ export default defineComponent({
       this.$emit("onFiltersApplied");
     },
     clearFilters() {
-      this.levels = [];
-      this.addedBy = "";
+      const clearedFilters: Partial<Record<typeof collectionFilterFields[number], undefined>> = {};
+      collectionFilterFields.forEach(f => clearedFilters[f] = undefined);
       this.$router.push({
         query: {
           ...this.$route.query,
-          level: undefined,
-          addedBy: undefined,
+          ...clearedFilters,
+          searchQuery: undefined,
           page: undefined
         }
       });
@@ -126,13 +88,13 @@ h4 {
   font-size: 1.25rem;
   font-weight: bold;
   color: #00356b;
+  margin-bottom: 0.5rem;
 }
 
 form {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
-
 }
 
 .filters-wrapper {
@@ -146,12 +108,6 @@ form {
   font-size: 1rem;
   font-weight: bold;
   color: #00356b;
-}
-
-.filter-levels {
-  display: flex;
-  flex-wrap: wrap;
-  column-gap: 1rem;
 }
 
 

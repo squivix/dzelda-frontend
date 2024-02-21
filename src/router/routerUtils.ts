@@ -1,4 +1,5 @@
 import {RouteLocationNormalized, RouteMeta, RouteRecordRaw} from "vue-router";
+import {z} from "zod";
 
 export function setDefaultRouteMeta(routes: RouteRecordRaw[], defaultMeta: RouteMeta) {
     for (const route of routes) {
@@ -26,7 +27,7 @@ export function queryParamsEqual(object1: Record<string, any>, object2: Record<s
         const value1 = object1[key], value2 = object2[key];
         if (Array.isArray(value1)) {
             if (!Array.isArray(value2) || value1.some((_, i) => value1[i] != value1[i]))
-                return false
+                return false;
         } else if (object1[key] !== object2[key])
             return false;
     }

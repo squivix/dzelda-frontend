@@ -1,7 +1,7 @@
 <template>
   <BaseCard class="add-text-base-card main-page-base-card"
             title="Add Text"
-            subtitle="Import the text of an article, a book chapter, a video transcript or anything else you want to read">
+            subtitle="Import the text of an article, a book chapter, a video or podcast transcript, or anything else you want to read">
     <template v-slot:content>
       <form class="create-text-form" @submit.prevent="addText">
         <div class="side-inputs">
@@ -70,7 +70,7 @@
       </form>
       <BaseDialog :isOpen="isCreateCollectionDialogShown" @onDismissed="onCreateCollectionDialogDismissed">
         <h2>Create Collection</h2>
-        <CreateCollectionForm @onCollectionCreated="onCollectionCreated"/>
+        <CreateCollectionForm :languageCode="pathParams.learningLanguage" @onCollectionCreated="onCollectionCreated"/>
       </BaseDialog>
     </template>
   </BaseCard>

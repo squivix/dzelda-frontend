@@ -71,11 +71,8 @@ export default {
     async fetchCollection() {
       this.collection = await this.collectionStore.fetchCollection({collectionId: this.pathParams.collectionId});
     },
-    async toggleIsBookmarked() {
-      if (this.collection!.isBookmarked)
-        await this.collectionStore.removeCollectionFromUserBookmarks({collectionId: this.collection!.id});
-      else
-        await this.collectionStore.addCollectionToUserBookmarks({collectionId: this.collection!.id});
+    toggleIsBookmarked() {
+      this.collectionStore.toggleCollectionBookmark(this.collection!)
       this.collection!.isBookmarked = !this.collection!.isBookmarked;
     },
   },
@@ -157,17 +154,6 @@ export default {
   width: 20px;
   height: 20px;
   overflow: visible;
-}
-
-.bookmark-filled {
-  fill: var(--primary-color);
-  stroke: var(--primary-color);
-}
-
-.bookmark-hollow {
-  fill: none;
-  stroke-width: 56px;
-  stroke: var(--primary-color);
 }
 
 h1 {

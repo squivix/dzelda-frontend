@@ -37,27 +37,33 @@
               </div>
             </div>
           </div>
-          <BaseDropDown
-              v-if="text.addedBy==userStore.userAccount!.username"
-              :id="`text-item-${text.id}`"
-              :centered="false"
-              :round="false">
-            <template v-slot:button>
-              <button class="more-button inv-button">
-                <inline-svg :src="icons.dotsStacked" class=""/>
-              </button>
-            </template>
-            <template v-slot:menu>
-              <ol class="dropdown-list">
-                <li>
-                  <router-link :to="{ name: 'edit-text' , params:{textId:text.id}}">
-                    <inline-svg :src="icons.pen"/>
-                    <span>Edit</span>
-                  </router-link>
-                </li>
-              </ol>
-            </template>
-          </BaseDropDown>
+          <div class="item-side">
+            <button class="bookmark-button inv-button icon-text-button" @click.prevent="toggleIsBookmarked">
+              <inline-svg :src="icons.bookmark"
+                          :class="`${text.isBookmarked?'bookmark-filled':'bookmark-hollow'}`"/>
+            </button>
+            <BaseDropDown
+                v-if="text.addedBy==userStore.userAccount!.username"
+                :id="`text-item-${text.id}`"
+                :centered="false"
+                :round="false">
+              <template v-slot:button>
+                <button class="more-button inv-button">
+                  <inline-svg :src="icons.dotsStacked" class=""/>
+                </button>
+              </template>
+              <template v-slot:menu>
+                <ol class="dropdown-list">
+                  <li>
+                    <router-link :to="{ name: 'update-text' , params:{textId:text.id}}">
+                      <inline-svg :src="icons.pen"/>
+                      <span>Edit</span>
+                    </router-link>
+                  </li>
+                </ol>
+              </template>
+            </BaseDropDown>
+          </div>
         </article>
       </router-link>
     </template>
@@ -69,13 +75,13 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {TextHistoryEntrySchema, TextSchema, VocabLevelSchema, VocabsByLevelSchema} from "dzelda-common";
 import {PropType} from "vue";
-import {useStore} from "@/stores/backend/rootStore.js";
 import constants from "@/constants.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import {format} from "timeago.js";
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
+import {useTextStore} from "@/stores/backend/textStore.js";
 
 export default {
   name: "TextListItem",
@@ -119,10 +125,16 @@ export default {
       return count;
     }
   },
+  methods: {
+    toggleIsBookmarked() {
+      this.textStore.toggleTextBookmark(this.text!);
+      this.text!.isBookmarked = !this.text!.isBookmarked;
+    }
+  },
   setup() {
     return {
       icons,
-      store: useStore(),
+      textStore: useTextStore(),
       userStore: useUserStore(),
       VocabLevelSchema
     };
@@ -152,6 +164,20 @@ article {
   align-items: flex-start;
 }
 
+.item-side {
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+}
+
+.bookmark-button {
+  padding: 0.5rem;
+}
+
+.bookmark-button svg {
+  width: 18px;
+  height: 18px;
+}
 
 .title-stats {
   display: flex;
@@ -234,10 +260,7 @@ a:hover {
 }
 
 .more-button {
-  padding: 1rem 0.5rem 0 0.5rem;
-}
-
-.more-button:hover {
+  padding: 0 0.25rem;
   cursor: pointer;
 }
 
@@ -267,14 +290,14 @@ a:hover {
     height: 200px;
   }
 
-  .dropdown {
-    align-self: flex-end;
-  }
-
   .item-content {
     flex-direction: column;
     align-items: center;
     width: 100%;
+  }
+
+  .item-side {
+    align-self: flex-end;
   }
 
   .title-stats {

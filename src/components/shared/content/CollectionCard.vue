@@ -1,37 +1,42 @@
 <template>
-  <router-link
-      :to="{name:'collection', params:{collectionId:collection.id}}">
-    <BaseCard>
-      <template v-slot:all>
+
+  <BaseCard>
+    <template v-slot:all>
+      <router-link :to="{name:'collection', params:{collectionId:collection.id}}">
         <article class="collection-article">
-          <BaseImage :image-url="collection.image" :fall-back-url="icons.books" alt-text="collection image"/>
+          <BaseImage class="collection-image" :image-url="collection.image" :fall-back-url="icons.books" alt-text="collection image"/>
 
           <div class="title-row">
             <h4>{{ collection.title }}</h4>
-
-            <BaseDropDown :id="`collection-card-${collection.id}`"
-                          group="collection-cards"
-                          :centered="false"
-                          :round="false" v-if="collection.addedBy==userStore.userAccount?.username">
-              <template v-slot:button>
-                <inline-svg :src="icons.dotsStacked" class="more-button"/>
-              </template>
-              <template v-slot:menu>
-                <ol class="dropdown-list">
-                  <li>
-                    <router-link :to="{ name: 'edit-collection' , params:{collectionId:collection.id}}">
-                      <inline-svg :src="icons.pen"/>
-                      <span>Edit</span>
-                    </router-link>
-                  </li>
-                </ol>
-              </template>
-            </BaseDropDown>
+            <div class="buttons-div">
+              <button class="bookmark-button inv-button icon-text-button" @click.prevent="toggleIsBookmarked">
+                <inline-svg :src="icons.bookmark"
+                            :class="`${collection.isBookmarked?'bookmark-filled':'bookmark-hollow'}`"/>
+              </button>
+              <BaseDropDown :id="`collection-card-${collection.id}`"
+                            group="collection-cards"
+                            :centered="false"
+                            :round="false" v-if="collection.addedBy==userStore.userAccount?.username">
+                <template v-slot:button>
+                  <inline-svg :src="icons.dotsStacked" class="more-button"/>
+                </template>
+                <template v-slot:menu>
+                  <ol class="dropdown-list">
+                    <li>
+                      <router-link :to="{ name: 'edit-collection' , params:{collectionId:collection.id}}">
+                        <inline-svg :src="icons.pen"/>
+                        <span>Edit</span>
+                      </router-link>
+                    </li>
+                  </ol>
+                </template>
+              </BaseDropDown>
+            </div>
           </div>
         </article>
-      </template>
-    </BaseCard>
-  </router-link>
+      </router-link>
+    </template>
+  </BaseCard>
 </template>
 
 <script lang="ts">
@@ -44,6 +49,7 @@ import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
+import {useCollectionStore} from "@/stores/backend/collectionStore.js";
 
 export default {
   name: "CollectionCard",
@@ -57,10 +63,16 @@ export default {
       required: true,
     }
   },
+  methods: {
+    toggleIsBookmarked() {
+      this.collectionStore.toggleCollectionBookmark(this.collection);
+      this.collection.isBookmarked = !this.collection.isBookmarked;
+    }
+  },
   setup() {
     return {
       icons,
-      store: useStore(),
+      collectionStore: useCollectionStore(),
       userStore: useUserStore(),
     };
   }
@@ -78,7 +90,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  row-gap: 1rem;
+  row-gap: 0.5rem;
 }
 
 .title-row {
@@ -87,7 +99,6 @@ export default {
   justify-content: space-between;
   width: 100%;
   align-items: center;
-  margin-bottom: 15px;
   margin-top: 10px;
 }
 
@@ -107,16 +118,34 @@ h4 {
   -webkit-box-orient: vertical;
 }
 
-.more-button {
-  color: gray;
-  text-decoration: none
+.buttons-div {
+  display: flex;
+  align-items: center;
 }
 
-.more-button:hover {
-  cursor: pointer;;
+.bookmark-button {
+  padding: 0.5rem 0;
+}
+
+.bookmark-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.more-button {
+  color: gray;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 :deep(.dropdown-label) {
-  padding: 0.5rem;
+  padding: 0.5rem 0 0.5rem 0.5rem;
+}
+
+@media screen and (max-width: 400px) {
+  .collection-image {
+    width: 150px;
+    height: 150px;
+  }
 }
 </style>

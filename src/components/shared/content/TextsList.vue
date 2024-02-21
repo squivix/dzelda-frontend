@@ -1,15 +1,49 @@
 <template>
   <LoadingScreen v-if="isLoading"/>
   <div class="wrapper">
-    <EmptyScreen v-if="!texts||texts.length==0" :message="emptyMessage"/>
+    <template v-if="showSearchFilters">
+      <div class="top-bar">
+        <SearchBar :initialSearchQuery="searchQuery"/>
+        <button class="filter-button icon-wrapper" @click.stop="toggleFilters" v-if="remainingFilters.size!=0">
+          <inline-svg :src="icons.filter"/>
+        </button>
+      </div>
+      <TextFilters v-if="remainingFilters.size!=0"
+                   :isShown="isFiltersShown"
+                   :filters="filters"
+                   :excludedFilters="excludedFilters"
+                   @onFiltersCleared="() => isFiltersShown=false"
+                   @onFiltersApplied="() => isFiltersShown=false"/>
+    </template>
+
+    <EmptyScreen v-if="!texts||texts.length==0" :message="emptyMessage" :hasFilters="hasQuery">
+      <template v-slot:no-filters>
+        <div class="empty-screen">
+          <slot name="empty-screen">
+            <p>{{ emptyMessage }}</p>
+          </slot>
+        </div>
+      </template>
+      <template v-slot:with-filters>
+        <div class="empty-screen">
+          <inline-svg :src="icons.search" class="empty-icon"/>
+          <p>No texts match your query</p>
+
+          <button @click="clearFilters" class="clear-filters-button inv-button link">
+            <inline-svg :src="icons.removeFilter"/>
+            Clear query
+          </button>
+        </div>
+      </template>
+    </EmptyScreen>
     <ul v-if="texts" class="texts-list">
       <TextListItem v-for="text in texts" :key="text.id" :text="text"/>
     </ul>
     <PaginationControls v-if="pageCount"
                         :page="page"
-                        :page-size="pageSize"
-                        :page-count="pageCount"
-                        perPageSelectLabel="texts Per Page"/>
+                        :pageSize="pageSize"
+                        :pageCount="pageCount"
+                        perPageSelectLabel="Texts Per Page"/>
   </div>
 </template>
 
@@ -20,18 +54,57 @@ import {TextSchema} from "dzelda-common";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
+import InlineSvg from "vue-inline-svg";
+import {icons} from "@/icons.js";
+import SearchBar from "@/components/ui/SearchBar.vue";
+import TextFilters, {TextFiltersObject, textFilterFields} from "@/components/shared/filters/TextFilters.vue";
+import {isEmptyObject, setDifference} from "@/utils.js";
+
 
 export default defineComponent({
   name: "TextsList",
-  components: {EmptyScreen, LoadingScreen, PaginationControls, TextListItem},
+  components: {TextFilters, SearchBar, InlineSvg, EmptyScreen, LoadingScreen, PaginationControls, TextListItem},
   props: {
     texts: {type: Object as PropType<TextSchema[] | null>, required: true},
     isLoading: {type: Boolean, required: true},
-    page: {type: Number},
-    pageSize: {type: Number},
+    searchQuery: String,
+    filters: {type: Object as PropType<TextFiltersObject>, default: {}},
+    page: Number,
+    pageSize: Number,
     pageCount: {type: Number, required: true},
-    emptyMessage: {type: String, required: false, default: "No texts found."}
-  }
+    emptyMessage: {type: String, required: false, default: "No texts found."},
+    showSearchFilters: {type: Boolean, default: true},
+    excludedFilters: {type: Object as PropType<Set<keyof TextFiltersObject>>, required: false, default: new Set()}
+  },
+  data() {
+    return {
+      isFiltersShown: false,
+    };
+  },
+  computed: {
+    hasQuery() {
+      return !isEmptyObject(this.filters) || !!this.searchQuery;
+    },
+    remainingFilters() {
+      return setDifference(new Set(textFilterFields), this.excludedFilters);
+    }
+  },
+  methods: {
+    toggleFilters() {
+      this.isFiltersShown = !this.isFiltersShown;
+    },
+    clearFilters() {
+      const clearedFilters: Partial<Record<keyof TextFiltersObject, undefined>> = {};
+      textFilterFields.forEach(f => clearedFilters[f] = undefined);
+      this.$router.push({
+        query: {...this.$route.query, ...clearedFilters, searchQuery: undefined, page: undefined}
+      });
+      this.isFiltersShown = false;
+    },
+  },
+  setup() {
+    return {icons};
+  },
 });
 </script>
 
@@ -39,12 +112,37 @@ export default defineComponent({
 .wrapper {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
 }
 
 .texts-list {
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: flex-end;
+  column-gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.filter-button {
+  border: 2px solid grey;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.clear-filters-button {
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.clear-filters-button svg {
+  width: 20px;
+  height: 20px;
 }
 </style>

@@ -59,8 +59,9 @@ export const useLanguageStore = defineStore("language", {
         async updateLanguageLastOpened(pathParams: { languageCode: string }) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.patchUsersMeLanguagesLanguageCode(pathParams.languageCode, {lastOpened: "now"}));
-            this.setLastOpenedLanguage(pathParams.languageCode);
-            return response.data;
+            if (response.ok)
+                this.setLastOpenedLanguage(pathParams.languageCode);
+            return response;
         },
         setLastOpenedLanguage(languageCode: string) {
             if (!this.userLanguages || this.userLanguages.length < 2)

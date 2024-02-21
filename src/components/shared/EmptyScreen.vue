@@ -51,10 +51,6 @@ export default defineComponent({
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-.empty-screen button {
-  color: var(--empty-list-icon-color);
-}
-
 .empty-screen svg {
   color: var(--empty-list-icon-color);
 }

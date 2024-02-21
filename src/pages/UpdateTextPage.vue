@@ -2,7 +2,7 @@
   <BaseCard title="Update Text" class="update-text-base-card main-page-base-card">
     <template v-slot:content>
       <LoadingScreen v-if="!text"/>
-      <form class="edit-text-form" @submit.prevent="updateText" v-else>
+      <form class="update-text-form" @submit.prevent="updateText" v-else>
         <div class="side-inputs">
           <div class="form-row">
             <label>Image</label>
@@ -296,7 +296,7 @@ select {
 }
 
 @media screen and (max-width: 750px) {
-  .edit-text-form {
+  .update-text-form {
     flex-direction: column;
   }
 

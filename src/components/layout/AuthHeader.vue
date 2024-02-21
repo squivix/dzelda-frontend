@@ -185,14 +185,11 @@ h1 {
     color: var(--on-primary-color);
   }
 
-  .title-nav-div {
-    column-gap: 0.25rem;
-  }
 }
 
 @media screen and (max-width: 300px) {
-  .main-header {
-    column-gap: 0.25rem;
+  .main-header, .title-nav-div {
+    column-gap: 0.3rem;
   }
 }
 </style>

@@ -45,11 +45,9 @@ export default defineComponent({
     };
   },
   props: {
+    pathParams: {type: Object as PropType<{ learningLanguage: string }>, required: true},
     queryParams: {
-      type: Object as PropType<{
-        page: number,
-        pageSize: number
-      }>,
+      type: Object as PropType<{ page: number, pageSize: number }>,
       required: true
     },
   },
@@ -62,7 +60,7 @@ export default defineComponent({
     async fetchTexts() {
       this.loading = true;
       const response = await this.textStore.fetchTextsInHistory({
-        languageCode: this.$route.params.learningLanguage as string,
+        languageCode: this.pathParams.learningLanguage,
         page: this.queryParams.page,
         pageSize: this.queryParams.pageSize,
         sortBy: "timeViewed",

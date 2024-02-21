@@ -4,6 +4,8 @@
              :pageSize="queryParams.pageSize"
              :page="queryParams.page"
              :isLoading="isLoading"
+             :filters="{addedBy:queryParams.addedBy, level:queryParams.level, hasAudio: queryParams.hasAudio}"
+             :searchQuery="queryParams.searchQuery"
              :texts="texts"
              emptyMessage="No texts found in this language"/>
   <CollectionList v-else
@@ -12,7 +14,8 @@
                   :page="queryParams.page"
                   :isLoading="isLoading"
                   :collections="collections"
-                  :showSearchFilters="false"
+                  :filters="{addedBy:queryParams.addedBy}"
+                  :searchQuery="queryParams.searchQuery"
                   emptyMessage="No collections found in this language"/>
 </template>
 
@@ -27,9 +30,9 @@ import CollectionList from "@/components/shared/content/CollectionList.vue";
 export default defineComponent({
   name: "ExplorePopularTab",
   components: {TextsList, CollectionList},
-
   props: {
-    queryParams: {type: Object as PropType<{ page: number, pageSize: number }>, required: true},
+    pathParams: {type: Object as PropType<{ learningLanguage: string }>, required: true},
+    queryParams: {type: Object as PropType<{ page: number, pageSize: number, searchQuery: string, addedBy: string, level: string | string[], hasAudio: boolean }>, required: true},
     resourceType: {type: String as PropType<"texts" | "collections">, required: true},
   },
   data() {
@@ -58,7 +61,11 @@ export default defineComponent({
     async fetchTexts() {
       this.isLoading = true;
       const response = await this.textStore.fetchTexts({
-        languageCode: this.$route.params.learningLanguage as string,
+        languageCode: this.pathParams.learningLanguage,
+        addedBy: this.queryParams.addedBy,
+        level: this.queryParams.level,
+        hasAudio: this.queryParams.hasAudio,
+        searchQuery: this.queryParams.searchQuery || undefined,
         page: this.queryParams.page,
         pageSize: this.queryParams.pageSize,
         sortBy: "pastViewersCount",
@@ -71,7 +78,9 @@ export default defineComponent({
     async fetchCollections() {
       this.isLoading = true;
       const response = await this.collectionStore.fetchCollections({
-        languageCode: this.$route.params.learningLanguage as string,
+        languageCode: this.pathParams.learningLanguage,
+        addedBy: this.queryParams.addedBy,
+        searchQuery: this.queryParams.searchQuery || undefined,
         page: this.queryParams.page,
         pageSize: this.queryParams.pageSize,
         sortBy: "avgPastViewersCountPerText",

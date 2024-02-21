@@ -2,13 +2,13 @@ import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {cleanUndefined} from "@/utils.js";
 import {useMessageBarStore} from "@/stores/messageBarStore.js";
+import {CollectionSchema, TextHistoryEntrySchema, TextSchema} from "dzelda-common";
 
 export const useCollectionStore = defineStore("collection", {
     actions: {
         async fetchCollections(queryParams: {
             languageCode?: string,
             addedBy?: string,
-            level?: string[],
             sortBy?: "title" | "createdDate" | "avgPastViewersCountPerText",
             sortOrder?: "asc" | "desc",
             searchQuery?: string,
@@ -26,7 +26,6 @@ export const useCollectionStore = defineStore("collection", {
             languageCode?: string,
             searchQuery?: string,
             addedBy?: string,
-            level?: string[],
             pageSize?: number,
             page?: number
         } = {}) {
@@ -78,6 +77,13 @@ export const useCollectionStore = defineStore("collection", {
                     image: body.image
                 })));
         },
+
+        async toggleCollectionBookmark(collection: CollectionSchema) {
+            if (!collection.isBookmarked)
+                return this.addCollectionToUserBookmarks({collectionId: collection.id});
+            else
+                return this.removeCollectionFromUserBookmarks({collectionId: collection.id});
+        },
         async addCollectionToUserBookmarks(body: {
             collectionId: number
         }) {
@@ -94,6 +100,7 @@ export const useCollectionStore = defineStore("collection", {
             const response = await store.fetchCustom((api) => api.users.deleteUsersMeCollectionsBookmarkedCollectionId(pathParams.collectionId));
             return response.data;
         },
+
         async deleteCollection(pathParams: { collectionId: number }) {
             useMessageBarStore().clearMessages();
             const store = useStore();

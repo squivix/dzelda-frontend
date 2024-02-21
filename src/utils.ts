@@ -13,7 +13,8 @@ export function shallowObjectEquals(obj1: Record<string, any>, obj2: Record<stri
 }
 
 export function isEmptyObject(obj: object) {
-    for (let key in obj) {
+
+    for (let key in cleanUndefined(obj)) {
         if (obj.hasOwnProperty(key))
             return false;
     }
@@ -185,4 +186,7 @@ export function daysToMs(days: number) {
     return days * 24 * 60 * 60 * 1000;
 }
 
+export function setDifference<T>(set1: Set<T>, set2: Set<T>) {
+    return new Set([...set1].filter(x => !set2.has(x)));
 
+}

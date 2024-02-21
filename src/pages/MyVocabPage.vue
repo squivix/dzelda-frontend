@@ -4,14 +4,15 @@
       <LoadingScreen v-if="loading"/>
       <section v-else>
         <div class="top-bar">
-          <SearchBar :initial-search-query="queryParams.searchQuery"/>
-          <button class="filter-button icon-wrapper" @click.stop="toggleFilters">
+          <SearchBar :initialSearchQuery="queryParams.searchQuery"/>
+          <button class="filter-button icon-wrapper" @mousedown.stop @click.stop="toggleFilters">
             <inline-svg :src="icons.filter"/>
           </button>
         </div>
         <VocabFilters :is-shown="isFiltersShown"
-                      @on-filters-cleared="() => isFiltersShown=false"
-                      @on-filters-applied="() => isFiltersShown=false"/>
+                      :filters="{level:queryParams.level}"
+                      @onFiltersCleared="() => isFiltersShown=false"
+                      @onFiltersApplied="() => isFiltersShown=false"/>
         <div class="main-content">
           <div class="table-wrapper styled-scrollbars">
             <EmptyScreen v-if="!vocabs||vocabs.length==0" :has-filters="hasFilters">
@@ -59,9 +60,9 @@
       <PaginationControls v-if="pageCount"
                           :page-count="pageCount"
                           :page="queryParams.page"
-                          :page-size="queryParams.pageSize"
-                          :per-page-select-options="[25, 50, 100, 150, 200]"
-                          per-page-select-label="Vocabs Per Page">
+                          :pageSize="queryParams.pageSize"
+                          :perPageSelectOptions="[25, 50, 100, 150, 200]"
+                          perPageSelectLabel="Vocabs Per Page">
       </PaginationControls>
     </template>
   </BaseCard>
@@ -72,7 +73,7 @@ import VocabTable from "@/components/page/my-vocabs/VocabTable.vue";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {PropType} from "vue";
-import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-common";
+import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
 import SearchBar from "@/components/ui/SearchBar.vue";
 import VocabFilters from "@/components/shared/filters/VocabFilters.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
