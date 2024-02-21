@@ -1,46 +1,48 @@
 <template>
-  <BaseCollapsableDiv :is-shown="isShown">
-    <BaseFiltersCard class="card">
-      <h4>Filters</h4>
-      <form @submit.prevent="applyFilters" @reset="clearFilters">
-        <div class="filters-wrapper">
-          <div v-if="!excludedFilters.has('addedBy')" class="form-row">
-            <label for="author-input" class="filter-label">Author</label>
-            <input id="author-input" type="text" v-model="addedBy" placeholder="Enter a username">
+  <BaseCollapsableDiv :isShown="isShown" :maxHeight="maxCardHeight" v-slot="{setContentElement}">
+    <div :ref="(el) => setContentElement(el)">
+      <BaseFiltersCard class="card">
+        <h4>Filters</h4>
+        <form @submit.prevent="applyFilters" @reset="clearFilters">
+          <div class="filters-wrapper">
+            <div v-if="!excludedFilters.has('addedBy')" class="form-row">
+              <label for="author-input" class="filter-label">Author</label>
+              <input id="author-input" type="text" v-model="addedBy" placeholder="Enter a username">
+            </div>
+            <div v-if="!excludedFilters.has('level')" class="form-row">
+              <label class="filter-label">Level</label>
+              <fieldset class="filter-levels">
+                <label v-for="level in allLevels" class="box-label">
+                  <input type="checkbox" :value="level.value" v-model="levels">
+                  {{ level.label }}
+                </label>
+              </fieldset>
+            </div>
+            <div v-if="!excludedFilters.has('hasAudio')" class="form-row">
+              <label class="filter-label">Has audio?</label>
+              <fieldset class="filter-has-audio">
+                <label class="box-label">
+                  <input type="radio" :value="true" v-model="hasAudio">
+                  Yes
+                </label>
+                <label class="box-label">
+                  <input type="radio" :value="false" v-model="hasAudio">
+                  No
+                </label>
+                <label class="box-label">
+                  <input type="radio" :value="undefined" v-model="hasAudio">
+                  Both
+                </label>
+              </fieldset>
+            </div>
           </div>
-          <div v-if="!excludedFilters.has('level')" class="form-row">
-            <label class="filter-label">Level</label>
-            <fieldset class="filter-levels">
-              <label v-for="level in allLevels" class="box-label">
-                <input type="checkbox" :value="level.value" v-model="levels">
-                {{ level.label }}
-              </label>
-            </fieldset>
+          <div class="buttons-wrapper">
+            <button type="reset" class="primary-hollow-button square-button">Clear</button>
+            <button type="submit" class="primary-filled-button square-button">Apply</button>
           </div>
-          <div v-if="!excludedFilters.has('hasAudio')" class="form-row">
-            <label class="filter-label">Has audio?</label>
-            <fieldset class="filter-has-audio">
-              <label class="box-label">
-                <input type="radio" :value="true" v-model="hasAudio">
-                Yes
-              </label>
-              <label class="box-label">
-                <input type="radio" :value="false" v-model="hasAudio">
-                No
-              </label>
-              <label class="box-label">
-                <input type="radio" :value="undefined" v-model="hasAudio">
-                Both
-              </label>
-            </fieldset>
-          </div>
-        </div>
-        <div class="buttons-wrapper">
-          <button type="reset" class="primary-hollow-button square-button">Clear</button>
-          <button type="submit" class="primary-filled-button square-button">Apply</button>
-        </div>
-      </form>
-    </BaseFiltersCard>
+        </form>
+      </BaseFiltersCard>
+    </div>
   </BaseCollapsableDiv>
 </template>
 
@@ -48,8 +50,9 @@
 import {defineComponent, PropType} from "vue";
 import BaseCollapsableDiv from "@/components/ui/BaseCollapsableDiv.vue";
 import BaseFiltersCard from "@/components/ui/BaseFiltersCard.vue";
-import {setDifference, toSentenceCase} from "@/utils.js";
+import {toSentenceCase} from "@/utils.js";
 import {LanguageLevelSchema} from "dzelda-common";
+import {useDebounceFn, useResizeObserver} from "@vueuse/core";
 
 export const textFilterFields = ["addedBy", "level", "hasAudio"] as const;
 export type TextFiltersObject = Partial<{ addedBy: string, level: string | string[], hasAudio: boolean }>;
@@ -67,6 +70,7 @@ export default defineComponent({
       addedBy: this.filters.addedBy ?? "",
       levels: this.filters.level ?? [],
       hasAudio: this.filters.hasAudio,
+      maxCardHeight: undefined as number | undefined,
     };
   },
   watch: {

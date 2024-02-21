@@ -1,20 +1,22 @@
 <template>
-  <BaseCollapsableDiv :is-shown="isShown">
-    <BaseFiltersCard class="card">
-      <h4>Filters</h4>
-      <form @submit.prevent="applyFilters" @reset="clearFilters">
-        <div class="filters-wrapper">
-          <template v-if="!excludedFilters.has('addedBy')">
-            <label for="author-input" class="filter-label">Author</label>
-            <input id="author-input" type="text" v-model="addedBy" placeholder="Enter a username">
-          </template>
-        </div>
-        <div class="buttons-wrapper">
-          <button type="reset" class="primary-hollow-button square-button">Clear</button>
-          <button type="submit" class="primary-filled-button square-button">Apply</button>
-        </div>
-      </form>
-    </BaseFiltersCard>
+  <BaseCollapsableDiv :isShown="isShown" :maxHeight="maxCardHeight" v-slot="{setContentElement}">
+    <div :ref="(el) => setContentElement(el)">
+      <BaseFiltersCard class="card">
+        <h4>Filters</h4>
+        <form @submit.prevent="applyFilters" @reset="clearFilters">
+          <div class="filters-wrapper">
+            <template v-if="!excludedFilters.has('addedBy')">
+              <label for="author-input" class="filter-label">Author</label>
+              <input id="author-input" type="text" v-model="addedBy" placeholder="Enter a username">
+            </template>
+          </div>
+          <div class="buttons-wrapper">
+            <button type="reset" class="primary-hollow-button square-button">Clear</button>
+            <button type="submit" class="primary-filled-button square-button">Apply</button>
+          </div>
+        </form>
+      </BaseFiltersCard>
+    </div>
   </BaseCollapsableDiv>
 </template>
 
@@ -23,7 +25,7 @@ import {defineComponent, PropType} from "vue";
 import BaseCollapsableDiv from "@/components/ui/BaseCollapsableDiv.vue";
 import BaseFiltersCard from "@/components/ui/BaseFiltersCard.vue";
 import constants from "@/constants.js";
-import {setDifference} from "@/utils.js";
+import {useDebounceFn, useResizeObserver} from "@vueuse/core";
 
 export const collectionFilterFields = ["addedBy"] as const;
 export type CollectionFiltersObject = Partial<{ addedBy: string }>
@@ -38,7 +40,8 @@ export default defineComponent({
   },
   data() {
     return {
-      addedBy: this.filters.addedBy
+      addedBy: this.filters.addedBy,
+      maxCardHeight: undefined as number | undefined,
     };
   },
   watch: {

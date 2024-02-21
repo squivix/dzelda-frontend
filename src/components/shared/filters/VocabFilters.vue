@@ -1,25 +1,27 @@
 <template>
-  <BaseCollapsableDiv :is-shown="isShown">
-    <BaseFiltersCard class="card" @mousedown.stop>
-      <h4>Filters</h4>
-      <form @submit.prevent="applyFilters" @reset="clearFilters">
-        <div class="filters-wrapper">
-          <div class="form-row" v-if="!excludedFilters.has('level')">
-            <h5 class="filter-label">Level</h5>
-            <fieldset class="filter-levels">
-              <label v-for="level in allLevels" class="box-label">
-                <input type="checkbox" :value="level.value" v-model="levels">
-                {{ level.label }}
-              </label>
-            </fieldset>
+  <BaseCollapsableDiv :isShown="isShown" :maxHeight="maxCardHeight" v-slot="{setContentElement}">
+    <div :ref="(el) => setContentElement(el)">
+      <BaseFiltersCard class="card" @mousedown.stop>
+        <h4>Filters</h4>
+        <form @submit.prevent="applyFilters" @reset="clearFilters">
+          <div class="filters-wrapper">
+            <div class="form-row" v-if="!excludedFilters.has('level')">
+              <h5 class="filter-label">Level</h5>
+              <fieldset class="filter-levels">
+                <label v-for="level in allLevels" class="box-label">
+                  <input type="checkbox" :value="level.value" v-model="levels">
+                  {{ level.label }}
+                </label>
+              </fieldset>
+            </div>
           </div>
-        </div>
-        <div class="buttons-wrapper">
-          <button type="reset" class="primary-hollow-button square-button">Clear</button>
-          <button type="submit" class="primary-filled-button square-button">Apply</button>
-        </div>
-      </form>
-    </BaseFiltersCard>
+          <div class="buttons-wrapper">
+            <button type="reset" class="primary-hollow-button square-button">Clear</button>
+            <button type="submit" class="primary-filled-button square-button">Apply</button>
+          </div>
+        </form>
+      </BaseFiltersCard>
+    </div>
   </BaseCollapsableDiv>
 </template>
 
@@ -28,6 +30,7 @@ import {defineComponent, PropType} from "vue";
 import BaseCollapsableDiv from "@/components/ui/BaseCollapsableDiv.vue";
 import BaseFiltersCard from "@/components/ui/BaseFiltersCard.vue";
 import {VocabLevelSchema} from "dzelda-common";
+import {useDebounceFn, useResizeObserver} from "@vueuse/core";
 
 type VocabFiltersObject = { level: VocabLevelSchema | VocabLevelSchema[] };
 export default defineComponent({
@@ -42,6 +45,7 @@ export default defineComponent({
   data() {
     return {
       levels: this.filters.level ?? [],
+      maxCardHeight: undefined as number | undefined,
     };
   },
   watch: {
