@@ -117,11 +117,6 @@ form {
   align-items: flex-start;
 }
 
-.form-row {
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.5rem;
-}
 
 .filter-label {
   font-size: 1rem;

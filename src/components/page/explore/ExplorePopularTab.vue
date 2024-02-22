@@ -9,6 +9,7 @@
              :texts="texts"
              emptyMessage="No texts found in this language"
              @onTextHidden="fetchResources"
+             @onTextReported="fetchResources"
   />
   <CollectionList v-else
                   :pageCount="pageCount"

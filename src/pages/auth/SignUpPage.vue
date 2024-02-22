@@ -4,7 +4,7 @@
       <form @submit.prevent="submitForm">
         <div class="form-row">
           <label for="email">Email</label>
-          <input id="email" type="email" maxlength="256"  required v-model="email"
+          <input id="email" type="email" maxlength="256" required v-model="email"
                  :class="{'error-input': !!errorFields.email}"/>
           <p v-if="errorFields.email" class="error-message">{{ errorFields.email }}</p>
         </div>
@@ -91,21 +91,9 @@ form {
   flex-direction: column;
   margin-right: 0;
   padding: 0 10%;
-  row-gap: 1rem;
-}
-
-label {
-  margin-bottom: 0.5rem;
-  font-size: 1.2rem;
 }
 
 .form-row {
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 1.5rem;
 }
-
-input, .base-password-div {
-  margin-bottom: 0.5rem;
-}
-
 </style>

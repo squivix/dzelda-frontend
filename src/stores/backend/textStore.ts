@@ -137,11 +137,12 @@ export const useTextStore = defineStore("text", {
             const store = useStore();
             await store.fetchCustom((api) => api.users.deleteUsersMeTextsHiddenTextId(pathParams.textId));
         },
-        async reportText(pathParams: { textId: number }, body: { reasonForReporting: string, reportText?: string }) {
+        async reportText(pathParams: { textId: number }, body: { reasonForReporting: string, reportText?: string, hideText?: boolean }) {
             const store = useStore();
             await store.fetchCustom((api) => api.texts.postTextsTextIdReports(pathParams.textId, {
                 reasonForReporting: body.reasonForReporting,
-                reportText: body.reportText
+                reportText: body.reportText,
+                hideText: body.hideText
             }));
         }
     }

@@ -317,3 +317,10 @@ svg {
     stroke-width: 56px;
     stroke: var(--primary-color);
 }
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+    margin-bottom: 1rem;
+}

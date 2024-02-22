@@ -64,6 +64,7 @@ dialog.open {
 dialog.closed {
   transform: translateY(-25px);
   opacity: 0;
+  pointer-events: none;
 }
 
 dialog.open::backdrop {

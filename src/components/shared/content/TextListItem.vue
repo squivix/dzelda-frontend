@@ -65,6 +65,12 @@
                       <span>Hide</span>
                     </button>
                   </li>
+                  <li>
+                    <button class="inv-button" @click.stop.prevent="$emit('onReportTextClicked',text)">
+                      <inline-svg :src="icons.flag"/>
+                      <span>Report</span>
+                    </button>
+                  </li>
                 </ol>
               </template>
             </BaseDropDown>
@@ -92,7 +98,7 @@ import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
 export default {
   name: "TextListItem",
   components: {ConfirmDialog, InlineSvg, BaseDropDown, BaseImage, BaseCard},
-  emits:["onHideTextClicked"],
+  emits:["onHideTextClicked","onReportTextClicked"],
   props: {
     text: {type: Object as PropType<TextSchema | TextHistoryEntrySchema>, required: true},
     showCollection: {type: Boolean, required: false, default: true}
@@ -267,7 +273,7 @@ a:hover {
 }
 
 .more-button {
-  padding: 0 0.25rem;
+  padding: 0.5rem;
   cursor: pointer;
 }
 

@@ -139,14 +139,7 @@ form {
 .filters-wrapper {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
   align-items: flex-start;
-}
-
-.form-row {
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.5rem;
 }
 
 .filter-label {

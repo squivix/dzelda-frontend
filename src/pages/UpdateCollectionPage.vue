@@ -225,13 +225,6 @@ input:not([type='checkbox']), select, textarea {
 }
 
 
-.form-row {
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
 .side-inputs {
   display: flex;
   flex-direction: column;

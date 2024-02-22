@@ -124,11 +124,6 @@ h2 {
 }
 
 
-.form-row {
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.5rem;
-}
 
 select {
   height: 2.5rem;

@@ -47,6 +47,7 @@ import pronunciation from "@/assets/images/pronunciation.svg";
 import stopPlayback from "@/assets/images/stop-playback.svg";
 import tts from "@/assets/images/tts.svg";
 import bookOpenWithBookmark from "@/assets/images/book-open-with-bookmark.svg";
+import flag from "@/assets/images/flag-icon.svg";
 
 export const icons = {
     arrowDown,
@@ -97,5 +98,6 @@ export const icons = {
     pronunciation,
     stopPlayback,
     tts,
-    bookOpenWithBookmark
+    bookOpenWithBookmark,
+    flag
 };

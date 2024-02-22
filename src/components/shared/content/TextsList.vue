@@ -37,7 +37,7 @@
       </template>
     </EmptyScreen>
     <ul v-if="texts" class="texts-list">
-      <TextListItem v-for="text in texts" :key="text.id" :text="text" @onHideTextClicked="onHideTextClicked"/>
+      <TextListItem v-for="text in texts" :key="text.id" :text="text" @onHideTextClicked="onHideTextClicked" @onReportTextClicked="onReportTextClicked"/>
     </ul>
     <PaginationControls v-if="pageCount"
                         :page="page"
@@ -45,9 +45,10 @@
                         :pageCount="pageCount"
                         perPageSelectLabel="Texts Per Page"/>
 
-    <ConfirmDialog :isShown="isConfirmHideShown" @onNoClicked="cancelHideText" @onYesClicked="hideText">
+    <ConfirmDialog :isShown="isConfirmHideDialogShown" @onNoClicked="cancelHideText" @onYesClicked="hideText">
       <p>Are you sure you want to hide this text from your feed?</p>
     </ConfirmDialog>
+    <ReportTextDialog :text="textToReport" :isShown="isReportTextDialogShown" @onCancelClicked="cancelReportText" @onReportSubmitted="onTextReported"/>
   </div>
 </template>
 
@@ -65,12 +66,13 @@ import TextFilters, {TextFiltersObject, textFilterFields} from "@/components/sha
 import {isEmptyObject, setDifference} from "@/utils.js";
 import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
 import {useTextStore} from "@/stores/backend/textStore.js";
+import ReportTextDialog from "@/components/shared/ReportTextDialog.vue";
 
 
 export default defineComponent({
   name: "TextsList",
-  emits: ["onTextHidden"],
-  components: {ConfirmDialog, TextFilters, SearchBar, InlineSvg, EmptyScreen, LoadingScreen, PaginationControls, TextListItem},
+  emits: ["onTextHidden", "onTextReported"],
+  components: {ReportTextDialog, ConfirmDialog, TextFilters, SearchBar, InlineSvg, EmptyScreen, LoadingScreen, PaginationControls, TextListItem},
   props: {
     texts: {type: Object as PropType<TextSchema[] | null>, required: true},
     isLoading: {type: Boolean, required: true},
@@ -86,8 +88,10 @@ export default defineComponent({
   data() {
     return {
       isFiltersShown: false,
-      isConfirmHideShown: false,
+      isConfirmHideDialogShown: false,
+      isReportTextDialogShown: false,
       textToHide: null as TextSchema | null,
+      textToReport: null as TextSchema | null,
     };
   },
   computed: {
@@ -101,18 +105,31 @@ export default defineComponent({
   methods: {
     onHideTextClicked(textToHide: TextSchema) {
       this.textToHide = textToHide;
-      this.isConfirmHideShown = true;
+      this.isConfirmHideDialogShown = true;
+    },
+    onReportTextClicked(textToReport: TextSchema) {
+      this.textToReport = textToReport;
+      this.isReportTextDialogShown = true;
     },
     cancelHideText() {
       this.textToHide = null;
-      this.isConfirmHideShown = false;
+      this.isConfirmHideDialogShown = false;
+    },
+    cancelReportText() {
+      this.textToReport = null;
+      this.isReportTextDialogShown = false;
     },
     async hideText() {
       if (this.textToHide) {
-        this.isConfirmHideShown = false;
+        this.isConfirmHideDialogShown = false;
         await this.textStore.hideTextForUser({textId: this.textToHide.id});
         this.$emit("onTextHidden");
       }
+    },
+    onTextReported() {
+      this.isReportTextDialogShown = false;
+      this.textToReport = null;
+      this.$emit("onTextReported");
     },
     toggleFilters() {
       this.isFiltersShown = !this.isFiltersShown;

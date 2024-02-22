@@ -288,13 +288,6 @@ select {
   column-gap: 0.25rem;
 }
 
-.form-row {
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
 @media screen and (max-width: 750px) {
   .update-text-form {
     flex-direction: column;

@@ -117,12 +117,6 @@ export default defineComponent({
   flex-grow: 1;
 }
 
-.form-row {
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.5rem;
-  margin-bottom: 1rem;
-}
 
 .create-collection-form label {
   font-size: 1.25rem;

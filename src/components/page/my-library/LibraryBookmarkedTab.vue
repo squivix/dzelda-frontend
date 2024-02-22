@@ -23,6 +23,7 @@
              :filters="{addedBy:queryParams.addedBy, level:queryParams.level, hasAudio: queryParams.hasAudio}"
              :searchQuery="queryParams.searchQuery"
              @onTextHidden="fetchBookmarked">
+             @onTextReported="fetchBookmarked">
     <template v-slot:empty-screen>
       <inline-svg :src="icons.bookOpenWithBookmark" class="empty-icon"/>
       <p>Texts you bookmark
