@@ -1,9 +1,15 @@
 <template>
   <div class="message-bar-queue">
     <ol>
-      <li v-for="(message, index) in messageBarStore.messageQueue">
-        <BaseMessageBar :text="message.text" :type="message.type"
-                        @onDismissed="()=>messageBarStore.removeMessage(index)"/>
+      <li v-for="(message, index) in messageBarStore.topBarMessageQueue" :key="message.uuid">
+        <BaseMessageBar :message="message"
+                        @onDismissed="()=>messageBarStore.removeTopBarMessage(message)"/>
+      </li>
+    </ol>
+    <ol class="side-message-list">
+      <li v-for="(i) in messageBarStore.sideMessageQueue.length" :key="messageBarStore.sideMessageQueue[messageBarStore.sideMessageQueue.length-i].uuid">
+        <BaseMessageBar :message="messageBarStore.sideMessageQueue[messageBarStore.sideMessageQueue.length-i]"
+                        @onDismissed="()=>messageBarStore.removeSideMessage(messageBarStore.sideMessageQueue[messageBarStore.sideMessageQueue.length-i])"/>
       </li>
     </ol>
   </div>
@@ -27,5 +33,14 @@ export default defineComponent({
 <style>
 .message-bar-queue {
 
+}
+
+.side-message-list {
+  position: absolute;
+  right: 10px;
+  transform: translateY(10px);
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
 }
 </style>

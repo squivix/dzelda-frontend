@@ -40,7 +40,7 @@ export const useCollectionStore = defineStore("collection", {
             description: string,
             image: string | undefined,
         }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             return await store.fetchCustom((api) => api.collections.postCollections(cleanUndefined({
                 languageCode: body.languageCode,
@@ -67,7 +67,7 @@ export const useCollectionStore = defineStore("collection", {
             image: string | undefined,
             textsOrder: number[]
         }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             return await store.fetchCustom((api) => api.collections.putCollectionsCollectionId(pathParams.collectionId,
                 cleanUndefined({
@@ -87,7 +87,7 @@ export const useCollectionStore = defineStore("collection", {
         async addCollectionToUserBookmarks(body: {
             collectionId: number
         }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.postUsersMeCollectionsBookmarked({collectionId: body.collectionId}));
             return response.data;
@@ -95,14 +95,14 @@ export const useCollectionStore = defineStore("collection", {
         async removeCollectionFromUserBookmarks(pathParams: {
             collectionId: number
         }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.deleteUsersMeCollectionsBookmarkedCollectionId(pathParams.collectionId));
             return response.data;
         },
 
         async deleteCollection(pathParams: { collectionId: number }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             await store.fetchCustom((api) => api.collections.deleteCollectionsCollectionId(pathParams.collectionId));
         }

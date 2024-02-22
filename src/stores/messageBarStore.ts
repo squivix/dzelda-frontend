@@ -1,4 +1,5 @@
 import {defineStore} from "pinia";
+import {useTimeoutFn} from "@vueuse/core";
 
 export enum MessageType {
     INFO = "info",
@@ -8,34 +9,63 @@ export enum MessageType {
 }
 
 export interface Message {
+    uuid: string
     text: string,
-    type: MessageType
+    type: MessageType,
+    timeoutMs?: number,
+    isMarkdown?: boolean,
+    isDismissable?: boolean,
 }
 
 export const useMessageBarStore = defineStore("messageBar", {
     state() {
         return {
-            messageQueue: [] as Message[]
+            topBarMessageQueue: [] as Message[],
+            sideMessageQueue: [] as Message[]
         };
     },
     actions: {
-        addMessage(newMessage: Message) {
-            if (this.messageQueue.length >= 3)
-                this.removeEarliestMessage();
+        addSideMessage(messageData: Omit<Message, "uuid">) {
+            if (messageData.isDismissable == undefined)
+                messageData.isDismissable = true;
+            const newMessage = {...messageData, uuid: crypto.randomUUID()};
+            this.sideMessageQueue.unshift(newMessage);
+            if (newMessage.timeoutMs !== undefined)
+                useTimeoutFn(() => {
+                    const index = this.sideMessageQueue.findIndex((m) => m.uuid == newMessage.uuid);
+                    if (index !== -1)
+                        this.sideMessageQueue.splice(index, 1);
+                }, newMessage.timeoutMs);
+        },
+        removeSideMessage(message: Message) {
+            const index = this.sideMessageQueue.findIndex((m) => m.uuid == message.uuid);
+            if (index !== -1)
+                this.sideMessageQueue.splice(index, 1);
+        },
+        clearSideMessages() {
+            if (this.sideMessageQueue.length > 0)
+                this.sideMessageQueue.length = 0;
+        },
+        addTopBarMessage(messageData: Omit<Message, "uuid">) {
+            if (messageData.isDismissable == undefined)
+                messageData.isDismissable = true;
+            const newMessage = {...messageData, uuid: crypto.randomUUID()};
 
-            if (this.messageQueue.find((m) => m.text == newMessage.text && m.type == newMessage.type))
+            if (this.topBarMessageQueue.length >= 3)
+                this.topBarMessageQueue.pop();
+
+            if (this.topBarMessageQueue.find((m) => m.text == newMessage.text && m.type == newMessage.type))
                 return;
-            this.messageQueue.unshift(newMessage);
+            this.topBarMessageQueue.unshift(newMessage);
         },
-        removeEarliestMessage() {
-            this.messageQueue.pop();
+        removeTopBarMessage(message: Message) {
+            const index = this.topBarMessageQueue.findIndex((m) => m.uuid == message.uuid);
+            if (index !== -1)
+                this.topBarMessageQueue.splice(index, 1);
         },
-        removeMessage(index: number) {
-            this.messageQueue.splice(index, 1);
-        },
-        clearMessages() {
-            if (this.messageQueue.length > 0)
-                this.messageQueue.length = 0;
+        clearTopBarMessages() {
+            if (this.topBarMessageQueue.length > 0)
+                this.topBarMessageQueue.length = 0;
         }
     }
 

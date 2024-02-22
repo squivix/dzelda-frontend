@@ -34,7 +34,7 @@ export const useLanguageStore = defineStore("language", {
             return response.data;
         },
         async addLanguageToUser(body: { languageCode: string }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.postUsersUsernameLanguages({
                 languageCode: body.languageCode
@@ -42,7 +42,7 @@ export const useLanguageStore = defineStore("language", {
             return response.data;
         },
         async deleteLanguageFromUser(pathParams: { languageCode: string }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             await store.fetchCustom((api) => api.users.deleteUsersMeLanguagesLanguageCode(pathParams.languageCode));
             if (this.userLanguages) {
@@ -52,7 +52,7 @@ export const useLanguageStore = defineStore("language", {
             }
         },
         async resetUserLanguageProgress(pathParams: { languageCode: string }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             await store.fetchCustom((api) => api.users.deleteUsersMeLanguagesLanguageCodeProgress(pathParams.languageCode));
         },

@@ -131,7 +131,7 @@ export default {
     async deleteCollection() {
       await this.collectionStore.deleteCollection({collectionId: this.pathParams.collectionId});
       this.isDeleteCollectionConfirmShown = false;
-      this.messageBarStore.addMessage({type: MessageType.INFO, text: "Collection deleted"});
+      this.messageBarStore.addTopBarMessage({type: MessageType.INFO, text: "Collection deleted"});
       this.$router.push({name: "home"});
     }
   },
@@ -140,7 +140,7 @@ export default {
     const collection = await this.collectionStore.fetchCollection({collectionId: this.pathParams.collectionId});
     this.isLoading = false;
     if (collection.addedBy !== this.userStore?.userAccount?.username) {
-      this.messageBarStore.addMessage({type: MessageType.ERROR, text: "User is not authorized to edit collection"});
+      this.messageBarStore.addTopBarMessage({type: MessageType.ERROR, text: "User is not authorized to edit collection"});
       this.$router.push({name: "home"});
     }
     this.collection = collection;

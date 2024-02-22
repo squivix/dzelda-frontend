@@ -43,7 +43,7 @@ export const useTextStore = defineStore("text", {
             image: string | undefined,
             audio: string | undefined
         }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             return await store.fetchCustom((api) => api.texts.postTexts(cleanUndefined({
                 title: body.title,

@@ -59,7 +59,7 @@ export const useStore = defineStore("main", {
                     const message = "We're having trouble reaching our servers, please come back later";
                     if (!ignore5XX) {
                         const messageBarStore = useMessageBarStore();
-                        messageBarStore.addMessage({text: message, type: MessageType.ERROR});
+                        messageBarStore.addTopBarMessage({text: message, type: MessageType.ERROR});
                         await this.router.push({name: "server-side-error"});
                     }
                     throw new Error(message as string);
@@ -70,7 +70,7 @@ export const useStore = defineStore("main", {
                     userStore.clearUserData();
                 else if (response.status == 429) {
                     const messageBarStore = useMessageBarStore();
-                    messageBarStore.addMessage({text: "Too many requests, please wait 1 minute and refresh page", type: MessageType.ERROR});
+                    messageBarStore.addTopBarMessage({text: "Too many requests, please wait 1 minute and refresh page", type: MessageType.ERROR});
                 }
                 if (cacheKey !== undefined)
                     this.cache[cacheKey] = {timeCached: new Date(), data: response.data, expiryTimeInMs: expiryTimeInMs ?? DEFAULT_CACHE_TIME};
@@ -84,7 +84,7 @@ export const useStore = defineStore("main", {
                 }));
                 if (!response1.ok) {
                     const messageBarStore = useMessageBarStore();
-                    messageBarStore.addMessage({text: "Failed to request file upload, please try again", type: MessageType.ERROR});
+                    messageBarStore.addTopBarMessage({text: "Failed to request file upload, please try again", type: MessageType.ERROR});
                     return;
                 }
                 const {uploadUrl, uploadFormFields, objectKey} = response1.data;
@@ -94,7 +94,7 @@ export const useStore = defineStore("main", {
                 const response2 = await fetch(uploadUrl, {method: "POST", body: form});
                 if (!response2.ok) {
                     const messageBarStore = useMessageBarStore();
-                    messageBarStore.addMessage({text: "Failed to upload file, please try again", type: MessageType.ERROR});
+                    messageBarStore.addTopBarMessage({text: "Failed to upload file, please try again", type: MessageType.ERROR});
                     return;
                 }
                 return objectKey;

@@ -5,7 +5,7 @@ import {useMessageBarStore} from "@/stores/messageBarStore.js";
 export const useMeaningStore = defineStore("meaning", {
     actions: {
         async createMeaning(body: { text: string, vocabId: number, languageCode: string }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.meanings.postMeanings({
                 text: body.text,
@@ -15,7 +15,7 @@ export const useMeaningStore = defineStore("meaning", {
             return response.data;
         },
         async addMeaningToUser(body: { meaningId: number }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.postUsersMeMeanings({
                 meaningId: body.meaningId
@@ -23,7 +23,7 @@ export const useMeaningStore = defineStore("meaning", {
             return response.data;
         },
         async deleteMeaningFromUser(pathParams: { meaningId: number }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             await store.fetchCustom((api) => api.users.deleteUsersMeMeaningsMeaningId(pathParams.meaningId));
         },

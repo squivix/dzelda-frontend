@@ -26,22 +26,22 @@ export default defineComponent({
   beforeRouteEnter() {
     const userStore = useUserStore();
     if (userStore.userAccount!.isEmailConfirmed && !userStore.userAccount!.isPendingEmailChange) {
-      useMessageBarStore().addMessage({type: MessageType.INFO, text: "Email is already confirmed"});
+      useMessageBarStore().addTopBarMessage({type: MessageType.INFO, text: "Email is already confirmed"});
       return {name: "home"};
     }
   },
   async mounted() {
     if (!this.queryParams.token) {
-      this.messageBarStore.addMessage({type: MessageType.ERROR, text: "No email token provided"});
+      this.messageBarStore.addTopBarMessage({type: MessageType.ERROR, text: "No email token provided"});
       this.$router.push({name: "confirm-email-sent"});
     } else {
       const isConfirmSuccessful = await this.userStore.confirmEmail({token: this.queryParams.token});
       if (isConfirmSuccessful) {
         await this.userStore.fetchUserAccount(true);
-        this.messageBarStore.addMessage({type: MessageType.SUCCESS, text: "Email confirmed"});
+        this.messageBarStore.addTopBarMessage({type: MessageType.SUCCESS, text: "Email confirmed"});
         this.$router.push({name: "home"});
       } else {
-        this.messageBarStore.addMessage({type: MessageType.ERROR, text: "Email confirm token is invalid or expired"});
+        this.messageBarStore.addTopBarMessage({type: MessageType.ERROR, text: "Email confirm token is invalid or expired"});
         this.tokenInvalid = true;
       }
     }

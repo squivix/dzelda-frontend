@@ -1,6 +1,6 @@
 <template>
   <component v-if="$route.meta.showHeader" :is="userStore.isAuthenticated ? 'auth-header' : 'guest-header'"/>
-  <TheMessageBarQueue class="message-bar-queue"/>
+  <MessageBarQueue class="message-bar-queue"/>
 
   <main>
     <router-view v-slot="{ Component, route }">
@@ -15,13 +15,13 @@ import GuestHeader from "@/components/layout/GuestHeader.vue";
 import TheFooter from "@/components/layout/Footer.vue";
 import AuthHeader from "@/components/layout/AuthHeader.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
-import TheMessageBarQueue from "@/components/layout/MessageBarQueue.vue";
+import MessageBarQueue from "@/components/layout/MessageBarQueue.vue";
 import {useLocalSettingsStore} from "@/stores/settingsStore.js";
 
 
 export default {
   components: {
-    TheMessageBarQueue,
+    MessageBarQueue,
     GuestHeader,
     AuthHeader,
     TheFooter,

@@ -109,7 +109,7 @@ export default {
         });
         this.isSubmitting = false;
         this.languageToBeRemoved = null;
-        this.messageBarStore.addMessage({text: "Language deleted", type: MessageType.SUCCESS});
+        this.messageBarStore.addTopBarMessage({text: "Language deleted", type: MessageType.SUCCESS});
         this.userLanguages = await this.languageStore.fetchUserLanguages({ignoreCache: true});
       }
     },
@@ -122,7 +122,7 @@ export default {
         });
         this.isSubmitting = false;
         this.languageToBeReset = null;
-        this.messageBarStore.addMessage({text: "Language progress reset", type: MessageType.SUCCESS});
+        this.messageBarStore.addTopBarMessage({text: "Language progress reset", type: MessageType.SUCCESS});
         this.userLanguages = await this.languageStore.fetchUserLanguages({ignoreCache: true});
       }
     },

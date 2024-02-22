@@ -63,7 +63,7 @@ export default {
       });
       this.isSubmitting = false;
       if (error !== undefined) {
-        this.messageBarStore.addMessage({text: error.message, type: MessageType.ERROR});
+        this.messageBarStore.addTopBarMessage({text: error.message, type: MessageType.ERROR});
         this.errorMessage = error.message;
         if ("fields" in error && error.fields !== undefined)
           this.errorFields = Object.keys(error.fields) as Array<"username" | "password">;

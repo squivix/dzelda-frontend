@@ -80,7 +80,7 @@ export default defineComponent({
       if (!error) {
         this.changeSuccessful = true;
         this.errorMessage = "";
-        this.messageBarStore.addMessage({text: "Password changed", type: MessageType.SUCCESS});
+        this.messageBarStore.addTopBarMessage({text: "Password changed", type: MessageType.SUCCESS});
       } else {
         if (error.code == 400)
           this.errorFields = error.fields! as { oldPassword: string, newPassword: string };

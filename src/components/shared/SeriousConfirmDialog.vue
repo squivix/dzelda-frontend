@@ -1,8 +1,7 @@
 <template>
   <BaseDialog :isOpen="isShown" @onDismissed="$emit('onClosed')">
     <div class="dialog-wrapper">
-      <BaseMessageBar :type="MessageType.WARNING" :is-dismissable="false"
-                      text="Warning: bad things will happen if you don't read this"/>
+      <BaseMessageBar :message="{uuid:randomUUID(), text:'Warning: bad things will happen if you don\'t read this', type:MessageType.WARNING,isDismissable:false}"/>
       <slot>
 
       </slot>
@@ -57,7 +56,7 @@ export default defineComponent({
     }
   },
   setup() {
-    return {MessageType};
+    return {MessageType, randomUUID: ()=>crypto.randomUUID()};
   }
 });
 </script>

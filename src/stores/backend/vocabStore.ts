@@ -1,13 +1,13 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {VocabLevelSchema} from "dzelda-common";
-import {useMessageBarStore} from "@/stores/messageBarStore.js";
+import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export const useVocabStore = defineStore("vocab", {
     actions: {
         async fetchUserVocabs(queryParams: {
             languageCode?: string,
-            level?:  VocabLevelSchema[],
+            level?: VocabLevelSchema[],
             searchQuery?: string,
             pageSize?: number,
             page?: number
@@ -22,7 +22,7 @@ export const useVocabStore = defineStore("vocab", {
             return response.data;
         },
         async createVocab(body: { text: string, languageCode: string, isPhrase: boolean }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.vocabs.postVocabs({
                 text: body.text,
@@ -32,7 +32,7 @@ export const useVocabStore = defineStore("vocab", {
             return response.data;
         },
         async addVocabToUser(body: { vocabId: number, level?: VocabLevelSchema }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.postUsersMeVocabs({
                 vocabId: body.vocabId,
@@ -41,7 +41,7 @@ export const useVocabStore = defineStore("vocab", {
             return response.data;
         },
         async updateUserVocab(pathParams: { vocabId: number }, body: { level?: (-1 | 0 | 1 | 2 | 3 | 4 | 5 | 6), notes?: string }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.patchUsersMeVocabsVocabId(pathParams.vocabId, {
                 level: body.level,
@@ -50,7 +50,7 @@ export const useVocabStore = defineStore("vocab", {
             return response.data;
         },
         async removeVocabFromUser(pathParams: { vocabId: number }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             await store.fetchCustom((api) => api.users.deleteUsersMeVocabsVocabId(pathParams.vocabId));
         },
@@ -92,6 +92,10 @@ export const useVocabStore = defineStore("vocab", {
             const response = await store.fetchCustom((api) => api.ttsPronunciations.postTtsPronunciations({vocabId: body.vocabId, voiceCode: body.voiceCode}), {ignore5XX: true});
             if (response.ok)
                 return response.data;
+            else if (response.status == 503) {
+                const messageBarStore = useMessageBarStore();
+                messageBarStore.addSideMessage({text: "TTS generation is disabled.", type: MessageType.ERROR, timeoutMs: 7000, isMarkdown: true});
+            }
         }
     }
 });

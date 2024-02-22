@@ -33,7 +33,7 @@ export const useUserStore = defineStore("auth", {
             username: string,
             password: string
         }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.postUsers({
                 email: body.email,
@@ -48,7 +48,7 @@ export const useUserStore = defineStore("auth", {
             username: string,
             password: string
         }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.sessions.postSessions({
                 username: body.username,
@@ -62,7 +62,7 @@ export const useUserStore = defineStore("auth", {
             return;
         },
         async signOut() {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             await store.fetchCustom((api) => api.sessions.deleteSessions(), {ignore401: true});
             this.clearUserData();
@@ -71,7 +71,7 @@ export const useUserStore = defineStore("auth", {
         async requestEmailConfirmToken(body: {
             email?: string
         }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             return await store.fetchCustom((api) => api.emailConfirmTokens.postEmailConfirmTokens({email: body.email}, {format: "json"}));
         },
@@ -79,7 +79,7 @@ export const useUserStore = defineStore("auth", {
             username: string,
             email: string
         }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             await store.fetchCustom((api) => api.passwordResetTokens.postPasswordResetTokens({
                 username: body.username,
@@ -97,7 +97,7 @@ export const useUserStore = defineStore("auth", {
             token: string,
             newPassword: string
         }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             return await store.fetchCustom((api) => api.users.postUsersMePasswordReset({
                 token: body.token,
@@ -116,7 +116,7 @@ export const useUserStore = defineStore("auth", {
         async changeEmail(body: {
             newEmail: string
         }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             return await store.fetchCustom((api) => api.users.putUsersMeEmail({
                     newEmail: body.newEmail
@@ -128,7 +128,7 @@ export const useUserStore = defineStore("auth", {
             oldPassword: string,
             newPassword: string,
         }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.putUsersMePassword({
                 oldPassword: body.oldPassword,
@@ -138,20 +138,20 @@ export const useUserStore = defineStore("auth", {
                 return response.error;
         },
         async deleteAccount() {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.deleteUsersMe());
             if (response.ok) {
                 this.authToken = null;
                 this.userAccount = null;
                 const messageBarStore = useMessageBarStore();
-                messageBarStore.addMessage({text: "Account deleted.", type: MessageType.INFO});
+                messageBarStore.addTopBarMessage({text: "Account deleted.", type: MessageType.INFO});
                 this.router.push({name: "home"});
             }
             return response.ok;
         },
         async updateUserProfile(body: { bio: string, profilePicture: string | undefined }) {
-            useMessageBarStore().clearMessages();
+            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.putUsersMeProfile(cleanUndefined({
                 bio: body.bio,
