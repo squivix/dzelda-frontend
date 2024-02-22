@@ -37,13 +37,17 @@
       </template>
     </EmptyScreen>
     <ul v-if="texts" class="texts-list">
-      <TextListItem v-for="text in texts" :key="text.id" :text="text"/>
+      <TextListItem v-for="text in texts" :key="text.id" :text="text" @onHideTextClicked="onHideTextClicked"/>
     </ul>
     <PaginationControls v-if="pageCount"
                         :page="page"
                         :pageSize="pageSize"
                         :pageCount="pageCount"
                         perPageSelectLabel="Texts Per Page"/>
+
+    <ConfirmDialog :isShown="isConfirmHideShown" @onNoClicked="cancelHideText" @onYesClicked="hideText">
+      <p>Are you sure you want to hide this text from your feed?</p>
+    </ConfirmDialog>
   </div>
 </template>
 
@@ -59,11 +63,14 @@ import {icons} from "@/icons.js";
 import SearchBar from "@/components/ui/SearchBar.vue";
 import TextFilters, {TextFiltersObject, textFilterFields} from "@/components/shared/filters/TextFilters.vue";
 import {isEmptyObject, setDifference} from "@/utils.js";
+import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
+import {useTextStore} from "@/stores/backend/textStore.js";
 
 
 export default defineComponent({
   name: "TextsList",
-  components: {TextFilters, SearchBar, InlineSvg, EmptyScreen, LoadingScreen, PaginationControls, TextListItem},
+  emits: ["onTextHidden"],
+  components: {ConfirmDialog, TextFilters, SearchBar, InlineSvg, EmptyScreen, LoadingScreen, PaginationControls, TextListItem},
   props: {
     texts: {type: Object as PropType<TextSchema[] | null>, required: true},
     isLoading: {type: Boolean, required: true},
@@ -79,6 +86,8 @@ export default defineComponent({
   data() {
     return {
       isFiltersShown: false,
+      isConfirmHideShown: false,
+      textToHide: null as TextSchema | null,
     };
   },
   computed: {
@@ -90,6 +99,21 @@ export default defineComponent({
     }
   },
   methods: {
+    onHideTextClicked(textToHide: TextSchema) {
+      this.textToHide = textToHide;
+      this.isConfirmHideShown = true;
+    },
+    cancelHideText() {
+      this.textToHide = null;
+      this.isConfirmHideShown = false;
+    },
+    async hideText() {
+      if (this.textToHide) {
+        this.isConfirmHideShown = false;
+        await this.textStore.hideTextForUser({textId: this.textToHide.id});
+        this.$emit("onTextHidden");
+      }
+    },
     toggleFilters() {
       this.isFiltersShown = !this.isFiltersShown;
     },
@@ -103,7 +127,10 @@ export default defineComponent({
     },
   },
   setup() {
-    return {icons};
+    return {
+      icons,
+      textStore: useTextStore()
+    };
   },
 });
 </script>

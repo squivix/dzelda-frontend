@@ -22,7 +22,8 @@
              :texts="texts"
              :filters="{level:queryParams.level, hasAudio: queryParams.hasAudio}"
              :searchQuery="queryParams.searchQuery"
-             :excludedFilters="new Set (['addedBy'])">
+             :excludedFilters="new Set (['addedBy'])"
+             @onTextHidden="fetchImported">
     <template v-slot:empty-screen>
       <router-link :to="{name:'add-text'}" class="inv-link add-collection-button">
         <inline-svg :src="icons.plusRound" class="empty-icon"/>

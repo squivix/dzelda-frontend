@@ -43,7 +43,6 @@
                           :class="`${text.isBookmarked?'bookmark-filled':'bookmark-hollow'}`"/>
             </button>
             <BaseDropDown
-                v-if="text.addedBy==userStore.userAccount!.username"
                 :id="`text-item-${text.id}`"
                 :centered="false"
                 :round="false">
@@ -54,11 +53,17 @@
               </template>
               <template v-slot:menu>
                 <ol class="dropdown-list">
-                  <li>
+                  <li v-if="text.addedBy==userStore.userAccount!.username">
                     <router-link :to="{ name: 'update-text' , params:{textId:text.id}}">
                       <inline-svg :src="icons.pen"/>
                       <span>Edit</span>
                     </router-link>
+                  </li>
+                  <li>
+                    <button class="inv-button" @click.stop.prevent="$emit('onHideTextClicked',text)">
+                      <inline-svg :src="icons.hide"/>
+                      <span>Hide</span>
+                    </button>
                   </li>
                 </ol>
               </template>
@@ -82,10 +87,12 @@ import {format} from "timeago.js";
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {useTextStore} from "@/stores/backend/textStore.js";
+import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
 
 export default {
   name: "TextListItem",
-  components: {InlineSvg, BaseDropDown, BaseImage, BaseCard},
+  components: {ConfirmDialog, InlineSvg, BaseDropDown, BaseImage, BaseCard},
+  emits:["onHideTextClicked"],
   props: {
     text: {type: Object as PropType<TextSchema | TextHistoryEntrySchema>, required: true},
     showCollection: {type: Boolean, required: false, default: true}

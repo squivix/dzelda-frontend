@@ -11,7 +11,7 @@ export const useTextStore = defineStore("text", {
             addedBy?: string,
             searchQuery?: string,
             hasAudio?: boolean,
-            level?: string|string[],
+            level?: string | string[],
             sortBy?: "title" | "createdDate" | "pastViewersCount",
             sortOrder?: "asc" | "desc",
             pageSize?: number,
@@ -119,7 +119,7 @@ export const useTextStore = defineStore("text", {
             addedBy?: string,
             searchQuery?: string,
             hasAudio?: boolean,
-            level?: string|string[],
+            level?: string | string[],
             sortBy?: "title" | "createdDate" | "pastViewersCount",
             sortOrder?: "asc" | "desc",
             pageSize?: number,
@@ -128,6 +128,21 @@ export const useTextStore = defineStore("text", {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.getUsersMeTextsBookmarked(queryParams));
             return response.data;
+        },
+        async hideTextForUser(body: { textId: number }) {
+            const store = useStore();
+            await store.fetchCustom((api) => api.users.postUsersMeTextsHidden({textId: body.textId}));
+        },
+        async unhideTextForUser(pathParams: { textId: number }) {
+            const store = useStore();
+            await store.fetchCustom((api) => api.users.deleteUsersMeTextsHiddenTextId(pathParams.textId));
+        },
+        async reportText(pathParams: { textId: number }, body: { reasonForReporting: string, reportText?: string }) {
+            const store = useStore();
+            await store.fetchCustom((api) => api.texts.postTextsTextIdReports(pathParams.textId, {
+                reasonForReporting: body.reasonForReporting,
+                reportText: body.reportText
+            }));
         }
     }
 });

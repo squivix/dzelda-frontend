@@ -7,7 +7,9 @@
              :filters="{addedBy:queryParams.addedBy, level:queryParams.level, hasAudio: queryParams.hasAudio}"
              :searchQuery="queryParams.searchQuery"
              :texts="texts"
-             emptyMessage="No texts found in this language"/>
+             emptyMessage="No texts found in this language"
+             @onTextHidden="fetchResources"
+  />
   <CollectionList v-else
                   :pageCount="pageCount"
                   :pageSize="queryParams.pageSize"

@@ -1,4 +1,4 @@
-*{
+* {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     box-sizing: border-box;
 }
@@ -264,7 +264,7 @@ svg {
     border-radius: 3px;
 }
 
-.dropdown-list li a {
+.dropdown-list li > * {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -280,7 +280,7 @@ svg {
     font-size: 0.9rem;
 }
 
-.dropdown-list li a :only-child {
+.dropdown-list li > * :only-child {
     margin: auto;
 }
 
@@ -293,10 +293,9 @@ svg {
     text-decoration: none;
 }
 
-
 .image-icon {
-    width: 15px;
-    height: 15px;
+    width: 20px;
+    height: 20px;
 }
 
 .invisible {
