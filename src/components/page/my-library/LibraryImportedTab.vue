@@ -29,7 +29,7 @@
     <template v-slot:empty-screen>
       <router-link :to="{name:'add-text'}" class="inv-link add-collection-button">
         <inline-svg :src="icons.plusRound" class="empty-icon"/>
-        Create texts and<br>they will appear here
+        Import texts and<br>they will appear here
       </router-link>
     </template>
   </TextsList>

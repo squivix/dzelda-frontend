@@ -54,10 +54,12 @@
             </p>
             <p v-if="errorFields.text" class="error-message">{{ errorFields.text }}</p>
           </div>
-          <label for="is-public-checkbox" class="checkbox-label">
-            <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
-            Public
-          </label>
+          <div class="form-row">
+            <label for="is-public-checkbox" class="checkbox-label">
+              <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
+              Public
+            </label>
+          </div>
           <div class="buttons-div">
             <SubmitButton id="save-and-open-button"
                           type="submit"

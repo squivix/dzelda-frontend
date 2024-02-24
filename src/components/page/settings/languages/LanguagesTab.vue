@@ -54,14 +54,14 @@
     </SeriousConfirmDialog>
 
     <SeriousConfirmDialog :isShown="isConfirmResetDialogShown"
-                          :yesText="`Yes, delete all my ${languageToBeRemoved?.name} data`"
+                          :yesText="`Yes, reset all my ${languageToBeReset?.name} progress data`"
                           :expectedText="`reset language`"
                           @onYesClicked="resetLanguage"
                           @onNoClicked="isConfirmResetDialogShown=false">
-      <p>Are you sure you want to reset your {{ languageToBeRemoved?.name }} progress?
+      <p>Are you sure you want to reset your {{ languageToBeReset?.name }} progress?
         <br>
         <br>
-        This action cannot be undone. All your {{ languageToBeRemoved?.name }} data will be permanently deleted.</p>
+        This action cannot be undone. All your {{ languageToBeReset?.name }} data will be permanently deleted.</p>
     </SeriousConfirmDialog>
   </div>
 </template>
