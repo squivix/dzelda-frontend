@@ -10,7 +10,7 @@
     <ol class="dictionaries styled-scrollbars">
       <li @click="openDictionaryLink(dictionary)" v-for="dictionary in userDictionaries" :key="dictionary.id">{{ dictionary.name }}</li>
     </ol>
-    <EditDictionaryListDialog v-if="allowEditDictionaries" :isShown="isEditDictionaryListDialogShown" @onClosed="isEditDictionaryListDialogShown=false" @onSubmitted="onDictionariesUpdated"
+    <UpdateDictionariesDialog v-if="allowEditDictionaries" :isShown="isEditDictionaryListDialogShown" @onClosed="isEditDictionaryListDialogShown=false" @onSubmitted="onDictionariesUpdated"
                               :languageCode="languageCode"/>
   </div>
 </template>
@@ -21,11 +21,11 @@ import {DictionarySchema} from "dzelda-common";
 import {inject} from "vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import EditDictionaryListDialog from "@/components/shared/vocab-panel/EditDictionaryListDialog.vue";
+import UpdateDictionariesDialog from "@/components/shared/vocab-panel/UpdateDictionariesDialog.vue";
 
 export default {
   name: "DictionaryList",
-  components: {InlineSvg, EditDictionaryListDialog},
+  components: {InlineSvg, UpdateDictionariesDialog},
   props: {
     languageCode: {type: String, required: true},
     vocabText: {type: String, required: true},

@@ -38,7 +38,7 @@
             </div>
           </div>
           <div class="item-side">
-            <button class="bookmark-button inv-button icon-text-button" @click.prevent="toggleIsBookmarked">
+            <button class="bookmark-button inv-button icon-text-wrapper" @click.prevent="toggleIsBookmarked">
               <inline-svg :src="icons.bookmark"
                           :class="`${text.isBookmarked?'bookmark-filled':'bookmark-hollow'}`"/>
             </button>

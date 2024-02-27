@@ -25,7 +25,6 @@ import {LearnerVocabSchema} from "dzelda-common";
 import {NewVocab} from "@/components/shared/Reader.vue";
 import {icons} from "@/icons.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
-import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default defineComponent({

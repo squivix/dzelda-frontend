@@ -36,11 +36,12 @@ export default defineComponent({
 }
 
 .side-message-list {
-  position: absolute;
+  position: fixed;
   right: 10px;
   transform: translateY(10px);
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
+  z-index: 100;
 }
 </style>

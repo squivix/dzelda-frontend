@@ -52,7 +52,7 @@ export default defineComponent({
     }
   },
   mounted() {
-    const timerInterval = 25;
+    const timerInterval = 20;
     useIntervalFn(() => {
       this.timeoutTimer += timerInterval;
     }, timerInterval);
@@ -102,7 +102,7 @@ export default defineComponent({
 
 .success-bar {
   --bar-color: #CBFFC0;
-  --on-bar-color: #144F14;
+  --on-bar-color: #248f24;
 }
 
 .dismiss-button {

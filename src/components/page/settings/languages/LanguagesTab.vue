@@ -11,122 +11,49 @@
         </router-link>
       </template>
     </EmptyScreen>
-    <table v-else class="languages">
-      <thead>
-      <tr>
-        <th>Language</th>
-        <th>Learning Since</th>
-        <th>Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <LanguageRow v-for="language in userLanguages"
-                   :key="language.id"
-                   :language="language"
-                   :isButtonsDisabled="isSubmitting"
-                   :isSubmittingRemoveLanguage="isSubmitting&&languageToBeRemoved?.id==language.id"
-                   :isSubmittingResetLanguage="isSubmitting&&languageToBeReset?.id==language.id"
-                   @onRemoveLanguageClicked="onRemoveLanguageClicked"
-                   @onResetLanguageClicked="onResetLanguageClicked"
-      />
-      </tbody>
-      <tfoot>
-      <tr>
-        <td colspan="3">
-          <router-link :to="{name:'new-language'}" class="new-language-link">
-            <inline-svg :src="icons.plusRound" class="language-icon"/>
-            <p>Add another language</p>
-          </router-link>
-        </td>
-      </tr>
-      </tfoot>
-    </table>
-
-    <SeriousConfirmDialog :isShown="isConfirmRemoveDialogShown"
-                          :yesText="`Yes, delete all my ${languageToBeRemoved?.name} data`"
-                          :expectedText="`delete language`"
-                          @onYesClicked="removeLanguage"
-                          @onNoClicked="isConfirmRemoveDialogShown=false">
-      <p>Are you sure you want to remove {{ languageToBeRemoved?.name }} from your languages?
-        <br>
-        <br>
-        This action cannot be undone. All your {{ languageToBeRemoved?.name }} data will be permanently deleted.</p>
-    </SeriousConfirmDialog>
-
-    <SeriousConfirmDialog :isShown="isConfirmResetDialogShown"
-                          :yesText="`Yes, reset all my ${languageToBeReset?.name} progress data`"
-                          :expectedText="`reset language`"
-                          @onYesClicked="resetLanguage"
-                          @onNoClicked="isConfirmResetDialogShown=false">
-      <p>Are you sure you want to reset your {{ languageToBeReset?.name }} progress?
-        <br>
-        <br>
-        This action cannot be undone. All your {{ languageToBeReset?.name }} data will be permanently deleted.</p>
-    </SeriousConfirmDialog>
+    <ol v-else class="languages">
+      <li v-for="language in userLanguages">
+        <router-link :to="{name:'language-settings', params:{learningLanguage:language.code}}" class="language inv-link">
+          <div>
+            <img class="language-flag" :src="language.flagCircular!" :alt="`${language.name} flag`">
+            <p>{{ language.name }}</p>
+          </div>
+          <div>
+            <p class="learning-since">
+              Learning Since {{ new Date(language.startedLearningOn).toLocaleDateString() }}
+            </p>
+            <inline-svg :src="icons.arrowRight"/>
+          </div>
+        </router-link>
+      </li>
+      <li>
+        <router-link :to="{name:'new-language'}" class="new-language-link">
+          <inline-svg :src="icons.plusRound" class="language-icon"/>
+          <p>Start learning another language</p>
+        </router-link>
+      </li>
+    </ol>
   </div>
 </template>
 
 <script lang="ts">
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
-import {LanguageSchema, LearnerLanguageSchema} from "dzelda-common";
+import {LearnerLanguageSchema} from "dzelda-common";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import SeriousConfirmDialog from "@/components/shared/SeriousConfirmDialog.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
-import LanguageRow from "@/components/page/settings/languages/LanguageRow.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
-import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
+import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export default {
   name: "LanguagesTab",
-  components: {LoadingScreen, EmptyScreen, LanguageRow, SubmitButton, SeriousConfirmDialog, InlineSvg},
+  components: {LoadingScreen, EmptyScreen, SubmitButton, SeriousConfirmDialog, InlineSvg},
   data() {
     return {
       userLanguages: null as LearnerLanguageSchema[] | null,
-      isSubmitting: false,
-      languageToBeRemoved: null as LanguageSchema | null,
-      languageToBeReset: null as LanguageSchema | null,
-      isConfirmRemoveDialogShown: false,
-      isConfirmResetDialogShown: false,
     };
-  },
-  methods: {
-    onRemoveLanguageClicked(language: LanguageSchema) {
-      this.isConfirmRemoveDialogShown = true;
-      this.languageToBeRemoved = language;
-    },
-    onResetLanguageClicked(language: LanguageSchema) {
-      this.isConfirmResetDialogShown = true;
-      this.languageToBeReset = language;
-    },
-    async removeLanguage() {
-      if (this.languageToBeRemoved) {
-        this.isConfirmRemoveDialogShown = false;
-        this.isSubmitting = true;
-        await this.languageStore.deleteLanguageFromUser({
-          languageCode: this.languageToBeRemoved.code,
-        });
-        this.isSubmitting = false;
-        this.languageToBeRemoved = null;
-        this.messageBarStore.addTopBarMessage({text: "Language deleted", type: MessageType.SUCCESS});
-        this.userLanguages = await this.languageStore.fetchUserLanguages({ignoreCache: true});
-      }
-    },
-    async resetLanguage() {
-      if (this.languageToBeReset) {
-        this.isConfirmResetDialogShown = false;
-        this.isSubmitting = true;
-        await this.languageStore.resetUserLanguageProgress({
-          languageCode: this.languageToBeReset.code,
-        });
-        this.isSubmitting = false;
-        this.languageToBeReset = null;
-        this.messageBarStore.addTopBarMessage({text: "Language progress reset", type: MessageType.SUCCESS});
-        this.userLanguages = await this.languageStore.fetchUserLanguages({ignoreCache: true});
-      }
-    },
-
   },
   async mounted() {
     this.userLanguages = await this.languageStore.fetchUserLanguages();
@@ -152,35 +79,57 @@ h2 {
   font-size: 1.75rem;
 }
 
-.languages th {
-  text-align: start;
-  font-size: 1.1rem;
-  font-weight: bold;
-  padding: 0 0.25rem 0.75rem;
+.languages {
+  display: flex;
+  flex-direction: column;
 }
 
-.languages tbody:deep(tr:nth-child(odd)) {
+.language {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.5rem;
+  border-radius: 3px;
+}
+
+.language:hover {
   background-color: var(--zebra-stripe-color);
 }
 
+.language > div {
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+}
 
-.languages tfoot td {
-  padding-top: 1rem;
+.language-flag {
+  width: 40px;
+  height: 40px;
+}
+
+.languages li:last-child {
+  align-self: flex-start;
 }
 
 .new-language-link {
   display: flex;
   flex-direction: row;
   column-gap: 0.5rem;
-  align-items: center;;
+  align-items: center;
+  margin-top: 1rem;
 }
 
 .new-language-link {
-  color: black;
+  color: var(--on-background-color);
 }
 
-.new-language-button:hover, .new-language-button:hover .empty-icon {
-  color: #183153;
+.new-language-link svg {
+  width: 20px;
+  height: 20px;
+}
+
+.learning-since {
+  color: gray;
 }
 
 @media screen and (max-width: 750px) {

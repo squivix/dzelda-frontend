@@ -29,6 +29,7 @@ import {excludeProperties} from "@/utils.js";
 import InterfaceTab from "@/components/page/settings/interface/InterfaceTab.vue";
 import UpdateTextPage from "@/pages/UpdateTextPage.vue";
 import {z} from "zod";
+import LanguageSettings from "@/components/page/settings/languages/LanguageSettings.vue";
 
 export const privateRoutes: RouteRecordRaw[] = [
     {
@@ -273,9 +274,19 @@ export const privateRoutes: RouteRecordRaw[] = [
                 component: AccountTab,
             }, {
                 path: "/settings/languages",
-                name: "language-settings",
+                name: "languages-settings",
                 component: LanguagesTab,
-            }, {
+            },
+            {
+                path: "/settings/languages/:learningLanguage",
+                name: "language-settings",
+                component: LanguageSettings,
+                meta: {
+                    pathParams: {learningLanguage: pathParams.languageCode}
+                },
+                props: routeToProps,
+            },
+            {
                 path: "/settings/notifications",
                 name: "notification-settings",
                 component: NotificationsTab,

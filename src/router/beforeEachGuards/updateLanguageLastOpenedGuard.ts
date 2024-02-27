@@ -5,7 +5,7 @@ export const updateLanguageLastOpenedGuard: NavigationGuardWithThis<undefined> =
     const languageStore = useLanguageStore();
 
     if (to.params.learningLanguage && from.params.learningLanguage !== to.params.learningLanguage) {
-        const response = await languageStore.updateLanguageLastOpened({languageCode: to.params.learningLanguage as string});
+        const response = await languageStore.updateUserLanguage({languageCode: to.params.learningLanguage as string}, {lastOpened: "now"});
         if (!response.ok && response.status == 404)
             return {name: "not-found"};
     }

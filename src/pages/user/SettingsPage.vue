@@ -14,8 +14,8 @@
                 Account
               </router-link>
             </li>
-            <li :class="{'current-tab':$route.name=='language-settings'}">
-              <router-link :to="{name:'language-settings'}">
+            <li :class="{'current-tab':$route.name=='languages-settings'||$route.name=='language-settings'}">
+              <router-link :to="{name:'languages-settings'}">
                 Languages
               </router-link>
             </li>

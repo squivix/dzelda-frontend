@@ -9,7 +9,7 @@
           <div class="title-row">
             <h4>{{ collection.title }}</h4>
             <div class="buttons-div">
-              <button class="bookmark-button inv-button icon-text-button" @click.prevent="toggleIsBookmarked">
+              <button class="bookmark-button inv-button icon-text-wrapper" @click.prevent="toggleIsBookmarked">
                 <inline-svg :src="icons.bookmark"
                             :class="`${collection.isBookmarked?'bookmark-filled':'bookmark-hollow'}`"/>
               </button>

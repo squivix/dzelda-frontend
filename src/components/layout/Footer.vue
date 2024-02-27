@@ -32,6 +32,7 @@ footer {
   align-items: center;
   padding: 0.5rem 1rem;
   background-color: var(--footer-color);
+  border-top: 1px solid color-mix(in srgb, var(--footer-color), white 10%);
 }
 
 .social-links ul {

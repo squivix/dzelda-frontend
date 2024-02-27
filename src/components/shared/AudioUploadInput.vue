@@ -1,7 +1,7 @@
 <template>
   <div class="input-wrapper">
     <div class="buttons-div">
-      <button class="upload-button inv-button icon-text-button" @click="isUploadDialogShown=true" type="button">
+      <button class="upload-button inv-button icon-text-wrapper" @click="isUploadDialogShown=true" type="button">
         <template v-if="src">
           <inline-svg :src="icons.pen"/>
           Edit
@@ -12,7 +12,7 @@
         </template>
 
       </button>
-      <button class="clear-button inv-button icon-text-button" v-if="!!src" @click="clearAudio" type="button">
+      <button class="clear-button inv-button icon-text-wrapper" v-if="!!src" @click="clearAudio" type="button">
         <inline-svg :src="icons.crossRound"/>
         Clear
       </button>
@@ -96,7 +96,7 @@ audio {
   max-width: 200px;
 }
 
-.icon-text-button svg {
+.icon-text-wrapper svg {
   width: 20px;
   height: 20px;
 }

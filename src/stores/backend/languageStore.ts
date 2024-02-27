@@ -56,12 +56,20 @@ export const useLanguageStore = defineStore("language", {
             const store = useStore();
             await store.fetchCustom((api) => api.users.deleteUsersMeLanguagesLanguageCodeProgress(pathParams.languageCode));
         },
-        async updateLanguageLastOpened(pathParams: { languageCode: string }) {
+        async updateUserLanguage(pathParams: { languageCode: string }, body: { lastOpened?: "now", preferredTranslationLanguageCodes?: string[] }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.patchUsersMeLanguagesLanguageCode(pathParams.languageCode, {lastOpened: "now"}));
-            if (response.ok)
+            const response = await store.fetchCustom((api) => api.users.patchUsersMeLanguagesLanguageCode(pathParams.languageCode, {
+                lastOpened: body.lastOpened,
+                preferredTranslationLanguageCodes: body.preferredTranslationLanguageCodes
+            }));
+            if (body.lastOpened && response.ok)
                 this.setLastOpenedLanguage(pathParams.languageCode);
             return response;
+        },
+        async getTranslationLanguages() {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.translationLanguages.getTranslationLanguages());
+            return response.data;
         },
         setLastOpenedLanguage(languageCode: string) {
             if (!this.userLanguages || this.userLanguages.length < 2)

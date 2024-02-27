@@ -106,10 +106,10 @@ button:hover {
     cursor: pointer;
 }
 
-.icon-text-button {
+.icon-text-wrapper {
     display: flex;
     align-items: center;
-    column-gap: 0.2rem;
+    column-gap: 0.25rem;
 }
 
 .inv-button {

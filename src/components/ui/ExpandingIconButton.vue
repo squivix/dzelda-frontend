@@ -1,6 +1,6 @@
 <template>
   <component :is="!!linkTo?'RouterLink':'button'" :to="linkTo" @click="onClick"
-             class="secondary-filled-button icon-text-button big-button capsule-button">
+             class="secondary-filled-button icon-text-wrapper big-button capsule-button">
     <template v-if="iconPosition=='left'">
       <inline-svg :src="iconSrc"/>
       <span :class="{'no-text': !isExpanded}">{{ text }}</span>
