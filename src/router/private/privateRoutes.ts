@@ -278,11 +278,11 @@ export const privateRoutes: RouteRecordRaw[] = [
                 component: LanguagesTab,
             },
             {
-                path: "/settings/languages/:learningLanguage",
+                path: "/settings/languages/:settingsLanguage",
                 name: "language-settings",
                 component: LanguageSettings,
                 meta: {
-                    pathParams: {learningLanguage: pathParams.languageCode}
+                    pathParams: {settingsLanguage: pathParams.languageCode}
                 },
                 props: routeToProps,
             },

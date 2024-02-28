@@ -54,8 +54,8 @@ export default {
     addMeaning() {
       this.$emit("onAddMoreMeaningsClicked");
     },
-    onMeaningEditSubmitted(meaning: MeaningSchema, newMeaningText: string) {
-      this.$emit("onMeaningEditSubmitted", meaning, newMeaningText);
+    onMeaningEditSubmitted(meaning: MeaningSchema, newMeaningText: string, newMeaningLang: string) {
+      this.$emit("onMeaningEditSubmitted", meaning, newMeaningText, newMeaningLang);
     },
     onMeaningDeleteClicked(meaning: MeaningSchema) {
       this.$emit("onMeaningDeleteClicked", meaning);

@@ -14,12 +14,10 @@
         <h3>Dictionaries</h3>
         <UpdateDictionariesForm :languageCode="language.code" :showCancelButton="false"
                                 :showSaveButtonOnlyIfEdited="true"
-                                @onSubmitted="messageBarStore.addSideMessage({text:'Dictionaries saved', type:MessageType.SUCCESS, timeoutMs:1000})"/>
+                                @onSubmitted="messageBarStore.addSideMessage({text:'Dictionaries saved', type:MessageType.SUCCESS, timeoutMs:3000})"/>
       </section>
-      <section>
-        <h3>Translation Languages</h3>
-        <UpdateTranslationLanguagesForm :sourceLanguageCode="language.code" :preferredTranslationLanguages="language.preferredTranslationLanguages" @onSubmitted="refetchLanguage"/>
-      </section>
+
+      <TranslationLanguagesSection :language="language"/>
 
       <section class="danger-zone">
         <h3>Danger Zone</h3>
@@ -74,14 +72,14 @@ import InlineSvg from "vue-inline-svg";
 import UpdateDictionariesForm from "@/components/shared/UpdateDictionariesForm.vue";
 import SeriousConfirmDialog from "@/components/shared/SeriousConfirmDialog.vue";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
-import UpdateTranslationLanguagesForm from "@/components/shared/UpdateTranslationLanguagesForm.vue";
+import TranslationLanguagesSection from "@/components/page/settings/languages/TranslationLanguagesSection.vue";
 
 export default defineComponent({
   name: "LanguageSettings",
-  components: {SeriousConfirmDialog, UpdateDictionariesForm, UpdateTranslationLanguagesForm, SubmitButton, InlineSvg},
+  components: {TranslationLanguagesSection, SeriousConfirmDialog, UpdateDictionariesForm, SubmitButton, InlineSvg},
   emits: ["onRemoveLanguageClicked", "onResetLanguageClicked"],
   props: {
-    pathParams: {type: Object as PropType<{ learningLanguage: string }>, required: true},
+    pathParams: {type: Object as PropType<{ settingsLanguage: string }>, required: true},
   },
   data() {
     return {
@@ -106,15 +104,11 @@ export default defineComponent({
   },
   async mounted() {
     const userLanguages = await this.languageStore.fetchUserLanguages();
-    this.language = userLanguages.find(l => l.code == this.pathParams.learningLanguage);
+    this.language = userLanguages.find(l => l.code == this.pathParams.settingsLanguage);
     if (!this.language)
       this.$router.push({name: "not-found"});
   },
   methods: {
-    async refetchLanguage() {
-      const userLanguages = await this.languageStore.fetchUserLanguages({ignoreCache: true});
-      this.language = userLanguages.find(l => l.code == this.pathParams.learningLanguage);
-    },
     onRemoveLanguageClicked() {
       this.isConfirmRemoveDialogShown = true;
     },
@@ -208,5 +202,7 @@ section {
 .buttons-div {
   display: flex;
   column-gap: 1rem;
+  flex-wrap: wrap;
+  row-gap: 1rem;
 }
 </style>

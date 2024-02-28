@@ -10,7 +10,7 @@
                              :isShowingAllSuggestedMeanings="isShowingAllSuggestedMeanings"
                              :isSubmittingNewMeaning="isSubmittingNewMeaning"
                              @onSuggestedMeaningClicked="(newMeaning)=>$emit('onSuggestedMeaningClicked',newMeaning)"
-                             @onNewMeaningSubmitted="(newMeaningText)=>$emit('onNewMeaningSubmitted', newMeaningText)"
+                             @onNewMeaningSubmitted="(newMeaningText,newMeaningLanguage)=>$emit('onNewMeaningSubmitted', newMeaningText, newMeaningLanguage)"
                              @onShowAllSuggestionsClicked="()=>isShowingAllSuggestedMeanings=true"/>
       <DictionariesList :vocabText="vocab.text" :languageCode="vocab.language"/>
     </div>
@@ -36,7 +36,7 @@ export default {
   components: {MeaningAddingControls, DictionariesList},
   emits: {
     onSuggestedMeaningClicked: (meaning: MeaningSchema) => true,
-    onNewMeaningSubmitted: (newMeaningText: string) => true,
+    onNewMeaningSubmitted: (newMeaningText: string, newMeaningLanguage: string) => true,
     onMarkAsKnownClicked: () => true,
     onMarkAsIgnoredClicked: () => true,
   },

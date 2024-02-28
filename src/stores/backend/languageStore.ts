@@ -33,11 +33,12 @@ export const useLanguageStore = defineStore("language", {
             this.userLanguages = response.data;
             return response.data;
         },
-        async addLanguageToUser(body: { languageCode: string }) {
+        async addLanguageToUser(body: { languageCode: string, preferredTranslationLanguageCodes?: string[] }) {
             useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.postUsersUsernameLanguages({
-                languageCode: body.languageCode
+                languageCode: body.languageCode,
+                preferredTranslationLanguageCodes: body.preferredTranslationLanguageCodes
             }));
             return response.data;
         },
@@ -66,9 +67,9 @@ export const useLanguageStore = defineStore("language", {
                 this.setLastOpenedLanguage(pathParams.languageCode);
             return response;
         },
-        async getTranslationLanguages() {
+        async getTranslationLanguages(queryParams: { isDefault?: boolean } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.translationLanguages.getTranslationLanguages());
+            const response = await store.fetchCustom((api) => api.translationLanguages.getTranslationLanguages(queryParams));
             return response.data;
         },
         setLastOpenedLanguage(languageCode: string) {

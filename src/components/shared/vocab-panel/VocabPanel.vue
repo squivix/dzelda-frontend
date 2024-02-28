@@ -41,7 +41,6 @@ import {inject, PropType} from "vue";
 import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema, VocabSchema} from "dzelda-common";
 import {useMeaningStore} from "@/stores/backend/meaningStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
-import MeaningEditingControls from "@/components/shared/vocab-panel/MeaningEditingControls.vue";
 import {NewVocab} from "@/components/shared/Reader.vue";
 import InlineSvg from "vue-inline-svg";
 import VocabPanelTopBar from "@/components/shared/vocab-panel/VocabPanelTopBar.vue";
@@ -50,7 +49,7 @@ import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 export default {
   name: "VocabPanel",
-  components: {PronunciationPanel, VocabPanelTopBar, MeaningEditingControls, NewVocabPanel, ExistingVocabPanel, InlineSvg},
+  components: {PronunciationPanel, VocabPanelTopBar, NewVocabPanel, ExistingVocabPanel, InlineSvg},
   emits: {
     onNewVocabCreated: (vocab: LearnerVocabSchema) => true,
     onVocabUpdated: (vocab: LearnerVocabSchema, updatedData: Partial<LearnerVocabSchema>) => true,
@@ -127,7 +126,7 @@ export default {
       });
       this.isAddingMoreMeanings = false;
     },
-    async addNewMeaning(newMeaningText: string) {
+    async addNewMeaning(newMeaningText: string, newMeaningLanguageCode: string) {
       if (!this.vocab)
         return;
       let newVocab: LearnerVocabSchema;
@@ -147,8 +146,7 @@ export default {
       const newMeaning = await this.meaningStore.createMeaning({
         text: newMeaningText,
         vocabId: newVocab.id,
-        //TODO: no language hard-coding
-        languageCode: "en",
+        languageCode: newMeaningLanguageCode,
       });
       await this.meaningStore.addMeaningToUser({meaningId: newMeaning.id});
 
@@ -159,13 +157,13 @@ export default {
       }
       this.isAddingMoreMeanings = false;
     },
-    updateMeaning(meaning: MeaningSchema, newMeaningText: string) {
+    updateMeaning(meaning: MeaningSchema, newMeaningText: string, newMeaningLang: string) {
       const vocab = this.vocab as LearnerVocabSchema;
       this.isSubmittingEditMeaningSet.add(meaning.id);
       this.meaningStore.deleteMeaningFromUser({meaningId: meaning.id});
       this.meaningStore.createMeaning({
         vocabId: vocab.id,
-        languageCode: "en",
+        languageCode: newMeaningLang,
         text: newMeaningText,
       }).then((newMeaning) => {
         this.meaningStore.addMeaningToUser({meaningId: newMeaning.id}).then(() => {

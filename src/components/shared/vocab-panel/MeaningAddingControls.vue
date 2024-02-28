@@ -19,6 +19,9 @@
     </button>
   </div>
   <form class="new-meaning-form" action="javascript:void(0);">
+    <select v-model="newMeaningLanguage" v-if="preferredTranslationLanguages.length>1">
+      <option v-for="translationLanguage in preferredTranslationLanguages" :value="translationLanguage.code">{{ translationLanguage.name }}</option>
+    </select>
     <input ref="meaningTextInputRef" placeholder="Add new meaning here" maxlength="500" v-model="newMeaningText"/>
     <SubmitButton class="new-meaning-button"
                   :isSubmitting="isSubmittingNewMeaning"
@@ -33,19 +36,20 @@
 <script lang="ts">
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import {MeaningSchema} from "dzelda-common";
+import {LearnerLanguageSchema, MeaningSchema} from "dzelda-common";
 import {PropType} from "vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import snarkdown from "snarkdown";
 import {renderMarkdown} from "@/utils.js";
 import AttributionIcon from "@/components/ui/AttributionIcon.vue";
+import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 export default {
   name: "MeaningAddingControls",
   components: {AttributionIcon, SubmitButton, InlineSvg},
   emits: {
     onSuggestedMeaningClicked: (meaning: MeaningSchema) => true,
-    onNewMeaningSubmitted: (newMeaningText: string) => true,
+    onNewMeaningSubmitted: (newMeaningText: string, newMeaningLanguage: string) => true,
     onShowAllSuggestionsClicked: () => true,
   },
   props: {
@@ -61,12 +65,19 @@ export default {
   data() {
     return {
       newMeaningText: "" as string | null,
+      newMeaningLanguage: (this.languageStore as any as ReturnType<typeof useLanguageStore>).currentLanguage!.preferredTranslationLanguages[0].code,
     };
+  },
+  computed: {
+    preferredTranslationLanguages() {
+      return this.languageStore.currentLanguage!.preferredTranslationLanguages;
+    },
   },
   watch: {
     vocabId() {
       this.newMeaningText = "";
-    }
+      this.newMeaningLanguage = this.preferredTranslationLanguages[0].code;
+    },
   },
   methods: {
     async addSuggestedMeaning(meaning: MeaningSchema) {
@@ -75,7 +86,7 @@ export default {
     async addNewMeaning() {
       if (!this.newMeaningText)
         return;
-      this.$emit("onNewMeaningSubmitted", this.newMeaningText);
+      this.$emit("onNewMeaningSubmitted", this.newMeaningText, this.newMeaningLanguage);
     },
     onShowAllSuggestionsClicked() {
       this.$emit("onShowAllSuggestionsClicked");
@@ -87,7 +98,8 @@ export default {
   setup() {
     return {
       icons,
-      renderMarkdown: renderMarkdown
+      renderMarkdown: renderMarkdown,
+      languageStore: useLanguageStore()
     };
   }
 };

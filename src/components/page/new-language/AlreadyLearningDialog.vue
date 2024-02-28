@@ -1,9 +1,8 @@
 <template>
-  <BaseDialog :is-open="isShown" @onDismissed="$emit('onClosed')">
+  <BaseDialog :isOpen="isShown" @onDismissed="$emit('onClosed')">
     <div v-if="language" class="already-learning-dialog">
       <p>You are already learning {{ language }}</p>
-      <button class="primary-filled-button square-button ok-button" @click="$emit('onClosed')">OK
-      </button>
+      <button class="primary-filled-button square-button ok-button" @click="$emit('onClosed')">Ok</button>
     </div>
   </BaseDialog>
 </template>

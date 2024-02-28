@@ -2,13 +2,16 @@
   <h5>Saved Meanings</h5>
   <ol class="user-meanings" v-if="savedMeanings.length>0">
     <li v-for="(meaning,meaningIndex) in savedMeanings" :key="meaning.id">
-      <form @submit.prevent="submitEditMeaning(meaning,editedMeanings[meaningIndex])">
+      <form @submit.prevent="submitEditMeaning(meaning,updatedMeaningTexts[meaningIndex],updatedMeaningLangs[meaningIndex])">
         <SubmitButton :keepText="false"
                       class="delete-user-meaning-button"
                       @click="submitDeleteMeaning(meaning)" type="button">
           <inline-svg :src="icons.cross"/>
         </SubmitButton>
-        <input v-model="editedMeanings[meaningIndex]" maxlength="500"/>
+        <select v-model="updatedMeaningLangs[meaningIndex]" v-if="preferredTranslationLanguages.length>1">
+          <option v-for="translationLanguage in preferredTranslationLanguages" :value="translationLanguage.code">{{ translationLanguage.name }}</option>
+        </select>
+        <input v-model="updatedMeaningTexts[meaningIndex]" maxlength="500"/>
         <SubmitButton :isSubmitting="isSubmittingEditMeaningSet.has(meaning.id)" :keepText="false"
                       class="edit-user-meaning-button"
                       type="submit">
@@ -26,6 +29,7 @@ import {icons} from "@/icons.js";
 import {PropType} from "vue";
 import {MeaningSchema} from "dzelda-common";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
+import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 export default {
   name: "MeaningEditingControls",
@@ -38,32 +42,41 @@ export default {
   },
   data() {
     return {
-      editedMeanings: [] as string[],
+      updatedMeaningTexts: [] as string[],
+      updatedMeaningLangs: [] as string[],
     };
+  },
+  computed: {
+    preferredTranslationLanguages() {
+      return this.languageStore.currentLanguage!.preferredTranslationLanguages;
+    },
   },
   watch: {
     savedMeanings() {
-      this.editedMeanings = this.savedMeanings.map(m => m.text);
+      this.updatedMeaningTexts = this.savedMeanings.map(m => m.text);
+      this.updatedMeaningLangs = this.savedMeanings.map(m => m.language);
     }
   },
   methods: {
-    submitEditMeaning(meaning: MeaningSchema, editedMeaning: string) {
-      if (editedMeaning == "")
+    submitEditMeaning(meaning: MeaningSchema, updatedMeaningText: string, updatedMeaningLang: string) {
+      if (updatedMeaningText == "")
         this.submitDeleteMeaning(meaning);
-      if (editedMeaning === meaning.text)
+      if (updatedMeaningText === meaning.text && updatedMeaningLang == meaning.language)
         return;
-      this.$emit("onMeaningEditSubmitted", meaning, editedMeaning);
+      this.$emit("onMeaningEditSubmitted", meaning, updatedMeaningText, updatedMeaningLang);
     },
     submitDeleteMeaning(meaning: MeaningSchema) {
       this.$emit("onMeaningDeleteClicked", meaning);
     },
   },
   mounted() {
-    this.editedMeanings = this.savedMeanings.map(m => m.text);
+    this.updatedMeaningTexts = this.savedMeanings.map(m => m.text);
+    this.updatedMeaningLangs = this.savedMeanings.map(m => m.language);
   },
   setup() {
     return {
       icons,
+      languageStore: useLanguageStore()
     };
   }
 };

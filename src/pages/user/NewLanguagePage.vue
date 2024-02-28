@@ -15,14 +15,17 @@
           :is-shown="isAlreadyLearningDialogShown"
           :language="alreadyLearningLanguage?.name"/>
 
-      <ConfirmDialog @on-yes-clicked="addNewLanguage"
-                     @on-no-clicked="isNewLanguageDialogShown=false"
-                     @on-closed="isNewLanguageDialogShown=false"
-                     :is-shown="isNewLanguageDialogShown">
-        <div v-if="newLanguage">
-          <p>Start learning {{ newLanguage.name }}?</p>
-        </div>
-      </ConfirmDialog>
+      <StartLearningDialog :isShown="isNewLanguageDialogShown" :language="newLanguage" @onCanceled="isNewLanguageDialogShown=false" @onSubmitted="onNewLanguageSubmitted">
+
+      </StartLearningDialog>
+      <!--      <ConfirmDialog @onYesClicked="addNewLanguage"-->
+      <!--                     @onNoClicked="isNewLanguageDialogShown=false"-->
+      <!--                     @onClosed="isNewLanguageDialogShown=false"-->
+      <!--                     :isShown="isNewLanguageDialogShown">-->
+      <!--        <div v-if="newLanguage">-->
+      <!--          <p>Start learning {{ newLanguage.name }}?</p>-->
+      <!--        </div>-->
+      <!--      </ConfirmDialog>-->
 
     </template>
   </BaseCard>
@@ -37,10 +40,11 @@ import {icons} from "@/icons.js";
 import LanguageCard from "@/components/page/new-language/LanguageCard.vue";
 import AlreadyLearningDialog from "@/components/page/new-language/AlreadyLearningDialog.vue";
 import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
+import StartLearningDialog from "@/components/page/new-language/StartLearningDialog.vue";
 
 export default {
   name: "NewLanguagePage",
-  components: {ConfirmDialog, AlreadyLearningDialog, LanguageCard, InlineSvg, BaseCard},
+  components: {StartLearningDialog, ConfirmDialog, AlreadyLearningDialog, LanguageCard, InlineSvg, BaseCard},
   data() {
     return {
       supportedLanguages: null as (LanguageSchema & {
@@ -71,6 +75,10 @@ export default {
         this.isNewLanguageDialogShown = true;
       }
     },
+    async onNewLanguageSubmitted() {
+      this.isNewLanguageDialogShown = false;
+      await this.$router.push({name: "explore", params: {learningLanguage: this.newLanguage.code}});
+    },
     async addNewLanguage() {
       if (this.newLanguage) {
         await this.languageStore.addLanguageToUser({languageCode: this.newLanguage.code});
@@ -96,10 +104,11 @@ export default {
 </script>
 
 <style scoped>
-.instructions-paragraph{
+.instructions-paragraph {
   font-size: 1.15rem;
   margin-bottom: 1rem;
 }
+
 .new-language-card {
   width: 85vw;
   max-width: 900px;

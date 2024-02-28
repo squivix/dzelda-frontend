@@ -1,6 +1,6 @@
 <template>
   <LoadingScreen v-if="isLoading"/>
-  <form v-else class="edit-dialog-wrapper" @submit.prevent="submitEdit">
+  <form v-else @submit.prevent="submitEdit">
     <section>
       <h3 class="heading">Saved Dictionaries</h3>
       <VueDraggable tag="ol"
@@ -40,7 +40,7 @@
     </section>
     <section>
       <a href="https://forms.gle/Rm5pbrwDaG5Sp3h67" class="suggest-link" target="_blank">
-        <inline-svg :src="googleFormsLogo"></inline-svg>
+        <inline-svg :src="googleFormsLogo"/>
         Suggest a dictionary!
       </a>
     </section>
@@ -205,12 +205,18 @@ form {
   flex-grow: 1;
 }
 
+section {
+  display: flex;
+  flex-direction: column;
+}
+
 .suggest-link {
   display: flex;
   column-gap: 0.25rem;
   align-items: center;
   color: var(--on-background-color);
   font-weight: bold;
+  align-self: flex-start;
 }
 
 .suggest-link svg {

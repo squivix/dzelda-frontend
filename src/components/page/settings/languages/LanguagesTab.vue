@@ -13,7 +13,7 @@
     </EmptyScreen>
     <ol v-else class="languages">
       <li v-for="language in userLanguages">
-        <router-link :to="{name:'language-settings', params:{learningLanguage:language.code}}" class="language inv-link">
+        <router-link :to="{name:'language-settings', params:{settingsLanguage:language.code}}" class="language inv-link">
           <div>
             <img class="language-flag" :src="language.flagCircular!" :alt="`${language.name} flag`">
             <p>{{ language.name }}</p>

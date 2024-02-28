@@ -4,7 +4,7 @@
     <div class="message-content-wrapper">
       <span v-if="message.isMarkdown" class="message-text" v-html="renderMarkdown(message.text)"></span>
       <p v-else class="message-text">{{ message.text }}</p>
-      <button v-if="isDismissable" class="dismiss-button inv-button" @click="onDismissed">
+      <button v-if="message.isDismissable" class="dismiss-button inv-button" @click="onDismissed">
         <inline-svg :src="icons.cross"/>
       </button>
     </div>
@@ -25,7 +25,6 @@ export default defineComponent({
   emits: ["onDismissed"],
   props: {
     message: {type: Object as PropType<Message>, required: true},
-    isDismissable: {type: Boolean, default: true}
   },
   data() {
     return {
@@ -52,10 +51,12 @@ export default defineComponent({
     }
   },
   mounted() {
-    const timerInterval = 20;
-    useIntervalFn(() => {
-      this.timeoutTimer += timerInterval;
-    }, timerInterval);
+    if (this.message.timeoutMs) {
+      const timerInterval = 20;
+      useIntervalFn(() => {
+        this.timeoutTimer += timerInterval;
+      }, timerInterval);
+    }
   },
   setup() {
     return {icons, renderMarkdown, MessageType};
@@ -75,7 +76,7 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 2.5rem;
+  padding: 0.5rem 0;
   column-gap: 0.5rem;
 }
 
