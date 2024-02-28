@@ -1,6 +1,6 @@
 <template>
   <div v-if="attribution" class="attribution" @click.stop>
-    <img v-if="attribution.sourceRootLogoUrl&&!logoError" :src="attribution.sourceRootLogoUrl" :alt="`${attribution.sourceRootName} attribution logo`" class="attribution-icon" @error="logoError=true">
+    <img v-if="attributionSource?.logoUrl&&!logoError" :src="attributionSource.logoUrl" :alt="`${attributionSource.name} attribution logo`" class="attribution-icon" @error="logoError=true">
     <inline-svg v-else :src="icons.info" class="attribution-icon"/>
     <span class="attribution-popup">
       <div v-html="renderMarkdown(attribution?.attributionMarkdown)">
@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import {AttributionSchema} from "dzelda-common";
+import {AttributionSchema, AttributionSourceSchema} from "dzelda-common";
 import {renderMarkdown} from "@/utils.js";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
@@ -22,6 +22,7 @@ export default defineComponent({
   components: {InlineSvg},
   props: {
     attribution: {type: [Object, null] as PropType<AttributionSchema | null>, required: true},
+    attributionSource: {type: [Object, null] as PropType<AttributionSourceSchema | null>, required: true},
   },
   data() {
     return {

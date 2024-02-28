@@ -13,7 +13,11 @@
           </p>
           <div class="buttons-div">
             <button class="square-button big-button primary-hollow-button" @click="$emit('onCanceled')">Cancel</button>
-            <button class="square-button big-button primary-filled-button" @click="startLearningLanguage(preferredTls)">Start learning {{ language.name }}</button>
+            <SubmitButton :isSubmitting="isSubmitting"
+                          class="square-button big-button primary-filled-button"
+                          @click="startLearningLanguage(preferredTls)">
+              Start learning {{ language.name }}
+            </SubmitButton>
           </div>
         </template>
       </UpdateTranslationLanguagesForm>
@@ -28,27 +32,33 @@ import UpdateTranslationLanguagesForm from "@/components/shared/UpdateTranslatio
 import {LanguageSchema, TranslationLanguageSchema} from "dzelda-common";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
+import SubmitButton from "@/components/ui/SubmitButton.vue";
 
 export default defineComponent({
   name: "StartLearningDialog",
   emits: ["onCanceled", "onSubmitted"],
-  components: {LoadingScreen, UpdateTranslationLanguagesForm, BaseDialog},
+  components: {SubmitButton, LoadingScreen, UpdateTranslationLanguagesForm, BaseDialog},
   props: {
     language: {type: Object as PropType<LanguageSchema | null>},
     isShown: {type: Boolean},
   },
   data() {
-    return {defaultTranslationLanguages: [] as TranslationLanguageSchema[]};
+    return {
+      defaultTranslationLanguages: [] as TranslationLanguageSchema[],
+      isSubmitting: false,
+    };
   },
   methods: {
     async startLearningLanguage(preferredTls: TranslationLanguageSchema[]) {
       if (!this.language)
         return;
+      this.isSubmitting = true;
       await this.languageStore.addLanguageToUser({
         languageCode: this.language!.code,
         preferredTranslationLanguageCodes: preferredTls.map(tl => tl.code)
       });
       await this.languageStore.fetchUserLanguages({ignoreCache: true});
+      this.isSubmitting = false;
       this.$emit("onSubmitted");
     },
   },

@@ -23,7 +23,7 @@
             <inline-svg :src="pronunciationPlaying===humanPronunciation?icons.stopPlayback:icons.audio"/>
             <p>{{ humanPronunciation.text }}</p>
           </div>
-          <AttributionIcon :attribution="humanPronunciation.attribution"/>
+          <AttributionIcon :attribution="humanPronunciation.attribution" :attributionSource="humanPronunciation.attributionSource"/>
         </li>
       </ul>
     </div>

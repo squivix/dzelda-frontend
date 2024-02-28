@@ -8,7 +8,7 @@
           <span>
             {{ meaning.text }}
           </span>
-          <AttributionIcon :attribution="meaning.attribution"/>
+          <AttributionIcon :attribution="meaning.attribution" :attributionSource="meaning.attributionSource"/>
         </button>
       </li>
     </ol>
@@ -36,10 +36,9 @@
 <script lang="ts">
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import {LearnerLanguageSchema, MeaningSchema} from "dzelda-common";
+import {MeaningSchema} from "dzelda-common";
 import {PropType} from "vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
-import snarkdown from "snarkdown";
 import {renderMarkdown} from "@/utils.js";
 import AttributionIcon from "@/components/ui/AttributionIcon.vue";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
