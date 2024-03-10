@@ -41,6 +41,7 @@ import {useDictionaryStoreMock} from "@/stores/backend/local-preview/dictionaryS
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {LanguageSchema} from "dzelda-common";
 import {PreviewText, useLocalPreviewStore} from "@/stores/backend/local-preview/localPreviewStore.js";
+import {useLanguageStoreMock} from "@/stores/backend/local-preview/languageStoreMock.js";
 
 export default defineComponent({
   name: "TryItSection",
@@ -81,6 +82,7 @@ export default defineComponent({
     provide("vocabStore", useVocabStoreMock());
     provide("meaningStore", useMeaningStoreMock());
     provide("dictionaryStore", useDictionaryStoreMock());
+    provide("languageStore", useLanguageStoreMock());
     provide("allowEditDictionaries", false);
     return {
       localPreviewStore: useLocalPreviewStore()

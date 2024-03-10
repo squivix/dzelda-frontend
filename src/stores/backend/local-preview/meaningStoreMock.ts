@@ -1,8 +1,7 @@
 import {defineStore} from "pinia";
 import {MeaningSchema} from "dzelda-common";
-import {getRandomInt} from "@/utils.js";
+import {getAcceptablyRandomId} from "@/utils.js";
 import {useLocalPreviewStore} from "@/stores/backend/local-preview/localPreviewStore.js";
-import {useVocabStoreMock} from "@/stores/backend/local-preview/vocabStoreMock.js";
 
 export const useMeaningStoreMock = defineStore("meaningStoreMock", {
     state() {
@@ -30,13 +29,15 @@ export const useMeaningStoreMock = defineStore("meaningStoreMock", {
             const localPreviewStore = useLocalPreviewStore();
             const previewDb = await localPreviewStore.getPreviewDb();
             const newMeaning = {
-                id: getRandomInt(100000000, 999999999),
+                id: getAcceptablyRandomId(),
                 vocab: body.vocabId,
                 text: body.text,
                 addedBy: "anonymous",
                 language: body.languageCode,
                 addedOn: new Date().toISOString(),
                 learnersCount: 0,
+                attributionSource: null,
+                attribution: null
             };
             await previewDb.add("meanings", newMeaning);
             return newMeaning;

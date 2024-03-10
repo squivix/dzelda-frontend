@@ -14,11 +14,10 @@ import PagePanelButton from "@/components/page/reader/PagePanelButton.vue";
 import BasePageSelector from "@/components/ui/BasePageSelector.vue";
 import PageIndicator from "@/components/page/reader/PageIndicator.vue";
 import Reader from "@/components/shared/Reader.vue";
-import TextMainPane from "@/components/page/reader/TextMainPane.vue";
 
 export default defineComponent({
   name: "ReaderPage",
-  components: {Reader, PageIndicator, BasePageSelector, PagePanelButton, BaseCard, ReaderSidePanel, LoadingScreen, TextMainPane},
+  components: {Reader, PageIndicator, BasePageSelector, PagePanelButton, BaseCard, ReaderSidePanel, LoadingScreen},
   props: {
     pathParams: {type: Object as PropType<{ learningLanguage: string, textId: number }>, required: true},
   },

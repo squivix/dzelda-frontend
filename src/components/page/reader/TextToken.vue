@@ -20,9 +20,9 @@ export default defineComponent({
   name: "TextToken",
   components: {BaseToken},
   props: {
+    allPhrases: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
     token: {type: Object as PropType<TextTokenObject>, required: true},
     word: {type: Object as PropType<LearnerVocabSchema>, required: false},
-    phrases: {type: Object as PropType<LearnerVocabSchema[]>, required: false},
     isPhraseFirstClick: {type: Boolean, required: true},
     isWordSelected: {type: Boolean, required: true},
     isPhraseSelected: {type: Boolean, required: true},
@@ -49,6 +49,9 @@ export default defineComponent({
       if (this.isWordSelected)
         classes.push("word-selected");
       return classes.join(" ");
+    },
+    phrases(): Array<LearnerVocabSchema | undefined> {
+      return this.token.phrases.map(p => this.allPhrases[p.text]);
     },
     savedPhrases() {
       return this.phrases?.filter(p => p.level !== VocabLevelSchema.NEW);

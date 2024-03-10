@@ -5,7 +5,7 @@
   {"id": 4,"language": "it","name": "Google Translate","lookupLink": "https://translate.google.com/?sl=it&tl=en&text=<text>&op=translate","dictionaryLink": "https://translate.google.com/?sl=it&tl=en","isDefault": true},
   {"id": 5,"language": "nl","name": "Google Translate","lookupLink": "https://translate.google.com/?sl=nl&tl=en&text=<text>&op=translate","dictionaryLink": "https://translate.google.com/?sl=nl&tl=en","isDefault": true},
   {"id": 6,"language": "sv","name": "Google Translate","lookupLink": "https://translate.google.com/?sl=sv&tl=en&text=<text>&op=translate","dictionaryLink": "https://translate.google.com/?sl=sv&tl=en","isDefault": true},
-  {"id": 7,"language": "nb","name": "Google Translate","lookupLink": "https://translate.google.com/?sl=nb&tl=en&text=<text>&op=translate","dictionaryLink": "https://translate.google.com/?sl=nb&tl=en","isDefault": true},
+  {"id": 7,"language": "nb","name": "Google Translate","lookupLink": "https://translate.google.com/?sl=no&tl=en&text=<text>&op=translate","dictionaryLink": "https://translate.google.com/?sl=nb&tl=en","isDefault": true},
   {"id": 8,"language": "da","name": "Google Translate","lookupLink": "https://translate.google.com/?sl=da&tl=en&text=<text>&op=translate","dictionaryLink": "https://translate.google.com/?sl=da&tl=en","isDefault": true},
   {"id": 9,"language": "pt","name": "Google Translate","lookupLink": "https://translate.google.com/?sl=pt&tl=en&text=<text>&op=translate","dictionaryLink": "https://translate.google.com/?sl=pt&tl=en","isDefault": true},
   {"id": 10,"language": "en","name": "Wiktionary","lookupLink": "https://en.wiktionary.org/wiki/<text>#English","dictionaryLink": "https://en.wiktionary.org/wiki/","isDefault": true},

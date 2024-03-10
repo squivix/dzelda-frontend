@@ -6,6 +6,9 @@
                         @onPronunciationButtonClicked="isPronunciationPanelShown=!isPronunciationPanelShown"
                         :isGeneratingTTS="isGeneratingTTS"
                         @onGenerateTTSButtonClicked="onGenerateTTSButtonClicked"/>
+      <div class="tags">
+        <span class="root-form" v-if="tagsAndRootForms!.length>0">{{ tagsAndRootForms!.join(", ") }}</span>
+      </div>
       <div class="meaning-sub-panel-wrapper">
         <div :class="{'meaning-sub-panel':true,'new-vocab-panel':showAddPanel, 'existing-vocab-panel':!showAddPanel, 'pronunciation-panel':isPronunciationPanelShown}">
           <PronunciationPanel v-if="isPronunciationPanelShown" :vocab="vocab"/>
@@ -69,6 +72,11 @@ export default {
     };
   },
   computed: {
+    tagsAndRootForms() {
+      if (!this.vocab)
+        return;
+      return [...this.vocab.tags.map(t => t.name), ...this.vocab.rootForms];
+    },
     isVocabNotSaved() {
       return [VocabLevelSchema.NEW, VocabLevelSchema.IGNORED, VocabLevelSchema.KNOWN].includes(this.vocab!.level!);
     },
@@ -219,6 +227,17 @@ export default {
 </script>
 
 <style scoped>
+
+.tags {
+  margin-bottom: 0.3rem;
+  min-height: 1lh;
+}
+
+.root-form, .tag {
+  font-size: 0.9rem;
+  color: gray;
+}
+
 .meaning-sub-panel-wrapper {
   padding-right: 20px;
 }

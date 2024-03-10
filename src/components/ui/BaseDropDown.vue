@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown" ref="dropdown">
+  <div class="dropdown" v-on-click-outside="hide">
     <label :for="`dropdown-checkbox-${id}`" class="dropdown-label link" @click.prevent="triggerIsShown">
       <slot name="button" :isDroppedDown="isDroppedDown">
 
@@ -22,11 +22,12 @@
 <script lang="ts">
 
 import BasePointyDiv from "@/components/ui/BasePointyDiv.vue";
-import {onClickOutside, useEventListener} from "@vueuse/core";
+import {vOnClickOutside} from "@vueuse/components";
 
 export default {
   name: "BaseDropDown",
   components: {BasePointyDiv},
+  directives: {onClickOutside: vOnClickOutside},
   props: {
     isPointy: {type: Boolean, required: false, default: false,},
     id: {type: String, required: true},
@@ -50,9 +51,6 @@ export default {
     hide() {
       this.isDroppedDown = false;
     }
-  },
-  mounted() {
-    onClickOutside(this.$refs["dropdown"] as HTMLInputElement, this.hide);
   },
 };
 </script>

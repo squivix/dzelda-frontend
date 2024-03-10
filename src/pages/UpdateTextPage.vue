@@ -79,7 +79,6 @@ import {defineComponent, PropType} from "vue";
 import AudioUploadInput from "@/components/shared/AudioUploadInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import BaseCard from "@/components/ui/BaseCard.vue";
-import CreateCollectionForm from "@/components/shared/create-collection/CreateCollectionForm.vue";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import BaseDialog from "@/components/ui/BaseDialog.vue";
 import {CollectionSchema, LanguageLevelSchema, TextSchema} from "dzelda-common";
@@ -95,7 +94,7 @@ import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 
 export default defineComponent({
   name: "UpdateTextPage",
-  components: {LoadingScreen, BaseDialog, ImageUploadInput, CreateCollectionForm, BaseCard, SubmitButton, AudioUploadInput},
+  components: {LoadingScreen, BaseDialog, ImageUploadInput, BaseCard, SubmitButton, AudioUploadInput},
   props: {
     pathParams: {type: Object as PropType<{ learningLanguage: string, textId: number }>, required: true},
   },

@@ -4,7 +4,7 @@
     <div>
       <h5>Text to speech Pronunciations</h5>
       <p v-if="vocab.ttsPronunciations.length==0">No text to speech Pronunciations</p>
-      <ul class="pronunciation-list styled-scrollbars" v-else>
+      <ul v-else class="pronunciation-list styled-scrollbars">
         <li v-for="ttsPronunciation in vocab.ttsPronunciations" :key="ttsPronunciation.id" class="pronunciation" @click="setPronunciationPlaying(ttsPronunciation)">
           <div class="pronunciation-side">
             <inline-svg :src="pronunciationPlaying===ttsPronunciation?icons.stopPlayback:icons.audio"/>
@@ -17,13 +17,13 @@
       <h5>Human Pronunciations</h5>
       <LoadingScreen v-if="!humanPronunciations" class="loading-screen"/>
       <p v-else-if="humanPronunciations.length==0">No human Pronunciations</p>
-      <ul class="pronunciation-list styled-scrollbars" v-else>
+      <ul v-else class="pronunciation-list styled-scrollbars" ref="hpsListsRef">
         <li v-for="humanPronunciation in humanPronunciations" :key="humanPronunciation.id" class="pronunciation" @click="setPronunciationPlaying(humanPronunciation)">
           <div class="pronunciation-side">
             <inline-svg :src="pronunciationPlaying===humanPronunciation?icons.stopPlayback:icons.audio"/>
             <p>{{ humanPronunciation.text }}</p>
           </div>
-          <AttributionIcon :attribution="humanPronunciation.attribution" :attributionSource="humanPronunciation.attributionSource"/>
+          <AttributionIcon :attribution="humanPronunciation.attribution" :attributionSource="humanPronunciation.attributionSource" :scrollOffsetPx="-hpsListScrollPosition"/>
         </li>
       </ul>
     </div>
@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, nextTick, PropType} from "vue";
+import {defineComponent, inject, nextTick, PropType, ref} from "vue";
 import {DictionarySchema, HumanPronunciationSchema, LearnerVocabSchema, TTSPronunciationSchema} from "dzelda-common";
 import {NewVocab} from "@/components/shared/Reader.vue";
 import InlineSvg from "vue-inline-svg";
@@ -49,6 +49,8 @@ import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {useDictionaryStore} from "@/stores/backend/dictionaryStore.js";
 import AttributionIcon from "@/components/ui/AttributionIcon.vue";
+import {useLanguageStore} from "@/stores/backend/languageStore.js";
+import {useScroll} from "@vueuse/core";
 
 export default defineComponent({
   name: "PronunciationPanel",
@@ -92,10 +94,14 @@ export default defineComponent({
     }
   },
   setup() {
+    const hpsListsRef = ref(null);
+    const {y: hpsListScrollPosition} = useScroll(hpsListsRef);
     return {
       icons,
-      vocabStore: useVocabStore(),
-      dictionaryStore: useDictionaryStore()
+      hpsListsRef,
+      hpsListScrollPosition,
+      vocabStore: inject<ReturnType<typeof useVocabStore>>("vocabStore", useVocabStore()),
+      dictionaryStore: inject<ReturnType<typeof useDictionaryStore>>("dictionaryStore", useDictionaryStore()),
     };
   }
 });
@@ -119,7 +125,7 @@ h5 {
   row-gap: 0.5rem;
   padding-right: 5px;
   overflow-y: auto;
-  max-height: 220px;
+  max-height: 170px;
 }
 
 .pronunciation {

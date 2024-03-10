@@ -1,25 +1,25 @@
 <template>
-  <LoadingScreen v-if="isLoading||!textTokens"/>
+  <LoadingScreen v-if="isLoadingText||!textTokens" :loadingStatus="loadingStatus"/>
   <BaseCard class="base-card unselectable" v-else-if="text">
     <template v-slot:all>
       <div class="top-div">
         <div class="main-reader">
           <PagePanelButton :disabled="currentPage==1" :iconSrc="icons.arrowLeft" @click="currentPage--" class="left-button"/>
           <TextMainPane ref="textContentRef"
-                         :page="currentPage"
-                         :textTokens="textTokens"
-                         :currentPage="textTokenPages[currentPage-1]"
-                         :selectedTokens="isSelectedNewPhrase?[]:selectedTokens"
-                         :image="imageUrl"
-                         :words="words"
-                         :phrases="phrases"
-                         :showTopBar="currentPage==1"
-                         class="text-main-pane"
-                         @onWordClicked="setSelectedTokens"
-                         @onPhraseClicked="setSelectedTokens"
-                         @onNewPhraseSelected="setSelectedTokens"
-                         @onOverLappingPhrasesClicked="showOverlappingPhrases"
-                         @onBackgroundClicked="clearSelectedTokens"/>
+                        :page="currentPage"
+                        :textTokens="textTokens"
+                        :currentPage="textTokenPages[currentPage-1]"
+                        :selectedTokens="isSelectedNewPhrase?[]:selectedTokens"
+                        :image="imageUrl"
+                        :words="words"
+                        :phrases="phrases"
+                        :showTopBar="currentPage==1"
+                        class="text-main-pane"
+                        @onWordClicked="setSelectedTokens"
+                        @onPhraseClicked="setSelectedTokens"
+                        @onNewPhraseSelected="setSelectedTokens"
+                        @onOverLappingPhrasesClicked="showOverlappingPhrases"
+                        @onBackgroundClicked="clearSelectedTokens"/>
           <PagePanelButton v-if="currentPage<textTokenPages.length" :iconSrc="icons.arrowRight" @click="currentPage++" class="right-button"/>
           <PagePanelButton v-else :disabled="!showDoneButton" :iconSrc="icons.checkMark" @onClick="finishText" class="right-button"/>
         </div>
@@ -86,9 +86,8 @@ export default defineComponent({
       textTokens: null as { title: TextTokenObject[], text: TextTokenObject[] } | null,
       matchIndexToTokenIndex: {title: {}, text: {}} as { title: Record<number, number>, text: Record<number, number> },
       currentPage: 1,
-      isLoadingText: true,
-      isLoadingWords: true,
-      isParsingText: true,
+      isLoadingText: false,
+      loadingStatus: ""
     };
   },
   computed: {
@@ -147,15 +146,14 @@ export default defineComponent({
           meanings: [],
           learnerMeanings: [],
           ttsPronunciations: [],
+          tags: [],
+          rootForms: [],
         };
     },
     isSelectedNewPhrase() {
       if (!this.selectedVocab)
         return false;
       return (this.selectedVocab.isPhrase && this.selectedVocab.level == VocabLevelSchema.NEW);
-    },
-    isLoading() {
-      return this.isLoadingText || this.isLoadingWords || this.isParsingText;
     },
     imageUrl() {
       return (this.text!.image || this.text!.collection?.image) ?? "";
@@ -166,6 +164,7 @@ export default defineComponent({
   },
   watch: {
     async textId() {
+      this.isLoadingText = true;
       await this.fetchText();
       if (this.text!.language !== this.languageCode) {
         await this.$router.push({name: "not-found"});
@@ -174,9 +173,12 @@ export default defineComponent({
       await this.textStore.addTextToUserHistory({textId: this.textId});
       await this.fetchTextVocabs();
       this.parseText();
+      this.currentPage = 1;
+      this.isLoadingText = false;
     }
   },
   async mounted() {
+    this.isLoadingText = true;
     await this.fetchText();
     if (this.text!.language !== this.languageCode) {
       await this.$router.push({name: "not-found"});
@@ -185,13 +187,13 @@ export default defineComponent({
     await this.textStore.addTextToUserHistory({textId: this.textId});
     await this.fetchTextVocabs();
     this.parseText();
+    this.isLoadingText = false;
   },
   methods: {
     async fetchText() {
-      this.isLoadingText = true;
+      this.loadingStatus = "fetching text...";
       this.text = await this.textStore.fetchText({textId: this.textId});
       this.text.content = this.text.content.replace(/[\r\n]{3,}/g, "\n\n");
-      this.isLoadingText = false;
     },
     async finishText() {
       if (this.text!.collection && !this.text!.isLastInCollection) {
@@ -204,7 +206,7 @@ export default defineComponent({
         this.$router.push({name: "home"});
     },
     async fetchTextVocabs() {
-      this.isLoadingWords = true;
+      this.loadingStatus = "fetching vocabs...";
       const textVocabs = await this.vocabStore.fetchTextVocabs({textId: this.textId}, {});
       const words: Record<string, LearnerVocabSchema> = {};
       const phrases: Record<string, LearnerVocabSchema> = {};
@@ -216,12 +218,12 @@ export default defineComponent({
           phrases[vocab.text] = vocab;
         if (vocab.ttsPronunciations.length > 0)
           hasAudioCounter++;
+        else console.log(vocab.text);
         totalCounter++;
       }
       console.log(`${hasAudioCounter}/${totalCounter} (${(hasAudioCounter / totalCounter) * 100}%)`);
       this.words = words;
       this.phrases = phrases;
-      this.isLoadingWords = false;
     },
     setSelectedTokens(selectedTokens: TextTokenObject[]) {
       this.selectedTokens = selectedTokens;
@@ -281,11 +283,10 @@ export default defineComponent({
         this.words[updatedVocab.text] = updatedVocab;
     },
     parseText() {
-      this.isParsingText = true;
+      this.loadingStatus = "parsing text...";
       const titleTokens = this.parseStringToTokens(this.text!.title, this.matchIndexToTokenIndex.title, 0);
       const textTokens = this.parseStringToTokens(this.text!.content, this.matchIndexToTokenIndex.text, titleTokens.length);
       this.textTokens = {title: titleTokens, text: textTokens};
-      this.isParsingText = false;
     },
     parseStringToTokens(text: string, matchIndexToTokenIndex: Record<number, number>, firstIndex: number): TextTokenObject[] {
       const parser = getParser(this.text!.language);

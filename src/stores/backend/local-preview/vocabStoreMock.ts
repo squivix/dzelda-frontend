@@ -1,6 +1,6 @@
 import {VocabLevelSchema} from "dzelda-common";
 import {defineStore} from "pinia";
-import {getRandomInt} from "@/utils.js";
+import {getAcceptablyRandomId} from "@/utils.js";
 import {useLocalPreviewStore} from "@/stores/backend/local-preview/localPreviewStore.js";
 import {escapeRegExp} from "dzelda-common/build/src/utils/utils.js";
 
@@ -51,7 +51,7 @@ export const useVocabStoreMock = defineStore("vocabStoreMock", {
                 const localPreviewStore = useLocalPreviewStore();
                 const previewDb = await localPreviewStore.getPreviewDb();
                 const newVocab = {
-                    id: getRandomInt(100000000000, 999999999999),
+                    id: getAcceptablyRandomId(),
                     text: body.text,
                     isPhrase: body.isPhrase,
                     language: body.languageCode,
@@ -60,7 +60,9 @@ export const useVocabStoreMock = defineStore("vocabStoreMock", {
                     level: VocabLevelSchema.NEW,
                     notes: null,
                     learnerMeanings: [],
-                    ttsPronunciations: []
+                    ttsPronunciations: [],
+                    tags: [],
+                    rootForms: [],
                 };
                 await previewDb.add("vocabs", newVocab);
 

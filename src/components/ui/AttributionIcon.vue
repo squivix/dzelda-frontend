@@ -2,7 +2,7 @@
   <div v-if="attribution" class="attribution" @click.stop>
     <img v-if="attributionSource?.logoUrl&&!logoError" :src="attributionSource.logoUrl" :alt="`${attributionSource.name} attribution logo`" class="attribution-icon" @error="logoError=true">
     <inline-svg v-else :src="icons.info" class="attribution-icon"/>
-    <span class="attribution-popup">
+    <span class="attribution-popup" :style="{transform: `translateY(calc(-50% + ${scrollOffsetPx}px))`}">
       <div v-html="renderMarkdown(attribution?.attributionMarkdown)">
 
       </div>
@@ -23,6 +23,7 @@ export default defineComponent({
   props: {
     attribution: {type: [Object, null] as PropType<AttributionSchema | null>, required: true},
     attributionSource: {type: [Object, null] as PropType<AttributionSourceSchema | null>, required: true},
+    scrollOffsetPx: {type: Number, default: 0}
   },
   data() {
     return {
@@ -57,7 +58,6 @@ export default defineComponent({
 .attribution-popup {
   display: none;
   position: absolute;
-  transform: translateY(-40px);
   padding: 1rem;
 }
 

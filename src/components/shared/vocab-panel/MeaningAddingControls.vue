@@ -1,14 +1,14 @@
 <template>
   <div class="suggested-meanings-wrapper" v-if="suggestedMeanings.length>0">
     <h5>Suggested Meanings</h5>
-    <ol class="suggested-meanings styled-scrollbars">
+    <ol class="suggested-meanings styled-scrollbars" ref="suggestedMeaningsRef">
       <li v-for="meaning in suggestedMeanings" :key="meaning.id">
         <button class="inv-button suggested-meaning"
                 @click="addSuggestedMeaning(meaning)">
           <span>
             {{ meaning.text }}
           </span>
-          <AttributionIcon :attribution="meaning.attribution" :attributionSource="meaning.attributionSource"/>
+          <AttributionIcon :attribution="meaning.attribution" :attributionSource="meaning.attributionSource" :scrollOffsetPx="-suggestedMeaningsScrollPosition"/>
         </button>
       </li>
     </ol>
@@ -32,16 +32,16 @@
     </SubmitButton>
   </form>
 </template>
-
 <script lang="ts">
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import {MeaningSchema} from "dzelda-common";
-import {PropType} from "vue";
+import {inject, onMounted, PropType, ref} from "vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {renderMarkdown} from "@/utils.js";
 import AttributionIcon from "@/components/ui/AttributionIcon.vue";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
+import {useScroll} from "@vueuse/core";
 
 export default {
   name: "MeaningAddingControls",
@@ -64,13 +64,16 @@ export default {
   data() {
     return {
       newMeaningText: "" as string | null,
-      newMeaningLanguage: (this.languageStore as any as ReturnType<typeof useLanguageStore>).currentLanguage!.preferredTranslationLanguages[0].code,
+      newMeaningLanguage: (this.languageStore as any as ReturnType<typeof useLanguageStore>).preferredTranslationLanguages![0].code,
     };
   },
   computed: {
     preferredTranslationLanguages() {
-      return this.languageStore.currentLanguage!.preferredTranslationLanguages;
+      return this.languageStore.preferredTranslationLanguages!;
     },
+    // suggestedMeaningsScrollPosition() {
+    //   // return useScroll(this.$refs["suggestedMeaningsRef"] as HTMLElement).y;
+    // }
   },
   watch: {
     vocabId() {
@@ -95,10 +98,15 @@ export default {
     }
   },
   setup() {
+    const suggestedMeaningsRef = ref(null);
+    const {y: suggestedMeaningsScrollPosition} = useScroll(suggestedMeaningsRef);
+
     return {
       icons,
+      suggestedMeaningsRef,
+      suggestedMeaningsScrollPosition,
       renderMarkdown: renderMarkdown,
-      languageStore: useLanguageStore()
+      languageStore: inject<ReturnType<typeof useLanguageStore>>("languageStore", useLanguageStore()),
     };
   }
 };

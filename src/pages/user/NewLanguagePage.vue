@@ -12,7 +12,7 @@
 
       <AlreadyLearningDialog
           @onClosed="isAlreadyLearningDialogShown=false"
-          :is-shown="isAlreadyLearningDialogShown"
+          :isShown="isAlreadyLearningDialogShown"
           :language="alreadyLearningLanguage?.name"/>
 
       <StartLearningDialog :isShown="isNewLanguageDialogShown" :language="newLanguage" @onCanceled="isNewLanguageDialogShown=false" @onSubmitted="onNewLanguageSubmitted">

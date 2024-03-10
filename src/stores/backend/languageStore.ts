@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
-import {LearnerLanguageSchema} from "dzelda-common";
+import {LanguageSchema, LearnerLanguageSchema, TranslationLanguageSchema} from "dzelda-common";
 import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export const useLanguageStore = defineStore("language", {
@@ -11,6 +11,9 @@ export const useLanguageStore = defineStore("language", {
         currentLanguage(state) {
             return state.userLanguages ? state.userLanguages[0] : null;
         },
+        preferredTranslationLanguages(): TranslationLanguageSchema[] | undefined {
+            return this.currentLanguage?.preferredTranslationLanguages;
+        }
     },
     actions: {
         async fetchLanguages(queryParams: { isSupported?: boolean, sortBy?: "name" | "learnersCount" | "secondSpeakersCount", sortOrder?: "asc" | "desc" } = {}) {

@@ -2,16 +2,16 @@
   <h5>Saved Meanings</h5>
   <ol class="user-meanings" v-if="savedMeanings.length>0">
     <li v-for="(meaning,meaningIndex) in savedMeanings" :key="meaning.id">
-      <form @submit.prevent="submitEditMeaning(meaning,updatedMeaningTexts[meaningIndex],updatedMeaningLangs[meaningIndex])">
+      <form @submit.prevent="submitEditMeaning(meaning,meaningIndex)">
         <SubmitButton :keepText="false"
                       class="delete-user-meaning-button"
                       @click="submitDeleteMeaning(meaning)" type="button">
           <inline-svg :src="icons.cross"/>
         </SubmitButton>
-        <select v-model="updatedMeaningLangs[meaningIndex]" v-if="preferredTranslationLanguages.length>1">
+        <select v-model="updatedMeaningLangs[meaningIndex]" v-if="preferredTranslationLanguages!.length>1">
           <option v-for="translationLanguage in preferredTranslationLanguages" :value="translationLanguage.code">{{ translationLanguage.name }}</option>
         </select>
-        <input v-model="updatedMeaningTexts[meaningIndex]" maxlength="500"/>
+        <input v-model="updatedMeaningTexts[meaningIndex]" maxlength="500" v-on-click-outside="()=>submitEditMeaning(meaning,meaningIndex)"/>
         <SubmitButton :isSubmitting="isSubmittingEditMeaningSet.has(meaning.id)" :keepText="false"
                       class="edit-user-meaning-button"
                       type="submit">
@@ -26,14 +26,16 @@
 <script lang="ts">
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import {PropType} from "vue";
+import {inject, PropType} from "vue";
 import {MeaningSchema} from "dzelda-common";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
+import {vOnClickOutside} from "@vueuse/components";
 
 export default {
   name: "MeaningEditingControls",
   components: {InlineSvg, SubmitButton},
+  directives: {onClickOutside: vOnClickOutside},
   emits: ["onMeaningEditSubmitted", "onMeaningDeleteClicked"],
   props: {
     vocabId: {type: Number, required: true},
@@ -48,7 +50,7 @@ export default {
   },
   computed: {
     preferredTranslationLanguages() {
-      return this.languageStore.currentLanguage!.preferredTranslationLanguages;
+      return this.languageStore.preferredTranslationLanguages;
     },
   },
   watch: {
@@ -58,7 +60,9 @@ export default {
     }
   },
   methods: {
-    submitEditMeaning(meaning: MeaningSchema, updatedMeaningText: string, updatedMeaningLang: string) {
+    submitEditMeaning(meaning: MeaningSchema, meaningIndex: number,) {
+      const updatedMeaningText = this.updatedMeaningTexts[meaningIndex];
+      const updatedMeaningLang = this.updatedMeaningLangs[meaningIndex];
       if (updatedMeaningText == "")
         this.submitDeleteMeaning(meaning);
       if (updatedMeaningText === meaning.text && updatedMeaningLang == meaning.language)
@@ -76,7 +80,7 @@ export default {
   setup() {
     return {
       icons,
-      languageStore: useLanguageStore()
+      languageStore: inject<ReturnType<typeof useLanguageStore>>("languageStore", useLanguageStore()),
     };
   }
 };

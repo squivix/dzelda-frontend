@@ -78,7 +78,7 @@ export default defineComponent({
         imageUrl = this.image;
       this.submittingMessage = "Creating Collection";
       const response = await this.collectionStore.createCollection({
-        languageCode: this.learningLanguage,
+        languageCode: this.languageCode,
         title: this.title,
         description: this.description,
         image: imageUrl,
