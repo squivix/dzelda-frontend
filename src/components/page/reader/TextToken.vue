@@ -100,8 +100,8 @@ export default defineComponent({
       const phraseMap: Record<string, LearnerVocabSchema> = {};
       this.phrases!.forEach(p => phraseMap[p.text] = p);
       for (const po of phrases) {
-        if (phraseMap[po.text].level == VocabLevelSchema.NEW)
-          continue;
+        // if (phraseMap[po.text].level == VocabLevelSchema.NEW)
+        //   continue;
         const phraseNodes = document.querySelectorAll(`.phrase-${po.phraseId}-${po.phraseOccurrenceIndex}`);
         phraseNodes.forEach((pn) => pn.classList.add("phrase-hovered"));
         phraseNodes[0].classList.add("phrase-start");

@@ -97,8 +97,7 @@ span::selection, br::selection {
 }
 
 .level-4 {
-  background-color: transparent;
-  border-bottom: 1px dotted black;
+  background-color: var(--vocab-level-4-color);
 }
 
 /*.level-known,
@@ -132,12 +131,12 @@ span::selection, br::selection {
   border-start-end-radius: 5px;
 }
 
-.phrase-start.phrase-hovered {
+.phrase-start.phrase-hovered:not(.level-new) {
   border-inline-start: 1px solid;
 }
 
 
-.phrase-end.phrase-hovered {
+.phrase-end.phrase-hovered:not(.level-new) {
   border-inline-end: 1px solid;
 }
 
@@ -153,11 +152,15 @@ span::selection, br::selection {
   background-color: var(--selected-text-color);
 }
 
-.phrase-hovered {
+.phrase-hovered:not(.level-new) {
   padding-top: 0.7rem;
   padding-bottom: 0.7rem;
   border-top: 1px solid;
   border-bottom: 1px solid;
+}
+
+.phrase-hovered.level-new {
+  border-bottom: 1px dotted var(--on-background-color);
 }
 
 .word-selected, .phrase-selected {
@@ -174,7 +177,6 @@ span::selection, br::selection {
 .phrase-selected.level-3,
 .phrase-selected.level-4 {
   background-color: var(--selected-saved-vocab-color) !important;
-
 }
 
 
