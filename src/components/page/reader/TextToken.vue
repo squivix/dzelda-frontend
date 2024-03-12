@@ -14,6 +14,7 @@ import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
 import BaseToken from "@/components/page/reader/BaseToken.vue";
 import {getLevelClass} from "@/utils.js";
 import {TextTokenObject} from "@/components/shared/Reader.vue";
+import {NEW_PHRASE_HINT_LEARNERS_THRESHOLD} from "@/constants.js";
 
 
 export default defineComponent({
@@ -100,8 +101,9 @@ export default defineComponent({
       const phraseMap: Record<string, LearnerVocabSchema> = {};
       this.phrases!.forEach(p => phraseMap[p.text] = p);
       for (const po of phrases) {
-        // if (phraseMap[po.text].level == VocabLevelSchema.NEW)
-        //   continue;
+        if (phraseMap[po.text].level == VocabLevelSchema.NEW && phraseMap[po.text].learnersCount < NEW_PHRASE_HINT_LEARNERS_THRESHOLD) {
+          continue;
+        }
         const phraseNodes = document.querySelectorAll(`.phrase-${po.phraseId}-${po.phraseOccurrenceIndex}`);
         phraseNodes.forEach((pn) => pn.classList.add("phrase-hovered"));
         phraseNodes[0].classList.add("phrase-start");

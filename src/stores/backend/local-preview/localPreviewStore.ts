@@ -24,6 +24,7 @@ export type VocabRow = {
     ttsPronunciations: TTSPronunciationSchema[],
     tags: VocabTagSchema[],
     rootForms: string[],
+    learnersCount:number,
 };
 
 export type LanguageRow = {

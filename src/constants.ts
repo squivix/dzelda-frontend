@@ -39,3 +39,4 @@ export default Object.freeze({
     LANGUAGE_LEVELS,
     NEW_VOCABS_PERCENTAGE_THRESH,
 });
+export const NEW_PHRASE_HINT_LEARNERS_THRESHOLD = 3;
