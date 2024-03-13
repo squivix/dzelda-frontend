@@ -24,7 +24,7 @@ export type VocabRow = {
     ttsPronunciations: TTSPronunciationSchema[],
     tags: VocabTagSchema[],
     rootForms: string[],
-    learnersCount:number,
+    learnersCount: number,
 };
 
 export type LanguageRow = {
@@ -78,6 +78,8 @@ interface PreviewDBSchema extends DBSchema {
         value: MeaningRow
         indexes: {
             vocabIndex: number,
+            languageIndex: string,
+            vocabLanguageIndex: [number, string]
         };
     };
     vocabs: {
@@ -136,6 +138,8 @@ export const useLocalPreviewStore = defineStore("localPreviewStore", {
                                 db.deleteObjectStore(store);
                             const meaningsStore = db.createObjectStore("meanings", {keyPath: "id"});
                             meaningsStore.createIndex("vocabIndex", "vocab");
+                            meaningsStore.createIndex("languageIndex", "language");
+                            meaningsStore.createIndex("vocabLanguageIndex", ["vocab", "language"]);
                             db.createObjectStore("vocabs", {keyPath: "id"});
                             db.createObjectStore("languages", {keyPath: "id"});
                             const textsStore = db.createObjectStore("texts", {keyPath: "id"});

@@ -21,6 +21,8 @@ export const useMeaningStoreMock = defineStore("meaningStoreMock", {
             const meaningVocab = await previewDb.get("vocabs", meaning.vocab);
             if (!meaningVocab)
                 return;
+            if (meaningVocab.learnerMeanings.find(m => m === body.meaningId))
+                return meaning;
             meaningVocab.learnerMeanings.push(meaning.id);
             await previewDb.put("vocabs", meaningVocab);
             return meaning;
@@ -28,6 +30,10 @@ export const useMeaningStoreMock = defineStore("meaningStoreMock", {
         async createMeaning(body: { text: string, vocabId: number, languageCode: string }) {
             const localPreviewStore = useLocalPreviewStore();
             const previewDb = await localPreviewStore.getPreviewDb();
+            const existingMeanings = await previewDb.getAllFromIndex("meanings", "vocabLanguageIndex", [body.vocabId, body.languageCode]);
+            const existingMeaning = existingMeanings.find(m => m.text == body.text);
+            if (existingMeaning)
+                return existingMeaning;
             const newMeaning = {
                 id: getAcceptablyRandomId(),
                 vocab: body.vocabId,

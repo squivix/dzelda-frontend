@@ -11,7 +11,7 @@
         <select v-model="updatedMeaningLangs[meaningIndex]" v-if="preferredTranslationLanguages!.length>1">
           <option v-for="translationLanguage in preferredTranslationLanguages" :value="translationLanguage.code">{{ translationLanguage.name }}</option>
         </select>
-        <input v-model="updatedMeaningTexts[meaningIndex]" maxlength="500" v-on-click-outside="()=>submitEditMeaning(meaning,meaningIndex)"/>
+        <input v-model="updatedMeaningTexts[meaningIndex]" maxlength="500"/>
         <SubmitButton :isSubmitting="isSubmittingEditMeaningSet.has(meaning.id)" :keepText="false"
                       class="edit-user-meaning-button"
                       type="submit">
@@ -30,12 +30,10 @@ import {inject, PropType} from "vue";
 import {MeaningSchema} from "dzelda-common";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
-import {vOnClickOutside} from "@vueuse/components";
 
 export default {
   name: "MeaningEditingControls",
   components: {InlineSvg, SubmitButton},
-  directives: {onClickOutside: vOnClickOutside},
   emits: ["onMeaningEditSubmitted", "onMeaningDeleteClicked"],
   props: {
     vocabId: {type: Number, required: true},
@@ -60,7 +58,7 @@ export default {
     }
   },
   methods: {
-    submitEditMeaning(meaning: MeaningSchema, meaningIndex: number,) {
+    submitEditMeaning(meaning: MeaningSchema, meaningIndex: number) {
       const updatedMeaningText = this.updatedMeaningTexts[meaningIndex];
       const updatedMeaningLang = this.updatedMeaningLangs[meaningIndex];
       if (updatedMeaningText == "")

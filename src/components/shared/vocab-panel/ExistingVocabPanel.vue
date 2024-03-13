@@ -5,7 +5,7 @@
         @onMeaningDeleteClicked="onMeaningDeleteClicked"
         :isSubmittingEditMeaningSet="isSubmittingEditMeaningSet"
         :vocab-id="vocab.id"
-        :saved-meanings="vocab.learnerMeanings"/>
+        :savedMeanings="vocab.learnerMeanings"/>
 
     <button class="big-button capsule-button add-meaning-button" @click="addMeaning">
       <inline-svg :src="icons.plus" class="more-button"/>
