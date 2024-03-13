@@ -159,8 +159,14 @@ span::selection, br::selection {
   border-bottom: 1px solid;
 }
 
+.phrase-hovered {
+  transition-property: border-bottom-color;
+  transition-delay: 0.5s;
+}
+
 .phrase-hovered.level-new {
-  border-bottom: 1px dotted var(--on-background-color);
+  border-bottom-style: dotted;
+  border-bottom-color: var(--on-background-color);
 }
 
 .word-selected, .phrase-selected {
