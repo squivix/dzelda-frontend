@@ -3,9 +3,10 @@
     <audio ref="audioElement" :src="pronunciationPlaying?.url" @ended="pronunciationPlaying=null" @error="pronunciationPlaying=null"></audio>
     <div>
       <h5>Text to speech Pronunciations</h5>
-      <p v-if="vocab.ttsPronunciations.length==0">No text to speech Pronunciations</p>
+      <LoadingScreen v-if="!ttsPronunciations" class="loading-screen"/>
+      <p v-else-if="ttsPronunciations.length==0">No text to speech Pronunciations</p>
       <ul v-else class="pronunciation-list styled-scrollbars">
-        <li v-for="ttsPronunciation in vocab.ttsPronunciations" :key="ttsPronunciation.id" class="pronunciation" @click="setPronunciationPlaying(ttsPronunciation)">
+        <li v-for="ttsPronunciation in ttsPronunciations" :key="ttsPronunciation.id" class="pronunciation" @click="setPronunciationPlaying(ttsPronunciation)">
           <div class="pronunciation-side">
             <inline-svg :src="pronunciationPlaying===ttsPronunciation?icons.stopPlayback:icons.audio"/>
             <p>{{ `${vocab.text}${ttsPronunciation?.voice?.accentCountryCode ? ` (${ttsPronunciation.voice.accentCountryCode})` : ""}` }}</p>
@@ -60,6 +61,7 @@ export default defineComponent({
   },
   data() {
     return {
+      ttsPronunciations: null as TTSPronunciationSchema[] | null,
       humanPronunciations: null as HumanPronunciationSchema[] | null,
       pronunciationDictionaries: null as DictionarySchema[] | null,
       pronunciationPlaying: null as TTSPronunciationSchema | HumanPronunciationSchema | null,
@@ -71,6 +73,9 @@ export default defineComponent({
     }
   },
   mounted() {
+    if ("id" in this.vocab)
+      this.vocabStore.fetchVocabTTSPronunciations({vocabId: this.vocab.id})
+          .then(response => this.ttsPronunciations = response.data);
     this.dictionaryStore.fetchDictionaries({languageCode: this.vocab.language, isPronunciation: true})
         .then(dictionaries => this.pronunciationDictionaries = dictionaries);
     this.vocabStore.fetchHumanPronunciations({languageCode: this.vocab.language, text: this.vocab.text})

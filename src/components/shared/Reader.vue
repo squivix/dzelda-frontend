@@ -216,7 +216,7 @@ export default defineComponent({
           words[vocab.text] = vocab;
         else
           phrases[vocab.text] = vocab;
-        if (vocab.ttsPronunciations.length > 0)
+        if (vocab.ttsPronunciationUrl > 0)
           hasAudioCounter++;
         else console.log(vocab.text);
         totalCounter++;

@@ -211,7 +211,7 @@ export default {
       const preferredVoice = this.languageStore.userLanguages?.find((l) => l.code === vocab.language)?.preferredTtsVoice;
       const ttsPronunciation = await this.vocabStore.generateVocabTTS({vocabId: vocab.id, voiceCode: preferredVoice?.code});
       if (ttsPronunciation)
-        this.vocab.ttsPronunciations.push(ttsPronunciation);
+        this.vocab.ttsPronunciationUrl = ttsPronunciation.url;
       this.isGeneratingTTS = false;
     }
   },

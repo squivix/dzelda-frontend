@@ -2,9 +2,9 @@
   <div class="top-bar">
     <div class="left-side">
       <template v-if="!isPronunciationPanelShown">
-        <button v-if="preferredTTS " class="audio-button" @click="onPlayTTSButtonClicked">
+        <button v-if="vocab.ttsPronunciationUrl" class="audio-button" @click="onPlayTTSButtonClicked">
           <inline-svg :src="isPlaying?icons.stopPlayback:icons.audio"/>
-          <audio ref="ttsAudioElement" @play="isPlaying=true" @ended="isPlaying=false" :src="preferredTTS.url" autoplay></audio>
+          <audio ref="ttsAudioElement" @play="isPlaying=true" @ended="isPlaying=false" :src="vocab.ttsPronunciationUrl" autoplay></audio>
         </button>
         <SubmitButton v-else class="audio-button" :iconSrc="icons.tts" @click="$emit('onGenerateTTSButtonClicked')" :isSubmitting="isGeneratingTTS"/>
       </template>
@@ -40,18 +40,6 @@ export default defineComponent({
     return {
       isPlaying: true,
     };
-  },
-  computed: {
-    preferredVoice() {
-      const language = this.languageStore.userLanguages?.find(l => l.code === this.vocab.language)!;
-      return language?.preferredTtsVoice;
-    },
-    preferredTTS() {
-      return this.vocab.ttsPronunciations.find(pronunciation => {
-        if (this.preferredVoice?.id === pronunciation.voice!.id || !this.preferredVoice && pronunciation.voice!.isDefault)
-          return pronunciation;
-      });
-    }
   },
   methods: {
     onPlayTTSButtonClicked() {

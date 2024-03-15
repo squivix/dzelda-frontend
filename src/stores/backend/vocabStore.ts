@@ -82,6 +82,11 @@ export const useVocabStore = defineStore("vocab", {
             const response = await store.fetchCustom((api) => api.users.getUsersUsernameVocabsSavedCount(pathParams.username, queryParams, {secure: true}));
             return response.data;
         },
+        async fetchVocabTTSPronunciations(pathParams: { vocabId: number }) {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.vocabs.getVocabsVocabIdTtsPronunciations(pathParams.vocabId));
+            return response;
+        },
         async fetchHumanPronunciations(queryParams: { languageCode?: string, text?: string }) {
             const store = useStore();
             const response = await store.fetchCustom((api) => api.humanPronunciations.getHumanPronunciations(queryParams));
