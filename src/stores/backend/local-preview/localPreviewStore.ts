@@ -21,7 +21,7 @@ export type VocabRow = {
     notes: string | null,
     language: string,
     learnerMeanings: number[],
-    ttsPronunciations: TTSPronunciationSchema[],
+    ttsPronunciation: string,
     tags: VocabTagSchema[],
     rootForms: string[],
     learnersCount: number,
