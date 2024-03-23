@@ -210,18 +210,12 @@ export default defineComponent({
       const textVocabs = await this.vocabStore.fetchTextVocabs({textId: this.textId}, {});
       const words: Record<string, LearnerVocabSchema> = {};
       const phrases: Record<string, LearnerVocabSchema> = {};
-      let hasAudioCounter = 0, totalCounter = 0;
       for (const vocab of textVocabs) {
         if (!vocab.isPhrase)
           words[vocab.text] = vocab;
         else
           phrases[vocab.text] = vocab;
-        if (vocab.ttsPronunciationUrl > 0)
-          hasAudioCounter++;
-        else console.log(vocab.text);
-        totalCounter++;
       }
-      console.log(`${hasAudioCounter}/${totalCounter} (${(hasAudioCounter / totalCounter) * 100}%)`);
       this.words = words;
       this.phrases = phrases;
     },
