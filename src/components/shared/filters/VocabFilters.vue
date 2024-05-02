@@ -29,8 +29,7 @@
 import {defineComponent, PropType} from "vue";
 import BaseCollapsableDiv from "@/components/ui/BaseCollapsableDiv.vue";
 import BaseFiltersCard from "@/components/ui/BaseFiltersCard.vue";
-import {VocabLevelSchema} from "dzelda-common";
-import {useDebounceFn, useResizeObserver} from "@vueuse/core";
+import {VocabLevel, VocabLevelSchema} from "dzelda-common";
 
 type VocabFiltersObject = { level: VocabLevelSchema | VocabLevelSchema[] };
 export default defineComponent({
@@ -79,11 +78,11 @@ export default defineComponent({
   setup() {
     return {
       allLevels: [
-        {value: VocabLevelSchema.LEVEL1, label: "Level 1"},
-        {value: VocabLevelSchema.LEVEL2, label: "Level 2"},
-        {value: VocabLevelSchema.LEVEL3, label: "Level 3"},
-        {value: VocabLevelSchema.LEVEL4, label: "Level 4"},
-        {value: VocabLevelSchema.LEARNED, label: "Learned"},
+        {value: VocabLevel.LEVEL_1, label: "Level 1"},
+        {value: VocabLevel.LEVEL_2, label: "Level 2"},
+        {value: VocabLevel.LEVEL_3, label: "Level 3"},
+        {value: VocabLevel.LEVEL_4, label: "Level 4"},
+        {value: VocabLevel.LEARNED, label: "Learned"},
       ]
     };
   }

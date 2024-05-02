@@ -25,10 +25,10 @@ import {defineComponent, PropType} from "vue";
 import {Line as LineChart} from "vue-chartjs";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import BaseLineChart from "@/components/ui/BaseLineChart.vue";
-import {LanguageSchema, UserSchema, VocabLevelSchema} from "dzelda-common";
+import {LanguageSchema, UserSchema, VocabLevel} from "dzelda-common";
 import {ChartData, ChartDataset} from "chart.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
-import {cleanUndefined, daysToMs, toSentenceCase} from "@/utils.js";
+import {daysToMs, toSentenceCase} from "@/utils.js";
 import {useWindowSize} from "@vueuse/core";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
@@ -110,7 +110,7 @@ export default defineComponent({
         savedOnFrom: from.toISOString(),
         savedOnTo: to.toISOString(),
         savedOnInterval: interval,
-        level: [VocabLevelSchema.LEVEL1, VocabLevelSchema.LEVEL2, VocabLevelSchema.LEVEL3, VocabLevelSchema.LEVEL4]
+        level: [VocabLevel.LEVEL_1, VocabLevel.LEVEL_2, VocabLevel.LEVEL_3, VocabLevel.LEVEL_4]
       });
 
       const languages: { [k: string]: ChartDataset<"line", { x: any, y: any }[]> } = {};

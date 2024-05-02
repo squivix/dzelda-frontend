@@ -7,6 +7,8 @@
 </template>
 
 <script lang="ts">
+import {useDebounceFn, useResizeObserver} from "@vueuse/core";
+
 export default {
   name: "BasePointyDiv",
   mounted() {
@@ -20,8 +22,9 @@ export default {
   },
   methods: {
     centerTriangle() {
-      const contentWidth = this.$refs.content.getBoundingClientRect().width;
-      this.$refs.content.style.setProperty("--triangle-translate", `${contentWidth / 2}px`);
+      const contentElement = this.$refs.content as HTMLElement;
+      const contentWidth = contentElement.getBoundingClientRect().width;
+      contentElement.style.setProperty("--triangle-translate", `${contentWidth / 2}px`);
     }
   }
 };

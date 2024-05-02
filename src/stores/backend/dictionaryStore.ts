@@ -6,18 +6,18 @@ export const useDictionaryStore = defineStore("dictionary", {
     actions: {
         async fetchDictionaries(queryParams: { languageCode?: string, isPronunciation?: boolean } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.dictionaries.getDictionaries(queryParams),
+            const response = await store.fetchCustomWithCache((api) => api.dictionaries.getDictionaries(queryParams),
+                `fetchDictionaries(${JSON.stringify(queryParams)})`,
                 {
-                    cacheKey: `fetchDictionaries(${JSON.stringify(queryParams)})`,
                     expiryTimeInMs: minsToMs(5)
                 });
             return response.data;
         },
         async fetchUserDictionaries(queryParams: { languageCode?: string } = {}, ignoreCache = false) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.getUsersMeDictionaries(queryParams),
+            const response = await store.fetchCustomWithCache((api) => api.users.getUsersMeDictionaries(queryParams),
+                `fetchUserDictionaries(${JSON.stringify(queryParams)})`,
                 {
-                    cacheKey: `fetchUserDictionaries(${JSON.stringify(queryParams)})`,
                     expiryTimeInMs: minsToMs(5),
                     clearCache: ignoreCache
                 });

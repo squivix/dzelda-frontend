@@ -83,7 +83,7 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import {useCollectionStore} from "@/stores/backend/collectionStore.js";
 import {useTextStore} from "@/stores/backend/textStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
-import {CollectionSchema, LanguageLevelSchema} from "dzelda-common";
+import {CollectionSchema, LanguageLevel} from "dzelda-common";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {icons} from "@/icons.js";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
@@ -109,7 +109,7 @@ export default {
       selectedCollection: null as number | null,
       title: "",
       content: "",
-      level: LanguageLevelSchema.ADVANCED1,
+      level: LanguageLevel.ADVANCED_1,
       isPublic: true,
       image: undefined as Blob | undefined,
       audio: undefined as File | undefined,

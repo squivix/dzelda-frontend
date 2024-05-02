@@ -104,7 +104,7 @@ export default defineComponent({
   },
   async mounted() {
     const userLanguages = await this.languageStore.fetchUserLanguages();
-    this.language = userLanguages.find(l => l.code == this.pathParams.settingsLanguage);
+    this.language = userLanguages.find((l) => l.code == this.pathParams.settingsLanguage);
     if (!this.language)
       this.$router.push({name: "not-found"});
   },

@@ -1,12 +1,12 @@
-import {VocabLevelSchema} from "dzelda-common";
+import {VocabLevel, VocabLevelSchema} from "dzelda-common";
 import {defineStore} from "pinia";
 import {getAcceptablyRandomId} from "@/utils.js";
-import {useLocalPreviewStore} from "@/stores/backend/local-preview/localPreviewStore.js";
+import {useLocalPreviewStore, VocabRow} from "@/stores/backend/local-preview/localPreviewStore.js";
 import {escapeRegExp} from "dzelda-common/build/src/utils/utils.js";
 
 export const useVocabStoreMock = defineStore("vocabStoreMock", {
         actions: {
-            async fetchTextVocabs(pathParams: { textId: number }, queryParams: {}) {
+            async fetchTextVocabs(pathParams: { textId: number }) {
                 const localPreviewStore = useLocalPreviewStore();
                 const previewDb = await localPreviewStore.getPreviewDb();
 
@@ -21,7 +21,7 @@ export const useVocabStoreMock = defineStore("vocabStoreMock", {
                 return textVocabs;
             },
             async addVocabToUser(body: { vocabId: number, level?: VocabLevelSchema }) {
-                return await this.updateUserVocab({vocabId: body.vocabId}, {level: body.level ?? VocabLevelSchema.LEVEL1});
+                return await this.updateUserVocab({vocabId: body.vocabId}, {level: body.level ?? VocabLevel.LEVEL_1});
             },
             async updateUserVocab(pathParams: { vocabId: number }, body: { level?: VocabLevelSchema, notes?: string }) {
                 const localPreviewStore = useLocalPreviewStore();
@@ -42,7 +42,7 @@ export const useVocabStoreMock = defineStore("vocabStoreMock", {
                 const vocab = await previewDb.get("vocabs", pathParams.vocabId);
                 if (!vocab)
                     return;
-                vocab.level = VocabLevelSchema.NEW;
+                vocab.level = VocabLevel.NEW;
                 vocab.notes = null;
                 vocab.learnerMeanings = [];
                 await previewDb.put("vocabs", vocab);
@@ -50,17 +50,16 @@ export const useVocabStoreMock = defineStore("vocabStoreMock", {
             async createVocab(body: { text: string, languageCode: string, isPhrase: boolean }) {
                 const localPreviewStore = useLocalPreviewStore();
                 const previewDb = await localPreviewStore.getPreviewDb();
-                const newVocab = {
+                const newVocab:VocabRow = {
                     id: getAcceptablyRandomId(),
                     text: body.text,
                     isPhrase: body.isPhrase,
                     language: body.languageCode,
                     learnersCount: 0,
-                    textsCount: 0,
-                    level: VocabLevelSchema.NEW,
+                    level: VocabLevel.NEW,
                     notes: null,
                     learnerMeanings: [],
-                    ttsPronunciations: [],
+                    ttsPronunciationUrl: null,
                     tags: [],
                     rootForms: [],
                 };
@@ -80,7 +79,7 @@ export const useVocabStoreMock = defineStore("vocabStoreMock", {
                 const localPreviewStore = useLocalPreviewStore();
                 const previewDb = await localPreviewStore.getPreviewDb();
                 const vocab = await previewDb.get("vocabs", pathParams.vocabId);
-                if (!vocab || vocab.level == VocabLevelSchema.NEW)
+                if (!vocab || vocab.level == VocabLevel.NEW)
                     return;
                 return {
                     ...vocab,

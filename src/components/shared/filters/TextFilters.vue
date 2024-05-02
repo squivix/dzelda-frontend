@@ -51,8 +51,7 @@ import {defineComponent, PropType} from "vue";
 import BaseCollapsableDiv from "@/components/ui/BaseCollapsableDiv.vue";
 import BaseFiltersCard from "@/components/ui/BaseFiltersCard.vue";
 import {toSentenceCase} from "@/utils.js";
-import {LanguageLevelSchema} from "dzelda-common";
-import {useDebounceFn, useResizeObserver} from "@vueuse/core";
+import {LanguageLevel} from "dzelda-common";
 
 export const textFilterFields = ["addedBy", "level", "hasAudio"] as const;
 export type TextFiltersObject = Partial<{ addedBy: string, level: string | string[], hasAudio: boolean }>;
@@ -109,7 +108,7 @@ export default defineComponent({
   },
   setup() {
     return {
-      allLevels: Object.values(LanguageLevelSchema).map(v => ({value: v, label: `${toSentenceCase(v).slice(0, -1)} ${v.slice(-1)}`}))
+      allLevels: Object.values(LanguageLevel).map(v => ({value: v, label: `${toSentenceCase(v).slice(0, -1)} ${v.slice(-1)}`}))
     };
   },
 });

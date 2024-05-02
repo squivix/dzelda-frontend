@@ -18,6 +18,7 @@
 
 <script lang="ts">
 import BasePageSelector from "@/components/ui/BasePageSelector.vue";
+import {PropType} from "vue";
 
 export default {
   name: "PaginationControls",
@@ -27,7 +28,7 @@ export default {
     page: {type: Number, required: false, default: 1},
     pageSize: {type: Number, required: false,},
     perPageSelectOptions: {
-      type: Array, required: false, default() {
+      type: Array as PropType<number[]>, required: false, default() {
         return [5, 10, 25, 50, 100];
       },
     },

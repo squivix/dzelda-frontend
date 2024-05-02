@@ -28,7 +28,7 @@
 import MeaningAddingControls from "@/components/shared/vocab-panel/MeaningAddingControls.vue";
 import DictionariesList from "@/components/shared/vocab-panel/DictionaryList.vue";
 import {PropType} from "vue";
-import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-common";
+import {LearnerVocabSchema, MeaningSchema, VocabLevel} from "dzelda-common";
 import {NewVocab} from "@/components/shared/Reader.vue";
 
 export default {
@@ -60,13 +60,13 @@ export default {
         return this.suggestedMeanings.slice(0, 3);
     },
     isLevelNew() {
-      return this.vocab.level === VocabLevelSchema.NEW;
+      return this.vocab.level === VocabLevel.NEW;
     },
     isLevelIgnored() {
-      return this.vocab.level === VocabLevelSchema.IGNORED;
+      return this.vocab.level === VocabLevel.IGNORED;
     },
     isLevelKnown() {
-      return this.vocab.level === VocabLevelSchema.KNOWN;
+      return this.vocab.level === VocabLevel.KNOWN;
     },
   },
 };

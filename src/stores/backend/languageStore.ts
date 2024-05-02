@@ -28,9 +28,8 @@ export const useLanguageStore = defineStore("language", {
             }, ignoreCache?: boolean
         } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.getUsersUsernameLanguages("me", queryParams),
-                {
-                    cacheKey: `fetchUserLanguages(${JSON.stringify(queryParams)})`,
+            const response = await store.fetchCustomWithCache((api) => api.users.getUsersUsernameLanguages("me", queryParams),
+                `fetchUserLanguages(${JSON.stringify(queryParams)})`, {
                     clearCache: ignoreCache
                 });
             this.userLanguages = response.data;

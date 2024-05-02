@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import {defineComponent, PropType} from "vue";
-import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
+import {LearnerVocabSchema, VocabLevel, VocabLevelSchema} from "dzelda-common";
 import BaseToken from "@/components/page/reader/BaseToken.vue";
 import {getLevelClass} from "@/utils.js";
 import {TextTokenObject} from "@/components/shared/Reader.vue";
@@ -35,7 +35,7 @@ export default defineComponent({
       if (this.phrasesCount != 0) {
         classes.push("phrase");
         classes.push(...this.token.phrases.map(p => `phrase-${p.phraseId}-${p.phraseOccurrenceIndex}`));
-        classes.push(getLevelClass(Math.max(...this.phrases!.map(p => p.level))));
+        classes.push(getLevelClass(Math.max(...this.phrases!.map(p => p.level)) as VocabLevelSchema));
         if (this.isPhraseSelected)
           classes.push("phrase-selected");
       }
@@ -51,11 +51,11 @@ export default defineComponent({
         classes.push("word-selected");
       return classes.join(" ");
     },
-    phrases(): Array<LearnerVocabSchema | undefined> {
+    phrases(): Array<LearnerVocabSchema> {
       return this.token.phrases.map(p => this.allPhrases[p.text]);
     },
     savedPhrases() {
-      return this.phrases?.filter(p => p.level !== VocabLevelSchema.NEW);
+      return this.phrases?.filter(p => p.level !== VocabLevel.NEW);
     },
     savedPhrasesCount() {
       return !this.savedPhrases ? 0 : this.savedPhrases.length;
@@ -101,7 +101,7 @@ export default defineComponent({
       const phraseMap: Record<string, LearnerVocabSchema> = {};
       this.phrases!.forEach(p => phraseMap[p.text] = p);
       for (const po of phrases) {
-        if (phraseMap[po.text].level == VocabLevelSchema.NEW && phraseMap[po.text].learnersCount < NEW_PHRASE_HINT_LEARNERS_THRESHOLD) {
+        if (phraseMap[po.text].level == VocabLevel.NEW && phraseMap[po.text].learnersCount < NEW_PHRASE_HINT_LEARNERS_THRESHOLD) {
           continue;
         }
         const phraseNodes = document.querySelectorAll(`.phrase-${po.phraseId}-${po.phraseOccurrenceIndex}`);

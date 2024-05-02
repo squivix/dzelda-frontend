@@ -6,6 +6,11 @@ import {secondsToMs} from "@/utils.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 const DEFAULT_CACHE_TIME = secondsToMs(30);
+type CacheReturnType<T> = {
+    ok: true,
+    cacheHit: true,
+    data: T
+}
 export const useStore = defineStore("main", {
         state() {
             const apiUrl = `${import.meta.env._BACKEND_URL}/api/v1`;
@@ -19,37 +24,40 @@ export const useStore = defineStore("main", {
             };
         },
         actions: {
-            async fetchCustom<T, E>(endpoint: (api: ApiClient<string>) => Promise<HttpResponse<T, E>>, {
-                cacheKey,
+            async fetchCustomWithCache<T, E>(endpoint: (api: ApiClient<string>) => Promise<HttpResponse<T, E>>, cacheKey: string, {
                 clearCache = false,
                 expiryTimeInMs,
                 ignore401 = false,
                 ignore5XX = false
             }: {
                 clearCache?: boolean,
-                cacheKey?: string,
                 expiryTimeInMs?: number,
                 ignore401?: boolean,
                 ignore5XX?: boolean
-            } = {}): typeof cacheKey extends undefined ? Promise<HttpResponse<T, E>> : Promise<{
-                ok: true,
-                cacheHit: true,
-                data: T
-            } | HttpResponse<T, E>> {
+            }): Promise<CacheReturnType<T> | HttpResponse<T, E>> {
+                const userStore = useUserStore();
+                this.apiClient.setSecurityData(userStore.authToken);
+                if (clearCache)
+                    delete this.cache[cacheKey];
+                else if (cacheKey in this.cache) {
+                    const cacheHit = this.cache[cacheKey];
+                    if (new Date().getTime() - this.cache[cacheKey].timeCached.getTime() > cacheHit.expiryTimeInMs)
+                        delete this.cache[cacheKey];
+                    else
+                        return {ok: true, cacheHit: true, data: this.cache[cacheKey].data};
+                }
+                const response = await this.fetchCustom(endpoint, {ignore401, ignore5XX});
+                if (cacheKey !== undefined)
+                    this.cache[cacheKey] = {timeCached: new Date(), data: response.data, expiryTimeInMs: expiryTimeInMs ?? DEFAULT_CACHE_TIME};
+                return response;
+            },
+            async fetchCustom<T, E>(endpoint: (api: ApiClient<string>) => Promise<HttpResponse<T, E>>, {ignore401 = false, ignore5XX = false}: {
+                ignore401?: boolean,
+                ignore5XX?: boolean
+            } = {}) {
                 const userStore = useUserStore();
                 this.apiClient.setSecurityData(userStore.authToken);
                 let response;
-                if (cacheKey !== undefined) {
-                    if (clearCache)
-                        delete this.cache[cacheKey];
-                    else if (cacheKey in this.cache) {
-                        const cacheHit = this.cache[cacheKey];
-                        if (new Date().getTime() - this.cache[cacheKey].timeCached.getTime() > cacheHit.expiryTimeInMs)
-                            delete this.cache[cacheKey];
-                        else
-                            return {ok: true, cacheHit: true, data: this.cache[cacheKey].data};
-                    }
-                }
                 try {
                     response = await endpoint(this.apiClient as ApiClient<string>);   //for some reason this.apiClient is any :/
                 } catch (error) {
@@ -72,8 +80,6 @@ export const useStore = defineStore("main", {
                     const messageBarStore = useMessageBarStore();
                     messageBarStore.addTopBarMessage({text: "Too many requests, please wait 1 minute and refresh page", type: MessageType.ERROR});
                 }
-                if (cacheKey !== undefined)
-                    this.cache[cacheKey] = {timeCached: new Date(), data: response.data, expiryTimeInMs: expiryTimeInMs ?? DEFAULT_CACHE_TIME};
                 return response;
             },
             async uploadFile({fileField, fileExtension, file}: { fileField: string, fileExtension: string, file: File }): Promise<string | undefined> {

@@ -16,17 +16,7 @@
           :language="alreadyLearningLanguage?.name"/>
 
       <StartLearningDialog :isShown="isNewLanguageDialogShown" :language="newLanguage" @onCanceled="isNewLanguageDialogShown=false" @onSubmitted="onNewLanguageSubmitted">
-
       </StartLearningDialog>
-      <!--      <ConfirmDialog @onYesClicked="addNewLanguage"-->
-      <!--                     @onNoClicked="isNewLanguageDialogShown=false"-->
-      <!--                     @onClosed="isNewLanguageDialogShown=false"-->
-      <!--                     :isShown="isNewLanguageDialogShown">-->
-      <!--        <div v-if="newLanguage">-->
-      <!--          <p>Start learning {{ newLanguage.name }}?</p>-->
-      <!--        </div>-->
-      <!--      </ConfirmDialog>-->
-
     </template>
   </BaseCard>
 </template>
@@ -77,15 +67,7 @@ export default {
     },
     async onNewLanguageSubmitted() {
       this.isNewLanguageDialogShown = false;
-      await this.$router.push({name: "explore", params: {learningLanguage: this.newLanguage.code}});
-    },
-    async addNewLanguage() {
-      if (this.newLanguage) {
-        await this.languageStore.addLanguageToUser({languageCode: this.newLanguage.code});
-        await this.languageStore.fetchUserLanguages({ignoreCache: true});
-        this.isNewLanguageDialogShown = false;
-        await this.$router.push({name: "explore", params: {learningLanguage: this.newLanguage.code}});
-      }
+      await this.$router.push({name: "explore", params: {learningLanguage: this.newLanguage!.code}});
     },
   },
   async mounted() {

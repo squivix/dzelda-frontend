@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
-import {DBSchema, deleteDB, IDBPDatabase, openDB} from "idb";
-import {AttributionSchema, AttributionSourceSchema, LanguageLevelSchema, TTSPronunciationSchema, VocabLevelSchema, VocabTagSchema} from "dzelda-common";
+import {DBSchema, IDBPDatabase, openDB} from "idb";
+import {AttributionSchema, AttributionSourceSchema, LanguageLevelSchema, VocabLevelSchema, VocabTagSchema} from "dzelda-common";
 
 export type MeaningRow = {
     id: number,
@@ -21,7 +21,7 @@ export type VocabRow = {
     notes: string | null,
     language: string,
     learnerMeanings: number[],
-    ttsPronunciationUrl: string,
+    ttsPronunciationUrl: string | null,
     tags: VocabTagSchema[],
     rootForms: string[],
     learnersCount: number,
@@ -34,17 +34,18 @@ export type LanguageRow = {
     code: string
     secondSpeakersCount: number
     flagCircular: string
-    flagImage: string
+    flag: string
     flagEmoji: string
     color: string
     isSupported: boolean
+    learnersCount: number
     levelThresholds: {
-        beginner1: 0,
-        beginner2: 1000,
-        intermediate1: 5000,
-        intermediate2: 12000,
-        advanced1: 20000,
-        advanced2: 30000
+        beginner1: number;
+        beginner2: number;
+        intermediate1: number;
+        intermediate2: number;
+        advanced1: number;
+        advanced2: number;
     }
 }
 

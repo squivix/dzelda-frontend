@@ -81,7 +81,7 @@ import SubmitButton from "@/components/ui/SubmitButton.vue";
 import BaseCard from "@/components/ui/BaseCard.vue";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import BaseDialog from "@/components/ui/BaseDialog.vue";
-import {CollectionSchema, LanguageLevelSchema, TextSchema} from "dzelda-common";
+import {CollectionSchema, LanguageLevel, TextSchema} from "dzelda-common";
 import {toSentenceCase} from "@/utils.js";
 import path from "path";
 import {icons} from "@/icons.js";
@@ -105,7 +105,7 @@ export default defineComponent({
       selectedCollection: null as number | null,
       title: "",
       content: "",
-      level: undefined as LanguageLevelSchema | undefined,
+      level: undefined as LanguageLevel | undefined,
       isPublic: true,
       image: undefined as Blob | undefined,
       audio: undefined as File | undefined,
@@ -127,7 +127,7 @@ export default defineComponent({
       this.text = await this.textStore.fetchText({textId: this.pathParams.textId});
       this.title = this.text.title;
       this.content = this.text.content;
-      this.level = this.text.level;
+      this.level = this.text.level as LanguageLevel;
       this.isPublic = this.text.isPublic;
       this.selectedCollection = this.text?.collection?.id ?? null;
     },

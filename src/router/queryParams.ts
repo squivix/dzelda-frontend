@@ -1,6 +1,6 @@
 import {z, ZodType} from "zod";
 import constants from "@/constants.js";
-import {LanguageLevelSchema} from "dzelda-common";
+import {LanguageLevel} from "dzelda-common";
 
 export type RouteParamDef = { schema: ZodType, postProcess?: (param: string | string[]) => any }
 export const booleanStringQueryParam: RouteParamDef = {schema: z.preprocess((v) => String(v).toLowerCase(), z.literal("true").or(z.literal("false"))), postProcess: v => v === "true"};
@@ -17,8 +17,8 @@ export const generatePaginationQueryParams = (pageSizes: number[]) => {
 export const textFilters = {
     level: {
         schema: z.union([
-            z.nativeEnum(LanguageLevelSchema),
-            z.array(z.nativeEnum(LanguageLevelSchema))
+            z.nativeEnum(LanguageLevel),
+            z.array(z.nativeEnum(LanguageLevel))
         ]).optional(),
     },
     addedBy: {schema: z.string().min(1).optional()},

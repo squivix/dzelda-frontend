@@ -73,7 +73,7 @@ import VocabTable from "@/components/page/my-vocabs/VocabTable.vue";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {PropType} from "vue";
-import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
+import {LearnerVocabSchema, VocabLevel, VocabLevelSchema} from "dzelda-common";
 import SearchBar from "@/components/ui/SearchBar.vue";
 import VocabFilters from "@/components/shared/filters/VocabFilters.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
@@ -131,7 +131,7 @@ export default {
       const response = await this.vocabStore.fetchUserVocabs({
         languageCode: this.pathParams.learningLanguage,
         searchQuery: this.queryParams.searchQuery || undefined,
-        level: this.queryParams.level ?? [VocabLevelSchema.LEVEL1, VocabLevelSchema.LEVEL2, VocabLevelSchema.LEVEL3, VocabLevelSchema.LEVEL4, VocabLevelSchema.LEARNED],
+        level: this.queryParams.level ?? [VocabLevel.LEVEL_1, VocabLevel.LEVEL_2, VocabLevel.LEVEL_3, VocabLevel.LEVEL_4, VocabLevel.LEARNED],
         page: this.queryParams.page,
         pageSize: this.queryParams.pageSize,
       });
@@ -140,7 +140,7 @@ export default {
       this.loading = false;
     },
     updateVocabData(vocab: LearnerVocabSchema, updatedVocabData: Partial<LearnerVocabSchema>) {
-      if ([VocabLevelSchema.IGNORED, VocabLevelSchema.KNOWN].includes(updatedVocabData.level!)) {
+      if ([VocabLevel.IGNORED, VocabLevel.KNOWN].includes(updatedVocabData.level!)) {
         this.removeVocabFromResults(vocab);
         return;
       }
@@ -149,7 +149,7 @@ export default {
         if (this.vocabs![i].id == updatedVocab.id)
           this.vocabs!.splice(i, 1, updatedVocab);
       if (this.selectedVocab && this.selectedVocab.text === vocab.text) {
-        if ([VocabLevelSchema.IGNORED, VocabLevelSchema.KNOWN].includes(updatedVocabData.level!))
+        if ([VocabLevel.IGNORED, VocabLevel.KNOWN].includes(updatedVocabData.level!))
           this.clearSelectedVocab();
         else
           this.setSelectedVocab(updatedVocab);
@@ -171,7 +171,7 @@ export default {
         if (this.vocabs![i].id == updatedVocab.id)
           this.vocabs!.splice(i, 1, updatedVocab);
       if (this.selectedVocab && this.selectedVocab.text === updatedVocab.text) {
-        if ([VocabLevelSchema.IGNORED, VocabLevelSchema.KNOWN].includes(updatedVocab.level!))
+        if ([VocabLevel.IGNORED, VocabLevel.KNOWN].includes(updatedVocab.level!))
           this.clearSelectedVocab();
         else
           this.setSelectedVocab(updatedVocab);

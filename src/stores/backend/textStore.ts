@@ -39,7 +39,7 @@ export const useTextStore = defineStore("text", {
             languageCode: string,
             collectionId: number | null,
             isPublic: boolean,
-            level: "beginner1" | "beginner2" | "intermediate1" | "intermediate2" | "advanced1" | "advanced2",
+            level: LanguageLevelSchema,
             image: string | undefined,
             audio: string | undefined
         }) {
@@ -61,7 +61,7 @@ export const useTextStore = defineStore("text", {
             title: string,
             content: string,
             image: string | undefined,
-            level: LanguageLevelSchema,
+            level: LanguageLevelSchema | undefined,
             isPublic: boolean,
             audio: string | undefined
         }) {

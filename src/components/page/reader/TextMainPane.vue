@@ -38,7 +38,7 @@
 <script lang="ts">
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {PropType} from "vue";
-import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
+import {LearnerVocabSchema, VocabLevel} from "dzelda-common";
 import {getTextSelectedElements} from "@/utils.js";
 import {useEventListener} from "@vueuse/core";
 import {icons} from "@/icons.js";
@@ -135,7 +135,7 @@ export default {
       const selectedText = selectedWordTokens.map(t => t.parsedText).join(" ");
       if (this.words[selectedText])
         this.onWordClicked(this.words[selectedText], selectedWordTokens[0]);
-      else if (this.phrases[selectedText] && this.phrases[selectedText].level !== VocabLevelSchema.NEW)
+      else if (this.phrases[selectedText] && this.phrases[selectedText].level !== VocabLevel.NEW)
         this.onPhraseClicked(this.phrases[selectedText], selectedWordTokens[0]);
       else
         this.onNewPhraseSelected(this.selectedTextTokens);

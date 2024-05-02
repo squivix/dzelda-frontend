@@ -24,7 +24,7 @@
                 <div class="stats-count">
                   <span class="vocabs-indicator new-vocabs"></span>
                   <div>
-                    <span>{{ text.vocabsByLevel![VocabLevelSchema.NEW] }} (</span>
+                    <span>{{ text.vocabsByLevel![VocabLevel.NEW] }} (</span>
                     <span :class="newVocabsPercentageClass">{{ newVocabsPercentage }}%</span>
                     <span>)</span>
                   </div>
@@ -84,7 +84,7 @@
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import {TextHistoryEntrySchema, TextSchema, VocabLevelSchema, VocabsByLevelSchema} from "dzelda-common";
+import {TextHistoryEntrySchema, TextSchema, VocabLevel, VocabsByLevelSchema} from "dzelda-common";
 import {PropType} from "vue";
 import constants from "@/constants.js";
 import InlineSvg from "vue-inline-svg";
@@ -112,10 +112,10 @@ export default {
       return (this.text.image || this.text.collection?.image) ?? "";
     },
     newVocabsPercentage() {
-      const total = this.text.vocabsByLevel![VocabLevelSchema.NEW] + this.savedVocabsCount;
+      const total = this.text.vocabsByLevel![VocabLevel.NEW] + this.savedVocabsCount;
       if (total == 0) //prevent NaN% from dividing 0/0
         return 0.00;
-      const percentage = (this.text.vocabsByLevel![VocabLevelSchema.NEW] / total) * 100;
+      const percentage = (this.text.vocabsByLevel![VocabLevel.NEW] / total) * 100;
       return Number(percentage.toFixed(2));
     },
     newVocabsPercentageClass() {
@@ -131,7 +131,7 @@ export default {
       let count = 0;
       let level: keyof VocabsByLevelSchema;   //typescript is acting up :/
       for (level in this.text.vocabsByLevel!) {
-        if (Number(level) !== VocabLevelSchema.NEW && Number(level) !== VocabLevelSchema.IGNORED) {
+        if (Number(level) !== VocabLevel.NEW && Number(level) !== VocabLevel.IGNORED) {
           count += this.text.vocabsByLevel![level];
         }
       }
@@ -146,10 +146,10 @@ export default {
   },
   setup() {
     return {
+      VocabLevel,
       icons,
       textStore: useTextStore(),
       userStore: useUserStore(),
-      VocabLevelSchema
     };
   }
 };

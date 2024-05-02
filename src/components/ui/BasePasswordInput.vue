@@ -15,6 +15,7 @@
 <script lang="ts">
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
+import {InputType} from "zlib";
 
 export default {
   name: "BasePasswordInput",
@@ -37,7 +38,7 @@ export default {
   emits: ["update:modelValue"],
   methods: {
     toggleShowPassword() {
-      const input = this.$refs.password;
+      const input = this.$refs.password as HTMLInputElement;
       if (input.type === "password") {
         input.type = "text";
       } else {
@@ -45,8 +46,8 @@ export default {
       }
       this.isShown = !this.isShown;
     },
-    onInput(event) {
-      this.$emit("update:modelValue", event.target.value);
+    onInput(event: Event) {
+      this.$emit("update:modelValue", (event.target as HTMLInputElement).value);
     },
   },
   setup() {

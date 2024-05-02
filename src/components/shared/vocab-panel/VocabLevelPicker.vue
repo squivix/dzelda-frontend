@@ -1,28 +1,28 @@
 <template>
   <ol class="levels"
-      v-if="level !== constants.ALL_VOCAB_LEVELS.NEW && level !== constants.ALL_VOCAB_LEVELS.IGNORED&& level !== constants.ALL_VOCAB_LEVELS.KNOWN">
-    <li :class="{ highlighted: level === constants.ALL_VOCAB_LEVELS.LEVEL_1 }"
-        @click.stop="setVocabLevel(constants.ALL_VOCAB_LEVELS.LEVEL_1)">
-      {{ constants.ALL_VOCAB_LEVELS.LEVEL_1 }}
+      v-if="level !== VocabLevel.NEW && level !== VocabLevel.IGNORED&& level !== VocabLevel.KNOWN">
+    <li :class="{ highlighted: level === VocabLevel.LEVEL_1 }"
+        @click.stop="setVocabLevel(VocabLevel.LEVEL_1)">
+      {{ VocabLevel.LEVEL_1 }}
     </li>
-    <li :class="{ highlighted: level === constants.ALL_VOCAB_LEVELS.LEVEL_2 }"
-        @click.stop="setVocabLevel(constants.ALL_VOCAB_LEVELS.LEVEL_2)">
-      {{ constants.ALL_VOCAB_LEVELS.LEVEL_2 }}
+    <li :class="{ highlighted: level === VocabLevel.LEVEL_2 }"
+        @click.stop="setVocabLevel(VocabLevel.LEVEL_2)">
+      {{ VocabLevel.LEVEL_2 }}
     </li>
-    <li :class="{ highlighted: level === constants.ALL_VOCAB_LEVELS.LEVEL_3 }"
-        @click.stop="setVocabLevel(constants.ALL_VOCAB_LEVELS.LEVEL_3)">
-      {{ constants.ALL_VOCAB_LEVELS.LEVEL_3 }}
+    <li :class="{ highlighted: level === VocabLevel.LEVEL_3 }"
+        @click.stop="setVocabLevel(VocabLevel.LEVEL_3)">
+      {{ VocabLevel.LEVEL_3 }}
     </li>
-    <li :class="{ highlighted: level === constants.ALL_VOCAB_LEVELS.LEVEL_4 }"
-        @click.stop="setVocabLevel(constants.ALL_VOCAB_LEVELS.LEVEL_4)">
-      {{ constants.ALL_VOCAB_LEVELS.LEVEL_4 }}
+    <li :class="{ highlighted: level === VocabLevel.LEVEL_4 }"
+        @click.stop="setVocabLevel(VocabLevel.LEVEL_4)">
+      {{ VocabLevel.LEVEL_4 }}
     </li>
-    <li :class="{ highlighted: level === constants.ALL_VOCAB_LEVELS.LEARNED }"
-        @click.stop="setVocabLevel(constants.ALL_VOCAB_LEVELS.LEARNED)">
+    <li :class="{ highlighted: level === VocabLevel.LEARNED }"
+        @click.stop="setVocabLevel(VocabLevel.LEARNED)">
       <inline-svg :src="icons.checkMark"/>
     </li>
-    <li :class="{ highlighted: level === constants.ALL_VOCAB_LEVELS.IGNORED }"
-        @click.stop="setVocabLevel(constants.ALL_VOCAB_LEVELS.IGNORED)">
+    <li :class="{ highlighted: level === VocabLevel.IGNORED }"
+        @click.stop="setVocabLevel(VocabLevel.IGNORED)">
       <inline-svg :src="icons.circleSlash"/>
     </li>
   </ol>
@@ -33,7 +33,7 @@
 import constants from "@/constants.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
+import {LearnerVocabSchema, VocabLevel, VocabLevelSchema} from "dzelda-common";
 import {PropType} from "vue";
 
 export default {
@@ -59,6 +59,7 @@ export default {
   },
   setup() {
     return {
+      VocabLevel,
       icons,
     };
   }

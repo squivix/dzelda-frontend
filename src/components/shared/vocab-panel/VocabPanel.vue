@@ -18,8 +18,8 @@
                          :isSubmittingNewMeaning="isSubmittingNewMeaning"
                          @onSuggestedMeaningClicked="addSuggestedMeaning"
                          @onNewMeaningSubmitted="addNewMeaning"
-                         @onMarkAsKnownClicked="()=>onMarkAsButtonClicked(VocabLevelSchema.KNOWN)"
-                         @onMarkAsIgnoredClicked="()=>onMarkAsButtonClicked(VocabLevelSchema.IGNORED)"/>
+                         @onMarkAsKnownClicked="()=>onMarkAsButtonClicked(VocabLevel.KNOWN)"
+                         @onMarkAsIgnoredClicked="()=>onMarkAsButtonClicked(VocabLevel.IGNORED)"/>
           <ExistingVocabPanel v-else
                               :vocab="existingVocab!"
                               :isSubmittingEditMeaningSet="isSubmittingEditMeaningSet"
@@ -41,7 +41,7 @@
 import NewVocabPanel from "@/components/shared/vocab-panel/NewVocabPanel.vue";
 import ExistingVocabPanel from "@/components/shared/vocab-panel/ExistingVocabPanel.vue";
 import {inject, PropType} from "vue";
-import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema, VocabSchema} from "dzelda-common";
+import {LearnerVocabSchema, MeaningSchema, VocabLevel, VocabLevelSchema, VocabSchema} from "dzelda-common";
 import {useMeaningStore} from "@/stores/backend/meaningStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import {NewVocab} from "@/components/shared/Reader.vue";
@@ -78,7 +78,7 @@ export default {
       return [...this.vocab.tags.map(t => t.name), ...this.vocab.rootForms];
     },
     isVocabNotSaved() {
-      return [VocabLevelSchema.NEW, VocabLevelSchema.IGNORED, VocabLevelSchema.KNOWN].includes(this.vocab!.level!);
+      return [VocabLevel.NEW, VocabLevel.IGNORED, VocabLevel.KNOWN].includes(this.vocab!.level!);
     },
     showAddPanel() {
       return this.isVocabNotSaved || this.isAddingMoreMeanings;
@@ -107,12 +107,12 @@ export default {
     },
     updateVocabLevel(level: VocabLevelSchema) {
       const vocab = this.vocab as LearnerVocabSchema;
-      if (level == VocabLevelSchema.IGNORED && vocab.isPhrase) {
+      if (level == VocabLevel.IGNORED && vocab.isPhrase) {
         this.vocabStore.removeVocabFromUser({vocabId: vocab.id});
         this.$emit("onVocabDeleted", vocab);
       } else {
         this.vocabStore.updateUserVocab({vocabId: vocab.id}, {level: level});
-        if (level == VocabLevelSchema.IGNORED)
+        if (level == VocabLevel.IGNORED)
           this.$emit("onVocabUpdated", vocab, {level, learnerMeanings: []});
         else
           this.$emit("onVocabUpdated", vocab, {level});
@@ -129,7 +129,7 @@ export default {
       this.vocabStore.addVocabToUser({vocabId: vocab.id});
       this.meaningStore.addMeaningToUser({meaningId: meaning.id});
       this.$emit("onVocabUpdated", vocab, {
-        level: [VocabLevelSchema.NEW, VocabLevelSchema.LEARNED, VocabLevelSchema.KNOWN, VocabLevelSchema.IGNORED].includes(vocab.level) ? VocabLevelSchema.LEVEL1 : vocab.level,
+        level: [VocabLevel.NEW, VocabLevel.LEARNED, VocabLevel.KNOWN, VocabLevel.IGNORED].includes(vocab.level) ? VocabLevel.LEVEL_1 : vocab.level,
         learnerMeanings: [...vocab.learnerMeanings, meaning],
       });
       this.isAddingMoreMeanings = false;
@@ -147,7 +147,7 @@ export default {
         });
         newVocab = await this.vocabStore.addVocabToUser({vocabId: vocab.id});
         this.$emit("onNewVocabCreated", newVocab);
-      } else if (this.vocab.level == VocabLevelSchema.NEW)
+      } else if (this.vocab.level == VocabLevel.NEW)
         newVocab = await this.vocabStore.addVocabToUser({vocabId: this.vocab.id});
       else
         newVocab = this.vocab;
@@ -194,30 +194,34 @@ export default {
       this.isGeneratingTTS = true;
       let vocab: LearnerVocabSchema | VocabSchema;
       if (!("id" in this.vocab)) {
-        vocab = await this.vocabStore.createVocab({
-          text: this.vocab.text,
-          languageCode: this.vocab.language,
-          isPhrase: this.vocab.isPhrase,
-        });
-        this.$emit("onNewVocabCreated", {
-          ...vocab,
-          level: VocabLevelSchema.NEW,
+        vocab = {
+          ...await this.vocabStore.createVocab({
+            text: this.vocab.text,
+            languageCode: this.vocab.language,
+            isPhrase: this.vocab.isPhrase,
+          }),
+          level: VocabLevel.NEW,
           notes: null,
           learnerMeanings: [],
-          ttsPronunciations: [],
-        });
+          ttsPronunciationUrl: null,
+          learnersCount: 0,
+          tags: [],
+          rootForms: [],
+        };
+        this.$emit("onNewVocabCreated", vocab);
       } else
         vocab = this.vocab;
       const preferredVoice = this.languageStore.userLanguages?.find((l) => l.code === vocab.language)?.preferredTtsVoice;
       const ttsPronunciation = await this.vocabStore.generateVocabTTS({vocabId: vocab.id, voiceCode: preferredVoice?.code});
+
       if (ttsPronunciation)
-        this.vocab.ttsPronunciationUrl = ttsPronunciation.url;
+        this.$emit("onVocabUpdated", vocab, {ttsPronunciationUrl: ttsPronunciation!.url});
       this.isGeneratingTTS = false;
     }
   },
   setup() {
     return {
-      VocabLevelSchema,
+      VocabLevel,
       meaningStore: inject<ReturnType<typeof useMeaningStore>>("meaningStore", useMeaningStore()),
       vocabStore: inject<ReturnType<typeof useVocabStore>>("vocabStore", useVocabStore()),
       languageStore: inject<ReturnType<typeof useLanguageStore>>("vocabStore", useLanguageStore()),

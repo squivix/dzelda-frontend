@@ -41,7 +41,7 @@
             Your browser does not support the audio element.
           </audio>
         </div>
-        <PageIndicator class="page-indicators" :currentPage="currentPage" :pageCount="textTokenPages.length" @onPageIndicatorClicked="page=>currentPage=page"/>
+        <PageIndicator class="page-indicators" :currentPage="currentPage" :pageCount="textTokenPages.length" @onPageIndicatorClicked="(page:number)=>currentPage=page"/>
       </div>
     </template>
   </BaseCard>
@@ -53,7 +53,7 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import PageIndicator from "@/components/page/reader/PageIndicator.vue";
 import ReaderSidePanel from "@/components/page/reader/ReaderSidePanel.vue";
 import PagePanelButton from "@/components/page/reader/PagePanelButton.vue";
-import {getParser, LearnerVocabSchema, TextSchema, TokenWithPhrases, TokeObjectPhrases, VocabLevelSchema} from "dzelda-common";
+import {getParser, LearnerVocabSchema, TextSchema, TokenWithPhrases, TokeObjectPhrases, VocabLevel} from "dzelda-common";
 import {icons} from "@/icons.js";
 import {useTextStore} from "@/stores/backend/textStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
@@ -139,21 +139,22 @@ export default defineComponent({
       else
         return {
           text: selectedWordsText,
-          level: VocabLevelSchema.NEW,
+          level: VocabLevel.NEW,
           isPhrase: true,
           notes: null,
           language: this.text!.language,
           meanings: [],
           learnerMeanings: [],
-          ttsPronunciations: [],
+          ttsPronunciationUrl: null,
+          learnersCount: 0,
           tags: [],
           rootForms: [],
-        };
+        } as NewVocab;
     },
     isSelectedNewPhrase() {
       if (!this.selectedVocab)
         return false;
-      return (this.selectedVocab.isPhrase && this.selectedVocab.level == VocabLevelSchema.NEW);
+      return (this.selectedVocab.isPhrase && this.selectedVocab.level == VocabLevel.NEW);
     },
     imageUrl() {
       return (this.text!.image || this.text!.collection?.image) ?? "";
@@ -247,21 +248,24 @@ export default defineComponent({
       else
         this.words[vocab.text] = updatedVocab;
       if (this.selectedVocab && this.selectedVocab.text === vocab.text) {
-        if ([VocabLevelSchema.IGNORED, VocabLevelSchema.KNOWN].includes(updatedVocabData.level!))
+        if ([VocabLevel.IGNORED, VocabLevel.KNOWN].includes(updatedVocabData.level!))
           this.clearSelectedTokens();
       }
     },
     deleteVocabData(vocab: LearnerVocabSchema) {
-      const newVocab = {
+      const newVocab: LearnerVocabSchema = {
         id: vocab.id,
         text: vocab.text,
-        level: VocabLevelSchema.NEW,
+        level: VocabLevel.NEW,
         isPhrase: vocab.isPhrase,
         notes: null,
         language: vocab.language,
         meanings: vocab.meanings,
         learnerMeanings: [],
-        ttsPronunciations: []
+        ttsPronunciationUrl: null,
+        tags: vocab.tags,
+        rootForms: vocab.rootForms,
+        learnersCount: vocab.learnersCount
       };
       if (vocab.isPhrase)
         this.phrases[vocab.text] = newVocab;
@@ -368,12 +372,6 @@ export default defineComponent({
 
 audio {
   max-height: 2rem;
-}
-
-.paging-div {
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.5rem;
 }
 
 .page-indicators {
