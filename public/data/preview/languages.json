@@ -10,7 +10,7 @@
     "flagEmoji": "🇬🇧",
     "color": "#9AD0F5",
     "isSupported": true,
-    "learnersCount": 0,,
+    "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
       "beginner2": 1000,
@@ -31,7 +31,7 @@
     "flagEmoji": "🇪🇸",
     "color": "#FFA247",
     "isSupported": true,
-    "learnersCount": 0,,
+    "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
       "beginner2": 1000,
@@ -52,7 +52,7 @@
     "flagEmoji": "🇫🇷",
     "color": "#f7c5ad",
     "isSupported": true,
-    "learnersCount": 0,,
+    "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
       "beginner2": 1000,
@@ -73,7 +73,7 @@
     "flagEmoji": "🇩🇪",
     "color": "#7F3301",
     "isSupported": true,
-    "learnersCount": 0,,
+    "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
       "beginner2": 1000,
@@ -94,7 +94,7 @@
     "flagEmoji": "🇮🇹",
     "color": "#009246",
     "isSupported": true,
-    "learnersCount": 0,,
+    "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
       "beginner2": 1000,
@@ -115,7 +115,7 @@
     "flagEmoji": "🇳🇱",
     "color": "#FF9B00",
     "isSupported": true,
-    "learnersCount": 0,,
+    "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
       "beginner2": 1000,
@@ -136,7 +136,7 @@
     "flagEmoji": "🇸🇪",
     "color": "#006AA7",
     "isSupported": true,
-    "learnersCount": 0,,
+    "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
       "beginner2": 1000,
@@ -157,7 +157,7 @@
     "flagEmoji": "🇳🇴",
     "color": "#EF3340",
     "isSupported": true,
-    "learnersCount": 0,,
+    "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
       "beginner2": 1000,
@@ -178,7 +178,7 @@
     "flagEmoji": "🇩🇰",
     "color": "#C60C30",
     "isSupported": true,
-    "learnersCount": 0,,
+    "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
       "beginner2": 1000,
@@ -199,7 +199,7 @@
     "flagEmoji": "🇵🇹",
     "color": "#FF0000",
     "isSupported": true,
-    "learnersCount": 0,,
+    "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
       "beginner2": 1000,
