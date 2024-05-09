@@ -84,6 +84,8 @@ export default defineComponent({
     provide("dictionaryStore", useDictionaryStoreMock());
     provide("languageStore", useLanguageStoreMock());
     provide("allowEditDictionaries", false);
+    provide("allowGenerateTTS", false);
+    provide("allowOpenPronunciationPanel", false);
     return {
       localPreviewStore: useLocalPreviewStore()
     };

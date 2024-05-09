@@ -6,11 +6,12 @@
           <inline-svg :src="isPlaying?icons.stopPlayback:icons.audio"/>
           <audio ref="ttsAudioElement" @play="isPlaying=true" @ended="isPlaying=false" :src="vocab.ttsPronunciationUrl" autoplay></audio>
         </button>
-        <SubmitButton v-else class="audio-button" :iconSrc="icons.tts" @click="$emit('onGenerateTTSButtonClicked')" :isSubmitting="isGeneratingTTS"/>
+        <SubmitButton v-else-if="allowGenerateTTS" class="audio-button" :iconSrc="icons.tts" @click="$emit('onGenerateTTSButtonClicked')" :isSubmitting="isGeneratingTTS"/>
       </template>
+
       <h4 class="vocab-text">{{ vocab.text }}</h4>
     </div>
-    <button class="pronunciations-button" @click="$emit('onPronunciationButtonClicked')">
+    <button :class="{'pronunciations-button':true,'hidden-gone':!allowOpenPronunciationPanel}"  @click="$emit('onPronunciationButtonClicked')">
       <span>
         <inline-svg :src="icons.pronunciation"/>
       </span>
@@ -19,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent, inject, PropType} from "vue";
 import InlineSvg from "vue-inline-svg";
 import {LearnerVocabSchema} from "dzelda-common";
 import {NewVocab} from "@/components/shared/Reader.vue";
@@ -59,6 +60,8 @@ export default defineComponent({
   setup() {
     return {
       languageStore: useLanguageStore(),
+      allowGenerateTTS: inject<boolean>("allowGenerateTTS", true),
+      allowOpenPronunciationPanel:inject<boolean>("allowOpenPronunciationPanel", true),
       icons,
     };
   }

@@ -50,7 +50,7 @@ export const useVocabStoreMock = defineStore("vocabStoreMock", {
             async createVocab(body: { text: string, languageCode: string, isPhrase: boolean }) {
                 const localPreviewStore = useLocalPreviewStore();
                 const previewDb = await localPreviewStore.getPreviewDb();
-                const newVocab:VocabRow = {
+                const newVocab: VocabRow = {
                     id: getAcceptablyRandomId(),
                     text: body.text,
                     isPhrase: body.isPhrase,
