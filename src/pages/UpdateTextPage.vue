@@ -6,7 +6,8 @@
         <div class="side-inputs">
           <div class="form-row">
             <label>Image</label>
-            <ImageUploadInput id="text-image-input" fileTitle="text image" :oldImageUrl="text.image" :fallback="icons.bookOpen"
+            <ImageUploadInput id="text-image-input" fileTitle="text image" :oldImageUrl="text.image"
+                              :fallback="icons.bookOpen"
                               v-model="image"
                               :maxFileSizeInBytes="500_000"/>
             <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
@@ -17,20 +18,24 @@
                               :maxFileSizeInBytes="100_000_000"/>
             <p v-if="errorFields.audio" class="error-message">{{ errorFields.audio }}</p>
           </div>
-          <div class="form-row">
-            <label for="text-collection">Collection</label>
-            <select required id="text-collection" v-model="selectedCollection">
-              <option :value="null" selected>None</option>
-              <option v-for="collection in editableCollections" :key="collection.id" :value="collection.id">{{ collection.title }}</option>
-              <option value="new-collection">New Collection</option>
-            </select>
-            <p v-if="errorFields.collectionId" class="error-message">{{ errorFields.collectionId }}</p>
-          </div>
-          <div class="form-row">
-            <label>Level</label>
-            <select v-model="level">
-              <option v-for="level in LANGUAGE_LEVELS" :value="level">{{ toSentenceCase(level) }}</option>
-            </select>
+          <div>
+            <div class="form-row">
+              <label for="text-collection">Collection</label>
+              <select required id="text-collection" v-model="selectedCollection">
+                <option :value="null" selected>None</option>
+                <option v-for="collection in editableCollections" :key="collection.id" :value="collection.id">
+                  {{ collection.title }}
+                </option>
+                <option value="new-collection">New Collection</option>
+              </select>
+              <p v-if="errorFields.collectionId" class="error-message">{{ errorFields.collectionId }}</p>
+            </div>
+            <div class="form-row">
+              <label>Level</label>
+              <select v-model="level">
+                <option v-for="level in LANGUAGE_LEVELS" :value="level">{{ toSentenceCase(level) }}</option>
+              </select>
+            </div>
           </div>
         </div>
         <div class="main-inputs">
@@ -52,10 +57,12 @@
             </p>
             <p v-if="errorFields.content" class="error-message">{{ errorFields.content }}</p>
           </div>
-          <label for="is-public-checkbox" class="checkbox-label">
-            <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
-            Public
-          </label>
+          <div class="form-row">
+            <label for="is-public-checkbox" class="checkbox-label">
+              <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
+              Public
+            </label>
+          </div>
           <div class="buttons-div">
             <SubmitButton id="save-and-open-button"
                           type="submit"
@@ -68,7 +75,7 @@
       </form>
       <BaseDialog :isOpen="isCreateCollectionDialogShown" @onDismissed="onCreateCollectionDialogDismissed">
         <h2>Add Collection</h2>
-        <CreateCollectionForm @onCollectionCreated="onCollectionCreated"/>
+        <CreateCollectionForm :languageCode="pathParams.learningLanguage" @onCollectionCreated="onCollectionCreated"/>
       </BaseDialog>
     </template>
   </BaseCard>
@@ -91,10 +98,19 @@ import {useCollectionStore} from "@/stores/backend/collectionStore.js";
 import {useTextStore} from "@/stores/backend/textStore.js";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
+import CreateCollectionForm from "@/components/shared/create-collection/CreateCollectionForm.vue";
 
 export default defineComponent({
   name: "UpdateTextPage",
-  components: {LoadingScreen, BaseDialog, ImageUploadInput, BaseCard, SubmitButton, AudioUploadInput},
+  components: {
+    LoadingScreen,
+    BaseDialog,
+    ImageUploadInput,
+    BaseCard,
+    SubmitButton,
+    AudioUploadInput,
+    CreateCollectionForm
+  },
   props: {
     pathParams: {type: Object as PropType<{ learningLanguage: string, textId: number }>, required: true},
   },
@@ -254,7 +270,6 @@ form {
 .side-inputs {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
 }
 
 .main-inputs {

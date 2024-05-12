@@ -18,21 +18,24 @@
                               :maxFileSizeInBytes="100_000_000"/>
             <p v-if="errorFields.audio" class="error-message">{{ errorFields.audio }}</p>
           </div>
-          <div class="form-row">
-            <label for="text-collection">Collection</label>
-            <select required id="text-collection" v-model="selectedCollection">
-              <option :value="null" selected>None</option>
-              <option v-for="collection in editableCollections" :key="collection.id" :value="collection.id">{{ collection.title }}</option>
-              <option value="new-collection">New Collection</option>
-            </select>
-            <p v-if="errorFields.collectionId" class="error-message">{{ errorFields.collectionId }}</p>
-          </div>
-
-          <div class="form-row">
-            <label>Level</label>
-            <select v-model="level">
-              <option v-for="level in LANGUAGE_LEVELS" :value="level">{{ toSentenceCase(level) }}</option>
-            </select>
+          <div>
+            <div class="form-row">
+              <label for="text-collection">Collection</label>
+              <select required id="text-collection" v-model="selectedCollection">
+                <option :value="null" selected>None</option>
+                <option v-for="collection in editableCollections" :key="collection.id" :value="collection.id">
+                  {{ collection.title }}
+                </option>
+                <option value="new-collection">New Collection</option>
+              </select>
+              <p v-if="errorFields.collectionId" class="error-message">{{ errorFields.collectionId }}</p>
+            </div>
+            <div class="form-row">
+              <label>Level</label>
+              <select v-model="level">
+                <option v-for="level in LANGUAGE_LEVELS" :value="level">{{ toSentenceCase(level) }}</option>
+              </select>
+            </div>
           </div>
         </div>
         <div class="main-inputs">
@@ -92,7 +95,7 @@ import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import AudioUploadInput from "@/components/shared/AudioUploadInput.vue";
 import path from "path";
 import {LANGUAGE_LEVELS} from "@/constants.js";
-import {toSentenceCase} from "../utils.js";
+import {toSentenceCase} from "@/utils";
 import BaseDialog from "@/components/ui/BaseDialog.vue";
 import CreateCollectionForm from "@/components/shared/create-collection/CreateCollectionForm.vue";
 
@@ -254,7 +257,6 @@ form {
 .side-inputs {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
 }
 
 .main-inputs {

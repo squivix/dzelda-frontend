@@ -5,7 +5,7 @@
       <form v-else class="update-collection-form" @submit.prevent="submitUpdateCollection">
         <div class="side-inputs">
           <div class="form-row">
-            <ImageUploadInput id="collection-image-input" :oldImagePath="collection.image" name="collection image"
+            <ImageUploadInput id="collection-image-input" :oldImageUrl="collection.image" name="collection image"
                               :fallback="icons.books" v-model="image"
                               :maxFileSizeInBytes="500_000"/>
             <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>

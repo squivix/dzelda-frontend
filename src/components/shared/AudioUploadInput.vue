@@ -90,6 +90,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  row-gap: 0.5rem;
 }
 
 audio {
