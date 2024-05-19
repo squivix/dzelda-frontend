@@ -33,8 +33,13 @@
             <div class="form-row">
               <label>Level</label>
               <select v-model="level">
-                <option v-for="level in LANGUAGE_LEVELS" :value="level">{{ toSentenceCase(level) }}</option>
+                <option v-for="level in LanguageLevel" :value="level">{{ toSentenceCase(level) }}</option>
               </select>
+            </div>
+            <div class="form-row ">
+              <SubmitButton type="button" @click="onDeleteTextClicked"
+                            class="danger-button big-button capsule-button">Delete Text
+              </SubmitButton>
             </div>
           </div>
         </div>
@@ -77,6 +82,12 @@
         <h2>Add Collection</h2>
         <CreateCollectionForm :languageCode="pathParams.learningLanguage" @onCollectionCreated="onCollectionCreated"/>
       </BaseDialog>
+      <ConfirmDialog :isShown="isDeleteTextConfirmShown" @onNoClicked="isDeleteTextConfirmShown=false"
+                     @onYesClicked="deleteText">
+        <h3>Are you sure you want to delete this text?</h3>
+        <br>
+        (This action cannot be undone.)
+      </ConfirmDialog>
     </template>
   </BaseCard>
 </template>
@@ -92,17 +103,19 @@ import {CollectionSchema, LanguageLevel, TextSchema} from "dzelda-common";
 import {toSentenceCase} from "@/utils.js";
 import path from "path";
 import {icons} from "@/icons.js";
-import {LANGUAGE_LEVELS} from "@/constants.js";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {useCollectionStore} from "@/stores/backend/collectionStore.js";
 import {useTextStore} from "@/stores/backend/textStore.js";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import CreateCollectionForm from "@/components/shared/create-collection/CreateCollectionForm.vue";
+import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
+import {MessageType, useMessageBarStore} from "@/stores/messageBarStore";
 
 export default defineComponent({
   name: "UpdateTextPage",
   components: {
+    ConfirmDialog,
     LoadingScreen,
     BaseDialog,
     ImageUploadInput,
@@ -129,6 +142,7 @@ export default defineComponent({
       submittingMessage: undefined as string | undefined,
       errorFields: {title: "", content: "", image: "", audio: "", collectionId: ""},
       isCreateCollectionDialogShown: false,
+      isDeleteTextConfirmShown: false,
     };
   },
   watch: {
@@ -211,6 +225,12 @@ export default defineComponent({
           };
       }
     },
+    deleteText() {
+      this.textStore.deleteText({textId: this.text!.id});
+      this.isDeleteTextConfirmShown = false;
+      this.messageBarStore.addTopBarMessage({type: MessageType.INFO, text: "Text deleted"});
+      this.$router.push({name: "home"});
+    },
     onCollectionCreated(newCollection: CollectionSchema) {
       this.isCreateCollectionDialogShown = false;
       this.editableCollections!.push(newCollection);
@@ -219,7 +239,10 @@ export default defineComponent({
     onCreateCollectionDialogDismissed() {
       this.isCreateCollectionDialogShown = false;
       this.selectedCollection = null;
-    }
+    },
+    onDeleteTextClicked() {
+      this.isDeleteTextConfirmShown = true;
+    },
   },
   async mounted() {
     await this.fetchText();
@@ -229,9 +252,10 @@ export default defineComponent({
     return {
       icons,
       toSentenceCase,
-      LANGUAGE_LEVELS,
+      LanguageLevel,
       store: useStore(),
       collectionStore: useCollectionStore(),
+      messageBarStore: useMessageBarStore(),
       textStore: useTextStore(),
       userStore: useUserStore(),
     };

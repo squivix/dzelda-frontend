@@ -16,9 +16,11 @@ export const useTextStore = defineStore("text", {
             sortOrder?: "asc" | "desc",
             pageSize?: number,
             page?: number
+        } = {}, {secure = false}: {
+            secure?: boolean
         } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.texts.getTexts(queryParams));
+            const response = await store.fetchCustom((api) => api.texts.getTexts(queryParams, {secure: secure}));
             return response.data;
         },
         async fetchTextsInHistory(queryParams: {
@@ -75,6 +77,10 @@ export const useTextStore = defineStore("text", {
                 level: body.level,
                 isPublic: body.isPublic
             })));
+        },
+        async deleteText(pathParams: { textId: number }) {
+            const store = useStore();
+            return await store.fetchCustom((api) => api.texts.deleteTextsTextId(pathParams.textId));
         },
         async addTextToUserHistory(body: { textId: number }) {
             const store = useStore();

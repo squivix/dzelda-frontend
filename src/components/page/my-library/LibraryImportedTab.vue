@@ -55,8 +55,19 @@ export default defineComponent({
   },
   components: {InlineSvg, CollectionList, TextsList},
   props: {
-    pathParams: {type: Object as PropType<{ learningLanguage: string, resourceType: "texts" | "collections" }>, required: true},
-    queryParams: {type: Object as PropType<{ page: number, pageSize: number, searchQuery: string, level: string | string[], hasAudio: boolean }>, required: true},
+    pathParams: {
+      type: Object as PropType<{ learningLanguage: string, resourceType: "texts" | "collections" }>,
+      required: true
+    },
+    queryParams: {
+      type: Object as PropType<{
+        page: number,
+        pageSize: number,
+        searchQuery: string,
+        level: string | string[],
+        hasAudio: boolean
+      }>, required: true
+    },
   },
   data() {
     return {
@@ -93,7 +104,7 @@ export default defineComponent({
         sortOrder: "desc",
         page: this.queryParams.page,
         pageSize: this.queryParams.pageSize,
-      });
+      }, {secure: true});
       this.texts = response.data;
       this.pageCount = response.pageCount;
       this.isLoading = false;

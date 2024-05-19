@@ -11,14 +11,17 @@
             <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
           </div>
           <div class="form-row ">
-            <SubmitButton type="button" @click="onDeleteCollectionClicked" class="danger-button big-button capsule-button">Delete Collection</SubmitButton>
+            <SubmitButton type="button" @click="onDeleteCollectionClicked"
+                          class="danger-button big-button capsule-button">Delete Collection
+            </SubmitButton>
           </div>
         </div>
 
         <div class="main-inputs">
           <div class="form-row">
             <label for="collection-title">Title</label>
-            <input id="collection-title" type="text" maxlength="255" placeholder="Collection Title" v-model="title" required>
+            <input id="collection-title" type="text" maxlength="255" placeholder="Collection Title" v-model="title"
+                   required>
             <p v-if="errorFields.title" class="error-message">{{ errorFields.title }}</p>
           </div>
           <div class="form-row">
@@ -36,6 +39,12 @@
               Add text
             </router-link>
           </div>
+          <div class="form-row">
+            <label for="collection-is-public-checkbox" class="checkbox-label">
+              <input type="checkbox" id="collection-is-public-checkbox" v-model="isPublic">
+              Public
+            </label>
+          </div>
           <SubmitButton id="save-button"
                         type="submit"
                         class="primary-filled-button big-button capsule-button"
@@ -44,7 +53,8 @@
           </SubmitButton>
         </div>
       </form>
-      <ConfirmDialog :isShown="isDeleteCollectionConfirmShown" @onNoClicked="isDeleteCollectionConfirmShown=false" @onYesClicked="deleteCollection">
+      <ConfirmDialog :isShown="isDeleteCollectionConfirmShown" @onNoClicked="isDeleteCollectionConfirmShown=false"
+                     @onYesClicked="deleteCollection">
         <h3>Are you sure you want to delete this collection?</h3>
         <br>
         (This action cannot be undone. All texts will be detached from collection)
@@ -89,6 +99,7 @@ export default {
       description: undefined as string | undefined,
       texts: undefined as TextSchema[] | undefined,
       image: undefined as Blob | "" | undefined,
+      isPublic: true,
       errorFields: {title: "", description: "", image: ""},
       isSubmitting: false,
       isLoading: false,
@@ -113,6 +124,7 @@ export default {
           {
             title: this.title!,
             description: this.description!,
+            isPublic: this.isPublic,
             textsOrder: this.texts!.map(text => text.id),
             image: imageUrl
           }
@@ -140,13 +152,17 @@ export default {
     const collection = await this.collectionStore.fetchCollection({collectionId: this.pathParams.collectionId});
     this.isLoading = false;
     if (collection.addedBy !== this.userStore?.userAccount?.username) {
-      this.messageBarStore.addTopBarMessage({type: MessageType.ERROR, text: "User is not authorized to edit collection"});
+      this.messageBarStore.addTopBarMessage({
+        type: MessageType.ERROR,
+        text: "User is not authorized to edit collection"
+      });
       this.$router.push({name: "home"});
     }
     this.collection = collection;
 
     this.title = collection.title;
     this.description = collection.description;
+    this.isPublic = collection.isPublic;
     this.texts = collection.texts;
   },
   setup() {

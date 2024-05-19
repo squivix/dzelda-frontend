@@ -1,5 +1,5 @@
-import {VocabLevelSchema} from "dzelda-common";
-import {ALL_VOCAB_LEVELS} from "@/constants.js";
+import {VocabLevel} from "dzelda-common";
+
 import snarkdown from "snarkdown";
 
 export function getRandomInt(min: number, max: number) {
@@ -161,15 +161,16 @@ export function renderMarkdown(markdownText: string, linkInNewTab: boolean = tru
     return htmlText;
 }
 
-export function getLevelClass(level?: VocabLevelSchema) {
-    const levelMap = {
-        [ALL_VOCAB_LEVELS.NEW]: "level-new",
-        [ALL_VOCAB_LEVELS.LEVEL_1]: "level-1 ",
-        [ALL_VOCAB_LEVELS.LEVEL_2]: "level-2 ",
-        [ALL_VOCAB_LEVELS.LEVEL_3]: "level-3",
-        [ALL_VOCAB_LEVELS.LEVEL_4]: "level-4",
-        [ALL_VOCAB_LEVELS.LEARNED]: "level-learned",
-        [ALL_VOCAB_LEVELS.KNOWN]: "level-known",
+export function getLevelClass(level?: VocabLevel) {
+    const levelMap: Record<VocabLevel, string> = {
+        [VocabLevel.NEW]: "level-new",
+        [VocabLevel.LEVEL_1]: "level-1 ",
+        [VocabLevel.LEVEL_2]: "level-2 ",
+        [VocabLevel.LEVEL_3]: "level-3",
+        [VocabLevel.LEVEL_4]: "level-4",
+        [VocabLevel.LEARNED]: "level-learned",
+        [VocabLevel.IGNORED]: "level-ignored",
+        [VocabLevel.KNOWN]: "level-known",
     };
     return level !== undefined ? levelMap[level] : "";
 }

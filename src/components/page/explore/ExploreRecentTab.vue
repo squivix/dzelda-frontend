@@ -73,7 +73,7 @@ export default defineComponent({
         pageSize: this.queryParams.pageSize,
         sortBy: "createdDate",
         sortOrder: "desc"
-      });
+      }, {secure: true});
       this.texts = response.data!;
       this.pageCount = response.pageCount!;
       this.isLoading = false;
@@ -88,7 +88,7 @@ export default defineComponent({
         pageSize: this.queryParams.pageSize,
         sortBy: "createdDate",
         sortOrder: "desc"
-      });
+      }, {secure: true});
       this.collections = response.data!;
       this.pageCount = response.pageCount!;
       this.isLoading = false;

@@ -37,7 +37,7 @@ header {
 h2 {
   font-size: 2rem;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
 }
 
 h3 {

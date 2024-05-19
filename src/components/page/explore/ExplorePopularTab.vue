@@ -35,7 +35,16 @@ export default defineComponent({
   components: {TextsList, CollectionList},
   props: {
     pathParams: {type: Object as PropType<{ learningLanguage: string }>, required: true},
-    queryParams: {type: Object as PropType<{ page: number, pageSize: number, searchQuery: string, addedBy: string, level: string | string[], hasAudio: boolean }>, required: true},
+    queryParams: {
+      type: Object as PropType<{
+        page: number,
+        pageSize: number,
+        searchQuery: string,
+        addedBy: string,
+        level: string | string[],
+        hasAudio: boolean
+      }>, required: true
+    },
     resourceType: {type: String as PropType<"texts" | "collections">, required: true},
   },
   data() {
@@ -73,7 +82,7 @@ export default defineComponent({
         pageSize: this.queryParams.pageSize,
         sortBy: "pastViewersCount",
         sortOrder: "desc"
-      });
+      }, {secure: true});
       this.texts = response.data!;
       this.pageCount = response.pageCount!;
       this.isLoading = false;
@@ -88,7 +97,7 @@ export default defineComponent({
         pageSize: this.queryParams.pageSize,
         sortBy: "avgPastViewersCountPerText",
         sortOrder: "desc"
-      });
+      }, {secure: true});
       this.collections = response.data!;
       this.pageCount = response.pageCount!;
       this.isLoading = false;

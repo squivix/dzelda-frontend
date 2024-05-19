@@ -8,7 +8,8 @@
     <div class="main-inputs">
       <div class="form-row">
         <label for="collection-title">Title</label>
-        <input id="collection-title" type="text" maxlength="255" placeholder="Collection Title" v-model="title" required>
+        <input id="collection-title" type="text" maxlength="255" placeholder="Collection Title" v-model="title"
+               required>
         <p v-if="errorFields.title" class="error-message">{{ errorFields.title }}</p>
       </div>
       <div class="form-row">
@@ -17,7 +18,12 @@
                   v-model="description"></textarea>
         <p v-if="errorFields.description" class="error-message">{{ errorFields.description }}</p>
       </div>
-
+      <div class="form-row">
+        <label for="collection-is-public-checkbox" class="checkbox-label">
+          <input type="checkbox" id="collection-is-public-checkbox" v-model="isPublic" checked>
+          Public
+        </label>
+      </div>
       <SubmitButton id="save-button"
                     type="submit"
                     class="primary-filled-button big-button capsule-button"
@@ -29,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent} from "vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import {icons} from "@/icons.js";
@@ -49,6 +55,7 @@ export default defineComponent({
       description: "", image: undefined as Blob | undefined,
       errorFields: {title: "", description: "", image: ""},
       isSubmitting: false,
+      isPublic: true,
       submittingMessage: undefined as string | undefined,
     };
   },
@@ -81,6 +88,7 @@ export default defineComponent({
         languageCode: this.languageCode,
         title: this.title,
         description: this.description,
+        isPublic: this.isPublic,
         image: imageUrl,
       });
       this.isSubmitting = false;

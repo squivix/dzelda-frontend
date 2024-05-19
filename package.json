@@ -18,7 +18,7 @@
     "@vueuse/core": "^10.9.0",
     "chart.js": "^4.4.0",
     "data-uri-to-buffer": "^6.0.1",
-    "dzelda-common": "github:squivix/dzelda-common#v1.0.0",
+    "dzelda-common": "github:squivix/dzelda-common#v1.1.0",
     "idb": "^8.0.0",
     "path-browserify": "^1.0.1",
     "pinia": "^2.1.4",

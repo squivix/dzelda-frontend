@@ -33,7 +33,7 @@
             <div class="form-row">
               <label>Level</label>
               <select v-model="level">
-                <option v-for="level in LANGUAGE_LEVELS" :value="level">{{ toSentenceCase(level) }}</option>
+                <option v-for="level in LanguageLevel" :value="level">{{ toSentenceCase(level) }}</option>
               </select>
             </div>
           </div>
@@ -55,11 +55,11 @@
                 Long texts are always slower, consider splitting into multiple texts
               </template>
             </p>
-            <p v-if="errorFields.text" class="error-message">{{ errorFields.text }}</p>
+            <p v-if="errorFields.content" class="error-message">{{ errorFields.content }}</p>
           </div>
           <div class="form-row">
-            <label for="is-public-checkbox" class="checkbox-label">
-              <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
+            <label for="text-is-public-checkbox" class="checkbox-label">
+              <input type="checkbox" id="text-is-public-checkbox" v-model="isPublic" checked>
               Public
             </label>
           </div>
@@ -94,14 +94,17 @@ import {PropType} from "vue";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import AudioUploadInput from "@/components/shared/AudioUploadInput.vue";
 import path from "path";
-import {LANGUAGE_LEVELS} from "@/constants.js";
 import {toSentenceCase} from "@/utils";
 import BaseDialog from "@/components/ui/BaseDialog.vue";
 import CreateCollectionForm from "@/components/shared/create-collection/CreateCollectionForm.vue";
+import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
 
 export default {
   name: "CreateTextPage",
-  components: {CreateCollectionForm, BaseDialog, AudioUploadInput, ImageUploadInput, SubmitButton, BaseCard},
+  components: {
+    ConfirmDialog,
+    CreateCollectionForm, BaseDialog, AudioUploadInput, ImageUploadInput, SubmitButton, BaseCard
+  },
   props: {
     pathParams: {type: Object as PropType<{ learningLanguage: string }>, required: true},
     queryParams: {type: Object as PropType<{ collectionId?: number }>, required: true}
@@ -118,7 +121,7 @@ export default {
       audio: undefined as File | undefined,
       isSubmitting: false,
       submittingMessage: undefined as string | undefined,
-      errorFields: {title: "", text: "", image: "", audio: "", collectionId: ""},
+      errorFields: {title: "", content: "", image: "", audio: "", collectionId: ""},
       isCreateCollectionDialogShown: false,
     };
   },
@@ -138,7 +141,7 @@ export default {
       this.editableCollections = response.data;
     },
     async addText() {
-      this.errorFields = {title: "", text: "", image: "", audio: "", collectionId: ""};
+      this.errorFields = {title: "", content: "", image: "", audio: "", collectionId: ""};
       this.isSubmitting = true;
       let imageUrl, audioUrl;
       if (this.image) {
@@ -189,7 +192,7 @@ export default {
       } else {
         if ("fields" in response.error)
           this.errorFields = response.error.fields as {
-            title: string, text: string,
+            title: string, content: string,
             collectionId: string, image: string, audio: string,
           };
       }
@@ -202,7 +205,7 @@ export default {
     onCreateCollectionDialogDismissed() {
       this.isCreateCollectionDialogShown = false;
       this.selectedCollection = null;
-    }
+    },
   },
   async mounted() {
     await this.fetchEditableCollections();
@@ -214,7 +217,7 @@ export default {
     return {
       icons,
       toSentenceCase,
-      LANGUAGE_LEVELS,
+      LanguageLevel,
       store: useStore(),
       collectionStore: useCollectionStore(),
       textStore: useTextStore(),

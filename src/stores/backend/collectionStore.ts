@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {cleanUndefined} from "@/utils.js";
 import {useMessageBarStore} from "@/stores/messageBarStore.js";
-import {CollectionSchema, TextHistoryEntrySchema, TextSchema} from "dzelda-common";
+import {CollectionSchema} from "dzelda-common";
 
 export const useCollectionStore = defineStore("collection", {
     actions: {
@@ -39,6 +39,7 @@ export const useCollectionStore = defineStore("collection", {
             title: string,
             description: string,
             image: string | undefined,
+            isPublic: boolean
         }) {
             useMessageBarStore().clearTopBarMessages();
             const store = useStore();
@@ -46,8 +47,9 @@ export const useCollectionStore = defineStore("collection", {
                 languageCode: body.languageCode,
                 title: body.title,
                 description: body.description,
+                isPublic: body.isPublic,
                 image: body.image as string | undefined,
-            }))) as Awaited<ReturnType<typeof store.apiClient.collections.postCollections>>;
+            })))
         },
         async fetchCollection(pathParams: {
             collectionId: number
@@ -65,6 +67,7 @@ export const useCollectionStore = defineStore("collection", {
             title: string,
             description: string,
             image: string | undefined,
+            isPublic: boolean,
             textsOrder: number[]
         }) {
             useMessageBarStore().clearTopBarMessages();
@@ -73,11 +76,11 @@ export const useCollectionStore = defineStore("collection", {
                 cleanUndefined({
                     title: body.title,
                     description: body.description,
+                    isPublic: body.isPublic,
                     textsOrder: body.textsOrder,
                     image: body.image
                 })));
         },
-
         async toggleCollectionBookmark(collection: CollectionSchema) {
             if (!collection.isBookmarked)
                 return this.addCollectionToUserBookmarks({collectionId: collection.id});
@@ -100,7 +103,6 @@ export const useCollectionStore = defineStore("collection", {
             const response = await store.fetchCustom((api) => api.users.deleteUsersMeCollectionsBookmarkedCollectionId(pathParams.collectionId));
             return response.data;
         },
-
         async deleteCollection(pathParams: { collectionId: number }) {
             useMessageBarStore().clearTopBarMessages();
             const store = useStore();
