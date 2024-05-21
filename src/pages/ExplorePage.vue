@@ -92,25 +92,6 @@ h2 {
   column-gap: 1rem;
 }
 
-.tab-labels {
-  display: flex;
-  flex-direction: row;
-}
-
-.tab-label {
-  font-size: 1.2rem;
-  cursor: pointer;
-}
-
-.tab-label > a {
-  display: inline-block;
-  padding: 1rem;
-}
-
-.current-tab > a {
-  border-bottom: 3px solid var(--secondary-color);
-}
-
 select {
   font-size: 1rem;
   height: 2.5rem;

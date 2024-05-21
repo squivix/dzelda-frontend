@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="{name:'add-text'}">
+  <router-link :to="{name:'import'}">
     <span v-if="userLanguages && userLanguages.length > 0" class="add-button icon-wrapper">
       <inline-svg :src="icons.plus"/>
     </span>
@@ -14,7 +14,7 @@ import {icons} from "@/icons.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 export default defineComponent({
-  name: "CreateTextButton",
+  name: "ImportLinkButton",
   components: {InlineSvg, LanguageDropDown},
   computed: {
     userLanguages() {

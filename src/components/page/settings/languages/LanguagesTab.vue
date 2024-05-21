@@ -3,7 +3,7 @@
     <h2>Languages</h2>
     <LoadingScreen v-if="!userLanguages"/>
     <EmptyScreen v-else-if="userLanguages.length==0" message="No languages learning">
-      <template v-slot:no-filters>
+      <template>
         <router-link :to="{name:'new-language'}" class="new-language-button empty-screen inv-link">
           <inline-svg :src="icons.plusRound" class="empty-icon"/>
           <p>Not learning any languages</p>

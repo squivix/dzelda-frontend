@@ -1,7 +1,7 @@
 <template>
   <div class="message-bar-queue">
     <ol>
-      <li v-for="(message, index) in messageBarStore.topBarMessageQueue" :key="message.uuid">
+      <li v-for="message in messageBarStore.topBarMessageQueue" :key="message.uuid">
         <BaseMessageBar :message="message"
                         @onDismissed="()=>messageBarStore.removeTopBarMessage(message)"/>
       </li>
@@ -22,9 +22,6 @@ import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export default defineComponent({
   components: {BaseMessageBar},
-  data() {
-    return {};
-  },
   setup() {
     return {messageBarStore: useMessageBarStore()};
   }

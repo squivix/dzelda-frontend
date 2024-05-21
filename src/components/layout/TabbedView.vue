@@ -53,22 +53,5 @@ h2 {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-.tab-labels {
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 1rem;
-}
 
-.tab-labels .tab-label {
-  font-size: 1.2rem;
-  padding: 1rem 1rem;
-}
-
-.tab-labels .tab-label:hover {
-  cursor: pointer;
-}
-
-.tab-labels .tab-label.current-tab {
-  border-bottom: 3px solid var(--secondary-color);
-}
 </style>

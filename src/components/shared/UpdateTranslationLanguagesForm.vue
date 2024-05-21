@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType, toRaw} from "vue";
+import {defineComponent, PropType} from "vue";
 import {VueDraggableNext as VueDraggable} from "vue-draggable-next";
 import {TranslationLanguageSchema} from "dzelda-common";
 import {icons} from "@/icons.js";
@@ -66,7 +66,6 @@ import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 import googleFormsLogo from "@/assets/images/google-forms-logo.svg";
 import BaseMessageBar from "@/components/ui/BaseMessageBar.vue";
-import {languageCode} from "@/router/pathParams.js";
 
 export default defineComponent({
   name: "UpdateTranslationLanguagesForm",

@@ -39,7 +39,8 @@ export const useCollectionStore = defineStore("collection", {
             title: string,
             description: string,
             image: string | undefined,
-            isPublic: boolean
+            isPublic: boolean,
+            texts: Array<{ title: string, content: string }> | undefined
         }) {
             useMessageBarStore().clearTopBarMessages();
             const store = useStore();
@@ -48,8 +49,9 @@ export const useCollectionStore = defineStore("collection", {
                 title: body.title,
                 description: body.description,
                 isPublic: body.isPublic,
+                texts: body.texts,
                 image: body.image as string | undefined,
-            })))
+            })));
         },
         async fetchCollection(pathParams: {
             collectionId: number

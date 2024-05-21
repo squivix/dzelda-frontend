@@ -48,6 +48,10 @@ import stopPlayback from "@/assets/images/stop-playback.svg";
 import tts from "@/assets/images/tts.svg";
 import bookOpenWithBookmark from "@/assets/images/book-open-with-bookmark.svg";
 import flag from "@/assets/images/flag-icon.svg";
+import pdfFile from "@/assets/images/pdf-file-icon.svg";
+import epubFile from "@/assets/images/epub-file-icon.svg";
+import hourglass from "@/assets/images/hourglass-icon.svg";
+import plainText from "@/assets/images/plain-text.svg";
 
 export const icons = {
     arrowDown,
@@ -99,5 +103,9 @@ export const icons = {
     stopPlayback,
     tts,
     bookOpenWithBookmark,
-    flag
+    flag,
+    pdfFile,
+    epubFile,
+    hourglass,
+    plainText
 };

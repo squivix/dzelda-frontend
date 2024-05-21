@@ -2,7 +2,6 @@ import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 import {UserSchema} from "dzelda-common";
-import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {cleanUndefined} from "@/utils.js";
 import {useStorage} from "@vueuse/core";
 
@@ -165,6 +164,15 @@ export const useUserStore = defineStore("auth", {
         clearUserData() {
             this.authToken = null;
             this.userAccount = null;
+        },
+        async fetchUserNotifications() {
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.users.getUsersMeNotifications());
+            return response.data;
+        },
+        async deleteUserNotification(pathParams: { notificationId: number }) {
+            const store = useStore();
+            await store.fetchCustom((api) => api.users.deleteUsersMeNotificationsNotificationId(pathParams.notificationId));
         }
     }
 });

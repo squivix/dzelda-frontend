@@ -56,7 +56,7 @@ export default defineComponent({
     }
   },
   setup() {
-    return {MessageType, randomUUID: ()=>crypto.randomUUID()};
+    return {MessageType, randomUUID: () => crypto.randomUUID()};
   }
 });
 </script>

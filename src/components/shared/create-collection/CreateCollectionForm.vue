@@ -1,6 +1,7 @@
 <template>
   <form class="create-collection-form" @submit.prevent="onSubmit">
     <div class="image-section">
+      <label>Image</label>
       <ImageUploadInput id="collection-image-input" name="collection image" :fallback="icons.books" v-model="image"
                         :maxFileSizeInBytes="500_000"/>
       <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
@@ -27,7 +28,7 @@
       <SubmitButton id="save-button"
                     type="submit"
                     class="primary-filled-button big-button capsule-button"
-                    :is-submitting="isSubmitting">
+                    :isSubmitting="isSubmitting">
         {{ submittingMessage ?? "Save" }}
       </SubmitButton>
     </div>
@@ -128,10 +129,6 @@ export default defineComponent({
 
 .create-collection-form label {
   font-size: 1.25rem;
-}
-
-.create-collection-form input:not([type=checkbox]), .create-collection-form select, .create-collection-form textarea {
-  font-size: 1rem;
 }
 
 #save-button {

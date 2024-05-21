@@ -325,7 +325,35 @@ svg {
     margin-bottom: 1rem;
 }
 
-.hidden-gone{
+.form-row > label {
+    font-size: 1.25rem;
+}
+
+.form-row input:not([type=checkbox]), .form-row select, .form-row textarea {
+    font-size: 1rem;
+}
+
+.hidden-gone {
     pointer-events: none;
     visibility: hidden;
+}
+
+.tab-labels {
+    display: flex;
+    flex-direction: row;
+}
+
+.tab-label {
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.tab-label > a {
+    display: inline-block;
+    padding: 1rem;
+    color: var(--on-background-color)
+}
+
+.current-tab > a {
+    border-bottom: 3px solid var(--secondary-color);
 }

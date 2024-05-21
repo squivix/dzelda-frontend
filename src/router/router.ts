@@ -8,6 +8,7 @@ import {redirToLangSpecificGuard} from "@/router/beforeEachGuards/redirToLangSpe
 import {updateLanguageLastOpenedGuard} from "@/router/beforeEachGuards/updateLanguageLastOpenedGuard.js";
 import {validateQueryParamsGuard} from "@/router/beforeEachGuards/validateQueryParamsGuard.js";
 import {validatePathParams} from "@/router/beforeEachGuards/validatePathParams.js";
+import {fetchUserNotificationsGuard} from "@/router/beforeEachGuards/fetchUserNotificationsGuard.js";
 
 export const router = createRouter({
     routes: [
@@ -25,3 +26,4 @@ router.beforeEach(redirToLangSpecificGuard);
 router.beforeEach(validatePathParams);
 router.beforeEach(validateQueryParamsGuard);
 router.beforeEach(updateLanguageLastOpenedGuard);
+router.beforeEach(fetchUserNotificationsGuard);

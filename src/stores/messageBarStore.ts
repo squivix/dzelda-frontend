@@ -15,6 +15,7 @@ export interface Message {
     timeoutMs?: number,
     isMarkdown?: boolean,
     isDismissable?: boolean,
+    onDismissed?: () => void
 }
 
 export const useMessageBarStore = defineStore("messageBar", {
@@ -60,8 +61,11 @@ export const useMessageBarStore = defineStore("messageBar", {
         },
         removeTopBarMessage(message: Message) {
             const index = this.topBarMessageQueue.findIndex((m) => m.uuid == message.uuid);
-            if (index !== -1)
+            if (index !== -1) {
                 this.topBarMessageQueue.splice(index, 1);
+                if (message.onDismissed)
+                    message.onDismissed();
+            }
         },
         clearTopBarMessages() {
             if (this.topBarMessageQueue.length > 0)

@@ -195,3 +195,87 @@ export function setDifference<T>(set1: Set<T>, set2: Set<T>) {
     return new Set([...set1].filter(x => !set2.has(x)));
 
 }
+
+export interface TreeNode<T> {
+    value: T;
+    children: TreeNode<T>[];
+}
+
+export async function traverseTreeDFSCallback<T>(node: TreeNode<T>, callback: (node: TreeNode<T>) => void) {
+    if (!node)
+        return;
+    callback(node);
+    node.children.forEach(child => traverseTreeDFSCallback(child, callback));
+}
+
+export async function transformTreeNode<T>(node: any, transformation: (node: any) => Promise<T>, childrenKey: string = "children") {
+    const transformedNode: T = await transformation(node);
+    const transformedChildren: TreeNode<T>[] = node[childrenKey] ? await Promise.all(node[childrenKey]!.map(async (child: any) => (await transformTreeNode(child, transformation, childrenKey))!)) : [];
+
+    return {
+        value: transformedNode,
+        children: transformedChildren
+    };
+}
+
+export function flattenTree<T>(node: TreeNode<T>, result: T[] = [], isNodeIncluded: (node: TreeNode<T>) => boolean): T[] {
+    if (isNodeIncluded(node))
+        result.push(node.value);
+
+    node.children.forEach(child => flattenTree(child, result, isNodeIncluded));
+
+    return result;
+}
+
+export function splitTextWithDelimiters(
+    text: string,
+    softMinChunkLength: number,
+    hardMaxChunkLength: number,
+    preferableDelimiters: string[]
+): string[] {
+    const chunks: string[] = [];
+    let currentIndex = 0;
+    const textLength = text.length;
+
+    while (currentIndex < textLength) {
+        const endIndex = Math.min(currentIndex + hardMaxChunkLength, textLength);
+
+        let splitIndex: number | null = null;
+        const splitCandidates: number[] = [];
+
+        for (const delimiter of preferableDelimiters) {
+            let pos = text.substring(currentIndex).lastIndexOf(delimiter, endIndex - 1);
+
+            if (pos !== -1 && (pos + currentIndex) < endIndex) {
+                splitIndex = pos + currentIndex + 1;
+                splitCandidates.push(splitIndex);
+            }
+        }
+
+        for (let i = 0; i < splitCandidates.length; i++) {
+            const candidate = splitCandidates[i];
+            if (candidate - currentIndex >= softMinChunkLength || i === splitCandidates.length - 1) {
+                splitIndex = candidate;
+                break;
+            }
+        }
+
+        if (splitIndex === null)
+            splitIndex = endIndex;
+
+        const chunk = text.substring(currentIndex, splitIndex);
+        chunks.push(chunk);
+        currentIndex = splitIndex;
+    }
+
+    return chunks;
+}
+
+export function removeHashFromHref(href: string) {
+    const hashIndex = href.indexOf("#");
+
+    if (hashIndex !== -1)
+        return href.substring(0, hashIndex);
+
+    return href;
+}

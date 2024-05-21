@@ -17,7 +17,7 @@
 
       <div class="right-side-div" v-if="userAccount?.isEmailConfirmed">
         <LanguageDropDown/>
-        <CreateTextButton/>
+        <ImportLinkButton/>
         <ProfileDropDown/>
       </div>
       <div v-else>
@@ -43,11 +43,11 @@ import NavBar from "@/components/layout/header/NavBar.vue";
 import NavDropDown from "@/components/layout/header/NavDropDown.vue";
 import LanguageDropDown from "@/components/layout/header/LanguageDropDown.vue";
 import ProfileDropDown from "@/components/layout/header/ProfileDropDown.vue";
-import CreateTextButton from "@/components/layout/header/CreateTextButton.vue";
+import ImportLinkButton from "@/components/layout/header/ImportLinkButton.vue";
 
 export default defineComponent({
   name: "AuthHeader",
-  components: {ProfileDropDown, CreateTextButton, LanguageDropDown, NavDropDown, NavBar, BaseImage, BaseDropDown, InlineSvg},
+  components: {ProfileDropDown, ImportLinkButton, LanguageDropDown, NavDropDown, NavBar, BaseImage, BaseDropDown, InlineSvg},
   data() {
     return {isNavBarExpanded: false};
   },

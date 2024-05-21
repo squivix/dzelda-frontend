@@ -1,84 +1,78 @@
 <template>
-  <BaseCard class="add-text-base-card main-page-base-card"
-            title="Add Text"
-            subtitle="Import the text of an article, a book chapter, a video or podcast transcript, or anything else you want to read">
-    <template v-slot:content>
-      <form class="create-text-form" @submit.prevent="addText">
-        <div class="side-inputs">
-          <div class="form-row">
-            <label>Image</label>
-            <ImageUploadInput id="text-image-input" fileTitle="text image" :fallback="icons.bookOpen"
-                              v-model="image"
-                              :maxFileSizeInBytes="500_000"/>
-            <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
-          </div>
-          <div class="form-row">
-            <label>Audio</label>
-            <AudioUploadInput id="text-audio-input" fileTitle="text audio" v-model="audio"
-                              :maxFileSizeInBytes="100_000_000"/>
-            <p v-if="errorFields.audio" class="error-message">{{ errorFields.audio }}</p>
-          </div>
-          <div>
-            <div class="form-row">
-              <label for="text-collection">Collection</label>
-              <select required id="text-collection" v-model="selectedCollection">
-                <option :value="null" selected>None</option>
-                <option v-for="collection in editableCollections" :key="collection.id" :value="collection.id">
-                  {{ collection.title }}
-                </option>
-                <option value="new-collection">New Collection</option>
-              </select>
-              <p v-if="errorFields.collectionId" class="error-message">{{ errorFields.collectionId }}</p>
-            </div>
-            <div class="form-row">
-              <label>Level</label>
-              <select v-model="level">
-                <option v-for="level in LanguageLevel" :value="level">{{ toSentenceCase(level) }}</option>
-              </select>
-            </div>
-          </div>
+  <form class="create-text-form" @submit.prevent="addText">
+    <div class="side-inputs">
+      <div class="form-row">
+        <label>Image</label>
+        <ImageUploadInput id="text-image-input" fileTitle="text image" :fallback="icons.bookOpen"
+                          v-model="image"
+                          :maxFileSizeInBytes="500_000"/>
+        <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
+      </div>
+      <div class="form-row">
+        <label>Audio</label>
+        <AudioUploadInput id="text-audio-input" fileTitle="text audio" v-model="audio"
+                          :maxFileSizeInBytes="100_000_000"/>
+        <p v-if="errorFields.audio" class="error-message">{{ errorFields.audio }}</p>
+      </div>
+      <div>
+        <div class="form-row">
+          <label for="text-collection">Collection</label>
+          <select required id="text-collection" v-model="selectedCollection">
+            <option :value="null" selected>None</option>
+            <option v-for="collection in editableCollections" :key="collection.id" :value="collection.id">
+              {{ collection.title }}
+            </option>
+            <option value="new-collection">New Collection</option>
+          </select>
+          <p v-if="errorFields.collectionId" class="error-message">{{ errorFields.collectionId }}</p>
         </div>
-        <div class="main-inputs">
-          <div class="form-row">
-            <label for="text-title">Title</label>
-            <input id="text-title" type="text" placeholder="Enter the title" v-model="title" required maxlength="124">
-            <p v-if="errorFields.title" class="error-message">{{ errorFields.title }}</p>
-          </div>
-          <div class="form-row">
-            <label for="text-text">Text</label>
-            <textarea placeholder="Enter the text" id="text-content" v-model="content" required></textarea>
-            <p v-if="content.length>25_000" class="warning-message">
-              <template v-if="isSubmitting">
-                Please be patient...
-              </template>
-              <template v-else>
-                Long texts are always slower, consider splitting into multiple texts
-              </template>
-            </p>
-            <p v-if="errorFields.content" class="error-message">{{ errorFields.content }}</p>
-          </div>
-          <div class="form-row">
-            <label for="text-is-public-checkbox" class="checkbox-label">
-              <input type="checkbox" id="text-is-public-checkbox" v-model="isPublic" checked>
-              Public
-            </label>
-          </div>
-          <div class="buttons-div">
-            <SubmitButton id="save-and-open-button"
-                          type="submit"
-                          class="primary-filled-button big-button capsule-button"
-                          :is-submitting="isSubmitting">
-              {{ submittingMessage ?? "Save" }}
-            </SubmitButton>
-          </div>
+        <div class="form-row">
+          <label>Level</label>
+          <select v-model="level">
+            <option v-for="level in LanguageLevel" :value="level">{{ toSentenceCase(level) }}</option>
+          </select>
         </div>
-      </form>
-      <BaseDialog :isOpen="isCreateCollectionDialogShown" @onDismissed="onCreateCollectionDialogDismissed">
-        <h2>Create Collection</h2>
-        <CreateCollectionForm :languageCode="pathParams.learningLanguage" @onCollectionCreated="onCollectionCreated"/>
-      </BaseDialog>
-    </template>
-  </BaseCard>
+      </div>
+    </div>
+    <div class="main-inputs">
+      <div class="form-row">
+        <label for="text-title">Title</label>
+        <input id="text-title" type="text" placeholder="Enter the title" v-model="title" required maxlength="124">
+        <p v-if="errorFields.title" class="error-message">{{ errorFields.title }}</p>
+      </div>
+      <div class="form-row">
+        <label for="text-text">Text</label>
+        <textarea placeholder="Enter the text" id="text-content" v-model="content" required></textarea>
+        <p v-if="content.length>25_000" class="warning-message">
+          <template v-if="isSubmitting">
+            Please be patient...
+          </template>
+          <template v-else>
+            Long texts are always slower, consider splitting into multiple texts
+          </template>
+        </p>
+        <p v-if="errorFields.content" class="error-message">{{ errorFields.content }}</p>
+      </div>
+      <div class="form-row">
+        <label for="text-is-public-checkbox" class="checkbox-label">
+          <input type="checkbox" id="text-is-public-checkbox" v-model="isPublic" checked>
+          Public
+        </label>
+      </div>
+      <div class="buttons-div">
+        <SubmitButton id="save-and-open-button"
+                      type="submit"
+                      class="primary-filled-button big-button capsule-button"
+                      :is-submitting="isSubmitting">
+          {{ submittingMessage ?? "Save" }}
+        </SubmitButton>
+      </div>
+    </div>
+  </form>
+  <BaseDialog :isOpen="isCreateCollectionDialogShown" @onDismissed="onCreateCollectionDialogDismissed">
+    <h2>Create Collection</h2>
+    <CreateCollectionForm :languageCode="pathParams.learningLanguage" @onCollectionCreated="onCollectionCreated"/>
+  </BaseDialog>
 </template>
 
 <script lang="ts">
@@ -230,18 +224,6 @@ export default {
 </script>
 
 <style scoped>
-.add-text-base-card {
-  display: flex;
-  flex-direction: column;
-  row-gap: 1.25rem;
-  justify-content: flex-start;
-  align-items: stretch;
-}
-
-.add-text-base-card:deep(header) {
-  margin-bottom: 1rem;
-}
-
 h2 {
   font-size: 2rem;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -260,21 +242,13 @@ form {
 .side-inputs {
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 .main-inputs {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-}
-
-label {
-  font-size: 1.25rem;
-}
-
-input, select, textarea {
-
-  font-size: 1rem;
+  flex: 3;
 }
 
 select {

@@ -30,6 +30,8 @@ import InterfaceTab from "@/components/page/settings/interface/InterfaceTab.vue"
 import UpdateTextPage from "@/pages/UpdateTextPage.vue";
 import {z} from "zod";
 import LanguageSettings from "@/components/page/settings/languages/LanguageSettings.vue";
+import ImportFilePage from "@/pages/ImportFilePage.vue";
+import ImportPage from "@/pages/ImportPage.vue";
 
 export const privateRoutes: RouteRecordRaw[] = [
     {
@@ -177,21 +179,56 @@ export const privateRoutes: RouteRecordRaw[] = [
         props: routeToProps,
     },
     {
-        path: "/texts/add",
-        component: CreateTextPage,
-        name: "add-text",
+        path: "/import/",
+        component: ImportPage,
+        name: "import",
         meta: {redirToLanguageSpecific: true},
     },
     {
-        path: "/learn/:learningLanguage/texts/add",
-        name: "add-text-lang",
+        path: "/import/text/",
         component: CreateTextPage,
-        meta: {
-            queryParams: {
-                collectionId: pathParams.id
-            }
-        },
-        props: routeToProps,
+        name: "import-text",
+        meta: {redirToLanguageSpecific: true},
+    },
+    {
+        path: "/import/file/",
+        component: ImportFilePage,
+        name: "import-file",
+        meta: {redirToLanguageSpecific: true}
+    },
+    {
+        path: "/learn/:learningLanguage/import/",
+        component: ImportPage,
+        name: "import-lang",
+        redirect: {name: "import-text-lang"},
+        children: [
+            {
+                path: "/learn/:learningLanguage/import/text/",
+                name: "import-text-lang",
+                component: CreateTextPage,
+                meta: {
+                    queryParams: {
+                        collectionId: pathParams.id
+                    },
+                    title: "Add Text",
+                    subtitle: "Paste in any text you want to read"
+                    //     the text of an article, a book chapter, a video or podcast transcript, or
+                },
+                props: routeToProps,
+            },
+            {
+                path: "/learn/:learningLanguage/import/file",
+                name: "import-file-lang",
+                component: ImportFilePage,
+                meta: {
+                    pathParams: {learningLanguage: pathParams.languageCode,},
+                    title: "Import File",
+                    subtitle: "Import a pdf or epub file that you want to read"
+                },
+                props: routeToProps,
+            },
+
+        ]
     },
     {
         path: "/learn/:learningLanguage/texts/:textId/edit",

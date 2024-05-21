@@ -2,47 +2,59 @@
   <LoadingScreen v-if="isLoadingText||!textTokens" :loadingStatus="loadingStatus"/>
   <BaseCard class="base-card unselectable" v-else-if="text">
     <template v-slot:all>
-      <div class="top-div">
-        <div class="main-reader">
-          <PagePanelButton :disabled="currentPage==1" :iconSrc="icons.arrowLeft" @click="currentPage--" class="left-button"/>
-          <TextMainPane ref="textContentRef"
-                        :page="currentPage"
-                        :textTokens="textTokens"
-                        :currentPage="textTokenPages[currentPage-1]"
-                        :selectedTokens="isSelectedNewPhrase?[]:selectedTokens"
-                        :image="imageUrl"
-                        :words="words"
-                        :phrases="phrases"
-                        :showTopBar="currentPage==1"
-                        class="text-main-pane"
-                        @onWordClicked="setSelectedTokens"
-                        @onPhraseClicked="setSelectedTokens"
-                        @onNewPhraseSelected="setSelectedTokens"
-                        @onOverLappingPhrasesClicked="showOverlappingPhrases"
-                        @onBackgroundClicked="clearSelectedTokens"/>
-          <PagePanelButton v-if="currentPage<textTokenPages.length" :iconSrc="icons.arrowRight" @click="currentPage++" class="right-button"/>
-          <PagePanelButton v-else :disabled="!showDoneButton" :iconSrc="icons.checkMark" @onClick="finishText" class="right-button"/>
+      <EmptyScreen v-if="text.isProcessing" class="empty-screen-wrapper">
+        <template v-slot:no-filters>
+          <div class="empty-screen">
+            <inline-svg :src="icons.hourglass" class="empty-icon"/>
+            <p>Text is still processing
+              <br>
+              come back in a minute</p>
+          </div>
+        </template>
+      </EmptyScreen>
+      <template v-else>
+        <div class="top-div">
+          <div class="main-reader">
+            <PagePanelButton :disabled="currentPage==1" :iconSrc="icons.arrowLeft" @click="currentPage--" class="left-button"/>
+            <TextMainPane ref="textContentRef"
+                          :page="currentPage"
+                          :textTokens="textTokens"
+                          :currentPage="textTokenPages[currentPage-1]"
+                          :selectedTokens="isSelectedNewPhrase?[]:selectedTokens"
+                          :image="imageUrl"
+                          :words="words"
+                          :phrases="phrases"
+                          :showTopBar="currentPage==1"
+                          class="text-main-pane"
+                          @onWordClicked="setSelectedTokens"
+                          @onPhraseClicked="setSelectedTokens"
+                          @onNewPhraseSelected="setSelectedTokens"
+                          @onOverLappingPhrasesClicked="showOverlappingPhrases"
+                          @onBackgroundClicked="clearSelectedTokens"/>
+            <PagePanelButton v-if="currentPage<textTokenPages.length" :iconSrc="icons.arrowRight" @click="currentPage++" class="right-button"/>
+            <PagePanelButton v-else :disabled="!showDoneButton" :iconSrc="icons.checkMark" @onClick="finishText" class="right-button"/>
+          </div>
+          <ReaderSidePanel class="side-panel"
+                           :selectedOverLappingPhrasesTokens="selectedOverLappingPhrasesTokens"
+                           :selectedVocab="selectedVocab"
+                           :phrases="phrases"
+                           @onVocabUpdated="updateVocabData"
+                           @onVocabDeleted="deleteVocabData"
+                           @onNewVocabCreated="onNewVocabCreated"
+                           @onOverlappingPhraseClicked="setSelectedTokens"
+                           :onVocabRefetched="updateVocab">
+            <slot name="side-panel"></slot>
+          </ReaderSidePanel>
         </div>
-        <ReaderSidePanel class="side-panel"
-                         :selectedOverLappingPhrasesTokens="selectedOverLappingPhrasesTokens"
-                         :selectedVocab="selectedVocab"
-                         :phrases="phrases"
-                         @onVocabUpdated="updateVocabData"
-                         @onVocabDeleted="deleteVocabData"
-                         @onNewVocabCreated="onNewVocabCreated"
-                         @onOverlappingPhraseClicked="setSelectedTokens"
-                         :onVocabRefetched="updateVocab">
-          <slot name="side-panel"></slot>
-        </ReaderSidePanel>
-      </div>
-      <div class="bottom-div">
-        <div v-if="text.audio">
-          <audio controls :src="audioUrl">
-            Your browser does not support the audio element.
-          </audio>
+        <div class="bottom-div">
+          <div v-if="text.audio">
+            <audio controls :src="audioUrl">
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+          <PageIndicator class="page-indicators" :currentPage="currentPage" :pageCount="textTokenPages.length" @onPageIndicatorClicked="(page:number)=>currentPage=page"/>
         </div>
-        <PageIndicator class="page-indicators" :currentPage="currentPage" :pageCount="textTokenPages.length" @onPageIndicatorClicked="(page:number)=>currentPage=page"/>
-      </div>
+      </template>
     </template>
   </BaseCard>
 </template>
@@ -59,6 +71,8 @@ import {useTextStore} from "@/stores/backend/textStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import TextMainPane from "@/components/page/reader/TextMainPane.vue";
+import EmptyScreen from "@/components/shared/EmptyScreen.vue";
+import InlineSvg from "vue-inline-svg";
 
 export type NewVocab = Omit<LearnerVocabSchema, "id">
 export type TextTokenObject = Omit<TokenWithPhrases, "phrases"> & {
@@ -68,7 +82,7 @@ export type TextTokenObject = Omit<TokenWithPhrases, "phrases"> & {
 }
 export default defineComponent({
   name: "Reader",
-  components: {LoadingScreen, TextMainPane, PagePanelButton, ReaderSidePanel, PageIndicator, BaseCard},
+  components: {EmptyScreen, LoadingScreen, TextMainPane, PagePanelButton, ReaderSidePanel, PageIndicator, BaseCard, InlineSvg},
   props: {
     languageCode: {type: String, required: true},
     textId: {type: Number, required: true},
@@ -171,6 +185,7 @@ export default defineComponent({
         await this.$router.push({name: "not-found"});
         return;
       }
+      this.isLoadingText = false;
       await this.textStore.addTextToUserHistory({textId: this.textId});
       await this.fetchTextVocabs();
       this.parseText();
@@ -185,6 +200,7 @@ export default defineComponent({
       await this.$router.push({name: "not-found"});
       return;
     }
+    this.isLoadingText = false;
     await this.textStore.addTextToUserHistory({textId: this.textId});
     await this.fetchTextVocabs();
     this.parseText();
@@ -345,6 +361,10 @@ export default defineComponent({
   max-width: 1150px;
   padding: 0 0 15px 0;
   margin-bottom: 0;
+}
+
+.empty-screen-wrapper {
+  height: 80vh;
 }
 
 .top-div {

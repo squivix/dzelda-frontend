@@ -8,7 +8,10 @@
     </slot>
     <slot name="no-filters" v-else>
       <div class="empty-screen">
-        <p v-if="!!message">{{ message }}</p>
+        <template v-if="!!message">
+          <p class="message">{{ message }}</p>
+          <p v-if="!!subMessage" class="sub-message">{{ subMessage }}</p>
+        </template>
         <p v-else>Nothing found</p>
       </div>
     </slot>
@@ -24,6 +27,7 @@ export default defineComponent({
   components: {InlineSvg},
   props: {
     message: {type: String, required: false},
+    subMessage: {type: String, required: false},
     hasFilters: {type: Boolean, required: false, default: false}
   },
 });
@@ -53,5 +57,9 @@ export default defineComponent({
 
 .empty-screen svg {
   color: var(--empty-list-icon-color);
+}
+
+.sub-message {
+  font-size: 0.95rem;
 }
 </style>
