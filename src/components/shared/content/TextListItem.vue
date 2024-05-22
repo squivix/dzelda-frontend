@@ -20,7 +20,12 @@
                 </router-link>
                 <p v-if="'timeViewed' in text" class="time-viewed">{{ timeViewed }}</p>
               </div>
-              <div class="stats">
+
+              <div v-if="text.isProcessing" class="processing-div">
+                <inline-svg :src="icons.hourglass" class="processing-icon"/>
+                <p>Processing...</p>
+              </div>
+              <div class="stats" v-else>
                 <div class="stats-count">
                   <span class="vocabs-indicator new-vocabs"></span>
                   <div>
@@ -98,7 +103,7 @@ import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
 export default {
   name: "TextListItem",
   components: {ConfirmDialog, InlineSvg, BaseDropDown, BaseImage, BaseCard},
-  emits:["onHideTextClicked","onReportTextClicked"],
+  emits: ["onHideTextClicked", "onReportTextClicked"],
   props: {
     text: {type: Object as PropType<TextSchema | TextHistoryEntrySchema>, required: true},
     showCollection: {type: Boolean, required: false, default: true}
@@ -316,5 +321,16 @@ a:hover {
   .title-stats {
     align-self: stretch;
   }
+}
+.processing-div{
+  display: flex;
+  align-items: center;
+  column-gap: 0.7rem;
+  color: dimgray;
+}
+.processing-icon {
+  width: 18px;
+  height: 18px;
+  color: lightgray;
 }
 </style>
