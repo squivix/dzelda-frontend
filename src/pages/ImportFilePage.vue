@@ -89,6 +89,7 @@ import {useCollectionStore} from "@/stores/backend/collectionStore.js";
 import {LanguageLevel} from "dzelda-common";
 import {useTextStore} from "@/stores/backend/textStore.js";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
+import {useStore} from "@/stores/backend/rootStore.js";
 
 export default defineComponent({
   name: "ImportFilePage",
@@ -145,12 +146,26 @@ export default defineComponent({
       }
       this.submittingMessage = "Creating collection...";
 
+      let imageUrl;
+      if (this.image) {
+        this.submittingMessage = "Uploading image";
+        imageUrl = await this.store.uploadFile({
+          fileField: "collectionImage",
+          fileExtension: ".jpg",
+          file: new File([this.image], "image.jpg"),
+        });
+        if (!imageUrl) {
+          this.isSubmitting = false;
+          return;
+        }
+      } else
+        imageUrl = this.image;
       const response = await this.collectionStore.createCollection({
         languageCode: this.pathParams.learningLanguage,
         title: this.title,
         description: this.description,
         isPublic: this.isPublic,
-        image: undefined,
+        image: imageUrl,
         texts: this.texts.map((textContent, i) => ({
           title: `Part ${i + 1}`,
           content: textContent,
@@ -169,7 +184,16 @@ export default defineComponent({
 
   },
   setup() {
-    return {icons, LanguageLevel, toSentenceCase, randomUUID: () => crypto.randomUUID(), collectionStore: useCollectionStore(), textStore: useTextStore(), messageBarStore: useMessageBarStore()};
+    return {
+      icons,
+      LanguageLevel,
+      toSentenceCase,
+      randomUUID: () => crypto.randomUUID(),
+      store: useStore(),
+      collectionStore: useCollectionStore(),
+      textStore: useTextStore(),
+      messageBarStore: useMessageBarStore()
+    };
   }
 });
 </script>

@@ -66,6 +66,10 @@ export default {
   background-color: var(--tab-highlight-color);
 }
 
+.current-tab > a {
+  border: none;
+}
+
 .settings-tab {
   flex: 4;
 }

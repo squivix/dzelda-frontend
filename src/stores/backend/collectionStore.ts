@@ -40,7 +40,7 @@ export const useCollectionStore = defineStore("collection", {
             description: string,
             image: string | undefined,
             isPublic: boolean,
-            texts: Array<{ title: string, content: string }> | undefined
+            texts?: Array<{ title: string, content: string }>
         }) {
             useMessageBarStore().clearTopBarMessages();
             const store = useStore();
