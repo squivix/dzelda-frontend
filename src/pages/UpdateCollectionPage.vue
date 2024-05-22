@@ -34,7 +34,7 @@
             <label for="text-table">Texts</label>
             <p v-if="texts?.length==0">No texts in collection</p>
             <TextsOrderTable v-else v-model="texts"/>
-            <router-link :to="{name:'add-text', query:{collectionId:collection.id}}" class="inv-link add-text-button">
+            <router-link :to="{name:'import-text', query:{collectionId:collection.id}}" class="inv-link add-text-button">
               <inline-svg :src="icons.plusRound" class="empty-icon"/>
               Add text
             </router-link>
@@ -56,8 +56,8 @@
       <ConfirmDialog :isShown="isDeleteCollectionConfirmShown" @onNoClicked="isDeleteCollectionConfirmShown=false"
                      @onYesClicked="deleteCollection">
         <h3>Are you sure you want to delete this collection?</h3>
-        <br>
-        (This action cannot be undone. All texts will be detached from collection)
+        <label style="font-size: 1rem"><input type="checkbox" v-model="cascadeTextsDelete">Also delete all texts in this collection</label>
+        (This action cannot be undone.)
       </ConfirmDialog>
     </template>
   </BaseCard>
@@ -103,7 +103,8 @@ export default {
       errorFields: {title: "", description: "", image: ""},
       isSubmitting: false,
       isLoading: false,
-      isDeleteCollectionConfirmShown: false
+      isDeleteCollectionConfirmShown: false,
+      cascadeTextsDelete: true
     };
   },
   methods: {
@@ -141,7 +142,7 @@ export default {
       this.isDeleteCollectionConfirmShown = true;
     },
     async deleteCollection() {
-      await this.collectionStore.deleteCollection({collectionId: this.pathParams.collectionId});
+      await this.collectionStore.deleteCollection({collectionId: this.pathParams.collectionId}, {cascadeTexts: this.cascadeTextsDelete});
       this.isDeleteCollectionConfirmShown = false;
       this.messageBarStore.addTopBarMessage({type: MessageType.INFO, text: "Collection deleted"});
       this.$router.push({name: "home"});
@@ -252,5 +253,4 @@ input:not([type='checkbox']), select, textarea {
     flex-direction: column;
   }
 }
-
 </style>

@@ -105,10 +105,10 @@ export const useCollectionStore = defineStore("collection", {
             const response = await store.fetchCustom((api) => api.users.deleteUsersMeCollectionsBookmarkedCollectionId(pathParams.collectionId));
             return response.data;
         },
-        async deleteCollection(pathParams: { collectionId: number }) {
+        async deleteCollection(pathParams: { collectionId: number },queryParams:{cascadeTexts:boolean}) {
             useMessageBarStore().clearTopBarMessages();
             const store = useStore();
-            await store.fetchCustom((api) => api.collections.deleteCollectionsCollectionId(pathParams.collectionId));
+            await store.fetchCustom((api) => api.collections.deleteCollectionsCollectionId(pathParams.collectionId,{cascadeTexts:queryParams.cascadeTexts}));
         }
     }
 });
