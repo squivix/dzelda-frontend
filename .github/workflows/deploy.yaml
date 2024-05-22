@@ -1,0 +1,15 @@
+name: "Deploy Server"
+on:
+  release:
+    types: [ released ]
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Send deployment request
+        run: |
+          curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $DIGITALOCEAN_TOKEN" "https://api.digitalocean.com/v2/apps/$DIGITALOCEAN_APP_ID/deployments"
+        env:
+          DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_TOKEN }}
+          DIGITALOCEAN_APP_ID: ${{ secrets.DIGITALOCEAN_APP_ID }}
