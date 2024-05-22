@@ -79,7 +79,7 @@ export default defineComponent({
   },
   watch: {
     queryParams() {
-      this.fetchImportedCollections();
+      this.fetchImported();
     }
   },
   async mounted() {

@@ -48,7 +48,7 @@ export default defineComponent({
   },
   watch: {
     queryParams() {
-      this.fetchTexts();
+      this.fetchResources();
     },
     resourceType() {
       this.fetchResources();
