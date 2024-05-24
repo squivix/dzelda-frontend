@@ -113,46 +113,6 @@ export function getTextSelectedElements(selection: Selection) {
     }
 }
 
-export function getChildrenInViewIndexes(container: HTMLElement) {
-    const containerTop = container.scrollTop;
-    const containerBottom = containerTop + container.clientHeight;
-
-    const children = container.children;
-    const childrenInViewIndexes: Set<number> = new Set();
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i] as HTMLElement;
-
-        const childTop = child.offsetTop;
-        const childBottom = childTop + child.offsetHeight;
-
-        // If child is in view
-        if (childTop <= containerBottom && childBottom >= containerBottom)
-            childrenInViewIndexes.add(i);
-        // If child not in view and past siblings were ignore rest because we know in-view children are contiguous
-        else if (childrenInViewIndexes.size > 0)
-            break;
-    }
-    return childrenInViewIndexes;
-}
-
-export function padSequence(numbers: number[], leftPadding: number, rightPadding: number, minValue: number, maxValue: number) {
-    const sortedNumbers = [...numbers].sort();
-    const result: number[] = [];
-    for (let i = 1; i <= leftPadding; i++) {
-        const element = sortedNumbers[0] - i;
-        if (element < minValue)
-            break;
-        result.push(element);
-    }
-    result.push(...sortedNumbers);
-    for (let i = 1; i <= rightPadding; i++) {
-        const element = sortedNumbers[sortedNumbers.length - 1] + i;
-        if (element > maxValue)
-            break;
-        result.push(element);
-    }
-    return result;
-}
 
 export function renderMarkdown(markdownText: string, linkInNewTab: boolean = true) {
     const htmlText = snarkdown(markdownText);
@@ -268,6 +228,11 @@ export function splitTextWithDelimiters(
         currentIndex = splitIndex;
     }
 
+    if (chunks[chunks.length - 1].length < softMinChunkLength &&
+        chunks[chunks.length - 2].length + chunks[chunks.length - 1].length < hardMaxChunkLength) {
+        const last_chunk = chunks.pop();
+        chunks[chunks.length - 1] += last_chunk;
+    }
     return chunks;
 }
 

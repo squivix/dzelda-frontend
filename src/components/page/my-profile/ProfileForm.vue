@@ -18,7 +18,7 @@
                       class="profile-picture"
                       name="profile picture"
                       :oldImagePath="userStore.userAccount.profile.profilePicture"
-                      :maxFileSizeInBytes="500_000"
+                      :maxFileSizeInBytes="mebiBytes(1)"
                       :fallback="icons.userProfile"
                       :enabled="isEditing"
                       circular/>
@@ -38,6 +38,7 @@ import {useUserStore} from "@/stores/backend/userStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
+import {mebiBytes} from "dzelda-common";
 
 export default defineComponent({
   name: "ProfileForm",
@@ -111,6 +112,7 @@ export default defineComponent({
   setup() {
     return {
       icons,
+      mebiBytes,
       store: useStore(),
       userStore: useUserStore()
     };

@@ -24,7 +24,7 @@
               <label>Image</label>
 
               <ImageUploadInput id="collection-image-input" name="collection image" :fallback="icons.books" v-model="image"
-                                :maxFileSizeInBytes="500_000"/>
+                                :maxFileSizeInBytes="mebiBytes(1)"/>
               <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
               <div class="form-row">
                 <label>Level</label>
@@ -86,7 +86,7 @@ import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import {splitTextWithDelimiters, toSentenceCase} from "@/utils.js";
 import {useCollectionStore} from "@/stores/backend/collectionStore.js";
-import {LanguageLevel} from "dzelda-common";
+import {LanguageLevel, mebiBytes, megaBytes} from "dzelda-common";
 import {useTextStore} from "@/stores/backend/textStore.js";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
@@ -95,9 +95,8 @@ export default defineComponent({
   name: "ImportFilePage",
   components: {ImageUploadInput, LoadingScreen, InlineSvg, SubmitButton, BaseCard, BaseDropZoneFileInput, FileTile},
   props: {
-    maxFileSizeInBytes: {type: Number, default: 10_000_000},
+    maxFileSizeInBytes: {type: Number, default: megaBytes(50)},
     pathParams: {type: Object as PropType<{ learningLanguage: string }>, required: true},
-
   },
   data() {
     return {
@@ -142,7 +141,7 @@ export default defineComponent({
       if (!this.texts) {
         this.submittingMessage = "Extracting text...";
         const fullContent = await extractFileContent(this.file!);
-        this.texts = splitTextWithDelimiters(fullContent, 5_000, 30_000, [".", "?", "!", "\n\n", "\n", " "]);
+        this.texts = splitTextWithDelimiters(fullContent, 5_000, 15_000, [".", "?", "!", "\n\n", "\n", " "]);
       }
       this.submittingMessage = "Creating collection...";
 
@@ -186,6 +185,7 @@ export default defineComponent({
   setup() {
     return {
       icons,
+      mebiBytes,
       LanguageLevel,
       toSentenceCase,
       randomUUID: () => crypto.randomUUID(),

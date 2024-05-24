@@ -5,13 +5,13 @@
         <label>Image</label>
         <ImageUploadInput id="text-image-input" fileTitle="text image" :fallback="icons.bookOpen"
                           v-model="image"
-                          :maxFileSizeInBytes="500_000"/>
+                          :maxFileSizeInBytes="mebiBytes(1)"/>
         <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
       </div>
       <div class="form-row">
         <label>Audio</label>
         <AudioUploadInput id="text-audio-input" fileTitle="text audio" v-model="audio"
-                          :maxFileSizeInBytes="100_000_000"/>
+                          :maxFileSizeInBytes="mebiBytes(100)"/>
         <p v-if="errorFields.audio" class="error-message">{{ errorFields.audio }}</p>
       </div>
       <div>
@@ -80,7 +80,7 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import {useCollectionStore} from "@/stores/backend/collectionStore.js";
 import {useTextStore} from "@/stores/backend/textStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
-import {CollectionSchema, LanguageLevel} from "dzelda-common";
+import {CollectionSchema, LanguageLevel, mebiBytes} from "dzelda-common";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {icons} from "@/icons.js";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
@@ -210,6 +210,7 @@ export default {
   setup() {
     return {
       icons,
+      mebiBytes,
       toSentenceCase,
       LanguageLevel,
       store: useStore(),

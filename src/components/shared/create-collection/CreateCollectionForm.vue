@@ -3,7 +3,7 @@
     <div class="image-section">
       <label>Image</label>
       <ImageUploadInput id="collection-image-input" name="collection image" :fallback="icons.books" v-model="image"
-                        :maxFileSizeInBytes="500_000"/>
+                        :maxFileSizeInBytes="mebiBytes(1)"/>
       <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
     </div>
     <div class="main-inputs">
@@ -42,6 +42,7 @@ import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import {icons} from "@/icons.js";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {useCollectionStore} from "@/stores/backend/collectionStore.js";
+import {mebiBytes} from "dzelda-common";
 
 export default defineComponent({
   name: "CreateCollectionForm",
@@ -106,6 +107,7 @@ export default defineComponent({
   setup() {
     return {
       icons,
+      mebiBytes,
       store: useStore(),
       collectionStore: useCollectionStore(),
     };
