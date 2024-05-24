@@ -7,7 +7,7 @@
           <div class="form-row">
             <ImageUploadInput id="collection-image-input" :oldImageUrl="collection.image" name="collection image"
                               :fallback="icons.books" v-model="image"
-                              :maxFileSizeInBytes="500_000"/>
+                              :maxFileSizeInBytes="mebiBytes(1)"/>
             <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
           </div>
           <div class="form-row ">
@@ -67,7 +67,7 @@
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {VueDraggableNext} from "vue-draggable-next";
 import {useCollectionStore} from "@/stores/backend/collectionStore.js";
-import {CollectionSchema, TextSchema} from "dzelda-common";
+import {CollectionSchema, mebiBytes, TextSchema} from "dzelda-common";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
@@ -168,7 +168,9 @@ export default {
   },
   setup() {
     return {
-      icons, store: useStore(),
+      icons,
+      mebiBytes,
+      store: useStore(),
       userStore: useUserStore(),
       messageBarStore: useMessageBarStore(),
       collectionStore: useCollectionStore()

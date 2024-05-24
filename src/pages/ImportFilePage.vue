@@ -54,9 +54,16 @@
                 Public
               </label>
             </div>
-            <div class="form-row">
-              <p class="error-message" v-if="errorMessage">{{ errorMessage }}</p>
+            <div class="form-row" v-if="errorMessage">
+              <p class="error-message">{{ errorMessage }}</p>
             </div>
+            <div class="form-row" v-if="file&&file?.size>=mebiBytes(1)&&isSubmitting">
+              <p class="warning-message">
+                This may take a while, please be patient...
+              </p>
+            </div>
+
+
             <SubmitButton id="save-button"
                           type="submit"
                           class="primary-filled-button big-button capsule-button"
