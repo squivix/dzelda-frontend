@@ -16,7 +16,6 @@
             <label>Audio</label>
             <AudioUploadInput id="text-audio-input" fileTitle="text audio" :oldAudioUrl="text.audio" v-model="audio"
                               :maxFileSizeInBytes="mebiBytes(100)"/>
-            "/>
             <p v-if="errorFields.audio" class="error-message">{{ errorFields.audio }}</p>
           </div>
           <div>

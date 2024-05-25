@@ -182,7 +182,7 @@ export default defineComponent({
       this.isSubmitting = false;
       if (response.ok) {
         this.messageBarStore.addTopBarMessage({text: "We'll let you know when the file finishes importing", type: MessageType.INFO});
-        this.$router.push({name: "explore"});
+        this.$router.push({name: "collection", params: {collectionId: response.data.id}});
       } else {
         this.errorMessage = response.error.message;
       }
