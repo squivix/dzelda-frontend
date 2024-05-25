@@ -73,8 +73,8 @@ export default defineComponent({
   methods: {
     async fetchChartData() {
       this.isLoading = true;
-      const to = new Date();
-      let from = new Date(Date.now() - 5000), interval: "day" | "month" | "year" | undefined;
+      const to = new Date(Date.now() - 5000);
+      let from = new Date(), interval: "day" | "month" | "year" | undefined;
       if (this.period == RecentActivityPeriod.LAST_WEEK) {
         from.setDate(to.getDate() - 6);
         interval = "day";
