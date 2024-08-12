@@ -53,7 +53,7 @@
                 :round="false">
               <template v-slot:button>
                 <button class="more-button inv-button">
-                  <inline-svg :src="icons.dotsStacked" class=""/>
+                  <inline-svg :src="icons.dotsStacked" class="gray-icon"/>
                 </button>
               </template>
               <template v-slot:menu>
@@ -278,6 +278,7 @@ a:hover {
 }
 
 .more-button {
+  color: gray;
   padding: 0.5rem;
   cursor: pointer;
 }
