@@ -165,6 +165,7 @@ export default defineComponent({
       const response = await this.collectionStore.fetchCollections({
         languageCode: this.pathParams.learningLanguage,
         addedBy: "me",
+        pageSize: 100,
       }, {secure: true});
       this.editableCollections = response.data;
     },
