@@ -18,7 +18,7 @@
     "@vueuse/core": "^10.9.0",
     "chart.js": "^4.4.0",
     "data-uri-to-buffer": "^6.0.1",
-    "dzelda-common": "github:squivix/dzelda-common#v1.21.2",
+    "dzelda-common": "github:squivix/dzelda-common#v1.21.3",
     "epubjs": "^0.3.93",
     "idb": "^8.0.0",
     "jszip": "^3.10.1",

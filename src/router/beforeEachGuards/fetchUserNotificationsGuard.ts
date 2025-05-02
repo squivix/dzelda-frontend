@@ -4,7 +4,7 @@ import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export const fetchUserNotificationsGuard: NavigationGuardWithThis<undefined> = async (to, from) => {
     const userStore = useUserStore();
-    if (userStore.isAuthenticated && to.name !== "server-side-error" && userStore.userAccount?.isEmailConfirmed) {
+    if (userStore.isAuthenticated && to.name !== "server-side-error"&& to.name !== "sign-out" && userStore.userAccount?.isEmailConfirmed) {
         const messageBarStore = useMessageBarStore();
         const notifications = await userStore.fetchUserNotifications();
         notifications.forEach((notification) => messageBarStore.addTopBarMessage({

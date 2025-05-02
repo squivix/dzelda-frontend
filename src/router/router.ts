@@ -9,6 +9,7 @@ import {updateLanguageLastOpenedGuard} from "@/router/beforeEachGuards/updateLan
 import {validateQueryParamsGuard} from "@/router/beforeEachGuards/validateQueryParamsGuard.js";
 import {validatePathParams} from "@/router/beforeEachGuards/validatePathParams.js";
 import {fetchUserNotificationsGuard} from "@/router/beforeEachGuards/fetchUserNotificationsGuard.js";
+import {handleBannedUserGuard} from "@/router/beforeEachGuards/handleBannedUserGuard";
 
 export const router = createRouter({
     routes: [
@@ -21,6 +22,7 @@ export const router = createRouter({
 
 router.beforeEach(requiresAuthGuard);
 router.beforeEach(fetchUserDataGuard);
+router.beforeEach(handleBannedUserGuard);
 router.beforeEach(requiresEmailConfirmedGuard);
 router.beforeEach(redirToLangSpecificGuard);
 router.beforeEach(validatePathParams);
