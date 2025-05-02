@@ -405,7 +405,7 @@ audio {
   }
 
   .top-div {
-    grid-template-rows: 50vh 1fr;
+    grid-template-rows: 60vh 1fr;
     grid-template-columns: auto;
     column-gap: 0;
     height: auto;
@@ -413,6 +413,8 @@ audio {
 
   .side-panel {
     min-height: 25vh;
+    padding-top: 0;
+    padding-right: 10px;
   }
 
   .main-reader {
@@ -423,7 +425,6 @@ audio {
   }
 
   .text-main-pane {
-
     grid-column: 1 / span 3;
   }
 

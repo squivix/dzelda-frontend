@@ -194,9 +194,10 @@ export default {
 
 .content {
   overflow-y: auto;
-  overflow-x: hidden;
   padding-top: 0.5rem;
   min-height: 100px;
+  max-width: 600px;
+  word-break: break-word;
 }
 
 p {
@@ -220,7 +221,7 @@ p {
   }
 
   .title {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     line-height: 2.5rem;
   }
 

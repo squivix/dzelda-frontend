@@ -126,6 +126,9 @@ export default defineComponent({
 .vocab-text {
   font-size: 1.5rem;
   user-select: text;
+  text-overflow: ellipsis;
+  max-width: 300px;
+  overflow-wrap: break-word;
 }
 
 </style>
