@@ -194,6 +194,7 @@ export default {
 
 .content {
   overflow-y: auto;
+  overflow-x: hidden;
   padding-top: 0.5rem;
   min-height: 100px;
   max-width: 600px;
