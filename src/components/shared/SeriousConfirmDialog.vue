@@ -21,6 +21,7 @@ import {defineComponent} from "vue";
 import BaseDialog from "@/components/ui/BaseDialog.vue";
 import BaseMessageBar from "@/components/ui/BaseMessageBar.vue";
 import {MessageType} from "@/stores/messageBarStore.js";
+import { v4 as uuidv4 } from 'uuid';
 
 export default defineComponent({
   name: "SeriousConfirmDialog",
@@ -56,7 +57,7 @@ export default defineComponent({
     }
   },
   setup() {
-    return {MessageType, randomUUID: () => crypto.randomUUID()};
+    return {MessageType, randomUUID: () => uuidv4()};
   }
 });
 </script>

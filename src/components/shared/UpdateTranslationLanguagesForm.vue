@@ -66,6 +66,7 @@ import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 import googleFormsLogo from "@/assets/images/google-forms-logo.svg";
 import BaseMessageBar from "@/components/ui/BaseMessageBar.vue";
+import { v4 as uuidv4 } from 'uuid';
 
 export default defineComponent({
   name: "UpdateTranslationLanguagesForm",
@@ -132,7 +133,7 @@ export default defineComponent({
       languageStore: useLanguageStore(),
       messageBarStore: useMessageBarStore(),
       MessageType,
-      randomUUID: () => crypto.randomUUID()
+      randomUUID: () => uuidv4(),
     };
   }
 });

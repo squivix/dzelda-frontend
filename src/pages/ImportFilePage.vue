@@ -98,6 +98,7 @@ import {useTextStore} from "@/stores/backend/textStore.js";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
 
+import { v4 as uuidv4 } from 'uuid';
 export default defineComponent({
   name: "ImportFilePage",
   components: {ImageUploadInput, LoadingScreen, InlineSvg, SubmitButton, BaseCard, BaseDropZoneFileInput, FileTile},
@@ -195,7 +196,7 @@ export default defineComponent({
       mebiBytes,
       LanguageLevel,
       toSentenceCase,
-      randomUUID: () => crypto.randomUUID(),
+      randomUUID: () => uuidv4(),
       store: useStore(),
       collectionStore: useCollectionStore(),
       textStore: useTextStore(),

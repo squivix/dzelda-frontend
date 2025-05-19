@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import {useTimeoutFn} from "@vueuse/core";
 
+import { v4 as uuidv4 } from 'uuid';
 export enum MessageType {
     INFO = "info",
     ERROR = "error",
@@ -29,7 +30,7 @@ export const useMessageBarStore = defineStore("messageBar", {
         addSideMessage(messageData: Omit<Message, "uuid">) {
             if (messageData.isDismissable == undefined)
                 messageData.isDismissable = true;
-            const newMessage = {...messageData, uuid: crypto.randomUUID()};
+            const newMessage = {...messageData, uuid: uuidv4()};
             this.sideMessageQueue.unshift(newMessage);
             if (newMessage.timeoutMs !== undefined)
                 useTimeoutFn(() => {
@@ -50,7 +51,7 @@ export const useMessageBarStore = defineStore("messageBar", {
         addTopBarMessage(messageData: Omit<Message, "uuid">) {
             if (messageData.isDismissable == undefined)
                 messageData.isDismissable = true;
-            const newMessage = {...messageData, uuid: crypto.randomUUID()};
+            const newMessage = {...messageData, uuid: uuidv4()};
 
             if (this.topBarMessageQueue.length >= 3)
                 this.topBarMessageQueue.pop();

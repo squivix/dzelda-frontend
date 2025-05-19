@@ -28,6 +28,7 @@
     "pretty-bytes": "^6.1.1",
     "snarkdown": "^2.0.0",
     "timeago.js": "^4.0.2",
+    "uuid": "^11.1.0",
     "vue": "^3.3.4",
     "vue-advanced-cropper": "^2.8.8",
     "vue-chartjs": "^5.2.0",
