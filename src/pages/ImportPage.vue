@@ -74,4 +74,12 @@ h3 {
   column-gap: 0.25rem;
   text-decoration: none;
 }
+@media screen and (max-width: 750px) {
+  header{
+    flex-direction: column;
+  }
+  .tab-labels{
+    align-self: flex-end;
+  }
+}
 </style>
