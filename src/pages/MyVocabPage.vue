@@ -161,8 +161,13 @@ export default {
           if (this.selectedVocab?.id == this.vocabs![i].id)
             this.setSelectedVocab(this.vocabs![i + 1]);
           this.vocabs!.splice(i, 1);
-          if (this.vocabs?.length == 0)
-            this.fetchVocabsPage();
+          if (this.vocabs?.length == 0) {
+            this.fetchVocabsPage().then(() => {
+              //filter again to avoid when fetch might finish faster than its delete api call and then the list will still contain vocab
+              const index = this.vocabs!.findIndex(v => v.id === vocab.id);
+              if (index !== -1) this.vocabs!.splice(index, 1);
+            })
+          }
           return;
         }
     },

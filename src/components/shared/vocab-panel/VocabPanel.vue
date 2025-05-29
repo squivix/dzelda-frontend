@@ -10,7 +10,8 @@
         <span class="root-form" v-if="tagsAndRootForms!.length>0">{{ tagsAndRootForms!.join(", ") }}</span>
       </div>
       <div class="meaning-sub-panel-wrapper">
-        <div :class="{'meaning-sub-panel':true,'new-vocab-panel':showAddPanel, 'existing-vocab-panel':!showAddPanel, 'pronunciation-panel':isPronunciationPanelShown}">
+        <div
+            :class="{'meaning-sub-panel':true,'new-vocab-panel':showAddPanel, 'existing-vocab-panel':!showAddPanel, 'pronunciation-panel':isPronunciationPanelShown}">
           <PronunciationPanel v-if="isPronunciationPanelShown" :vocab="vocab"/>
           <NewVocabPanel v-else-if="showAddPanel"
                          :vocab="vocab"
@@ -19,7 +20,7 @@
                          @onSuggestedMeaningClicked="addSuggestedMeaning"
                          @onNewMeaningSubmitted="addNewMeaning"
                          @onMarkAsKnownClicked="()=>onMarkAsButtonClicked(VocabLevel.KNOWN)"
-                         @onMarkAsIgnoredClicked="()=>onMarkAsButtonClicked(VocabLevel.IGNORED)"/>
+                         @onIgnoreClicked="()=>onMarkAsButtonClicked(VocabLevel.IGNORED)"/>
           <ExistingVocabPanel v-else
                               :vocab="existingVocab!"
                               :isSubmittingEditMeaningSet="isSubmittingEditMeaningSet"
@@ -102,8 +103,11 @@ export default {
     },
     onMarkAsButtonClicked(level: VocabLevelSchema) {
       const vocab = this.vocab as LearnerVocabSchema;
-      this.vocabStore.addVocabToUser({vocabId: vocab.id, level});
-      this.$emit("onVocabUpdated", this.vocab as LearnerVocabSchema, {level});
+      if (vocab.level == VocabLevel.NEW) {
+        this.vocabStore.addVocabToUser({vocabId: vocab.id, level});
+        this.$emit("onVocabUpdated", this.vocab as LearnerVocabSchema, {level});
+      } else
+        this.updateVocabLevel(level);
     },
     updateVocabLevel(level: VocabLevelSchema) {
       const vocab = this.vocab as LearnerVocabSchema;
@@ -212,7 +216,10 @@ export default {
       } else
         vocab = this.vocab;
       const preferredVoice = this.languageStore.userLanguages?.find((l) => l.code === vocab.language)?.preferredTtsVoice;
-      const ttsPronunciation = await this.vocabStore.generateVocabTTS({vocabId: vocab.id, voiceCode: preferredVoice?.code});
+      const ttsPronunciation = await this.vocabStore.generateVocabTTS({
+        vocabId: vocab.id,
+        voiceCode: preferredVoice?.code
+      });
 
       if (ttsPronunciation)
         this.$emit("onVocabUpdated", vocab, {ttsPronunciationUrl: ttsPronunciation!.url});

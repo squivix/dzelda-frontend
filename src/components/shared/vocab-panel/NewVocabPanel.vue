@@ -18,7 +18,7 @@
       <button class="square-button hollow-button know-button" @click="$emit('onMarkAsKnownClicked')">Mark as
         known
       </button>
-      <button class="square-button hollow-button ignore-button" @click="$emit('onMarkAsIgnoredClicked')">Ignore
+      <button class="square-button hollow-button ignore-button" @click="$emit('onIgnoreClicked')">Ignore
       </button>
     </div>
   </div>
@@ -38,7 +38,7 @@ export default {
     onSuggestedMeaningClicked: (meaning: MeaningSchema) => true,
     onNewMeaningSubmitted: (newMeaningText: string, newMeaningLanguage: string) => true,
     onMarkAsKnownClicked: () => true,
-    onMarkAsIgnoredClicked: () => true,
+    onIgnoreClicked: () => true,
   },
   props: {
     vocab: {type: Object as PropType<LearnerVocabSchema | NewVocab>, required: true,},
