@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="vocab-panel-container">
     <template v-if="vocab">
       <VocabPanelTopBar :vocab="vocab"
                         :isPronunciationPanelShown="isPronunciationPanelShown"
@@ -238,7 +238,11 @@ export default {
 </script>
 
 <style scoped>
-
+.vocab-panel-container{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 .tags {
   margin-bottom: 0.3rem;
   min-height: 1lh;
@@ -251,10 +255,12 @@ export default {
 
 .meaning-sub-panel-wrapper {
   padding-right: 20px;
+  min-height: 0;
+  overflow: auto;
 }
 
 .meaning-sub-panel {
-  padding: 1vw;
+  padding: 1vh 1vw;
   border-radius: 10px;
   flex-grow: 1;
 }

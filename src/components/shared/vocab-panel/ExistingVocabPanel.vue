@@ -1,21 +1,22 @@
 <template>
   <div class="existing-vocab-panel">
-    <MeaningEditingControls
-        @onMeaningEditSubmitted="onMeaningEditSubmitted"
-        @onMeaningDeleteClicked="onMeaningDeleteClicked"
-        :isSubmittingEditMeaningSet="isSubmittingEditMeaningSet"
-        :vocab-id="vocab.id"
-        :savedMeanings="vocab.learnerMeanings"/>
-
-    <button class="big-button capsule-button add-meaning-button" @click="addMeaning">
-      <inline-svg :src="icons.plus" class="more-button"/>
-    </button>
-
-    <h5>Set Level</h5>
-    <VocabLevelPicker :vocab="vocab"
-                      :level="vocab.level"
-                      @onVocabLevelButtonClicked="onVocabLevelButtonClicked"/>
-
+    <section class="existing-meanings-section">
+      <MeaningEditingControls
+          @onMeaningEditSubmitted="onMeaningEditSubmitted"
+          @onMeaningDeleteClicked="onMeaningDeleteClicked"
+          :isSubmittingEditMeaningSet="isSubmittingEditMeaningSet"
+          :vocab-id="vocab.id"
+          :savedMeanings="vocab.learnerMeanings"/>
+      <button class="big-button capsule-button add-meaning-button" @click="addMeaning">
+        <inline-svg :src="icons.plus" class="more-button"/>
+      </button>
+    </section>
+    <section class="level-pick-section">
+      <h5>Set Level</h5>
+      <VocabLevelPicker :vocab="vocab"
+                        :level="vocab.level"
+                        @onVocabLevelButtonClicked="onVocabLevelButtonClicked"/>
+    </section>
     <textarea class="notes"
               placeholder="Notes"
               v-model="notes"
@@ -81,9 +82,20 @@ export default {
 .existing-vocab-panel {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
+  row-gap: 0.75rem;
 }
 
+.existing-meanings-section {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+}
+.level-pick-section{
+
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+}
 .notes {
   resize: none;
   overflow: auto;

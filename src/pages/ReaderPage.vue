@@ -1,7 +1,7 @@
 <template>
   <Reader class="text-reader"
-                :languageCode="pathParams.learningLanguage"
-                :textId="pathParams.textId"/>
+          :languageCode="pathParams.learningLanguage"
+          :textId="pathParams.textId"/>
 </template>
 <script lang="ts">
 import {useStore} from "@/stores/backend/rootStore.js";

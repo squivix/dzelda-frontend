@@ -90,6 +90,8 @@ export default {
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
+  max-height: 198px;
+  overflow-y: auto;
 }
 
 .user-meanings > li > form {

@@ -99,7 +99,8 @@ h5 {
 .dictionaries > li {
   background-color: var(--dictionary-item-color);
   color: var(--on-background-color);
-  padding: 15px 10px;
+  padding: min(15px,2vh) 10px;
+  min-height: 30px;
   cursor: pointer;
   font-size: 1rem;
   border-radius: 5px;

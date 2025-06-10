@@ -29,7 +29,6 @@ export default defineComponent({
 </script>
 <style>
 .message-bar-queue {
-
 }
 
 .side-message-list {

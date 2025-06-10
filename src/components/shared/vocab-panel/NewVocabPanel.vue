@@ -85,7 +85,6 @@ export default {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
-
 }
 
 .mark-buttons-div {
