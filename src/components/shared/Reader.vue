@@ -1,5 +1,5 @@
 <template>
-  <LoadingScreen v-if="isLoadingText||!textTokens" :loadingStatus="loadingStatus"/>
+  <LoadingScreen v-if="isLoadingText" :loadingStatus="loadingStatus"/>
   <BaseCard class="base-card unselectable" v-else-if="text">
     <template v-slot:all>
       <EmptyScreen v-if="text.isProcessing" class="empty-screen-wrapper">
@@ -18,7 +18,7 @@
             <PagePanelButton :disabled="currentPage==1" :iconSrc="icons.arrowLeft" @click="currentPage--" class="left-button"/>
             <TextMainPane ref="textContentRef"
                           :page="currentPage"
-                          :textTokens="textTokens"
+                          :textTokens="textTokens!"
                           :currentPage="textTokenPages[currentPage-1]"
                           :selectedTokens="isSelectedNewPhrase?[]:selectedTokens"
                           :image="imageUrl"
@@ -52,7 +52,8 @@
               Your browser does not support the audio element.
             </audio>
           </div>
-          <PageIndicator class="page-indicators" :currentPage="currentPage" :pageCount="textTokenPages.length" @onPageIndicatorClicked="(page:number)=>currentPage=page"/>
+          <PageIndicator class="page-indicators" :currentPage="currentPage" :pageCount="textTokenPages.length"
+                         @onPageIndicatorClicked="(page:number)=>currentPage=page"/>
         </div>
       </template>
     </template>
@@ -185,7 +186,10 @@ export default defineComponent({
         await this.$router.push({name: "not-found"});
         return;
       }
-      this.isLoadingText = false;
+      if (this!.text?.isProcessing) {
+        this.isLoadingText = false;
+        return;
+      }
       await this.textStore.addTextToUserHistory({textId: this.textId});
       await this.fetchTextVocabs();
       this.parseText();
@@ -200,7 +204,10 @@ export default defineComponent({
       await this.$router.push({name: "not-found"});
       return;
     }
-    this.isLoadingText = false;
+    if (this!.text?.isProcessing) {
+      this.isLoadingText = false;
+      return;
+    }
     await this.textStore.addTextToUserHistory({textId: this.textId});
     await this.fetchTextVocabs();
     this.parseText();

@@ -139,6 +139,7 @@ export const useTextStore = defineStore("text", {
             const store = useStore();
             await store.fetchCustom((api) => api.users.postUsersMeTextsHidden({textId: body.textId}));
         },
+        //TODO add hidden texts page with ability to unhide
         async unhideTextForUser(pathParams: { textId: number }) {
             const store = useStore();
             await store.fetchCustom((api) => api.users.deleteUsersMeTextsHiddenTextId(pathParams.textId));
