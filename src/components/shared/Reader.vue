@@ -66,7 +66,7 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import PageIndicator from "@/components/page/reader/PageIndicator.vue";
 import ReaderSidePanel from "@/components/page/reader/ReaderSidePanel.vue";
 import PagePanelButton from "@/components/page/reader/PagePanelButton.vue";
-import {getParser, LearnerVocabSchema, TextSchema, TokenWithPhrases, TokeObjectPhrases, VocabLevel} from "dzelda-common";
+import {getParser, LearnerVocabSchema, TextSchema, TokenWithPhrases, TokeObjectPhrases, VocabLevel, VocabSchema} from "dzelda-common";
 import {icons} from "@/icons.js";
 import {useTextStore} from "@/stores/backend/textStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
@@ -74,6 +74,7 @@ import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import TextMainPane from "@/components/page/reader/TextMainPane.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import InlineSvg from "vue-inline-svg";
+import {useMeaningStore} from "@/stores/backend/meaningStore.js";
 
 export type NewVocab = Omit<LearnerVocabSchema, "id">
 export type TextTokenObject = Omit<TokenWithPhrases, "phrases"> & {
@@ -100,6 +101,7 @@ export default defineComponent({
       selectedOverLappingPhrasesTokens: null as TextTokenObject[][] | null,
       textTokens: null as { title: TextTokenObject[], text: TextTokenObject[] } | null,
       matchIndexToTokenIndex: {title: {}, text: {}} as { title: Record<number, number>, text: Record<number, number> },
+      vocabIdToVocab: null as null | Record<number, LearnerVocabSchema>,
       currentPage: 1,
       isLoadingText: false,
       loadingStatus: ""
@@ -180,6 +182,15 @@ export default defineComponent({
   },
   watch: {
     async textId() {
+      await this.loadTextForReading();
+    }
+  },
+
+  async mounted() {
+    await this.loadTextForReading();
+  },
+  methods: {
+    async loadTextForReading() {
       this.isLoadingText = true;
       await this.fetchText();
       if (this.text!.language !== this.languageCode) {
@@ -192,28 +203,11 @@ export default defineComponent({
       }
       await this.textStore.addTextToUserHistory({textId: this.textId});
       await this.fetchTextVocabs();
+      await this.fetchTextMeanings();
       this.parseText();
+      this.isLoadingText = false;
       this.currentPage = 1;
-      this.isLoadingText = false;
-    }
-  },
-  async mounted() {
-    this.isLoadingText = true;
-    await this.fetchText();
-    if (this.text!.language !== this.languageCode) {
-      await this.$router.push({name: "not-found"});
-      return;
-    }
-    if (this!.text?.isProcessing) {
-      this.isLoadingText = false;
-      return;
-    }
-    await this.textStore.addTextToUserHistory({textId: this.textId});
-    await this.fetchTextVocabs();
-    this.parseText();
-    this.isLoadingText = false;
-  },
-  methods: {
+    },
     async fetchText() {
       this.loadingStatus = "fetching text...";
       this.text = await this.textStore.fetchText({textId: this.textId});
@@ -234,14 +228,36 @@ export default defineComponent({
       const textVocabs = await this.vocabStore.fetchTextVocabs({textId: this.textId}, {});
       const words: Record<string, LearnerVocabSchema> = {};
       const phrases: Record<string, LearnerVocabSchema> = {};
+      this.vocabIdToVocab = {};
       for (const vocab of textVocabs) {
+        vocab.meanings = [];
+        vocab.learnerMeanings = [];
         if (!vocab.isPhrase)
           words[vocab.text] = vocab;
         else
           phrases[vocab.text] = vocab;
+        this.vocabIdToVocab[vocab.id] = vocab;
       }
       this.words = words;
       this.phrases = phrases;
+
+    },
+    async fetchTextMeanings() {
+      const {meanings, learnerMeanings: learnerMeaningIds} = await this.meaningStore.fetchTextMeanings({textId: this.textId});
+      const learnerMeaningIdSet = new Set(learnerMeaningIds!);
+
+      for (const meaning of meanings) {
+        const vocab = this.vocabIdToVocab![meaning.vocab];
+        if (vocab.isPhrase) {
+          this.phrases[vocab.text].meanings.push(meaning)
+          if (learnerMeaningIdSet.has(meaning.id))
+            this.phrases[vocab.text].learnerMeanings.push(structuredClone(meaning))
+        } else {
+          this.words[vocab.text].meanings.push(meaning)
+          if (learnerMeaningIdSet.has(meaning.id))
+            this.words[vocab.text].learnerMeanings.push(structuredClone(meaning))
+        }
+      }
     },
     setSelectedTokens(selectedTokens: TextTokenObject[]) {
       this.selectedTokens = selectedTokens;
@@ -354,6 +370,7 @@ export default defineComponent({
       icons,
       textStore: inject<ReturnType<typeof useTextStore>>("textStore", useTextStore()),
       vocabStore: inject<ReturnType<typeof useVocabStore>>("vocabStore", useVocabStore()),
+      meaningStore: inject<ReturnType<typeof useMeaningStore>>("meaningStore", useMeaningStore()),
     };
   }
 });

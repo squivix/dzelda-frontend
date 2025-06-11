@@ -1,9 +1,16 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {useMessageBarStore} from "@/stores/messageBarStore.js";
+import {minsToMs} from "@/utils.js";
 
 export const useMeaningStore = defineStore("meaning", {
     actions: {
+        async fetchTextMeanings(pathParams: { textId: number }) {
+            useMessageBarStore().clearTopBarMessages();
+            const store = useStore();
+            const response = await store.fetchCustom((api) => api.texts.getTextsTextIdMeanings(pathParams.textId, {secure: true}));
+            return response.data;
+        },
         async createMeaning(body: { text: string, vocabId: number, languageCode: string }) {
             useMessageBarStore().clearTopBarMessages();
             const store = useStore();
@@ -26,6 +33,15 @@ export const useMeaningStore = defineStore("meaning", {
             useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             await store.fetchCustom((api) => api.users.deleteUsersMeMeaningsMeaningId(pathParams.meaningId));
+        },
+        async fetchAttributionSource(pathParams: { attributionSourceId: number }, ignoreCache = false) {
+            useMessageBarStore().clearTopBarMessages();
+            const store = useStore();
+            const response = await store.fetchCustomWithCache(
+                (api) => api.attributionSources.getAttributionSourcesAttributionSourcesId(pathParams.attributionSourceId),
+                `fetchAttributionSource(${pathParams.attributionSourceId})`,
+                {expiryTimeInMs: minsToMs(10), clearCache: ignoreCache});
+            return response.data;
         },
     }
 });

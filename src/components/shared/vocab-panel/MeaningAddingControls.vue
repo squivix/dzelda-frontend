@@ -8,7 +8,7 @@
           <span>
             {{ meaning.text }}
           </span>
-          <AttributionIcon :attribution="meaning.attribution" :attributionSource="meaning.attributionSource" :scrollOffsetPx="-suggestedMeaningsScrollPosition"/>
+          <AttributionIcon :attribution="meaning.attribution" :attributionSourceId="meaning.attributionSource" :scrollOffsetPx="-suggestedMeaningsScrollPosition"/>
         </button>
       </li>
     </ol>

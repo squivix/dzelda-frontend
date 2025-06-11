@@ -4,12 +4,13 @@ import {minsToMs} from "@/utils.js";
 
 export const useDictionaryStore = defineStore("dictionary", {
     actions: {
-        async fetchDictionaries(queryParams: { languageCode?: string, isPronunciation?: boolean } = {}) {
+        async fetchDictionaries(queryParams: { languageCode?: string, isPronunciation?: boolean } = {}, ignoreCache = false) {
             const store = useStore();
             const response = await store.fetchCustomWithCache((api) => api.dictionaries.getDictionaries(queryParams),
                 `fetchDictionaries(${JSON.stringify(queryParams)})`,
                 {
-                    expiryTimeInMs: minsToMs(5)
+                    expiryTimeInMs: minsToMs(5),
+                    clearCache: ignoreCache
                 });
             return response.data;
         },

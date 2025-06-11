@@ -24,7 +24,7 @@
             <inline-svg :src="pronunciationPlaying===humanPronunciation?icons.stopPlayback:icons.audio"/>
             <p>{{ humanPronunciation.text }}</p>
           </div>
-          <AttributionIcon :attribution="humanPronunciation.attribution" :attributionSource="humanPronunciation.attributionSource" :scrollOffsetPx="-hpsListScrollPosition"/>
+          <AttributionIcon :attribution="humanPronunciation.attribution" :attributionSourceId="humanPronunciation.attributionSource?.id" :scrollOffsetPx="-hpsListScrollPosition"/>
         </li>
       </ul>
     </div>
