@@ -110,7 +110,7 @@ export default {
       title: "",
       content: "",
       level: LanguageLevel.ADVANCED_1,
-      isPublic: true,
+      isPublic: false,
       image: undefined as Blob | undefined,
       audio: undefined as File | undefined,
       isSubmitting: false,

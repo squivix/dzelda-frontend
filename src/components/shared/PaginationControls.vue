@@ -29,7 +29,7 @@ export default {
     pageSize: {type: Number, required: false,},
     perPageSelectOptions: {
       type: Array as PropType<number[]>, required: false, default() {
-        return [5, 10, 25, 50, 100];
+        return [10, 25, 50, 100];
       },
     },
     perPageSelectLabel: {type: String, required: false, default: "Max Per Page",},

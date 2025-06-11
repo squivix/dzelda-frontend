@@ -56,7 +56,7 @@ export const privateRoutes: RouteRecordRaw[] = [
         meta: {
             pathParams: {learningLanguage: pathParams.languageCode},
             queryParams: {
-                ...queryParams.generatePaginationQueryParams([5, 10, 25, 50, 100]),
+                ...queryParams.generatePaginationQueryParams([10, 25, 50, 100]),
                 ...queryParams.textFilters,
                 searchQuery: queryParams.searchQuery
             },
@@ -103,7 +103,7 @@ export const privateRoutes: RouteRecordRaw[] = [
                         resourceType: pathParams.resourceType,
                     },
                     queryParams: {
-                        ...queryParams.generatePaginationQueryParams([5, 10, 25, 50, 100]),
+                        ...queryParams.generatePaginationQueryParams([10, 25, 50, 100]),
                         ...queryParams.collectionFilters,
                         ...queryParams.textFilters,
                         searchQuery: queryParams.searchQuery
@@ -121,7 +121,7 @@ export const privateRoutes: RouteRecordRaw[] = [
                         resourceType: pathParams.resourceType,
                     },
                     queryParams: {
-                        ...queryParams.generatePaginationQueryParams([5, 10, 25, 50, 100]),
+                        ...queryParams.generatePaginationQueryParams([10, 25, 50, 100]),
                         ...excludeProperties(queryParams.collectionFilters, ["addedBy"]),
                         ...excludeProperties(queryParams.textFilters, ["addedBy"]),
                         searchQuery: queryParams.searchQuery
@@ -136,7 +136,7 @@ export const privateRoutes: RouteRecordRaw[] = [
                 meta: {
                     pathParams: {learningLanguage: pathParams.languageCode, resourceType: {schema: z.literal("texts")}},
                     queryParams: {
-                        ...queryParams.generatePaginationQueryParams([5, 10, 25, 50, 100]),
+                        ...queryParams.generatePaginationQueryParams([10, 25, 50, 100]),
                         ...queryParams.textFilters,
                         searchQuery: queryParams.searchQuery
                     }
