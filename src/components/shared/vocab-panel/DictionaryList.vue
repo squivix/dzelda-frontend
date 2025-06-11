@@ -91,16 +91,16 @@ h5 {
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
-  overflow-y: auto;
+
   padding-right: 5px;
+  overflow-y: auto;
   max-height: 200px;
 }
 
 .dictionaries > li {
   background-color: var(--dictionary-item-color);
   color: var(--on-background-color);
-  padding: min(15px,2vh) 10px;
-  min-height: 30px;
+  padding: 15px 10px;
   cursor: pointer;
   font-size: 1rem;
   border-radius: 5px;

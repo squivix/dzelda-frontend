@@ -1,12 +1,15 @@
 <template>
   <div v-if="attribution" class="attribution" @click.stop>
-    <img v-if="attributionSource?.logoUrl&&!logoError" :src="attributionSource.logoUrl" :alt="`${attributionSource.name} attribution logo`" class="attribution-icon" @error="logoError=true">
-    <inline-svg v-else :src="icons.info" class="attribution-icon"/>
-    <span class="attribution-popup" :style="{transform: `translateY(calc(-50% + ${scrollOffsetPx}px))`}">
-      <div v-html="renderMarkdown(attribution?.attributionMarkdown)">
+    <LoadingScreen v-if="isLoading"/>
+    <template v-else>
+      <img v-if="attributionSource?.logoUrl&&!logoError" :src="attributionSource.logoUrl" :alt="`${attributionSource.name} attribution logo`" class="attribution-icon" @error="logoError=true">
+      <inline-svg v-else :src="icons.info" class="attribution-icon"/>
+      <span class="attribution-popup" :style="{transform: `translateY(calc(-50% + ${scrollOffsetPx}px))`}">
+        <div v-html="renderMarkdown(attribution?.attributionMarkdown)">
 
-      </div>
-  </span>
+        </div>
+      </span>
+    </template>
   </div>
 </template>
 
@@ -16,19 +19,31 @@ import {AttributionSchema, AttributionSourceSchema} from "dzelda-common";
 import {renderMarkdown} from "@/utils.js";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
+import {useMeaningStore} from "@/stores/backend/meaningStore.js";
+import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 
 export default defineComponent({
   name: "AttributionIcon",
-  components: {InlineSvg},
+  components: {LoadingScreen, InlineSvg},
   props: {
     attribution: {type: [Object, null] as PropType<AttributionSchema | null>, required: true},
-    attributionSource: {type: [Object, null] as PropType<AttributionSourceSchema | null>, required: true},
+    attributionSourceId: {type: [Number] as PropType<number | undefined>, required: false},
     scrollOffsetPx: {type: Number, default: 0}
   },
   data() {
     return {
-      logoError: false
+      logoError: false,
+      attributionSource: null as AttributionSourceSchema | null,
+      isLoading: true,
     };
+  },
+  async mounted() {
+    const meaningStore = useMeaningStore()
+    if (this.attributionSourceId) {
+      this.isLoading = true;
+      this.attributionSource = await meaningStore.fetchAttributionSource({attributionSourceId: this.attributionSourceId});
+    }
+    this.isLoading = false;
   },
   setup() {
     return {
@@ -74,4 +89,14 @@ export default defineComponent({
   display: block;
 }
 
+.loading-screen {
+  height: auto;
+  padding: 0;
+}
+
+.loading-screen:deep(.spinner) {
+  width: 15px;
+  height: 15px;
+  color: white;
+}
 </style>
