@@ -3,7 +3,10 @@
     <template v-slot:content>
       <div class="page-wrapper">
         <div class="side-pane">
-          <BaseImage class="collection-image" :image-url="collection.image" :fall-back-url="icons.books" alt-text="collection image"/>
+          <div class="side-pane-top">
+            <BaseImage class="collection-image" :image-url="collection.image" :fall-back-url="icons.books" alt-text="collection image"/>
+            <VocabLevelStats :vocabsByLevel="collection.vocabsByLevel!" :isProcessing="isProcessing"/>
+          </div>
           <div class="side-pane-bottom">
             <div class="created-by-buttons-row">
               <h3>Created by</h3>
@@ -49,10 +52,11 @@ import {useUserStore} from "@/stores/backend/userStore.js";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {PropType} from "vue";
+import VocabLevelStats from "@/components/shared/content/VocabLevelStats.vue";
 
 export default {
   name: "CollectionPage",
-  components: {BaseImage, EmptyScreen, InlineSvg, TextListItem, BaseCard},
+  components: {VocabLevelStats, BaseImage, EmptyScreen, InlineSvg, TextListItem, BaseCard},
   props: {
     pathParams: {type: Object as PropType<{ collectionId: number }>, required: true}
   },
@@ -66,6 +70,14 @@ export default {
     this.loading = true;
     await this.fetchCollection();
     this.loading = false;
+  },
+  computed: {
+    isProcessing() {
+      if (this.collection)
+        return this.collection.texts.some(t => t.isProcessing)
+      else
+        return false;
+    }
   },
   methods: {
     async fetchCollection() {
@@ -110,6 +122,18 @@ export default {
 
 .collection-image {
   align-self: center;
+}
+
+.side-pane-top {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.5rem;
+}
+
+.stats {
+  flex-direction: column;
+  row-gap: 0.75rem;
+  align-items: flex-start;
 }
 
 .side-pane-bottom {
@@ -193,6 +217,10 @@ h3 {
     width: 175px;
     height: 175px;
   }
+  .stats {
+    flex-direction: row;
+  }
+
 }
 
 @media screen and (max-width: 500px) {

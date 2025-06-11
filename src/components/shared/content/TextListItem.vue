@@ -20,26 +20,7 @@
                 </router-link>
                 <p v-if="'timeViewed' in text" class="time-viewed">{{ timeViewed }}</p>
               </div>
-
-              <div v-if="text.isProcessing" class="processing-div">
-                <inline-svg :src="icons.hourglass" class="processing-icon"/>
-                <p>Processing...</p>
-              </div>
-              <div class="stats" v-else>
-                <div class="stats-count">
-                  <span class="vocabs-indicator new-vocabs"></span>
-                  <div>
-                    <span>{{ text.vocabsByLevel![VocabLevel.NEW] }} (</span>
-                    <span :class="newVocabsPercentageClass">{{ newVocabsPercentage }}%</span>
-                    <span>)</span>
-                  </div>
-
-                </div>
-                <div class="stats-count">
-                  <span class="vocabs-indicator saved-vocabs"></span>
-                  <span>{{ savedVocabsCount }}</span>
-                </div>
-              </div>
+              <VocabLevelStats :vocabsByLevel="text.vocabsByLevel!" :isProcessing="text.isProcessing"/>
             </div>
           </div>
           <div class="item-side">
@@ -89,9 +70,8 @@
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import {TextHistoryEntrySchema, TextSchema, VocabLevel, VocabsByLevelSchema} from "dzelda-common";
+import {TextHistoryEntrySchema, TextSchema, VocabLevel} from "dzelda-common";
 import {PropType} from "vue";
-import constants from "@/constants.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import {format} from "timeago.js";
@@ -99,10 +79,11 @@ import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {useTextStore} from "@/stores/backend/textStore.js";
 import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
+import VocabLevelStats from "@/components/shared/content/VocabLevelStats.vue";
 
 export default {
   name: "TextListItem",
-  components: {ConfirmDialog, InlineSvg, BaseDropDown, BaseImage, BaseCard},
+  components: {VocabLevelStats, ConfirmDialog, InlineSvg, BaseDropDown, BaseImage, BaseCard},
   emits: ["onHideTextClicked", "onReportTextClicked"],
   props: {
     text: {type: Object as PropType<TextSchema | TextHistoryEntrySchema>, required: true},
@@ -116,32 +97,6 @@ export default {
     imageUrl() {
       return (this.text.image || this.text.collection?.image) ?? "";
     },
-    newVocabsPercentage() {
-      const total = this.text.vocabsByLevel![VocabLevel.NEW] + this.savedVocabsCount;
-      if (total == 0) //prevent NaN% from dividing 0/0
-        return 0.00;
-      const percentage = (this.text.vocabsByLevel![VocabLevel.NEW] / total) * 100;
-      return Number(percentage.toFixed(2));
-    },
-    newVocabsPercentageClass() {
-      const p = this.newVocabsPercentage;
-      if (p >= 0 && p <= constants.NEW_VOCABS_PERCENTAGE_THRESH.easy)
-        return "easy";
-      else if (p <= constants.NEW_VOCABS_PERCENTAGE_THRESH.medium)
-        return "medium";
-      else
-        return "hard";
-    },
-    savedVocabsCount() {
-      let count = 0;
-      let level: keyof VocabsByLevelSchema;   //typescript is acting up :/
-      for (level in this.text.vocabsByLevel!) {
-        if (Number(level) !== VocabLevel.NEW && Number(level) !== VocabLevel.IGNORED) {
-          count += this.text.vocabsByLevel![level];
-        }
-      }
-      return count;
-    }
   },
   methods: {
     toggleIsBookmarked() {
@@ -215,32 +170,6 @@ article {
   min-height: 140px;
 }
 
-.vocabs-indicator {
-  width: 15px;
-  height: 15px;
-}
-
-.new-vocabs {
-  background-color: var(--vocab-new-color);
-}
-
-.saved-vocabs {
-  background-color: var(--vocab-level-1-color);
-}
-
-.stats {
-  display: flex;
-  column-gap: 1rem;
-  align-items: center;
-}
-
-.stats-count {
-  display: flex;
-  flex-direction: row;
-  column-gap: 0.25rem;
-  align-items: center;
-}
-
 .title-subtitle {
   display: flex;
   flex-direction: column;
@@ -272,7 +201,6 @@ h4 {
   color: gray;
 }
 
-
 a:hover {
   text-decoration: none;
 }
@@ -283,20 +211,6 @@ a:hover {
   cursor: pointer;
 }
 
-/*noinspection CssUnusedSymbol*/
-.easy {
-  color: green;
-}
-
-/*noinspection CssUnusedSymbol*/
-.medium {
-  color: #E09134;
-}
-
-/*noinspection CssUnusedSymbol*/
-.hard {
-  color: red;
-}
 
 @media screen and (max-width: 500px) {
   article {
@@ -323,12 +237,14 @@ a:hover {
     align-self: stretch;
   }
 }
-.processing-div{
+
+.processing-div {
   display: flex;
   align-items: center;
   column-gap: 0.7rem;
   color: dimgray;
 }
+
 .processing-icon {
   width: 18px;
   height: 18px;
