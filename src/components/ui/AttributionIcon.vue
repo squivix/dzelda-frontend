@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent, inject, PropType} from "vue";
 import {AttributionSchema, AttributionSourceSchema} from "dzelda-common";
 import {renderMarkdown} from "@/utils.js";
 import {icons} from "@/icons.js";
@@ -38,17 +38,17 @@ export default defineComponent({
     };
   },
   async mounted() {
-    const meaningStore = useMeaningStore()
     if (this.attributionSourceId) {
       this.isLoading = true;
-      this.attributionSource = await meaningStore.fetchAttributionSource({attributionSourceId: this.attributionSourceId});
+      this.attributionSource = await this.meaningStore.fetchAttributionSource({attributionSourceId: this.attributionSourceId});
     }
     this.isLoading = false;
   },
   setup() {
     return {
       icons,
-      renderMarkdown
+      renderMarkdown,
+      meaningStore: inject<ReturnType<typeof useMeaningStore>>("meaningStore", useMeaningStore()),
     };
   }
 });

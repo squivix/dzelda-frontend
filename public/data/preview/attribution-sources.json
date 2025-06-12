@@ -1,0 +1,7 @@
+[
+  {"id":1,"name":"Wiktionary","url":"https://wiktionary.com/","logoUrl":"https://files.dzelda.com/assets/logos/wiktionary.svg"},
+  {"id":2,"name":"Google Translate","url":"https://translate.google.com/","logoUrl":"https://files.dzelda.com/assets/logos/google-translate.svg"},
+  {"id":3,"name":"Wikimedia Commons","url":"https://commons.wikimedia.org","logoUrl":"https://files.dzelda.com/assets/logos/wikimedia-commons.svg"},
+  {"id":4,"name":"Lingua Libre","url":"https://lingualibre.org/","logoUrl":"https://files.dzelda.com/assets/logos/lingualibre.svg"},
+  {"id":5,"name":"The Shtooka Project","url":"https://shtooka.net/download.php","logoUrl":null}
+]

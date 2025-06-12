@@ -10,7 +10,7 @@ export type MeaningRow = {
     language: string,
     addedOn: string,
     vocab: number,
-    attributionSource: AttributionSourceSchema | null,
+    attributionSource: number | null,
     attribution: AttributionSchema | null
 };
 export type VocabRow = {
@@ -72,6 +72,12 @@ export type PreviewText = {
     title: string,
     languageVersions: Record<string, number>
 }
+export type AttributionSourceRow = {
+    id: number,
+    name: string,
+    url: string | undefined,
+    logoUrl: string | undefined
+}
 
 interface PreviewDBSchema extends DBSchema {
     meanings: {
@@ -79,7 +85,7 @@ interface PreviewDBSchema extends DBSchema {
         value: MeaningRow
         indexes: {
             vocabIndex: number,
-            languageIndex: string,
+            translationLanguageIndex: string,
             vocabLanguageIndex: [number, string]
         };
     };
@@ -109,9 +115,13 @@ interface PreviewDBSchema extends DBSchema {
             languageIndex: string,
         };
     };
+    attributionSources: {
+        key: number;
+        value: AttributionSourceRow
+    }
 }
 
-async function seedData(db: IDBPDatabase<PreviewDBSchema>, url: string, objectStore: "meanings" | "vocabs" | "texts" | "languages" | "previews" | "dictionaries") {
+async function seedData(db: IDBPDatabase<PreviewDBSchema>, url: string, objectStore: "meanings" | "vocabs" | "texts" | "languages" | "previews" | "dictionaries"|"attributionSources") {
     const response = await fetch(url);
     const data = await response.json();
     const transaction = db.transaction(objectStore, "readwrite");
@@ -129,17 +139,23 @@ export const useLocalPreviewStore = defineStore("localPreviewStore", {
         };
     },
     actions: {
+        async clearPreviewDb() {
+            this.previewDb = null;
+        },
         async getPreviewDb(): Promise<IDBPDatabase<PreviewDBSchema>> {
+            if (this.previewDb) {
+
+            }
             if (this.previewDb === null) {
                 return new Promise((resolve) => {
-                    const currentVersion = 1;
+                    const currentVersion = 2;
                     openDB<PreviewDBSchema>("PreviewData", currentVersion, {
                         upgrade(db, newVersion, oldVersion) {
                             for (const store of db.objectStoreNames)
                                 db.deleteObjectStore(store);
                             const meaningsStore = db.createObjectStore("meanings", {keyPath: "id"});
                             meaningsStore.createIndex("vocabIndex", "vocab");
-                            meaningsStore.createIndex("languageIndex", "language");
+                            meaningsStore.createIndex("translationLanguageIndex", "language");
                             meaningsStore.createIndex("vocabLanguageIndex", ["vocab", "language"]);
                             db.createObjectStore("vocabs", {keyPath: "id"});
                             db.createObjectStore("languages", {keyPath: "id"});
@@ -148,6 +164,10 @@ export const useLocalPreviewStore = defineStore("localPreviewStore", {
                             db.createObjectStore("previews", {keyPath: "id"});
                             const dictionariesStore = db.createObjectStore("dictionaries", {keyPath: "id"});
                             dictionariesStore.createIndex("languageIndex", "language");
+                            db.createObjectStore("attributionSources", {keyPath: "id"});
+                        },
+                        terminated() {
+                            useLocalPreviewStore().clearPreviewDb();
                         }
                     }).then(async (db) => {
                         if (await db.count("meanings") == 0)
@@ -162,6 +182,8 @@ export const useLocalPreviewStore = defineStore("localPreviewStore", {
                             await seedData(db, "data/preview/previews.json", "previews");
                         if (await db.count("dictionaries") == 0)
                             await seedData(db, "data/preview/dictionaries.json", "dictionaries");
+                        if (await db.count("attributionSources") == 0)
+                            await seedData(db, "data/preview/attribution-sources.json", "attributionSources");
                         this.previewDb = db;
                         resolve(db);
                     });
