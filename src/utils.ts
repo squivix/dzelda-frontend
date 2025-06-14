@@ -228,7 +228,7 @@ export function splitTextWithDelimiters(
         currentIndex = splitIndex;
     }
 
-    if (chunks[chunks.length - 1].length < softMinChunkLength &&
+    if (chunks.length >= 2 && chunks[chunks.length - 1].length < softMinChunkLength &&
         chunks[chunks.length - 2].length + chunks[chunks.length - 1].length < hardMaxChunkLength) {
         const last_chunk = chunks.pop();
         chunks[chunks.length - 1] += last_chunk;
