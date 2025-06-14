@@ -63,8 +63,8 @@
             <p v-if="errorFields.content" class="error-message">{{ errorFields.content }}</p>
           </div>
           <div class="form-row">
-            <label for="is-public-checkbox" class="checkbox-label">
-              <input type="checkbox" id="is-public-checkbox" v-model="isPublic" checked>
+            <label for="is-public-checkbox" class="checkbox-label" :title="isCollectionSelected?'Depends on collection public/private status':''">
+              <input type="checkbox" id="is-public-checkbox" v-model="isPublic" :disabled="isCollectionSelected">
               Public
             </label>
           </div>
@@ -145,10 +145,18 @@ export default defineComponent({
       isDeleteTextConfirmShown: false,
     };
   },
+  computed: {
+    isCollectionSelected() {
+      return this.selectedCollection != null
+    }
+  },
   watch: {
     selectedCollection(newVal) {
       if (newVal === "new-collection")
         this.isCreateCollectionDialogShown = true;
+      else if (newVal != null && this.editableCollections !== null) {
+        this.isPublic = this.editableCollections.find((c) => c.id == this.selectedCollection)!.isPublic;
+      }
     },
   },
   methods: {
@@ -246,8 +254,8 @@ export default defineComponent({
     },
   },
   async mounted() {
-    await this.fetchText();
     await this.fetchEditableCollections();
+    await this.fetchText();
   },
   setup() {
     return {
@@ -296,12 +304,13 @@ form {
 .side-inputs {
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 .main-inputs {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  flex: 3;
 }
 
 label {
