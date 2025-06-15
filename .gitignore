@@ -30,3 +30,6 @@ coverage
 *.env
 !example.env
 tsconfig.tsbuildinfo
+
+.yalc
+yalc.lock
