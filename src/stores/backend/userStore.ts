@@ -22,7 +22,7 @@ export const useUserStore = defineStore("auth", {
             if (this.userAccount && !ignoreCache)
                 return this.userAccount;
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.getUsersUsername("me"));
+            const response = await store.fetchCustom((api) => api.users.getUsersUsername("me"), {clearMessageBar: false});
 
             this.userAccount = response.data;
             return response.data;
@@ -32,7 +32,6 @@ export const useUserStore = defineStore("auth", {
             username: string,
             password: string
         }) {
-            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.postUsers({
                 email: body.email,
@@ -47,7 +46,6 @@ export const useUserStore = defineStore("auth", {
             username: string,
             password: string
         }) {
-            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.sessions.postSessions({
                 username: body.username,
@@ -60,8 +58,7 @@ export const useUserStore = defineStore("auth", {
             this.authToken = response.data.authToken;
             return;
         },
-        async signOut() {
-            useMessageBarStore().clearTopBarMessages();
+        async signOut() {;
             const store = useStore();
             await store.fetchCustom((api) => api.sessions.deleteSessions(), {ignore401: true});
             this.clearUserData();
@@ -70,7 +67,6 @@ export const useUserStore = defineStore("auth", {
         async requestEmailConfirmToken(body: {
             email?: string
         }) {
-            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             return await store.fetchCustom((api) => api.emailConfirmTokens.postEmailConfirmTokens({email: body.email}, {format: "json"}));
         },
@@ -78,7 +74,6 @@ export const useUserStore = defineStore("auth", {
             username: string,
             email: string
         }) {
-            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             await store.fetchCustom((api) => api.passwordResetTokens.postPasswordResetTokens({
                 username: body.username,
@@ -96,7 +91,6 @@ export const useUserStore = defineStore("auth", {
             token: string,
             newPassword: string
         }) {
-            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             return await store.fetchCustom((api) => api.users.postUsersMePasswordReset({
                 token: body.token,
@@ -137,7 +131,6 @@ export const useUserStore = defineStore("auth", {
                 return response.error;
         },
         async deleteAccount() {
-            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.deleteUsersMe());
             if (response.ok) {
@@ -150,7 +143,6 @@ export const useUserStore = defineStore("auth", {
             return response.ok;
         },
         async updateUserProfile(body: { bio: string, profilePicture: string | undefined }) {
-            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.putUsersMeProfile(cleanUndefined({
                 bio: body.bio,

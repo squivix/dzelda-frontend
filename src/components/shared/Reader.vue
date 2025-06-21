@@ -37,6 +37,7 @@
           <ReaderSidePanel class="side-panel"
                            :selectedOverLappingPhrasesTokens="selectedOverLappingPhrasesTokens"
                            :selectedVocab="selectedVocab"
+                           :selectedUnparsedText="selectedUnparsedText"
                            :phrases="phrases"
                            @onVocabUpdated="updateVocabData"
                            @onVocabDeleted="deleteVocabData"
@@ -66,7 +67,7 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import PageIndicator from "@/components/page/reader/PageIndicator.vue";
 import ReaderSidePanel from "@/components/page/reader/ReaderSidePanel.vue";
 import PagePanelButton from "@/components/page/reader/PagePanelButton.vue";
-import {getParser, LearnerVocabSchema, TextSchema, TokenWithPhrases, TokeObjectPhrases, VocabLevel, VocabSchema} from "dzelda-common";
+import {getParser, LearnerVocabSchema, TextSchema, TokenWithPhrases, TokeObjectPhrases, VocabLevel} from "dzelda-common";
 import {icons} from "@/icons.js";
 import {useTextStore} from "@/stores/backend/textStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
@@ -142,6 +143,11 @@ export default defineComponent({
       tokenPages.push(this.textTokens.text.slice(pageStartIndex));
       return tokenPages;
     },
+    selectedUnparsedText() {
+      if (this.selectedTokens.length == 0)
+        return;
+      return this.selectedTokens.filter(t => t.isWord).map(t => t.text).join(" ");
+    },
     selectedVocab() {
       if (this.selectedTokens.length == 0)
         return null;
@@ -166,6 +172,7 @@ export default defineComponent({
           learnersCount: 0,
           tags: [],
           rootForms: [],
+          variants: [],
         } as NewVocab;
     },
     isSelectedNewPhrase() {
@@ -293,18 +300,10 @@ export default defineComponent({
     },
     deleteVocabData(vocab: LearnerVocabSchema) {
       const newVocab: LearnerVocabSchema = {
-        id: vocab.id,
-        text: vocab.text,
+        ...vocab,
         level: VocabLevel.NEW,
-        isPhrase: vocab.isPhrase,
         notes: null,
-        language: vocab.language,
-        meanings: vocab.meanings,
         learnerMeanings: [],
-        ttsPronunciationUrl: null,
-        tags: vocab.tags,
-        rootForms: vocab.rootForms,
-        learnersCount: vocab.learnersCount
       };
       if (vocab.isPhrase)
         this.phrases[vocab.text] = newVocab;

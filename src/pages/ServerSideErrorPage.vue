@@ -8,7 +8,6 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 
 export default defineComponent({
   name: "ServerSideErrorPage",

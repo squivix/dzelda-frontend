@@ -7,7 +7,6 @@
 </template>
 
 <script lang="ts">
-import {useDebounceFn, useResizeObserver} from "@vueuse/core";
 
 export default {
   name: "BasePointyDiv",

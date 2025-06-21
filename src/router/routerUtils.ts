@@ -1,5 +1,4 @@
 import {RouteLocationNormalized, RouteMeta, RouteRecordRaw} from "vue-router";
-import {z} from "zod";
 
 export function setDefaultRouteMeta(routes: RouteRecordRaw[], defaultMeta: RouteMeta) {
     for (const route of routes) {

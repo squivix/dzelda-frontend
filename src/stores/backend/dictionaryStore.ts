@@ -10,7 +10,8 @@ export const useDictionaryStore = defineStore("dictionary", {
                 `fetchDictionaries(${JSON.stringify(queryParams)})`,
                 {
                     expiryTimeInMs: minsToMs(5),
-                    clearCache: ignoreCache
+                    clearCache: ignoreCache,
+                    clearMessageBar: false
                 });
             return response.data;
         },
@@ -20,7 +21,8 @@ export const useDictionaryStore = defineStore("dictionary", {
                 `fetchUserDictionaries(${JSON.stringify(queryParams)})`,
                 {
                     expiryTimeInMs: minsToMs(5),
-                    clearCache: ignoreCache
+                    clearCache: ignoreCache,
+                    clearMessageBar: false
                 });
             return response.data;
         },

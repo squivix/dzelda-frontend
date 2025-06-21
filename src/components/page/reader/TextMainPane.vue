@@ -3,7 +3,7 @@
     <div class="title-section" v-if="showTopBar">
       <BaseImage :image-url="image" :fall-back-url="icons.bookOpen"
                  alt-text="text image" class="text-image"/>
-      <h2 class="title">
+      <h2 class="title" :dir="readingDirection">
         <TextToken v-for="(token, index) in textTokens.title"
                    :key="index"
                    :token="token"
@@ -18,7 +18,7 @@
                    @setIsPhraseFirstClick="setIsPhraseFirstClick"/>
       </h2>
     </div>
-    <p class="content styled-scrollbars" ref="paragraphRef">
+    <p class="content styled-scrollbars" ref="paragraphRef" :dir="readingDirection">
       <TextToken v-for="(token, index) in currentPage"
                  :key="index"
                  :token="token"
@@ -37,13 +37,14 @@
 
 <script lang="ts">
 import BaseImage from "@/components/ui/BaseImage.vue";
-import {PropType} from "vue";
+import {inject, PropType} from "vue";
 import {LearnerVocabSchema, VocabLevel} from "dzelda-common";
 import {getTextSelectedElements} from "@/utils.js";
 import {useEventListener} from "@vueuse/core";
 import {icons} from "@/icons.js";
 import {TextTokenObject} from "@/components/shared/Reader.vue";
 import TextToken from "@/components/page/reader/TextToken.vue";
+import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 export default {
   name: "TextMainPane",
@@ -69,6 +70,9 @@ export default {
     selectedTokenIndexes() {
       return new Set(this.selectedTokens.map(t => t.index));
     },
+    readingDirection() {
+      return this.languageStore.currentLanguage!.isRtl ? "rtl" : "ltr";
+    }
   },
   watch: {
     currentPage() {
@@ -164,7 +168,10 @@ export default {
     useEventListener(document.body, "mousedown", this.onBackgroundClicked);
   },
   setup() {
-    return {icons};
+    return {
+      icons,
+      languageStore: inject<ReturnType<typeof useLanguageStore>>("languageStore", useLanguageStore()),
+    };
   }
 };
 </script>

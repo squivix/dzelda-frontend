@@ -1,7 +1,9 @@
 <template>
   <div class="vocab-panel-container">
     <template v-if="vocab">
-      <VocabPanelTopBar :vocab="vocab"
+      <VocabPanelTopBar :text="unnormalizedText"
+                        :ttsUrl="ttsUrl"
+                        :vocab="vocab"
                         :isPronunciationPanelShown="isPronunciationPanelShown"
                         @onPronunciationButtonClicked="isPronunciationPanelShown=!isPronunciationPanelShown"
                         :isGeneratingTTS="isGeneratingTTS"
@@ -61,6 +63,7 @@ export default {
   },
   props: {
     vocab: {type: Object as PropType<LearnerVocabSchema | NewVocab | null>, default: null},
+    unnormalizedText: {type: String, optional: true},
     onVocabRefetched: {type: Function as PropType<(updatedVocab: LearnerVocabSchema) => void>},
   },
   data() {
@@ -89,6 +92,18 @@ export default {
         return undefined;
       else
         return this.vocab as LearnerVocabSchema;
+    },
+    vocabVariant() {
+      if (!this.vocab || !this.vocab.variants)
+        return
+      const variantIndex = this.vocab.variants.findIndex(variant => variant.text === this.unnormalizedText);
+      return this.vocab.variants[variantIndex]
+    },
+    ttsUrl() {
+      if (this.vocabVariant)
+        return this.vocabVariant.ttsPronunciationUrl;
+      else
+        return this.vocab?.ttsPronunciationUrl ?? null;
     }
   },
   watch: {
@@ -148,6 +163,7 @@ export default {
           text: this.vocab.text,
           languageCode: this.vocab.language,
           isPhrase: this.vocab.isPhrase,
+          variantText: this.unnormalizedText
         });
         newVocab = await this.vocabStore.addVocabToUser({vocabId: vocab.id});
         this.$emit("onNewVocabCreated", newVocab);
@@ -197,32 +213,54 @@ export default {
         return;
       this.isGeneratingTTS = true;
       let vocab: LearnerVocabSchema | VocabSchema;
+      let vocabVariantId: number | undefined = undefined;
+      let updatedVariants = this.vocab.variants;
       if (!("id" in this.vocab)) {
         vocab = {
           ...await this.vocabStore.createVocab({
             text: this.vocab.text,
             languageCode: this.vocab.language,
             isPhrase: this.vocab.isPhrase,
+            variantText: this.unnormalizedText
           }),
           level: VocabLevel.NEW,
           notes: null,
           learnerMeanings: [],
           ttsPronunciationUrl: null,
           learnersCount: 0,
-          tags: [],
           rootForms: [],
         };
+        vocabVariantId = vocab.variants[0]?.id;
+        updatedVariants = vocab.variants;
         this.$emit("onNewVocabCreated", vocab);
-      } else
+      } else {
         vocab = this.vocab;
+        if (this.vocabVariant)
+          vocabVariantId = this.vocabVariant.id;
+        else if (this.unnormalizedText && this.unnormalizedText != this.vocab.text) {
+          const newVariant = await this.vocabStore.createVocabVariant({vocabId: this.vocab.id, text: this.unnormalizedText})
+          vocabVariantId = newVariant.id;
+          updatedVariants = [...this.vocab.variants, newVariant];
+        }
+      }
+
       const preferredVoice = this.languageStore.userLanguages?.find((l) => l.code === vocab.language)?.preferredTtsVoice;
       const ttsPronunciation = await this.vocabStore.generateVocabTTS({
         vocabId: vocab.id,
-        voiceCode: preferredVoice?.code
+        voiceCode: preferredVoice?.code,
+        vocabVariantId: vocabVariantId
       });
 
-      if (ttsPronunciation)
-        this.$emit("onVocabUpdated", vocab, {ttsPronunciationUrl: ttsPronunciation!.url});
+      if (ttsPronunciation) {
+        if (!ttsPronunciation.variantId)
+          this.$emit("onVocabUpdated", vocab, {ttsPronunciationUrl: ttsPronunciation.url});
+        else {
+          updatedVariants = updatedVariants.map(variant => variant.id === ttsPronunciation.variantId ? {...variant, ttsPronunciationUrl: ttsPronunciation.url} : variant)
+          this.$emit("onVocabUpdated", vocab, {
+            variants: updatedVariants
+          });
+        }
+      }
       this.isGeneratingTTS = false;
     }
   },
@@ -238,11 +276,12 @@ export default {
 </script>
 
 <style scoped>
-.vocab-panel-container{
+.vocab-panel-container {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
+
 .tags {
   margin-bottom: 0.3rem;
   min-height: 1lh;

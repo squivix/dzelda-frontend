@@ -3,6 +3,7 @@ import {defineStore} from "pinia";
 import {getAcceptablyRandomId} from "@/utils.js";
 import {useLocalPreviewStore, VocabRow} from "@/stores/backend/local-preview/localPreviewStore.js";
 import {escapeRegExp} from "dzelda-common/build/src/utils/utils.js";
+import {useStore} from "@/stores/backend/rootStore.js";
 
 export const useVocabStoreMock = defineStore("vocabStoreMock", {
         actions: {
@@ -86,7 +87,10 @@ export const useVocabStoreMock = defineStore("vocabStoreMock", {
                     meanings: await previewDb.getAllFromIndex("meanings", "vocabIndex", vocab.id),
                     learnerMeanings: await localPreviewStore.populateIdsArray(vocab.learnerMeanings, "meanings"),
                 };
-            }
+            },
+            async fetchVocabVariants(pathParams: { vocabId: number }) {
+                throw new Error("Not implemented: vocabStoreMock.fetchVocabVariants")
+            },
         }
     }
 );

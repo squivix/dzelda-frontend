@@ -36,7 +36,7 @@
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import {MeaningSchema} from "dzelda-common";
-import {inject, onMounted, PropType, ref} from "vue";
+import {inject, PropType, ref} from "vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {renderMarkdown} from "@/utils.js";
 import AttributionIcon from "@/components/ui/AttributionIcon.vue";

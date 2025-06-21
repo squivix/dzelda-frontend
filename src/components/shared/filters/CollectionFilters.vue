@@ -25,7 +25,6 @@ import {defineComponent, PropType} from "vue";
 import BaseCollapsableDiv from "@/components/ui/BaseCollapsableDiv.vue";
 import BaseFiltersCard from "@/components/ui/BaseFiltersCard.vue";
 import constants from "@/constants.js";
-import {useDebounceFn, useResizeObserver} from "@vueuse/core";
 
 export const collectionFilterFields = ["addedBy"] as const;
 export type CollectionFiltersObject = Partial<{ addedBy: string }>

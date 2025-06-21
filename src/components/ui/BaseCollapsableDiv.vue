@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import {refDebounced, useDebounceFn, useResizeObserver} from "@vueuse/core";
+import {useDebounceFn, useResizeObserver} from "@vueuse/core";
 
 export default defineComponent({
   name: "BaseCollapsableDiv",

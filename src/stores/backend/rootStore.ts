@@ -28,12 +28,14 @@ export const useStore = defineStore("main", {
                 clearCache = false,
                 expiryTimeInMs,
                 ignore401 = false,
-                ignore5XX = false
+                ignore5XX = false,
+                clearMessageBar = true
             }: {
                 clearCache?: boolean,
                 expiryTimeInMs?: number,
                 ignore401?: boolean,
                 ignore5XX?: boolean
+                clearMessageBar?: boolean
             }): Promise<CacheReturnType<T> | HttpResponse<T, E>> {
                 const userStore = useUserStore();
                 this.apiClient.setSecurityData(userStore.authToken);
@@ -46,15 +48,18 @@ export const useStore = defineStore("main", {
                     else
                         return {ok: true, cacheHit: true, data: this.cache[cacheKey].data};
                 }
-                const response = await this.fetchCustom(endpoint, {ignore401, ignore5XX});
+                const response = await this.fetchCustom(endpoint, {ignore401, ignore5XX, clearMessageBar});
                 if (cacheKey !== undefined)
                     this.cache[cacheKey] = {timeCached: new Date(), data: response.data, expiryTimeInMs: expiryTimeInMs ?? DEFAULT_CACHE_TIME};
                 return response;
             },
-            async fetchCustom<T, E>(endpoint: (api: ApiClient<string>) => Promise<HttpResponse<T, E>>, {ignore401 = false, ignore5XX = false}: {
+            async fetchCustom<T, E>(endpoint: (api: ApiClient<string>) => Promise<HttpResponse<T, E>>, {ignore401 = false, ignore5XX = false, clearMessageBar = true}: {
                 ignore401?: boolean,
-                ignore5XX?: boolean
+                ignore5XX?: boolean,
+                clearMessageBar?: boolean
             } = {}) {
+                if (clearMessageBar)
+                    useMessageBarStore().clearTopBarMessages();
                 const userStore = useUserStore();
                 this.apiClient.setSecurityData(userStore.authToken);
                 let response;

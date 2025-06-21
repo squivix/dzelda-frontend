@@ -2,16 +2,16 @@
   <div class="top-bar">
     <div class="left-side">
       <template v-if="!isPronunciationPanelShown">
-        <button v-if="vocab.ttsPronunciationUrl" class="audio-button" @click="onPlayTTSButtonClicked">
+        <button v-if="ttsUrl" class="audio-button" @click="onPlayTTSButtonClicked">
           <inline-svg :src="isPlaying?icons.stopPlayback:icons.audio"/>
-          <audio ref="ttsAudioElement" @play="isPlaying=true" @ended="isPlaying=false" :src="vocab.ttsPronunciationUrl" autoplay></audio>
+          <audio ref="ttsAudioElement" @play="isPlaying=true" @ended="isPlaying=false" :src="ttsUrl" autoplay></audio>
         </button>
         <SubmitButton v-else-if="allowGenerateTTS" class="audio-button" :iconSrc="icons.tts" @click="$emit('onGenerateTTSButtonClicked')" :isSubmitting="isGeneratingTTS"/>
       </template>
 
-      <h4 class="vocab-text">{{ vocab.text }}</h4>
+      <h4 class="vocab-text">{{ text }}</h4>
     </div>
-    <button :class="{'pronunciations-button':true,'hidden-gone':!allowOpenPronunciationPanel}"  @click="$emit('onPronunciationButtonClicked')">
+    <button :class="{'pronunciations-button':true,'hidden-gone':!allowOpenPronunciationPanel}" @click="$emit('onPronunciationButtonClicked')">
       <span>
         <inline-svg :src="icons.pronunciation"/>
       </span>
@@ -34,6 +34,8 @@ export default defineComponent({
   emits: ["onPronunciationButtonClicked", "onGenerateTTSButtonClicked"],
   props: {
     vocab: {type: Object as PropType<LearnerVocabSchema | NewVocab>, default: null},
+    text: {type: String, optional: true},
+    ttsUrl: {type: String as PropType<string | null>, default: null},
     isPronunciationPanelShown: {type: Boolean, default: false},
     isGeneratingTTS: {type: Boolean, default: false},
   },
@@ -42,6 +44,7 @@ export default defineComponent({
       isPlaying: true,
     };
   },
+  computed: {},
   methods: {
     onPlayTTSButtonClicked() {
       const audioElement = (this.$refs["ttsAudioElement"] as HTMLAudioElement);
@@ -61,7 +64,7 @@ export default defineComponent({
     return {
       languageStore: useLanguageStore(),
       allowGenerateTTS: inject<boolean>("allowGenerateTTS", true),
-      allowOpenPronunciationPanel:inject<boolean>("allowOpenPronunciationPanel", true),
+      allowOpenPronunciationPanel: inject<boolean>("allowOpenPronunciationPanel", true),
       icons,
     };
   }

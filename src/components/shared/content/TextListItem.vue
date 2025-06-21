@@ -80,6 +80,7 @@ import {useUserStore} from "@/stores/backend/userStore.js";
 import {useTextStore} from "@/stores/backend/textStore.js";
 import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
 import VocabLevelStats from "@/components/shared/content/VocabLevelStats.vue";
+import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 export default {
   name: "TextListItem",
@@ -97,6 +98,9 @@ export default {
     imageUrl() {
       return (this.text.image || this.text.collection?.image) ?? "";
     },
+    readingDirection() {
+      return this.languageStore.currentLanguage!.isRtl ? "rtl" : "ltr";
+    }
   },
   methods: {
     toggleIsBookmarked() {
@@ -110,6 +114,7 @@ export default {
       icons,
       textStore: useTextStore(),
       userStore: useUserStore(),
+      languageStore: useLanguageStore(),
     };
   }
 };

@@ -37,12 +37,12 @@
     <div class="main-inputs">
       <div class="form-row">
         <label for="text-title">Title</label>
-        <input id="text-title" type="text" placeholder="Enter the title" v-model="title" required maxlength="124">
+        <input id="text-title" type="text" placeholder="Enter the title" v-model="title" required maxlength="124" :dir="title!=''?readingDirection:'ltr'">
         <p v-if="errorFields.title" class="error-message">{{ errorFields.title }}</p>
       </div>
       <div class="form-row">
         <label for="text-text">Text</label>
-        <textarea placeholder="Enter the text" id="text-content" v-model="content" required></textarea>
+        <textarea placeholder="Enter the text" id="text-content" v-model="content" required :dir="content!=''?readingDirection:'ltr'"></textarea>
         <p v-if="content.length>25_000" class="warning-message">
           <template v-if="isSubmitting">
             Please be patient...
@@ -84,7 +84,7 @@ import {CollectionSchema, LanguageLevel, mebiBytes} from "dzelda-common";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {icons} from "@/icons.js";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
-import {PropType} from "vue";
+import {inject, PropType} from "vue";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import AudioUploadInput from "@/components/shared/AudioUploadInput.vue";
 import path from "path";
@@ -92,6 +92,7 @@ import {toSentenceCase} from "@/utils";
 import BaseDialog from "@/components/ui/BaseDialog.vue";
 import CreateCollectionForm from "@/components/shared/create-collection/CreateCollectionForm.vue";
 import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
+import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 export default {
   name: "CreateTextPage",
@@ -122,6 +123,9 @@ export default {
   computed: {
     isCollectionSelected() {
       return this.selectedCollection != null
+    },
+    readingDirection() {
+      return this.languageStore.currentLanguage!.isRtl ? "rtl" : "ltr";
     }
   },
   watch: {
@@ -226,6 +230,7 @@ export default {
       collectionStore: useCollectionStore(),
       textStore: useTextStore(),
       userStore: useUserStore(),
+      languageStore: useLanguageStore(),
     };
   }
 };
