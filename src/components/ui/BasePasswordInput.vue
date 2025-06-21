@@ -15,7 +15,6 @@
 <script lang="ts">
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import {InputType} from "zlib";
 
 export default {
   name: "BasePasswordInput",

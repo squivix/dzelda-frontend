@@ -20,7 +20,7 @@ export const useTextStore = defineStore("text", {
             secure?: boolean
         } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.texts.getTexts(queryParams, {secure: secure}));
+            const response = await store.fetchCustom((api) => api.texts.getTexts(queryParams, {secure: secure}), {clearMessageBar: false});
             return response.data;
         },
         async fetchTextsInHistory(queryParams: {
@@ -32,7 +32,7 @@ export const useTextStore = defineStore("text", {
             page?: number
         } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.getUsersMeTextsHistory(queryParams));
+            const response = await store.fetchCustom((api) => api.users.getUsersMeTextsHistory(queryParams), {clearMessageBar: false});
             return response.data;
         },
         async createText(body: {
@@ -45,7 +45,6 @@ export const useTextStore = defineStore("text", {
             image: string | undefined,
             audio: string | undefined
         }) {
-            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             return await store.fetchCustom((api) => api.texts.postTexts(cleanUndefined({
                 title: body.title,
@@ -92,7 +91,7 @@ export const useTextStore = defineStore("text", {
         },
         async fetchText(pathParams: { textId: number }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.texts.getTextsTextId(pathParams.textId));
+            const response = await store.fetchCustom((api) => api.texts.getTextsTextId(pathParams.textId), {clearMessageBar: false});
             if (response.status == 404)
                 await this.router.push({name: "not-found"});
             return response.data;
@@ -132,7 +131,7 @@ export const useTextStore = defineStore("text", {
             page?: number
         } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.getUsersMeTextsBookmarked(queryParams));
+            const response = await store.fetchCustom((api) => api.users.getUsersMeTextsBookmarked(queryParams), {clearMessageBar: false});
             return response.data;
         },
         async hideTextForUser(body: { textId: number }) {

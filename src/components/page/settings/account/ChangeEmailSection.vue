@@ -29,7 +29,6 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import BaseChangeableInput from "@/components/ui/BaseChangeableInput.vue";
-import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";

@@ -46,6 +46,7 @@
           <div class="vocab-panel-wrapper" v-if="vocabs&&vocabs.length>0">
             <VocabPanel :class="{'vocab-panel':!!selectedVocab}"
                         :vocab="selectedVocab"
+                        :unnormalizedText="selectedVocab?.text"
                         @mousedown.stop
                         @onVocabUpdated="updateVocabData"
                         @onVocabDeleted="removeVocabFromResults"
@@ -143,6 +144,13 @@ export default {
       if ([VocabLevel.IGNORED, VocabLevel.KNOWN].includes(updatedVocabData.level!)) {
         this.removeVocabFromResults(vocab);
         return;
+      }
+      if (updatedVocabData.variants && Array.isArray(updatedVocabData.variants)) {
+        const changedVariantByIds = new Map(updatedVocabData.variants.map(v => [v.id, v]));
+        updatedVocabData.variants = vocab.variants.map(existing => {
+          const updated = changedVariantByIds.get(existing.id)
+          return updated ? {...existing, ...updated} : existing;
+        });
       }
       const updatedVocab = {...vocab, ...updatedVocabData};
       for (let i = 0; i < this.vocabs!.length; i++)

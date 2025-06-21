@@ -18,7 +18,7 @@ export const useCollectionStore = defineStore("collection", {
             secure?: boolean
         } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.collections.getCollections(queryParams, {secure: secure}));
+            const response = await store.fetchCustom((api) => api.collections.getCollections(queryParams, {secure: secure}), {clearMessageBar:false});
 
             return response.data;
         },
@@ -30,7 +30,7 @@ export const useCollectionStore = defineStore("collection", {
             page?: number
         } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.users.getUsersMeCollectionsBookmarked(queryParams));
+            const response = await store.fetchCustom((api) => api.users.getUsersMeCollectionsBookmarked(queryParams), {clearMessageBar:false});
 
             return response.data;
         },
@@ -42,7 +42,6 @@ export const useCollectionStore = defineStore("collection", {
             isPublic: boolean,
             texts?: Array<{ title: string, content: string }>
         }) {
-            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             return await store.fetchCustom((api) => api.collections.postCollections(cleanUndefined({
                 languageCode: body.languageCode,
@@ -57,7 +56,7 @@ export const useCollectionStore = defineStore("collection", {
             collectionId: number
         }) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.collections.getCollectionsCollectionId(pathParams.collectionId)) as Awaited<ReturnType<typeof store.apiClient.collections.getCollectionsCollectionId>>;
+            const response = await store.fetchCustom((api) => api.collections.getCollectionsCollectionId(pathParams.collectionId), {clearMessageBar:false}) as Awaited<ReturnType<typeof store.apiClient.collections.getCollectionsCollectionId>>;
 
             if (response.status == 404)
                 await this.router.push({name: "not-found"});
@@ -72,7 +71,6 @@ export const useCollectionStore = defineStore("collection", {
             isPublic: boolean,
             textsOrder: number[]
         }) {
-            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             return await store.fetchCustom((api) => api.collections.putCollectionsCollectionId(pathParams.collectionId,
                 cleanUndefined({
@@ -92,7 +90,6 @@ export const useCollectionStore = defineStore("collection", {
         async addCollectionToUserBookmarks(body: {
             collectionId: number
         }) {
-            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.postUsersMeCollectionsBookmarked({collectionId: body.collectionId}));
             return response.data;
@@ -100,13 +97,11 @@ export const useCollectionStore = defineStore("collection", {
         async removeCollectionFromUserBookmarks(pathParams: {
             collectionId: number
         }) {
-            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.deleteUsersMeCollectionsBookmarkedCollectionId(pathParams.collectionId));
             return response.data;
         },
         async deleteCollection(pathParams: { collectionId: number },queryParams:{cascadeTexts:boolean}) {
-            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             await store.fetchCustom((api) => api.collections.deleteCollectionsCollectionId(pathParams.collectionId,{cascadeTexts:queryParams.cascadeTexts}));
         }

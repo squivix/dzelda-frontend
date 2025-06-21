@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {DBSchema, IDBPDatabase, openDB} from "idb";
-import {AttributionSchema, AttributionSourceSchema, LanguageLevelSchema, VocabLevelSchema, VocabTagSchema} from "dzelda-common";
+import {AttributionSchema, LanguageLevelSchema, VocabLevelSchema, VocabTagSchema} from "dzelda-common";
 
 export type MeaningRow = {
     id: number,

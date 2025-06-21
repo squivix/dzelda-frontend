@@ -40,7 +40,6 @@
 </template>
 
 <script lang="ts">
-import {useStore} from "@/stores/backend/rootStore.js";
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
 import {PropType} from "vue";

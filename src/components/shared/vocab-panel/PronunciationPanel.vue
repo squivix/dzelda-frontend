@@ -50,7 +50,6 @@ import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {useDictionaryStore} from "@/stores/backend/dictionaryStore.js";
 import AttributionIcon from "@/components/ui/AttributionIcon.vue";
-import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {useScroll} from "@vueuse/core";
 
 export default defineComponent({

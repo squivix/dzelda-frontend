@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
-import {LanguageSchema, LearnerLanguageSchema, TranslationLanguageSchema} from "dzelda-common";
+import {LearnerLanguageSchema, TranslationLanguageSchema} from "dzelda-common";
 import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export const useLanguageStore = defineStore("language", {
@@ -18,7 +18,7 @@ export const useLanguageStore = defineStore("language", {
     actions: {
         async fetchLanguages(queryParams: { isSupported?: boolean, sortBy?: "name" | "learnersCount" | "secondSpeakersCount", sortOrder?: "asc" | "desc" } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.languages.getLanguages(queryParams));
+            const response = await store.fetchCustom((api) => api.languages.getLanguages(queryParams),{clearMessageBar: false});
             return response.data;
         },
         async fetchUserLanguages({queryParams = {sortBy: "lastOpened", sortOrder: "desc"}, ignoreCache = false}: {
@@ -30,13 +30,13 @@ export const useLanguageStore = defineStore("language", {
             const store = useStore();
             const response = await store.fetchCustomWithCache((api) => api.users.getUsersUsernameLanguages("me", queryParams),
                 `fetchUserLanguages(${JSON.stringify(queryParams)})`, {
-                    clearCache: ignoreCache
+                    clearCache: ignoreCache,
+                    clearMessageBar: false
                 });
             this.userLanguages = response.data;
             return response.data;
         },
         async addLanguageToUser(body: { languageCode: string, preferredTranslationLanguageCodes?: string[] }) {
-            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             const response = await store.fetchCustom((api) => api.users.postUsersUsernameLanguages({
                 languageCode: body.languageCode,
@@ -45,7 +45,6 @@ export const useLanguageStore = defineStore("language", {
             return response.data;
         },
         async deleteLanguageFromUser(pathParams: { languageCode: string }) {
-            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             await store.fetchCustom((api) => api.users.deleteUsersMeLanguagesLanguageCode(pathParams.languageCode));
             if (this.userLanguages) {
@@ -55,7 +54,6 @@ export const useLanguageStore = defineStore("language", {
             }
         },
         async resetUserLanguageProgress(pathParams: { languageCode: string }) {
-            useMessageBarStore().clearTopBarMessages();
             const store = useStore();
             await store.fetchCustom((api) => api.users.deleteUsersMeLanguagesLanguageCodeProgress(pathParams.languageCode));
         },
@@ -71,7 +69,7 @@ export const useLanguageStore = defineStore("language", {
         },
         async getTranslationLanguages(queryParams: { isDefault?: boolean } = {}) {
             const store = useStore();
-            const response = await store.fetchCustom((api) => api.translationLanguages.getTranslationLanguages(queryParams));
+            const response = await store.fetchCustom((api) => api.translationLanguages.getTranslationLanguages(queryParams),{clearMessageBar: false});
             return response.data;
         },
         setLastOpenedLanguage(languageCode: string) {

@@ -2,11 +2,12 @@
   <div class="side-panel" @mousedown.stop>
     <VocabPanel v-if="selectedVocab"
                 :vocab="selectedVocab"
+                :unnormalizedText="selectedUnparsedText"
                 @mousedown.stop
-                :onVocabRefetched="onVocabRefetched"
                 @onVocabUpdated="(vocab, updatedData)=>$emit('onVocabUpdated',vocab, updatedData)"
                 @onVocabDeleted="(vocab)=>$emit('onVocabDeleted',vocab)"
-                @onNewVocabCreated="(vocab)=>$emit('onNewVocabCreated', vocab)"/>
+                @onNewVocabCreated="(vocab)=>$emit('onNewVocabCreated', vocab)"
+                :onVocabRefetched="onVocabRefetched"/>
     <OverlappingPhrasesPanel v-else-if="selectedOverLappingPhrasesTokens"
                              @mousedown.stop
                              :phrases="phrases"
@@ -29,6 +30,7 @@ export default defineComponent({
   props: {
     selectedOverLappingPhrasesTokens: {type: Array as PropType<TextTokenObject[][] | null>},
     selectedVocab: {type: Object as PropType<LearnerVocabSchema | NewVocab | null>, default: null},
+    selectedUnparsedText: {type: String as PropType<string >},
     onVocabRefetched: {type: Function as PropType<(updatedVocab: LearnerVocabSchema) => void>},
     phrases: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
   },

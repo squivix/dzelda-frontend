@@ -12,7 +12,6 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {useLocalSettingsStore} from "@/stores/settingsStore.js";
 
 export default defineComponent({
