@@ -1,4 +1,4 @@
-import {NavigationGuardWithThis} from "vue-router";
+import type {NavigationGuardWithThis} from "vue-router";
 
 export const validatePathParams: NavigationGuardWithThis<undefined> = async (to, from) => {
     if (to.meta.pathParams) {

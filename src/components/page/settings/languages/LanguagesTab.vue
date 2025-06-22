@@ -38,18 +38,16 @@
 
 <script lang="ts">
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
-import {LearnerLanguageSchema} from "dzelda-common";
+import type {LearnerLanguageSchema} from "dzelda-common";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import SeriousConfirmDialog from "@/components/shared/SeriousConfirmDialog.vue";
-import SubmitButton from "@/components/ui/SubmitButton.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {useMessageBarStore} from "@/stores/messageBarStore.js";
 
 export default {
   name: "LanguagesTab",
-  components: {LoadingScreen, EmptyScreen, SubmitButton, SeriousConfirmDialog, InlineSvg},
+  components: {LoadingScreen, EmptyScreen, InlineSvg},
   data() {
     return {
       userLanguages: null as LearnerLanguageSchema[] | null,

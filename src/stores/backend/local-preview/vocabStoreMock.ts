@@ -1,9 +1,10 @@
-import {VocabLevel, VocabLevelSchema} from "dzelda-common";
+import {VocabLevel} from "dzelda-common";
+import type {VocabLevelSchema} from "dzelda-common";
 import {defineStore} from "pinia";
 import {getAcceptablyRandomId} from "@/utils.js";
-import {useLocalPreviewStore, VocabRow} from "@/stores/backend/local-preview/localPreviewStore.js";
+import {useLocalPreviewStore} from "@/stores/backend/local-preview/localPreviewStore.js";
+import type {VocabRow} from "@/stores/backend/local-preview/localPreviewStore.js";
 import {escapeRegExp} from "dzelda-common/build/src/utils/utils.js";
-import {useStore} from "@/stores/backend/rootStore.js";
 
 export const useVocabStoreMock = defineStore("vocabStoreMock", {
         actions: {

@@ -16,8 +16,8 @@
 
 <script lang="ts">
 import VocabLevelPicker from "@/components/shared/vocab-panel/VocabLevelPicker.vue";
-import {LearnerVocabSchema} from "dzelda-common";
-import {PropType} from "vue";
+import type {LearnerVocabSchema} from "dzelda-common";
+import type {PropType} from "vue";
 
 export default {
   name: "VocabTableRow",

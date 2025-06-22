@@ -43,19 +43,20 @@
 <script lang="ts">
 import NewVocabPanel from "@/components/shared/vocab-panel/NewVocabPanel.vue";
 import ExistingVocabPanel from "@/components/shared/vocab-panel/ExistingVocabPanel.vue";
-import {inject, PropType} from "vue";
-import {LearnerVocabSchema, MeaningSchema, VocabLevel, VocabLevelSchema, VocabSchema} from "dzelda-common";
+import type {PropType} from "vue";
+import {inject} from "vue";
+import type {LearnerVocabSchema, MeaningSchema, VocabLevelSchema, VocabSchema} from "dzelda-common";
+import {VocabLevel} from "dzelda-common";
 import {useMeaningStore} from "@/stores/backend/meaningStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
-import {NewVocab} from "@/components/shared/Reader.vue";
-import InlineSvg from "vue-inline-svg";
+import type {NewVocab} from "@/components/shared/Reader.vue";
 import VocabPanelTopBar from "@/components/shared/vocab-panel/VocabPanelTopBar.vue";
 import PronunciationPanel from "@/components/shared/vocab-panel/PronunciationPanel.vue";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 export default {
   name: "VocabPanel",
-  components: {PronunciationPanel, VocabPanelTopBar, NewVocabPanel, ExistingVocabPanel, InlineSvg},
+  components: {PronunciationPanel, VocabPanelTopBar, NewVocabPanel, ExistingVocabPanel},
   emits: {
     onNewVocabCreated: (vocab: LearnerVocabSchema) => true,
     onVocabUpdated: (vocab: LearnerVocabSchema, updatedData: Partial<LearnerVocabSchema>) => true,

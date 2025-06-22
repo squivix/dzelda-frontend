@@ -14,11 +14,14 @@
                              @onShowAllSuggestionsClicked="()=>isShowingAllSuggestedMeanings=true"/>
       <DictionariesList :vocabText="vocab.text" :languageCode="vocab.language"/>
     </div>
-    <div class="mark-buttons-div" v-if="!vocab.isPhrase && isLevelNew || isLevelIgnored||isLevelKnown">
-      <button class="square-button hollow-button know-button" @click="$emit('onMarkAsKnownClicked')">Mark as
+    <div class="mark-buttons-div"
+         v-if="!vocab.isPhrase && isLevelNew || isLevelIgnored||isLevelKnown">
+      <button class="square-button hollow-button know-button"
+              @click="$emit('onMarkAsKnownClicked')">Mark as
         known
       </button>
-      <button class="square-button hollow-button ignore-button" @click="$emit('onIgnoreClicked')">Ignore
+      <button class="square-button hollow-button ignore-button" @click="$emit('onIgnoreClicked')">
+        Ignore
       </button>
     </div>
   </div>
@@ -27,9 +30,10 @@
 <script lang="ts">
 import MeaningAddingControls from "@/components/shared/vocab-panel/MeaningAddingControls.vue";
 import DictionariesList from "@/components/shared/vocab-panel/DictionaryList.vue";
-import {PropType} from "vue";
-import {LearnerVocabSchema, MeaningSchema, VocabLevel} from "dzelda-common";
-import {NewVocab} from "@/components/shared/Reader.vue";
+import type {PropType} from "vue";
+import type {LearnerVocabSchema, MeaningSchema} from "dzelda-common";
+import {VocabLevel} from "dzelda-common";
+import type {NewVocab} from "@/components/shared/Reader.vue";
 
 export default {
   name: "NewVocabPanel",

@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import {useDictionaryStore} from "@/stores/backend/dictionaryStore.js";
-import {DictionarySchema} from "dzelda-common";
+import type {DictionarySchema} from "dzelda-common";
 import {inject} from "vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";

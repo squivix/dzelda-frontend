@@ -1,4 +1,4 @@
-import {NavigationGuardWithThis} from "vue-router";
+import type {NavigationGuardWithThis} from "vue-router";
 import {useUserStore} from "@/stores/backend/userStore.js";
 
 export const fetchUserDataGuard: NavigationGuardWithThis<undefined> = async (to, from) => {

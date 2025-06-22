@@ -60,7 +60,7 @@ import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import CollectionFilters, {collectionFilterFields, CollectionFiltersObject} from "@/components/shared/filters/CollectionFilters.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
-import {CollectionSchema} from "dzelda-common";
+import type {CollectionSchema} from "dzelda-common";
 import CollectionCard from "@/components/shared/content/CollectionCard.vue";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
 import {isEmptyObject, setDifference} from "@/utils.js";

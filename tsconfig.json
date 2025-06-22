@@ -1,40 +1,17 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "target": "es2020",
-    "module": "es2020",
-    "strict": true,
-    "noImplicitThis": true,
-    "importHelpers": true,
-    "moduleResolution": "node",
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
-    "resolveJsonModule": true,
-    "noEmit": true,
-    "isolatedModules": true,
-    "incremental": true,
-    "disableSizeLimit": false,
-    "forceConsistentCasingInFileNames": true,
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable",
-      "scripthost"
-    ],
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.vitest.json"
     }
-  },
-  "include": [
-    "env.d.ts",
-    "src/**/*",
-    "src/**/*.vue",
-    "types/**/*"
   ],
-  "exclude": []
+  "compilerOptions": {
+    "module": "NodeNext"
+  }
 }

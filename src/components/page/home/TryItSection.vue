@@ -39,8 +39,9 @@ import {useVocabStoreMock} from "@/stores/backend/local-preview/vocabStoreMock.j
 import {useMeaningStoreMock} from "@/stores/backend/local-preview/meaningStoreMock.js";
 import {useDictionaryStoreMock} from "@/stores/backend/local-preview/dictionaryStoreMock.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
-import {LanguageSchema} from "dzelda-common";
-import {PreviewText, useLocalPreviewStore} from "@/stores/backend/local-preview/localPreviewStore.js";
+import type {LanguageSchema} from "dzelda-common";
+import type {PreviewText} from "@/stores/backend/local-preview/localPreviewStore.js";
+import {useLocalPreviewStore} from "@/stores/backend/local-preview/localPreviewStore.js";
 import {useLanguageStoreMock} from "@/stores/backend/local-preview/languageStoreMock.js";
 
 export default defineComponent({

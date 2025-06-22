@@ -36,8 +36,9 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
-import {CollectionSchema, TextSchema} from "dzelda-common";
+import type {PropType} from "vue";
+import {defineComponent} from "vue";
+import type {CollectionSchema, TextSchema} from "dzelda-common";
 import {useCollectionStore} from "@/stores/backend/collectionStore.js";
 import CollectionList from "@/components/shared/content/CollectionList.vue";
 import {icons} from "@/icons.js";

@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
 import {cleanUndefined} from "@/utils.js";
 import {useMessageBarStore} from "@/stores/messageBarStore.js";
-import {CollectionSchema} from "dzelda-common";
+import type {CollectionSchema} from "dzelda-common";
 
 export const useCollectionStore = defineStore("collection", {
     actions: {

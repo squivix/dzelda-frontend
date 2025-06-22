@@ -45,13 +45,13 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import TextListItem from "@/components/shared/content/TextListItem.vue";
 import {useCollectionStore} from "@/stores/backend/collectionStore.js";
 import {useTextStore} from "@/stores/backend/textStore.js";
-import {CollectionSchema} from "dzelda-common";
+import type {CollectionSchema} from "dzelda-common";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import {PropType} from "vue";
+import type {PropType} from "vue";
 import VocabLevelStats from "@/components/shared/content/VocabLevelStats.vue";
 
 export default {

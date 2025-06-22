@@ -4,26 +4,30 @@
     <template v-slot:all>
       <router-link :to="{name:'collection', params:{collectionId:collection.id}}">
         <article class="collection-article">
-          <BaseImage class="collection-image" :image-url="collection.image" :fall-back-url="icons.books" alt-text="collection image"/>
+          <BaseImage class="collection-image" :image-url="collection.image"
+                     :fall-back-url="icons.books" alt-text="collection image"/>
 
           <div class="title-row">
             <h4>{{ collection.title }}</h4>
             <div class="buttons-div">
-              <button class="bookmark-button inv-button icon-text-wrapper" @click.prevent="toggleIsBookmarked">
+              <button class="bookmark-button inv-button icon-text-wrapper"
+                      @click.prevent="toggleIsBookmarked">
                 <inline-svg :src="icons.bookmark"
                             :class="`${collection.isBookmarked?'bookmark-filled':'bookmark-hollow'}`"/>
               </button>
               <BaseDropDown :id="`collection-card-${collection.id}`"
                             group="collection-cards"
                             :centered="false"
-                            :round="false" v-if="collection.addedBy==userStore.userAccount?.username">
+                            :round="false"
+                            v-if="collection.addedBy==userStore.userAccount?.username">
                 <template v-slot:button>
                   <inline-svg :src="icons.dotsStacked" class="more-button"/>
                 </template>
                 <template v-slot:menu>
                   <ol class="dropdown-list">
                     <li>
-                      <router-link :to="{ name: 'edit-collection' , params:{collectionId:collection.id}}">
+                      <router-link
+                        :to="{ name: 'edit-collection' , params:{collectionId:collection.id}}">
                         <inline-svg :src="icons.pen"/>
                         <span>Edit</span>
                       </router-link>
@@ -42,8 +46,8 @@
 <script lang="ts">
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import {PropType} from "vue";
-import {CollectionSchema} from "dzelda-common";
+import type {PropType} from "vue";
+import type {CollectionSchema} from "dzelda-common";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import BaseCard from "@/components/ui/BaseCard.vue";

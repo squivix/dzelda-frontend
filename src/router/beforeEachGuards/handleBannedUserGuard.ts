@@ -1,4 +1,4 @@
-import {NavigationGuardWithThis} from "vue-router";
+import type {NavigationGuardWithThis} from "vue-router";
 import {useUserStore} from "@/stores/backend/userStore";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore";
 

@@ -9,8 +9,8 @@
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import CreateCollectionForm from "@/components/shared/create-collection/CreateCollectionForm.vue";
-import {CollectionSchema} from "dzelda-common";
-import {PropType} from "vue";
+import type {CollectionSchema} from "dzelda-common";
+import type {PropType} from "vue";
 
 export default {
   name: "CreateCollectionPage",

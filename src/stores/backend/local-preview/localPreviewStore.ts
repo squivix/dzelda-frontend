@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
-import {DBSchema, IDBPDatabase, openDB} from "idb";
-import {AttributionSchema, LanguageLevelSchema, VocabLevelSchema, VocabTagSchema} from "dzelda-common";
+import type {DBSchema, IDBPDatabase} from "idb";
+import {openDB} from "idb";
+import type {AttributionSchema, LanguageLevelSchema, VocabLevelSchema, VocabTagSchema} from "dzelda-common";
 
 export type MeaningRow = {
     id: number,
@@ -37,7 +38,7 @@ export type LanguageRow = {
     flag: string
     flagEmoji: string
     color: string
-    isSupported: boolean
+    isRtl: boolean
     learnersCount: number
     levelThresholds: {
         beginner1: number;

@@ -22,7 +22,8 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import type {PropType} from "vue";
+import {defineComponent} from "vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import prettyBytes from "pretty-bytes";

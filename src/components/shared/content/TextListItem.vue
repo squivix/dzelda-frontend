@@ -70,21 +70,21 @@
 <script lang="ts">
 import BaseCard from "@/components/ui/BaseCard.vue";
 import BaseImage from "@/components/ui/BaseImage.vue";
-import {TextHistoryEntrySchema, TextSchema, VocabLevel} from "dzelda-common";
-import {PropType} from "vue";
+import type {TextHistoryEntrySchema, TextSchema} from "dzelda-common";
+import {VocabLevel} from "dzelda-common";
+import type {PropType} from "vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import {format} from "timeago.js";
 import BaseDropDown from "@/components/ui/BaseDropDown.vue";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {useTextStore} from "@/stores/backend/textStore.js";
-import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
 import VocabLevelStats from "@/components/shared/content/VocabLevelStats.vue";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 export default {
   name: "TextListItem",
-  components: {VocabLevelStats, ConfirmDialog, InlineSvg, BaseDropDown, BaseImage, BaseCard},
+  components: {VocabLevelStats, InlineSvg, BaseDropDown, BaseImage, BaseCard},
   emits: ["onHideTextClicked", "onReportTextClicked"],
   props: {
     text: {type: Object as PropType<TextSchema | TextHistoryEntrySchema>, required: true},
@@ -99,7 +99,7 @@ export default {
       return (this.text.image || this.text.collection?.image) ?? "";
     },
     readingDirection() {
-      return this.languageStore.currentLanguage!.isRtl ? "rtl" : "ltr";
+      return this.languageStore.currentLanguageDir;
     }
   },
   methods: {

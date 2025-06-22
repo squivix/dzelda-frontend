@@ -10,21 +10,24 @@
                     animation="200"
                     :modelValue="preferredTls"
                     @update:modelValue="updatePreferredTlsOrder">
-        <li v-for="(translationLanguage,index) in preferredTls" :key="translationLanguage.id" class="tl preferred-tl">
+        <li v-for="(translationLanguage,index) in preferredTls" :key="translationLanguage.id"
+            class="tl preferred-tl">
           <div class="icon-text-wrapper">
             <inline-svg :src="icons.dragBars"/>
             <span>{{ translationLanguage.name }}</span>
           </div>
           <div>
             <button class="inv-button remove-button" type="button" v-if="preferredTls.length>1">
-              <inline-svg :src="icons.crossRound" v-if="preferredTls.length>1" @click="removeTranslationLanguage(index)"/>
+              <inline-svg :src="icons.crossRound" v-if="preferredTls.length>1"
+                          @click="removeTranslationLanguage(index)"/>
             </button>
           </div>
         </li>
       </VueDraggable>
     </div>
     <div>
-      <button v-if="!isAddingMoreTls" class="add-more-button inv-button link icon-text-wrapper" type="button" @click="isAddingMoreTls=true">
+      <button v-if="!isAddingMoreTls" class="add-more-button inv-button link icon-text-wrapper"
+              type="button" @click="isAddingMoreTls=true">
         <inline-svg :src="icons.plus" class="plus-icon"/>
         Add another language
       </button>
@@ -32,7 +35,9 @@
         <div class="select-button-wrapper">
           <select v-model="newPreferredLanguage" required>
             <option disabled value="">Select a language</option>
-            <option v-for="translationLanguage in nonPreferredTls" :value="translationLanguage.code">{{ translationLanguage.name }}</option>
+            <option v-for="translationLanguage in nonPreferredTls"
+                    :value="translationLanguage.code">{{ translationLanguage.name }}
+            </option>
           </select>
           <button class="add-button primary-filled-button square-button">Add</button>
         </div>
@@ -55,9 +60,10 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent} from "vue";
+import type {PropType} from "vue";
 import {VueDraggableNext as VueDraggable} from "vue-draggable-next";
-import {TranslationLanguageSchema} from "dzelda-common";
+import type {TranslationLanguageSchema} from "dzelda-common";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
 import Footer from "@/components/layout/Footer.vue";
@@ -66,7 +72,7 @@ import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 import googleFormsLogo from "@/assets/images/google-forms-logo.svg";
 import BaseMessageBar from "@/components/ui/BaseMessageBar.vue";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 export default defineComponent({
   name: "UpdateTranslationLanguagesForm",

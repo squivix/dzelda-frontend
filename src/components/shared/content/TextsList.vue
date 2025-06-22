@@ -4,7 +4,8 @@
     <template v-if="showSearchFilters">
       <div class="top-bar">
         <SearchBar :initialSearchQuery="searchQuery"/>
-        <button class="filter-button icon-wrapper" @click.stop="toggleFilters" v-if="remainingFilters.size!=0">
+        <button class="filter-button icon-wrapper" @click.stop="toggleFilters"
+                v-if="remainingFilters.size!=0">
           <inline-svg :src="icons.filter"/>
         </button>
       </div>
@@ -37,7 +38,9 @@
       </template>
     </EmptyScreen>
     <ul v-if="texts" class="texts-list">
-      <TextListItem v-for="text in texts" :key="text.id" :text="text" @onHideTextClicked="onHideTextClicked" @onReportTextClicked="onReportTextClicked"/>
+      <TextListItem v-for="text in texts" :key="text.id" :text="text"
+                    @onHideTextClicked="onHideTextClicked"
+                    @onReportTextClicked="onReportTextClicked"/>
     </ul>
     <PaginationControls v-if="pageCount"
                         :page="page"
@@ -45,24 +48,28 @@
                         :pageCount="pageCount"
                         perPageSelectLabel="Texts Per Page"/>
 
-    <ConfirmDialog :isShown="isConfirmHideDialogShown" @onNoClicked="cancelHideText" @onYesClicked="hideText">
+    <ConfirmDialog :isShown="isConfirmHideDialogShown" @onNoClicked="cancelHideText"
+                   @onYesClicked="hideText">
       <p>Are you sure you want to hide this text from your feed?</p>
     </ConfirmDialog>
-    <ReportTextDialog :text="textToReport" :isShown="isReportTextDialogShown" @onCancelClicked="cancelReportText" @onReportSubmitted="onTextReported"/>
+    <ReportTextDialog :text="textToReport" :isShown="isReportTextDialogShown"
+                      @onCancelClicked="cancelReportText" @onReportSubmitted="onTextReported"/>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent} from "vue";
+import type {PropType} from "vue";
 import TextListItem from "@/components/shared/content/TextListItem.vue";
-import {TextSchema} from "dzelda-common";
+import type {TextSchema} from "dzelda-common";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import SearchBar from "@/components/ui/SearchBar.vue";
-import TextFilters, {TextFiltersObject, textFilterFields} from "@/components/shared/filters/TextFilters.vue";
+import TextFilters, {textFilterFields} from "@/components/shared/filters/TextFilters.vue";
+import type {TextFiltersObject} from "@/components/shared/filters/TextFilters.vue";
 import {isEmptyObject, setDifference} from "@/utils.js";
 import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
 import {useTextStore} from "@/stores/backend/textStore.js";
@@ -72,7 +79,17 @@ import ReportTextDialog from "@/components/shared/ReportTextDialog.vue";
 export default defineComponent({
   name: "TextsList",
   emits: ["onTextHidden", "onTextReported"],
-  components: {ReportTextDialog, ConfirmDialog, TextFilters, SearchBar, InlineSvg, EmptyScreen, LoadingScreen, PaginationControls, TextListItem},
+  components: {
+    ReportTextDialog,
+    ConfirmDialog,
+    TextFilters,
+    SearchBar,
+    InlineSvg,
+    EmptyScreen,
+    LoadingScreen,
+    PaginationControls,
+    TextListItem
+  },
   props: {
     texts: {type: Object as PropType<TextSchema[] | null>, required: true},
     isLoading: {type: Boolean, required: true},
@@ -83,7 +100,11 @@ export default defineComponent({
     pageCount: {type: Number, required: true},
     emptyMessage: {type: String, required: false, default: "No texts found."},
     showSearchFilters: {type: Boolean, default: true},
-    excludedFilters: {type: Object as PropType<Set<keyof TextFiltersObject>>, required: false, default: new Set()}
+    excludedFilters: {
+      type: Object as PropType<Set<keyof TextFiltersObject>>,
+      required: false,
+      default: new Set()
+    }
   },
   data() {
     return {

@@ -33,8 +33,9 @@
 import constants from "@/constants.js";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import {LearnerVocabSchema, VocabLevel, VocabLevelSchema} from "dzelda-common";
-import {PropType} from "vue";
+import type {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
+import {VocabLevel} from "dzelda-common";
+import type {PropType} from "vue";
 
 export default {
   name: "VocabLevelPicker",

@@ -5,9 +5,9 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import BasePasswordInput from "@/components/ui/BasePasswordInput.vue";
 import {createPinia} from "pinia";
 import {Chart as ChartJs, registerables as chartJsRegisterables} from "chart.js";
-import * as pdfjs from "pdfjs-dist";
-// @ts-ignore
-pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.js", import.meta.url);
+import * as pdfjsLib from 'pdfjs-dist';
+import workerURL from 'pdfjs-dist/build/pdf.worker?url';
+pdfjsLib.GlobalWorkerOptions.workerSrc = workerURL;
 
 const app = createApp(App);
 

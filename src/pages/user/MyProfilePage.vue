@@ -25,7 +25,7 @@ import AllTimeProgressChart from "@/components/page/my-profile/AllTimeProgressCh
 import BadgesSection from "@/components/page/my-profile/BadgesSection.vue";
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
-import {LanguageSchema} from "dzelda-common";
+import type {LanguageSchema} from "dzelda-common";
 
 export default {
   name: "MyProfilePage",

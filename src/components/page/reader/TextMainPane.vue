@@ -37,16 +37,18 @@
 
 <script lang="ts">
 import BaseImage from "@/components/ui/BaseImage.vue";
-import {inject, PropType} from "vue";
-import {LearnerVocabSchema, VocabLevel} from "dzelda-common";
+import type {PropType} from "vue";
+import {defineComponent, inject} from "vue";
+import type {LearnerVocabSchema} from "dzelda-common";
+import {VocabLevel} from "dzelda-common";
 import {getTextSelectedElements} from "@/utils.js";
 import {useEventListener} from "@vueuse/core";
 import {icons} from "@/icons.js";
-import {TextTokenObject} from "@/components/shared/Reader.vue";
+import type {TextTokenObject} from "@/components/shared/Reader.vue";
 import TextToken from "@/components/page/reader/TextToken.vue";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
-export default {
+export default defineComponent({
   name: "TextMainPane",
   components: {TextToken, BaseImage},
   emits: ["onWordClicked", "onPhraseClicked", "onOverLappingPhrasesClicked", "onNewPhraseSelected", "onBackgroundClicked", "onScroll"],
@@ -65,13 +67,13 @@ export default {
       selectedTextTokens: [] as TextTokenObject[],
     };
   },
-  expose: ["clearTokenTextSelection"],
+  expose: ["clearTokenTextSelection"] as string[],
   computed: {
     selectedTokenIndexes() {
       return new Set(this.selectedTokens.map(t => t.index));
     },
     readingDirection() {
-      return this.languageStore.currentLanguage!.isRtl ? "rtl" : "ltr";
+      return this.languageStore.currentLanguageDir;
     }
   },
   watch: {
@@ -173,7 +175,7 @@ export default {
       languageStore: inject<ReturnType<typeof useLanguageStore>>("languageStore", useLanguageStore()),
     };
   }
-};
+});
 </script>
 <style scoped>
 .text-main-pane {

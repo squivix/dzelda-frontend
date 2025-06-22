@@ -47,7 +47,8 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent} from "vue";
+import type { PropType} from "vue";
 import BaseCollapsableDiv from "@/components/ui/BaseCollapsableDiv.vue";
 import BaseFiltersCard from "@/components/ui/BaseFiltersCard.vue";
 import {toSentenceCase} from "@/utils.js";

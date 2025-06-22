@@ -29,7 +29,7 @@
 import {defineComponent, PropType} from "vue";
 import BaseDialog from "@/components/ui/BaseDialog.vue";
 import UpdateTranslationLanguagesForm from "@/components/shared/UpdateTranslationLanguagesForm.vue";
-import {LanguageSchema, TranslationLanguageSchema} from "dzelda-common";
+import type {LanguageSchema, TranslationLanguageSchema} from "dzelda-common";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";

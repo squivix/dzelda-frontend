@@ -1,4 +1,4 @@
-import path from "path";
+import path from "path-browserify";
 import * as pdfjs from "pdfjs-dist";
 import ePub from "epubjs";
 import {removeHashFromHref} from "@/utils.js";

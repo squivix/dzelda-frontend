@@ -27,10 +27,11 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent} from "vue";
+import type {PropType} from "vue";
 import BaseDialog from "@/components/ui/BaseDialog.vue";
 import {useTextStore} from "@/stores/backend/textStore.js";
-import {TextSchema} from "dzelda-common";
+import type {TextSchema} from "dzelda-common";
 
 export default defineComponent({
   name: "ReportTextDialog",

@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {useStore} from "@/stores/backend/rootStore.js";
-import {LanguageLevelSchema, TextHistoryEntrySchema, TextSchema} from "dzelda-common";
+import type {LanguageLevelSchema, TextHistoryEntrySchema, TextSchema} from "dzelda-common";
 import {cleanUndefined} from "@/utils.js";
 import {useMessageBarStore} from "@/stores/messageBarStore.js";
 

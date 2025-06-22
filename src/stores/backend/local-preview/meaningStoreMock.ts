@@ -1,7 +1,8 @@
 import {defineStore} from "pinia";
-import {MeaningSchema} from "dzelda-common";
+import type {MeaningSchema} from "dzelda-common";
 import {getAcceptablyRandomId} from "@/utils.js";
-import {MeaningRow, useLocalPreviewStore} from "@/stores/backend/local-preview/localPreviewStore.js";
+import type {MeaningRow} from "@/stores/backend/local-preview/localPreviewStore.js";
+import {useLocalPreviewStore} from "@/stores/backend/local-preview/localPreviewStore.js";
 
 export const useMeaningStoreMock = defineStore("meaningStoreMock", {
     state() {

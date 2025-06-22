@@ -19,8 +19,8 @@
 
 <script lang="ts">
 import VocabTableRow from "@/components/page/my-vocabs/VocabTableRow.vue";
-import {PropType} from "vue";
-import {LearnerVocabSchema} from "dzelda-common";
+import type {PropType} from "vue";
+import type {LearnerVocabSchema} from "dzelda-common";
 
 export default {
   name: "VocabTable",

@@ -56,7 +56,7 @@ import {defineComponent} from "vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import InlineSvg from "vue-inline-svg";
 import {VueDraggableNext as VueDraggable} from "vue-draggable-next";
-import {DictionarySchema} from "dzelda-common";
+import type {DictionarySchema} from "dzelda-common";
 import {icons} from "@/icons.js";
 import googleFormsLogo from "@/assets/images/google-forms-logo.svg";
 import {useDictionaryStore} from "@/stores/backend/dictionaryStore.js";

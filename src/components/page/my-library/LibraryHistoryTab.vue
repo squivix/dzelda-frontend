@@ -14,29 +14,35 @@
       <TextListItem v-for="text in texts" :key="text.id" :text="text"/>
     </ul>
     <PaginationControls
-        v-if="pageCount"
-        :page="queryParams.page"
-        :page-size="queryParams.pageSize"
-        :page-count="pageCount"
-        per-page-select-label="Texts Per Page"/>
+      v-if="pageCount"
+      :page="queryParams.page"
+      :page-size="queryParams.pageSize"
+      :page-count="pageCount"
+      per-page-select-label="Texts Per Page"/>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import type {PropType} from "vue";
+import {defineComponent} from "vue";
 import {useTextStore} from "@/stores/backend/textStore.js";
-import {TextSchema} from "dzelda-common";
+import type {TextSchema} from "dzelda-common";
 import TextListItem from "@/components/shared/content/TextListItem.vue";
 import PaginationControls from "@/components/shared/PaginationControls.vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
-import CollectionFilters from "@/components/shared/filters/CollectionFilters.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 
 export default defineComponent({
   name: "LibraryHistoryTab",
-  components: {InlineSvg, EmptyScreen, CollectionFilters, LoadingScreen, PaginationControls, TextListItem},
+  components: {
+    InlineSvg,
+    EmptyScreen,
+    LoadingScreen,
+    PaginationControls,
+    TextListItem
+  },
   data() {
     return {
       texts: [] as TextSchema[],

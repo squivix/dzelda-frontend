@@ -1,7 +1,7 @@
 import HomePage from "@/pages/HomePage.vue";
 import SignUpPage from "@/pages/auth/SignUpPage.vue";
 import LoginPage from "@/pages/auth/LoginPage.vue";
-import {RouteRecordRaw} from "vue-router";
+import type {RouteRecordRaw} from "vue-router";
 import ResetPasswordRequestPage from "@/pages/auth/ResetPasswordRequestPage.vue";
 import ResetPasswordPage from "@/pages/auth/ResetPasswordPage.vue";
 import {setDefaultRouteMeta} from "@/router/routerUtils.js";

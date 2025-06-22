@@ -14,7 +14,8 @@
           </div>
           <div class="form-row">
             <label>Audio</label>
-            <AudioUploadInput id="text-audio-input" fileTitle="text audio" :oldAudioUrl="text.audio" v-model="audio"
+            <AudioUploadInput id="text-audio-input" fileTitle="text audio" :oldAudioUrl="text.audio"
+                              v-model="audio"
                               :maxFileSizeInBytes="mebiBytes(100)"/>
             <p v-if="errorFields.audio" class="error-message">{{ errorFields.audio }}</p>
           </div>
@@ -23,17 +24,23 @@
               <label for="text-collection">Collection</label>
               <select required id="text-collection" v-model="selectedCollection">
                 <option :value="null" selected>None</option>
-                <option v-for="collection in editableCollections" :key="collection.id" :value="collection.id">
+                <option v-for="collection in editableCollections" :key="collection.id"
+                        :value="collection.id">
                   {{ collection.title }}
                 </option>
                 <option value="new-collection">New Collection</option>
               </select>
-              <p v-if="errorFields.collectionId" class="error-message">{{ errorFields.collectionId }}</p>
+              <p v-if="errorFields.collectionId" class="error-message">{{
+                  errorFields.collectionId
+                }}</p>
             </div>
             <div class="form-row">
               <label>Level</label>
               <select v-model="level">
-                <option v-for="level in LanguageLevel" :value="level">{{ toSentenceCase(level) }}</option>
+                <option v-for="level in LanguageLevel" :value="level">{{
+                    toSentenceCase(level)
+                  }}
+                </option>
               </select>
             </div>
             <div class="form-row ">
@@ -46,12 +53,14 @@
         <div class="main-inputs">
           <div class="form-row">
             <label for="text-title">Title</label>
-            <input id="text-title" type="text" placeholder="Enter the title" v-model="title" required maxlength="124">
+            <input id="text-title" type="text" placeholder="Enter the title" v-model="title"
+                   required maxlength="124">
             <p v-if="errorFields.title" class="error-message">{{ errorFields.title }}</p>
           </div>
           <div class="form-row">
             <label for="text-content">Text</label>
-            <textarea placeholder="Enter the text" id="text-content" v-model="content" required></textarea>
+            <textarea placeholder="Enter the text" id="text-content" v-model="content"
+                      required></textarea>
             <p v-if="content.length>25_000" class="warning-message">
               <template v-if="isSubmitting">
                 Please be patient...
@@ -63,8 +72,10 @@
             <p v-if="errorFields.content" class="error-message">{{ errorFields.content }}</p>
           </div>
           <div class="form-row">
-            <label for="is-public-checkbox" class="checkbox-label" :title="isCollectionSelected?'Depends on collection public/private status':''">
-              <input type="checkbox" id="is-public-checkbox" v-model="isPublic" :disabled="isCollectionSelected">
+            <label for="is-public-checkbox" class="checkbox-label"
+                   :title="isCollectionSelected?'Depends on collection public/private status':''">
+              <input type="checkbox" id="is-public-checkbox" v-model="isPublic"
+                     :disabled="isCollectionSelected">
               Public
             </label>
           </div>
@@ -78,11 +89,14 @@
           </div>
         </div>
       </form>
-      <BaseDialog :isOpen="isCreateCollectionDialogShown" @onDismissed="onCreateCollectionDialogDismissed">
+      <BaseDialog :isOpen="isCreateCollectionDialogShown"
+                  @onDismissed="onCreateCollectionDialogDismissed">
         <h2>Add Collection</h2>
-        <CreateCollectionForm :languageCode="pathParams.learningLanguage" @onCollectionCreated="onCollectionCreated"/>
+        <CreateCollectionForm :languageCode="pathParams.learningLanguage"
+                              @onCollectionCreated="onCollectionCreated"/>
       </BaseDialog>
-      <ConfirmDialog :isShown="isDeleteTextConfirmShown" @onNoClicked="isDeleteTextConfirmShown=false"
+      <ConfirmDialog :isShown="isDeleteTextConfirmShown"
+                     @onNoClicked="isDeleteTextConfirmShown=false"
                      @onYesClicked="deleteText">
         <h3>Are you sure you want to delete this text?</h3>
         <br>
@@ -99,7 +113,8 @@ import SubmitButton from "@/components/ui/SubmitButton.vue";
 import BaseCard from "@/components/ui/BaseCard.vue";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import BaseDialog from "@/components/ui/BaseDialog.vue";
-import {CollectionSchema, LanguageLevel, mebiBytes, TextSchema} from "dzelda-common";
+import type {CollectionSchema, TextSchema} from "dzelda-common";
+import {LanguageLevel, mebiBytes} from "dzelda-common";
 import {toSentenceCase} from "@/utils.js";
 import path from "path";
 import {icons} from "@/icons.js";
@@ -125,7 +140,10 @@ export default defineComponent({
     CreateCollectionForm
   },
   props: {
-    pathParams: {type: Object as PropType<{ learningLanguage: string, textId: number }>, required: true},
+    pathParams: {
+      type: Object as PropType<{ learningLanguage: string, textId: number }>,
+      required: true
+    },
   },
   data() {
     return {

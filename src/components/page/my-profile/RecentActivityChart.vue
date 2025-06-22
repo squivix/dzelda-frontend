@@ -21,12 +21,14 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent} from "vue";
+import type {PropType} from "vue";
 import {Line as LineChart} from "vue-chartjs";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
 import BaseLineChart from "@/components/ui/BaseLineChart.vue";
-import {LanguageSchema, UserSchema, VocabLevel} from "dzelda-common";
-import {ChartData, ChartDataset} from "chart.js";
+import type {LanguageSchema, UserSchema} from "dzelda-common";
+import {VocabLevel} from "dzelda-common";
+import type {ChartData, ChartDataset} from "chart.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {daysToMs, toSentenceCase} from "@/utils.js";
 import {useWindowSize} from "@vueuse/core";

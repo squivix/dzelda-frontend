@@ -1,8 +1,9 @@
 <template>
   <div class="overlapping-phrase-panel">
     <h4>Overlapping phrases</h4>
-    <ul class="phrase-list"  :dir="readingDirection">
-      <li v-for="(phraseTokens, index) in overLappingPhrasesTokens" :key="index" :dir="readingDirection">
+    <ul class="phrase-list" :dir="readingDirection">
+      <li v-for="(phraseTokens, index) in overLappingPhrasesTokens" :key="index"
+          :dir="readingDirection">
         <OverlappingPhrase :phrase="phrases[phraseTokens[0].phrases[0].text]"
                            :phraseTokens="phraseTokens"
                            @onPhraseClick="onPhraseClick"/>
@@ -12,17 +13,18 @@
 </template>
 
 <script lang="ts">
-import {inject, PropType} from "vue";
-import {LearnerVocabSchema} from "dzelda-common";
+import {inject} from "vue";
+import type {PropType} from "vue";
+import type {LearnerVocabSchema} from "dzelda-common";
 import OverlappingPhrase from "@/components/page/reader/OverlappingPhrase.vue";
-import {TextTokenObject} from "@/components/shared/Reader.vue";
+import type {TextTokenObject} from "@/components/shared/Reader.vue";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 export default {
   name: "OverlappingPhrasesPanel",
   computed: {
     readingDirection() {
-      return this.languageStore.currentLanguage!.isRtl ? "rtl" : "ltr";
+      return this.languageStore.currentLanguageDir;
     }
   },
   components: {OverlappingPhrase},

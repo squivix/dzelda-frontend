@@ -80,11 +80,12 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import {useCollectionStore} from "@/stores/backend/collectionStore.js";
 import {useTextStore} from "@/stores/backend/textStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
-import {CollectionSchema, LanguageLevel, mebiBytes} from "dzelda-common";
+import type {CollectionSchema} from "dzelda-common";
+import {LanguageLevel, mebiBytes} from "dzelda-common";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {icons} from "@/icons.js";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
-import {inject, PropType} from "vue";
+import type {PropType} from "vue";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import AudioUploadInput from "@/components/shared/AudioUploadInput.vue";
 import path from "path";
@@ -125,7 +126,7 @@ export default {
       return this.selectedCollection != null
     },
     readingDirection() {
-      return this.languageStore.currentLanguage!.isRtl ? "rtl" : "ltr";
+      return this.languageStore.currentLanguageDir;
     }
   },
   watch: {

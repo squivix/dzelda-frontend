@@ -23,7 +23,7 @@
              :filters="{addedBy:queryParams.addedBy, level:queryParams.level, hasAudio: queryParams.hasAudio}"
              :searchQuery="queryParams.searchQuery"
              @onTextHidden="fetchBookmarked">
-             @onTextReported="fetchBookmarked">
+    @onTextReported="fetchBookmarked">
     <template v-slot:empty-screen>
       <inline-svg :src="icons.bookOpenWithBookmark" class="empty-icon"/>
       <p>Texts you bookmark
@@ -34,8 +34,9 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
-import {CollectionSchema, TextSchema} from "dzelda-common";
+import {defineComponent} from "vue";
+import type {PropType} from "vue";
+import type {CollectionSchema, TextSchema} from "dzelda-common";
 import {useCollectionStore} from "@/stores/backend/collectionStore.js";
 import CollectionList from "@/components/shared/content/CollectionList.vue";
 import {icons} from "@/icons.js";
@@ -48,7 +49,8 @@ export default defineComponent({
   components: {TextsList, CollectionList, InlineSvg},
   props: {
     pathParams: {
-      type: Object as PropType<{ learningLanguage: string, resourceType: "texts" | "collections" }>, required: true
+      type: Object as PropType<{ learningLanguage: string, resourceType: "texts" | "collections" }>,
+      required: true
     },
     queryParams: {
       type: Object as PropType<{

@@ -23,9 +23,10 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent} from "vue";
+import type {PropType} from "vue";
 import {useTextStore} from "@/stores/backend/textStore.js";
-import {CollectionSchema, TextSchema} from "dzelda-common";
+import type {CollectionSchema, TextSchema} from "dzelda-common";
 import TextsList from "@/components/shared/content/TextsList.vue";
 import {useCollectionStore} from "@/stores/backend/collectionStore.js";
 import CollectionList from "@/components/shared/content/CollectionList.vue";

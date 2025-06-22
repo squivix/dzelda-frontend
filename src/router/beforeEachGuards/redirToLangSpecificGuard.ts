@@ -1,4 +1,4 @@
-import {NavigationGuardWithThis} from "vue-router";
+import type {NavigationGuardWithThis} from "vue-router";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 export const redirToLangSpecificGuard: NavigationGuardWithThis<undefined> = async (to, from) => {

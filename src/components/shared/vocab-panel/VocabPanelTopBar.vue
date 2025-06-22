@@ -22,8 +22,8 @@
 <script lang="ts">
 import {defineComponent, inject, PropType} from "vue";
 import InlineSvg from "vue-inline-svg";
-import {LearnerVocabSchema} from "dzelda-common";
-import {NewVocab} from "@/components/shared/Reader.vue";
+import type {LearnerVocabSchema} from "dzelda-common";
+import type {NewVocab} from "@/components/shared/Reader.vue";
 import {icons} from "@/icons.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import SubmitButton from "@/components/ui/SubmitButton.vue";

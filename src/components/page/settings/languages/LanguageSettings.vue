@@ -1,7 +1,8 @@
 <template>
   <div v-if="language" class="language-settings">
     <header>
-      <router-link :to="{name:'languages-settings'}" class="inv-link"><h2>Languages</h2></router-link>
+      <router-link :to="{name:'languages-settings'}" class="inv-link"><h2>Languages</h2>
+      </router-link>
       <inline-svg :src="icons.arrowRight"/>
       <div class="icon-text-wrapper">
         <img class="language-flag" :src="language.flagCircular!" :alt="`${language.name} flag`">
@@ -46,7 +47,8 @@
       <p>Are you sure you want to remove {{ language?.name }} from your languages?
         <br>
         <br>
-        This action cannot be undone. All your {{ language?.name }} data will be permanently deleted.</p>
+        This action cannot be undone. All your {{ language?.name }} data will be permanently
+        deleted.</p>
     </SeriousConfirmDialog>
 
     <SeriousConfirmDialog :isShown="isConfirmResetDialogShown"
@@ -57,26 +59,34 @@
       <p>Are you sure you want to reset your {{ language?.name }} progress?
         <br>
         <br>
-        This action cannot be undone. All your {{ language?.name }} data will be permanently deleted.</p>
+        This action cannot be undone. All your {{ language?.name }} data will be permanently
+        deleted.</p>
     </SeriousConfirmDialog>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent} from "vue";
+import {PropType} from "vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
-import {LearnerLanguageSchema} from "dzelda-common";
+import type {LearnerLanguageSchema} from "dzelda-common";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
 import UpdateDictionariesForm from "@/components/shared/UpdateDictionariesForm.vue";
 import SeriousConfirmDialog from "@/components/shared/SeriousConfirmDialog.vue";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
-import TranslationLanguagesSection from "@/components/page/settings/languages/TranslationLanguagesSection.vue";
+import TranslationLanguagesSection  from "@/components/page/settings/languages/TranslationLanguagesSection.vue";
 
 export default defineComponent({
   name: "LanguageSettings",
-  components: {TranslationLanguagesSection, SeriousConfirmDialog, UpdateDictionariesForm, SubmitButton, InlineSvg},
+  components: {
+    TranslationLanguagesSection,
+    SeriousConfirmDialog,
+    UpdateDictionariesForm,
+    SubmitButton,
+    InlineSvg
+  },
   emits: ["onRemoveLanguageClicked", "onResetLanguageClicked"],
   props: {
     pathParams: {type: Object as PropType<{ settingsLanguage: string }>, required: true},
@@ -138,7 +148,10 @@ export default defineComponent({
         languageCode: this.language.code,
       });
       await this.languageStore.fetchUserLanguages({ignoreCache: true});
-      this.messageBarStore.addTopBarMessage({text: "Language progress reset", type: MessageType.SUCCESS});
+      this.messageBarStore.addTopBarMessage({
+        text: "Language progress reset",
+        type: MessageType.SUCCESS
+      });
       this.isSubmitting = false;
     },
   },

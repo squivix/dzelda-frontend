@@ -32,7 +32,6 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import InlineSvg from "vue-inline-svg";
-import BaseImage from "@/components/ui/BaseImage.vue";
 import {icons} from "@/icons.js";
 import {useUserStore} from "@/stores/backend/userStore.js";
 import {useStore} from "@/stores/backend/rootStore.js";
@@ -42,7 +41,7 @@ import {mebiBytes} from "dzelda-common";
 
 export default defineComponent({
   name: "ProfileForm",
-  components: {SubmitButton, ImageUploadInput, BaseImage, InlineSvg},
+  components: {SubmitButton, ImageUploadInput, InlineSvg},
   data() {
     return {
       //@ts-ignore store type not recognized in data due to bad vue support :(

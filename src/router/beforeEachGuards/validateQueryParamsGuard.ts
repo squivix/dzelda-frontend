@@ -1,4 +1,4 @@
-import {NavigationGuardWithThis} from "vue-router";
+import type {NavigationGuardWithThis} from "vue-router";
 import {isEmptyObject} from "@/utils.js";
 import {queryParamsEqual} from "@/router/routerUtils.js";
 

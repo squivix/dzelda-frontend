@@ -1,5 +1,5 @@
 import {useUserStore} from "@/stores/backend/userStore.js";
-import {NavigationGuardWithThis} from "vue-router";
+import type {NavigationGuardWithThis} from "vue-router";
 
 //prevent visiting pages that require authentication while unauthenticated
 export const requiresAuthGuard: NavigationGuardWithThis<undefined> = (to) => {

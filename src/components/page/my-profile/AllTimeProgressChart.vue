@@ -14,12 +14,14 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent} from "vue";
+import type {PropType} from "vue";
 import BaseBarChart from "@/components/ui/BaseBarChart.vue";
-import {ChartData} from "chart.js";
+import type {ChartData} from "chart.js";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
-import {LanguageSchema, UserSchema, VocabLevel} from "dzelda-common";
+import type {LanguageSchema, UserSchema} from "dzelda-common";
+import {VocabLevel} from "dzelda-common";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 
 export default defineComponent({

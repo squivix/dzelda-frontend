@@ -1,16 +1,19 @@
 <template>
   <section>
     <h3>Translation Languages</h3>
-    <UpdateTranslationLanguagesForm :initialPreferredTls="language.preferredTranslationLanguages" @onSubmitted="updateTranslationLangs" :isSubmitting="isSubmitting"/>
+    <UpdateTranslationLanguagesForm :initialPreferredTls="language.preferredTranslationLanguages"
+                                    @onSubmitted="updateTranslationLangs"
+                                    :isSubmitting="isSubmitting"/>
   </section>
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent} from "vue";
+import type {PropType} from "vue";
 import UpdateTranslationLanguagesForm from "@/components/shared/UpdateTranslationLanguagesForm.vue";
 import {MessageType, useMessageBarStore} from "@/stores/messageBarStore.js";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
-import {LearnerLanguageSchema, TranslationLanguageSchema} from "dzelda-common";
+import type {LearnerLanguageSchema, TranslationLanguageSchema} from "dzelda-common";
 
 export default defineComponent({
   name: "TranslationLanguagesSection",
@@ -28,7 +31,11 @@ export default defineComponent({
         preferredTranslationLanguageCodes: preferredTls.map(tl => tl.code)
       });
       this.isSubmitting = false;
-      this.messageBarStore.addSideMessage({text: "Preferred translation languages saved", type: MessageType.SUCCESS, timeoutMs: 3000});
+      this.messageBarStore.addSideMessage({
+        text: "Preferred translation languages saved",
+        type: MessageType.SUCCESS,
+        timeoutMs: 3000
+      });
     }
   },
   setup() {

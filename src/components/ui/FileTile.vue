@@ -8,7 +8,7 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import {icons} from "@/icons.js";
-import path from "path";
+import path from "path-browserify";
 import InlineSvg from "vue-inline-svg";
 
 export default defineComponent({

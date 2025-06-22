@@ -9,7 +9,7 @@
     "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/gb.svg",
     "flagEmoji": "🇬🇧",
     "color": "#9AD0F5",
-    "isSupported": true,
+    "isRtl": false,
     "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
@@ -30,7 +30,7 @@
     "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/es.svg",
     "flagEmoji": "🇪🇸",
     "color": "#FFA247",
-    "isSupported": true,
+    "isRtl": false,
     "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
@@ -51,7 +51,7 @@
     "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/fr.svg",
     "flagEmoji": "🇫🇷",
     "color": "#f7c5ad",
-    "isSupported": true,
+    "isRtl": false,
     "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
@@ -72,7 +72,7 @@
     "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/de.svg",
     "flagEmoji": "🇩🇪",
     "color": "#7F3301",
-    "isSupported": true,
+    "isRtl": false,
     "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
@@ -93,7 +93,7 @@
     "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/it.svg",
     "flagEmoji": "🇮🇹",
     "color": "#009246",
-    "isSupported": true,
+    "isRtl": false,
     "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
@@ -114,7 +114,7 @@
     "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/nl.svg",
     "flagEmoji": "🇳🇱",
     "color": "#FF9B00",
-    "isSupported": true,
+    "isRtl": false,
     "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
@@ -135,7 +135,7 @@
     "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/se.svg",
     "flagEmoji": "🇸🇪",
     "color": "#006AA7",
-    "isSupported": true,
+    "isRtl": false,
     "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
@@ -156,7 +156,7 @@
     "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/no.svg",
     "flagEmoji": "🇳🇴",
     "color": "#EF3340",
-    "isSupported": true,
+    "isRtl": false,
     "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
@@ -177,7 +177,7 @@
     "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/dk.svg",
     "flagEmoji": "🇩🇰",
     "color": "#C60C30",
-    "isSupported": true,
+    "isRtl": false,
     "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
@@ -198,7 +198,7 @@
     "flagImage": "https://raw.githubusercontent.com/kent1D/svg-flags/master/flags/br.svg",
     "flagEmoji": "🇵🇹",
     "color": "#FF0000",
-    "isSupported": true,
+    "isRtl": false,
     "learnersCount": 0,
     "levelThresholds": {
       "beginner1": 0,
@@ -208,5 +208,25 @@
       "advanced1": 20000,
       "advanced2": 30000
     }
+  },
+  {
+    "id": 11,
+    "code": "ar",
+    "name": "Arabic",
+    "greeting": "مرحباً!",
+    "secondSpeakersCount": 70000000,
+    "flagCircular": "https://hatscripts.github.io/circle-flags/flags/xx.svg",
+    "flagEmoji": null,
+    "color": "#00a344",
+    "learnersCount": 0,
+    "levelThresholds": {
+      "beginner1": 0,
+      "beginner2": 1000,
+      "intermediate1": 5000,
+      "intermediate2": 12000,
+      "advanced1": 20000,
+      "advanced2": 30000
+    },
+    "isRtl": true
   }
 ]

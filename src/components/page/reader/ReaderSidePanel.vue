@@ -18,10 +18,11 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent} from "vue";
+import type {PropType} from "vue";
 import OverlappingPhrasesPanel from "@/components/page/reader/OverlappingPhrasesPanel.vue";
-import {LearnerVocabSchema} from "dzelda-common";
-import {TextTokenObject, NewVocab} from "@/components/shared/Reader.vue";
+import type {LearnerVocabSchema} from "dzelda-common";
+import type {TextTokenObject, NewVocab} from "@/components/shared/Reader.vue";
 import VocabPanel from "@/components/shared/vocab-panel/VocabPanel.vue";
 
 export default defineComponent({
@@ -30,7 +31,7 @@ export default defineComponent({
   props: {
     selectedOverLappingPhrasesTokens: {type: Array as PropType<TextTokenObject[][] | null>},
     selectedVocab: {type: Object as PropType<LearnerVocabSchema | NewVocab | null>, default: null},
-    selectedUnparsedText: {type: String as PropType<string >},
+    selectedUnparsedText: {type: String as PropType<string>},
     onVocabRefetched: {type: Function as PropType<(updatedVocab: LearnerVocabSchema) => void>},
     phrases: {type: Object as PropType<Record<string, LearnerVocabSchema>>, required: true},
   },

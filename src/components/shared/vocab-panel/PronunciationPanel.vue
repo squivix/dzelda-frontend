@@ -41,9 +41,10 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, inject, nextTick, PropType, ref} from "vue";
-import {DictionarySchema, HumanPronunciationSchema, LearnerVocabSchema, TTSPronunciationSchema} from "dzelda-common";
-import {NewVocab} from "@/components/shared/Reader.vue";
+import {defineComponent, inject, nextTick, ref} from "vue";
+import type {PropType} from "vue";
+import type {DictionarySchema, HumanPronunciationSchema, LearnerVocabSchema, TTSPronunciationSchema} from "dzelda-common";
+import type {NewVocab} from "@/components/shared/Reader.vue";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";

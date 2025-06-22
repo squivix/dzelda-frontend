@@ -30,8 +30,8 @@ import VocabLevelPicker from "@/components/shared/vocab-panel/VocabLevelPicker.v
 import MeaningEditingControls from "@/components/shared/vocab-panel/MeaningEditingControls.vue";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
-import {PropType} from "vue";
-import {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-common";
+import type {PropType} from "vue";
+import type {LearnerVocabSchema, MeaningSchema, VocabLevelSchema} from "dzelda-common";
 
 export default {
   name: "ExistingVocabPanel",

@@ -8,8 +8,11 @@
                       @click="submitDeleteMeaning(meaning)" type="button">
           <inline-svg :src="icons.cross"/>
         </SubmitButton>
-        <select v-model="updatedMeaningLangs[meaningIndex]" v-if="preferredTranslationLanguages!.length>1">
-          <option v-for="translationLanguage in preferredTranslationLanguages" :value="translationLanguage.code">{{ translationLanguage.name }}</option>
+        <select v-model="updatedMeaningLangs[meaningIndex]"
+                v-if="preferredTranslationLanguages!.length>1">
+          <option v-for="translationLanguage in preferredTranslationLanguages"
+                  :value="translationLanguage.code">{{ translationLanguage.name }}
+          </option>
         </select>
         <input v-model="updatedMeaningTexts[meaningIndex]" maxlength="500"/>
         <SubmitButton :isSubmitting="isSubmittingEditMeaningSet.has(meaning.id)" :keepText="false"
@@ -26,8 +29,9 @@
 <script lang="ts">
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import {inject, PropType} from "vue";
-import {MeaningSchema} from "dzelda-common";
+import {inject} from "vue";
+import type {PropType} from "vue";
+import type {MeaningSchema} from "dzelda-common";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {useLanguageStore} from "@/stores/backend/languageStore.js";
 

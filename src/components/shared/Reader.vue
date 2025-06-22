@@ -15,7 +15,8 @@
       <template v-else>
         <div class="top-div">
           <div class="main-reader">
-            <PagePanelButton :disabled="currentPage==1" :iconSrc="icons.arrowLeft" @click="currentPage--" class="left-button"/>
+            <PagePanelButton :disabled="currentPage==1" :iconSrc="icons.arrowLeft"
+                             @click="currentPage--" class="left-button"/>
             <TextMainPane ref="textContentRef"
                           :page="currentPage"
                           :textTokens="textTokens!"
@@ -31,8 +32,10 @@
                           @onNewPhraseSelected="setSelectedTokens"
                           @onOverLappingPhrasesClicked="showOverlappingPhrases"
                           @onBackgroundClicked="clearSelectedTokens"/>
-            <PagePanelButton v-if="currentPage<textTokenPages.length" :iconSrc="icons.arrowRight" @click="currentPage++" class="right-button"/>
-            <PagePanelButton v-else :disabled="!showDoneButton" :iconSrc="icons.checkMark" @onClick="finishText" class="right-button"/>
+            <PagePanelButton v-if="currentPage<textTokenPages.length" :iconSrc="icons.arrowRight"
+                             @click="currentPage++" class="right-button"/>
+            <PagePanelButton v-else :disabled="!showDoneButton" :iconSrc="icons.checkMark"
+                             @onClick="finishText" class="right-button"/>
           </div>
           <ReaderSidePanel class="side-panel"
                            :selectedOverLappingPhrasesTokens="selectedOverLappingPhrasesTokens"
@@ -53,7 +56,8 @@
               Your browser does not support the audio element.
             </audio>
           </div>
-          <PageIndicator class="page-indicators" :currentPage="currentPage" :pageCount="textTokenPages.length"
+          <PageIndicator class="page-indicators" :currentPage="currentPage"
+                         :pageCount="textTokenPages.length"
                          @onPageIndicatorClicked="(page:number)=>currentPage=page"/>
         </div>
       </template>
@@ -67,7 +71,8 @@ import BaseCard from "@/components/ui/BaseCard.vue";
 import PageIndicator from "@/components/page/reader/PageIndicator.vue";
 import ReaderSidePanel from "@/components/page/reader/ReaderSidePanel.vue";
 import PagePanelButton from "@/components/page/reader/PagePanelButton.vue";
-import {getParser, LearnerVocabSchema, TextSchema, TokenWithPhrases, TokeObjectPhrases, VocabLevel} from "dzelda-common";
+import type {LearnerVocabSchema, TextSchema, TokenWithPhrases, TokeObjectPhrases} from "dzelda-common";
+import {VocabLevel, getParser} from "dzelda-common";
 import {icons} from "@/icons.js";
 import {useTextStore} from "@/stores/backend/textStore.js";
 import {useVocabStore} from "@/stores/backend/vocabStore.js";
@@ -85,7 +90,16 @@ export type TextTokenObject = Omit<TokenWithPhrases, "phrases"> & {
 }
 export default defineComponent({
   name: "Reader",
-  components: {EmptyScreen, LoadingScreen, TextMainPane, PagePanelButton, ReaderSidePanel, PageIndicator, BaseCard, InlineSvg},
+  components: {
+    EmptyScreen,
+    LoadingScreen,
+    TextMainPane,
+    PagePanelButton,
+    ReaderSidePanel,
+    PageIndicator,
+    BaseCard,
+    InlineSvg
+  },
   props: {
     languageCode: {type: String, required: true},
     textId: {type: Number, required: true},
@@ -101,7 +115,10 @@ export default defineComponent({
       selectedTokens: [] as TextTokenObject[],
       selectedOverLappingPhrasesTokens: null as TextTokenObject[][] | null,
       textTokens: null as { title: TextTokenObject[], text: TextTokenObject[] } | null,
-      matchIndexToTokenIndex: {title: {}, text: {}} as { title: Record<number, number>, text: Record<number, number> },
+      matchIndexToTokenIndex: {title: {}, text: {}} as {
+        title: Record<number, number>,
+        text: Record<number, number>
+      },
       vocabIdToVocab: null as null | Record<number, LearnerVocabSchema>,
       currentPage: 1,
       isLoadingText: false,
@@ -250,7 +267,10 @@ export default defineComponent({
 
     },
     async fetchTextMeanings() {
-      const {meanings, learnerMeanings: learnerMeaningIds} = await this.meaningStore.fetchTextMeanings({textId: this.textId});
+      const {
+        meanings,
+        learnerMeanings: learnerMeaningIds
+      } = await this.meaningStore.fetchTextMeanings({textId: this.textId});
       const learnerMeaningIdSet = new Set(learnerMeaningIds!);
 
       for (const meaning of meanings) {

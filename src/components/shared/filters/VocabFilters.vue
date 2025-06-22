@@ -26,10 +26,12 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent} from "vue";
+import type {PropType} from "vue";
 import BaseCollapsableDiv from "@/components/ui/BaseCollapsableDiv.vue";
 import BaseFiltersCard from "@/components/ui/BaseFiltersCard.vue";
-import {VocabLevel, VocabLevelSchema} from "dzelda-common";
+import type {VocabLevelSchema} from "dzelda-common";
+import {VocabLevel} from "dzelda-common";
 
 type VocabFiltersObject = { level: VocabLevelSchema | VocabLevelSchema[] };
 export default defineComponent({

@@ -8,7 +8,9 @@
           <span>
             {{ meaning.text }}
           </span>
-          <AttributionIcon :attribution="meaning.attribution" :attributionSourceId="meaning.attributionSource" :scrollOffsetPx="-suggestedMeaningsScrollPosition"/>
+          <AttributionIcon :attribution="meaning.attribution"
+                           :attributionSourceId="meaning.attributionSource"
+                           :scrollOffsetPx="-suggestedMeaningsScrollPosition"/>
         </button>
       </li>
     </ol>
@@ -20,9 +22,12 @@
   </div>
   <form class="new-meaning-form" action="javascript:void(0);">
     <select v-model="newMeaningLanguage" v-if="preferredTranslationLanguages.length>1">
-      <option v-for="translationLanguage in preferredTranslationLanguages" :value="translationLanguage.code">{{ translationLanguage.name }}</option>
+      <option v-for="translationLanguage in preferredTranslationLanguages"
+              :value="translationLanguage.code">{{ translationLanguage.name }}
+      </option>
     </select>
-    <input ref="meaningTextInputRef" placeholder="Add new meaning here" maxlength="500" v-model="newMeaningText"/>
+    <input ref="meaningTextInputRef" placeholder="Add new meaning here" maxlength="500"
+           v-model="newMeaningText"/>
     <SubmitButton class="new-meaning-button"
                   :isSubmitting="isSubmittingNewMeaning"
                   :keepText="false"
@@ -35,8 +40,9 @@
 <script lang="ts">
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import {MeaningSchema} from "dzelda-common";
-import {inject, PropType, ref} from "vue";
+import type {MeaningSchema} from "dzelda-common";
+import {inject, ref} from "vue";
+import type {PropType} from "vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import {renderMarkdown} from "@/utils.js";
 import AttributionIcon from "@/components/ui/AttributionIcon.vue";
@@ -134,7 +140,7 @@ h5 {
 
 .suggested-meaning {
   background-color: var(--meaning-item-color);
-  padding: min(15px,2vh) 10px;
+  padding: min(15px, 2vh) 10px;
   min-height: 30px;
   cursor: pointer;
   font-size: 1.15rem;

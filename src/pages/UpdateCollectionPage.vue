@@ -5,7 +5,8 @@
       <form v-else class="update-collection-form" @submit.prevent="submitUpdateCollection">
         <div class="side-inputs">
           <div class="form-row">
-            <ImageUploadInput id="collection-image-input" :oldImageUrl="collection.image" name="collection image"
+            <ImageUploadInput id="collection-image-input" :oldImageUrl="collection.image"
+                              name="collection image"
                               :fallback="icons.books" v-model="image"
                               :maxFileSizeInBytes="mebiBytes(1)"/>
             <p v-if="errorFields.image" class="error-message">{{ errorFields.image }}</p>
@@ -20,21 +21,26 @@
         <div class="main-inputs">
           <div class="form-row">
             <label for="collection-title">Title</label>
-            <input id="collection-title" type="text" maxlength="255" placeholder="Collection Title" v-model="title"
+            <input id="collection-title" type="text" maxlength="255" placeholder="Collection Title"
+                   v-model="title"
                    required>
             <p v-if="errorFields.title" class="error-message">{{ errorFields.title }}</p>
           </div>
           <div class="form-row">
             <label for="collection-description">Description</label>
-            <textarea id="collection-description" maxlength="500" placeholder="Collection Description"
+            <textarea id="collection-description" maxlength="500"
+                      placeholder="Collection Description"
                       v-model="description"></textarea>
-            <p v-if="errorFields.description" class="error-message">{{ errorFields.description }}</p>
+            <p v-if="errorFields.description" class="error-message">{{
+                errorFields.description
+              }}</p>
           </div>
           <div class="form-row">
             <label for="text-table">Texts</label>
             <p v-if="texts?.length==0">No texts in collection</p>
             <TextsOrderTable v-else v-model="texts"/>
-            <router-link :to="{name:'import-text', query:{collectionId:collection.id}}" class="inv-link add-text-button">
+            <router-link :to="{name:'import-text', query:{collectionId:collection.id}}"
+                         class="inv-link add-text-button">
               <inline-svg :src="icons.plusRound" class="empty-icon"/>
               Add text
             </router-link>
@@ -53,10 +59,12 @@
           </SubmitButton>
         </div>
       </form>
-      <ConfirmDialog :isShown="isDeleteCollectionConfirmShown" @onNoClicked="isDeleteCollectionConfirmShown=false"
+      <ConfirmDialog :isShown="isDeleteCollectionConfirmShown"
+                     @onNoClicked="isDeleteCollectionConfirmShown=false"
                      @onYesClicked="deleteCollection">
         <h3>Are you sure you want to delete this collection?</h3>
-        <label style="font-size: 1rem"><input type="checkbox" v-model="cascadeTextsDelete">Also delete all texts in this collection</label>
+        <label style="font-size: 1rem"><input type="checkbox" v-model="cascadeTextsDelete">Also
+          delete all texts in this collection</label>
         (This action cannot be undone.)
       </ConfirmDialog>
     </template>
@@ -67,14 +75,15 @@
 import BaseCard from "@/components/ui/BaseCard.vue";
 import {VueDraggableNext} from "vue-draggable-next";
 import {useCollectionStore} from "@/stores/backend/collectionStore.js";
-import {CollectionSchema, mebiBytes, TextSchema} from "dzelda-common";
+import type {CollectionSchema, TextSchema} from "dzelda-common";
+import {mebiBytes} from "dzelda-common";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";
 import ImageUploadInput from "@/components/shared/ImageUploadInput.vue";
 import SubmitButton from "@/components/ui/SubmitButton.vue";
 import TextsOrderTable from "@/components/page/edit-collection/TextsOrderTable.vue";
 import EmptyScreen from "@/components/shared/EmptyScreen.vue";
-import {PropType} from "vue";
+import type {PropType} from "vue";
 import LoadingScreen from "@/components/shared/LoadingScreen.vue";
 import {useStore} from "@/stores/backend/rootStore.js";
 import ConfirmDialog from "@/components/shared/ConfirmDialog.vue";
@@ -90,7 +99,10 @@ export default {
     ImageUploadInput, InlineSvg, BaseCard, draggable: VueDraggableNext,
   },
   props: {
-    pathParams: {type: Object as PropType<{ learningLanguage: string, collectionId: number }>, required: true}
+    pathParams: {
+      type: Object as PropType<{ learningLanguage: string, collectionId: number }>,
+      required: true
+    }
   },
   data() {
     return {
@@ -121,21 +133,25 @@ export default {
         imageUrl = this.image;
 
       const response = await this.collectionStore.updateCollection(
-          {collectionId: this.pathParams.collectionId},
-          {
-            title: this.title!,
-            description: this.description!,
-            isPublic: this.isPublic,
-            textsOrder: this.texts!.map(text => text.id),
-            image: imageUrl
-          }
+        {collectionId: this.pathParams.collectionId},
+        {
+          title: this.title!,
+          description: this.description!,
+          isPublic: this.isPublic,
+          textsOrder: this.texts!.map(text => text.id),
+          image: imageUrl
+        }
       );
       this.isSubmitting = false;
       if (response.ok)
         this.$router.push({name: "collection", ...this.pathParams});
       else {
         if ("fields" in response.error)
-          this.errorFields = response.error.fields as { title: string, description: string, image: string };
+          this.errorFields = response.error.fields as {
+            title: string,
+            description: string,
+            image: string
+          };
       }
     },
     onDeleteCollectionClicked() {

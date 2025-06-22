@@ -9,11 +9,13 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
-import {LearnerVocabSchema, VocabLevel, VocabLevelSchema} from "dzelda-common";
+import {defineComponent} from "vue";
+import type {PropType} from "vue";
+import type {LearnerVocabSchema, VocabLevelSchema} from "dzelda-common";
+import {VocabLevel} from "dzelda-common"
 import BaseToken from "@/components/page/reader/BaseToken.vue";
 import {getLevelClass} from "@/utils.js";
-import {TextTokenObject} from "@/components/shared/Reader.vue";
+import type {TextTokenObject} from "@/components/shared/Reader.vue";
 import {NEW_PHRASE_HINT_LEARNERS_THRESHOLD} from "@/constants.js";
 
 

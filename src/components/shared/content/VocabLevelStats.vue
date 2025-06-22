@@ -21,9 +21,11 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
+import {defineComponent} from 'vue';
+import type {PropType} from 'vue';
 import InlineSvg from "vue-inline-svg";
-import {VocabLevel, VocabsByLevelSchema} from "dzelda-common";
+import type {VocabsByLevelSchema} from "dzelda-common";
+import {VocabLevel} from "dzelda-common";
 import {icons} from "@/icons.js";
 import constants from "@/constants.js";
 

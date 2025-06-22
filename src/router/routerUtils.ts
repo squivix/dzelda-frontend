@@ -1,4 +1,4 @@
-import {RouteLocationNormalized, RouteMeta, RouteRecordRaw} from "vue-router";
+import type {RouteLocationNormalized, RouteMeta, RouteRecordRaw} from "vue-router";
 
 export function setDefaultRouteMeta(routes: RouteRecordRaw[], defaultMeta: RouteMeta) {
     for (const route of routes) {

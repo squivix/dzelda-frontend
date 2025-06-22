@@ -30,16 +30,16 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent} from "vue";
+import type {PropType} from "vue";
 import {VueDraggableNext as VueDraggable} from "vue-draggable-next";
 import InlineSvg from "vue-inline-svg";
 import {icons} from "@/icons.js";
-import {TextSchema} from "dzelda-common";
-import EmptyScreen from "@/components/shared/EmptyScreen.vue";
+import type {TextSchema} from "dzelda-common";
 
 export default defineComponent({
   name: "TextsOrderTable",
-  components: {EmptyScreen, InlineSvg, VueDraggable},
+  components: {InlineSvg, VueDraggable},
   props: {modelValue: {type: Object as PropType<TextSchema[] | undefined>}},
   data() {
     return {};

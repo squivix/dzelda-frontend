@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import {defineComponent, inject, PropType} from "vue";
-import {AttributionSchema, AttributionSourceSchema} from "dzelda-common";
+import type {AttributionSchema, AttributionSourceSchema} from "dzelda-common";
 import {renderMarkdown} from "@/utils.js";
 import {icons} from "@/icons.js";
 import InlineSvg from "vue-inline-svg";

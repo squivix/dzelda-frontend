@@ -79,9 +79,10 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent} from "vue";
+import type {PropType}  from "vue";
 import BaseCard from "@/components/ui/BaseCard.vue";
-import path from "path";
+import path from "path-browserify";
 import {extractFileContent, extractFileTitle} from "@/components/page/import-file/FileImporter.js";
 import prettyBytes from "pretty-bytes";
 import BaseDropZoneFileInput from "@/components/ui/BaseDropZoneFileInput.vue";

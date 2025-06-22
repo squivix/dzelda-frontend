@@ -13,7 +13,7 @@ import AccountTab from "@/components/page/settings/account/AccountTab.vue";
 import LanguagesTab from "@/components/page/settings/languages/LanguagesTab.vue";
 import NotificationsTab from "@/components/page/settings/NotificationsTab.vue";
 import SignOutPage from "@/pages/auth/SignOutPage.vue";
-import {RouteRecordRaw} from "vue-router";
+import type {RouteRecordRaw} from "vue-router";
 import ConfirmEmailPage from "@/pages/auth/ConfirmEmailPage.vue";
 import {routeToProps, setDefaultRouteMeta} from "@/router/routerUtils.js";
 import ConfirmEmailSentPage from "@/pages/auth/ConfirmEmailSentPage.vue";
