@@ -189,6 +189,7 @@ a:hover {
     .styled-scrollbars {
         /* Foreground, Background */
         scrollbar-color: var(--scrollbar-thumb-selected) var(--scrollbar-background);
+        scrollbar-width: thin;
     }
 }
 
